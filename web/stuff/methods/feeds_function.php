@@ -59,13 +59,13 @@ if (isset($newsInclude) and $newsInclude == true) {
 
         $query = $sql->prepare("SELECT `newsAmount` FROM `feeds_settings` WHERE `active`='Y' AND `steamFeeds`='Y' ORDER BY `newsAmount` DESC LIMIT 1");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $newsAmount = $row['newsAmount'];
 
             $query2 = $sql->prepare("SELECT t.* FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
             $query2->execute();
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 if (!in_array($row2['appID'], array(null, '', false))) {
 
@@ -75,7 +75,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                     $json = cleanFsockOpenRequest($json, '{', '}');
                     $json = @json_decode($json);
 
-                    if ($json and isset($json->appnews->newsitems) and $json->appnews->appid == $lookUpAppID) {
+                    if ($json and $json->appnews->appid == $lookUpAppID) {
 
                         $theCount = 0;
 
@@ -84,7 +84,8 @@ if (isset($newsInclude) and $newsInclude == true) {
                         }
 
                         foreach ($json->appnews->newsitems as $item) {
-                            if ($item->is_external_url == false and $theCount < $newsAmount) {
+
+                            if ($theCount < $newsAmount) {
 
                                 $steamNews[$lookUpAppID][] = array(
                                     'title' => $item->title,
@@ -119,7 +120,7 @@ if (isset($newsInclude) and $newsInclude == true) {
     $newEntries = 0;
     $removed = 0;
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $feedsArray = array();
 
@@ -147,7 +148,7 @@ if (isset($newsInclude) and $newsInclude == true) {
 
             $query2 = $sql->prepare("SELECT t.* FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`resellerID`=? AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
             $query2->execute(array($lookUpID));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 if (!in_array($row2['appID'], array(null, '', false))) {
 
@@ -184,7 +185,7 @@ if (isset($newsInclude) and $newsInclude == true) {
 
         $query2 = $sql->prepare("SELECT * FROM `feeds_url` WHERE `resellerID`=?");
         $query2->execute(array($lookUpID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             unset($gZipped);
 

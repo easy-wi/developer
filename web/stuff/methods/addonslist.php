@@ -39,39 +39,39 @@
 
 $gameAddons = array(
     array(
-        ':paddon' => 'Y',
-        ':addon' => 'css-esl',
-        ':type' => 'tool',
-        ':folder' => '',
-        ':menudescription' => 'ESL Plugin',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'css'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'csgo-esl',
-        ':type' => 'tool',
-        ':folder' => '',
-        ':menudescription' => 'ESL Plugin',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'csgo'
-        )
-    ),
-    array(
         ':paddon' => 'N',
         ':addon' => 'metamod',
         ':type' => 'tool',
         ':folder' => 'metamod',
         ':menudescription' => 'Metamod Source',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => '',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'metamod-stable',
+        ':type' => 'tool',
+        ':folder' => 'metamod',
+        ':menudescription' => 'Metamod Source Stable Snapshot',
+        ':configs' => "",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => '',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'metamod-dev',
+        ':type' => 'tool',
+        ':folder' => 'metamod',
+        ':menudescription' => 'Metamod Source Dev Snapshot',
         ':configs' => "",
         ':cmd' => null,
         ':rmcmd' => null,
@@ -90,6 +90,34 @@ $gameAddons = array(
         ':cmd' => null,
         ':rmcmd' => null,
         ':depends' => 'metamod',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'sourcemod-stable',
+        ':type' => 'tool',
+        ':folder' => 'sourcemod',
+        ':menudescription' => 'SourceMod Stable Snapshot',
+        ':configs' => "cfg/sourcemod/sourcemod.cfg both\r\ncfg/sourcemod/sm_warmode_on.cfg full\r\ncfg/sourcemod/sm_warmode_off.cfg full\r\ncfg/sourcemod/funcommands.cfg both\r\ncfg/sourcemod/mapchooser.cfg both\r\ncfg/sourcemod/randomcycle.cfg both\r\ncfg/sourcemod/rtv.cfg both",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => 'metamod-latest-1.10',
+        ':supported' => array(
+            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
+        )
+    ),
+    array(
+        ':paddon' => 'N',
+        ':addon' => 'sourcemod-dev',
+        ':type' => 'tool',
+        ':folder' => 'sourcemod',
+        ':menudescription' => 'SourceMod Dev Snapshot',
+        ':configs' => "cfg/sourcemod/sourcemod.cfg both\r\ncfg/sourcemod/sm_warmode_on.cfg full\r\ncfg/sourcemod/sm_warmode_off.cfg full\r\ncfg/sourcemod/funcommands.cfg both\r\ncfg/sourcemod/mapchooser.cfg both\r\ncfg/sourcemod/randomcycle.cfg both\r\ncfg/sourcemod/rtv.cfg both",
+        ':cmd' => null,
+        ':rmcmd' => null,
+        ':depends' => 'metamod-latest-1.11',
         ':supported' => array(
             'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
         )
@@ -148,118 +176,6 @@ $gameAddons = array(
         ':depends' => 'sourcemod',
         ':supported' => array(
             'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
-        )
-    ),
-    array(
-        ':paddon' => 'N',
-        ':addon' => 'smac',
-        ':type' => 'tool',
-        ':folder' => '',
-        ':menudescription' => 'SourceMod Anti-Cheat',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => 'sourcemod',
-        ':supported' => array(
-            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
-        )
-    ),
-    array(
-        ':paddon' => 'N',
-        ':addon' => 'smac-block',
-        ':type' => 'tool',
-        ':folder' => '',
-        ':menudescription' => 'SmacBans.com Block Plugin',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => 'smac',
-        ':supported' => array(
-            'ageofchivalry','css','csgo','dods','gmod','hl2mp','insurgency','left4dead','left4dead2','pvkii','tf','zps'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'css-anno',
-        ':type' => 'tool',
-        ':folder' => 'css-anno',
-        ':menudescription' => 'SmacBans.com Announcer',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'css'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'csgo-anno',
-        ':type' => 'tool',
-        ':folder' => 'csgo-anno',
-        ':menudescription' => 'SMACBans Announcer',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'csgo'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'dods-anno',
-        ':type' => 'tool',
-        ':folder' => 'dods-anno',
-        ':menudescription' => 'SMACBans Announcer',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'dods'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'l4d-anno',
-        ':type' => 'tool',
-        ':folder' => 'dods-anno',
-        ':menudescription' => 'SMACBans Announcer',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'left4dead'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'l4d2-anno',
-        ':type' => 'tool',
-        ':folder' => 'l4d2-anno',
-        ':menudescription' => 'SMACBans Announcer',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'left4dead2'
-        )
-    ),
-    array(
-        ':paddon' => 'Y',
-        ':addon' => 'tf-anno',
-        ':type' => 'tool',
-        ':folder' => 'tf-anno',
-        ':menudescription' => 'SMACBans Announcer',
-        ':configs' => "",
-        ':cmd' => null,
-        ':rmcmd' => null,
-        ':depends' => '',
-        ':supported' => array(
-            'tf'
         )
     ),
     array(

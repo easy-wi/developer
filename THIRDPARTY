@@ -1,7 +1,5 @@
 Included third party frameworks, tools, and so on.
 
-Shipped with Easy-WI:
-
 * FooTable - Awesome Responsive Tables
 http://themergency.com/footable/
 https://github.com/bradvin/FooTable
@@ -45,20 +43,57 @@ https://www.gnu.org/licenses/gpl.html
 Released under the MIT license
 http://opensource.org/licenses/MIT
 
+* AdminLTE
+https://almsaeedstudio.com/preview
+Released under the MIT license
+http://opensource.org/licenses/MIT
 
- Used but included with CDN servers:
-
-* Bootstrap v2.3.2
-http://getbootstrap.com/2.3.2/
+* Bootstrap
+http://getbootstrap.com/
 Copyright 2013 Twitter, Inc
 Licensed under the Apache License v2.0
 http://www.apache.org/licenses/LICENSE-2.0
 Designed and built with all the love in the world by @mdo and @fat.
 
-
-* HTML5 Shiv v3.6.2
+* HTML5 Shiv
 https://github.com/aFarkas/html5shiv
 @afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
+
+* Summernote
+http://summernote.org/
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
+* Chosen
+http://harvesthq.github.io/chosen/
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
+* momentjs
+http://momentjs.com
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
+* Date Range Picker for Bootstrap
+https://github.com/dangrossman/bootstrap-daterangepicker
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
+* morris.js
+http://morrisjs.github.io/morris.js/
+Licensed under the BSD-2-Clause License
+http://opensource.org/licenses/BSD-2-Clause
+
+* Raphael
+http://raphaeljs.com
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
+* Decoda
+https://github.com/milesj/decoda
+Released under the MIT license
+http://opensource.org/licenses/MIT
+
 
 
 Shipped with Easy-WI but modified and fitted to Easy-WI:

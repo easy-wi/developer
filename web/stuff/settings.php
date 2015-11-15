@@ -61,6 +61,10 @@ $dbConnect['user'] = $user;
 $dbConnect['pwd'] = $pwd;
 $dbConnect['db'] = $db;
 
+if (isset($demo) and $demo == 1) {
+    $ui->demoMode();
+}
+
 if (isset($debug) and $debug == 1) {
 
     $dbConnect['debug'] = 1;
@@ -176,7 +180,7 @@ if (isset($reseller_id)) {
 
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         foreach ($row as $k => $v) {
             $rSA[$k] = $v;
         }
@@ -189,6 +193,8 @@ if (isset($reseller_id)) {
 
     if (isset($admin_id)) {
         $resellerLockupID = ($reseller_id != 0 and $reseller_id != $admin_id) ? $admin_id : $reseller_id;
+    } else {
+        $resellerLockupID = $reseller_id;
     }
 
     if (isset($user_id) and !isset($admin_id)) {
@@ -218,7 +224,7 @@ if (isset($reseller_id)) {
 
     $query = $sql->prepare("SELECT * FROM `settings` WHERE `resellerid`=0 LIMIT 1");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         foreach ($row as $k => $v) {
             $rSA[$k] = $v;
         }
@@ -229,7 +235,7 @@ if (isset($reseller_id)) {
     $logdate = date('Y-m-d H:i:s');
 }
 
-if ($loguserip!='localhost') {
+if ($loguserip != 'localhost') {
 
     if (isset($_SESSION['language'])) {
         $user_language = $_SESSION['language'];
@@ -239,7 +245,7 @@ if ($loguserip!='localhost') {
 
         $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`=0 LIMIT 1");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $seo = $row['seo'];
             $rssfeed = $row['rssfeed'];
@@ -263,7 +269,7 @@ if ($loguserip!='localhost') {
             }
         }
 
-        $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=9 LIMIT 1");
+        $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `type`='C' AND `get`='pn' AND `sub`='pn' LIMIT 1");
         $query->execute();
         $page_active = $query->fetchColumn();
         $page_active = (active_check($page_active)) ? $page_active : 'Y';
@@ -464,4 +470,12 @@ foreach ($dirs as $row) {
 
 if ($ui->escaped('HTTP_REFERER', 'server')) {
     $referrer = $ui->escaped('HTTP_REFERER', 'server');
+}
+
+if (!isset($reseller_id)) {
+    $reseller_id = 0;
+}
+
+if (!isset($resellerLockupID)) {
+    $resellerLockupID = $reseller_id;
 }

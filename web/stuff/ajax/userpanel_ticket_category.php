@@ -47,7 +47,7 @@ $query = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `m
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
 
 $query->execute(array($ui->id('topicName', 10, 'get'), $reseller_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $query2->execute(array($user_language, $row['id'], $reseller_id));
     $topic = $query2->fetchColumn();

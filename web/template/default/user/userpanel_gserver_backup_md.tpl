@@ -27,27 +27,27 @@
                         </div>
                         <?php }?>
 
-                        <div class="form-group<?php if(isset($errors['ftp_adresse'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['ftp_adresse'])) echo ' has-error';?>">
                             <label for="input_ftp_adresse"><?php echo $sprache->ftp_adresse;?></label>
                             <input id="input_ftp_adresse" type="text" class="form-control" name="ftp_adresse" value="<?php echo $ftp_adresse;?>" required/>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['ftp_port'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['ftp_port'])) echo ' has-error';?>">
                             <label for="input_ftp_port"><?php echo $sprache->ftp_port;?></label>
                             <input id="input_ftp_port" type="text" class="form-control" name="ftp_port" value="<?php echo $ftp_port;?>" required/>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['ftp_user'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['ftp_user'])) echo ' has-error';?>">
                             <label for="input_ftp_user"><?php echo $sprache->ftp_user;?></label>
                             <input id="input_ftp_user" type="text" class="form-control" name="ftp_user" value="<?php echo $ftp_user;?>" required/>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['ftp_password'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['ftp_password'])) echo ' has-error';?>">
                             <label for="input_ftp_password"><?php echo $sprache->ftp_password;?></label>
                             <input id="input_ftp_password" type="text" class="form-control" name="ftp_password" value="<?php echo $ftp_password;?>" required/>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['ftp_path'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['ftp_path'])) echo ' has-error';?>">
                             <label for="input_ftp_path"><?php echo $sprache->ftp_path;?></label>
                             <input id="input_ftp_path" type="text" class="form-control" name="ftp_path" value="<?php echo $ftp_path;?>" required/>
                         </div>

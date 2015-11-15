@@ -38,8 +38,12 @@
 
 if ((!isset($user_id) or !$main == "1") or (isset($user_id) and !isanyuser($user_id))) {
 	header('Location: login.php');
-	die('No acces');
+	die('No Access');
 }
+
+include(EASYWIDIR . '/third_party/Decoda/autoloader.php');
+use Decoda\Decoda;
+
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
 
 if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
@@ -70,14 +74,27 @@ $statsArray = array(
     'webspaceSpaceUsed' => 0
 );
 
-$query = $sql->prepare("SELECT `gameserverActive`,`gameserverSlotsActive`,`gameserverSlotsUsed`,`gameserverNoPassword`,`gameserverNoTag`,`gameserverNotRunning`,`mysqlDBActive`,`mysqlDBSpaceUsed`,`ticketsCompleted`,`ticketsInProcess`,`ticketsNew`,`virtualInstalled`,`virtualActive`,`voiceserverInstalled`,`voiceserverActive`,`voiceserverSlotsInstalled`,`voiceserverSlotsActive`,`voiceserverSlotsUsed`,`voiceserverTrafficAllowed`,`voiceserverTrafficUsed`,`voiceserverCrashed`,`webspaceActive`,`webspaceSpaceGivenActive`,`webspaceSpaceUsed` FROM `easywi_statistics_current` WHERE `userID`=? LIMIT 1");
+$query = $sql->prepare("SELECT * FROM `easywi_statistics_current` WHERE `userID`=? LIMIT 1");
 $query->execute(array($user_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $statsArray = $row;
 }
 
 $statsArray['warningTotal'] = $statsArray['gameserverNoPassword'] + $statsArray['gameserverNoTag'] + $statsArray['gameserverNotRunning'] + $statsArray['voiceserverCrashed'];
 $statsArray['ticketsTotal'] = $statsArray['ticketsInProcess'];
+
+if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get') and !$ui->smallletters('d', 2, 'get'))) {
+
+    $statsArray['gameserverActivePercent'] = ($statsArray['gameserverInstalled'] > 0) ? round($statsArray['gameserverActive'] / ($statsArray['gameserverInstalled'] / 100), 2) : 0;
+    $statsArray['gameserverSlotsUsedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverSlotsUsed'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverCrashedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNotRunning'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverRuleBreakPercent'] = ($statsArray['gameserverActive'] > 0) ? round(($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']) / ($statsArray['gameserverActive'] / 100), 2) : 0;
+
+    $statsArray['voiceserverActivePercent'] = ($statsArray['voiceserverInstalled'] > 0) ? round($statsArray['voiceserverActive'] / ($statsArray['voiceserverInstalled'] / 100), 2) : 0;
+    $statsArray['voiceserverSlotsUsedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverSlotsUsed'] / ($statsArray['voiceserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['voiceserverCrashedPercent'] = ($statsArray['voiceserverSlotsActive'] > 0) ? round($statsArray['voiceserverCrashed'] / ($statsArray['voiceserverActive'] / 100), 2) : 0;
+    $statsArray['voiceserverTrafficPercent'] = ($statsArray['voiceserverTrafficAllowed'] > 0) ? round($statsArray['voiceserverTrafficUsed'] / ($statsArray['voiceserverTrafficAllowed'] / 100), 2) : 0;
+}
 
 $lastdate = null;
 $feedArray = array();
@@ -87,7 +104,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
     // start collecting news feed data. When combined, timestamps will be used as array index
     $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=? AND `active`='Y' LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['orderBy'] == 'I' and $row['merge'] == 'N'){
             $orderFeedsBy = '`feedID` ASC';
@@ -183,6 +200,19 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
                     } else {
                         $text = $row2['twitterText'];
                     }
+                }
+
+                if (preg_match('/(\[\/img\]|\[\/url\]|\[\/b\]|\[\/h1\])/i', $text)) {
+                    $code = new \Decoda\Decoda($text);
+                    $code->addFilter(new \Decoda\Filter\DefaultFilter());
+                    $code->addFilter(new \Decoda\Filter\ImageFilter());
+                    $code->addFilter(new \Decoda\Filter\BlockFilter());
+                    $code->addFilter(new \Decoda\Filter\EmailFilter());
+                    $code->addFilter(new \Decoda\Filter\UrlFilter());
+                    $code->addFilter(new \Decoda\Filter\VideoFilter());
+                    $code->addFilter(new \Decoda\Filter\HeadLineFilter());
+                    $code->addHook(new \Decoda\Hook\ClickableHook());
+                    $text = $code->parse();
                 }
 
                 $title = $row2['newsTitle'];

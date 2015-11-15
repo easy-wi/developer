@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['roots'])) {
     header('Location: admin.php');
-    die('No acces');
+    die('No Access');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -95,7 +95,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $assignToReseller = ($ui->active('assignToReseller', 'post')) ? $ui->active('assignToReseller', 'post') : 'N';
     $connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'N';
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
-    $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 0;
+    $updateMinute = ($ui->id('updateMinute', 2, 'post')) ? $ui->id('updateMinute', 2, 'post') : 10;
     $ftpport = ($ui->port('ftpport', 'post')) ? $ui->port('ftpport', 'post') : 21;
     $port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 22;
     $maxserver = ($ui->id('maxserver',4, 'post')) ? $ui->id('maxserver',4, 'post') : 10;
@@ -116,21 +116,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $configFiles = ($ui->startparameter('configFiles', 'post')) ? $ui->startparameter('configFiles', 'post') : '*/cfg/valve.rc';
     $configBadFiles = ($ui->startparameter('configBadFiles', 'post')) ? $ui->startparameter('configBadFiles', 'post') : 'zip,rar,7zip,bz2';
 
-    if (!$ui->smallletters('action', 2, 'post')) {
+    if ($reseller_id == 0) {
 
-        if ($reseller_id == 0) {
-            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
-            $query->execute();
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-            }
-        } else {
-            $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='r' ORDER BY `id` DESC");
-            $query->execute(array($resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
-            }
+        $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `accounttype`='r' ORDER BY `id` DESC");
+        $query->execute();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
         }
+
+    } else {
+
+        $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='r' ORDER BY `id` DESC");
+        $query->execute(array($resellerLockupID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $table[$row['id']] = trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']);
+        }
+    }
+
+    if (!$ui->smallletters('action', 2, 'post')) {
 
         if ($ui->st('d', 'get') == 'ad' and $reseller_id == 0) {
 
@@ -156,7 +159,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
             }
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $active = $row['active'];
                 $externalID = $row['externalID'];
                 $hyperthreading = $row['hyperthreading'];
@@ -321,7 +324,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `id`=? AND (`userID` IS NULL OR `userID` IN ('',0)) LIMIT 1");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $desc = $row['description'];
             $ip = $row['ip'];
         }
@@ -347,10 +350,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query3 = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=?");
 
             $query->execute(array($id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $query2->execute(array($row['id']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $query3->execute(array($row2['id']));
                 }
 
@@ -383,7 +386,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
     } else {
-        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND (`resellerid`=? OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=? AND `id`=r.`resellerid`)) LIMIT 1");
+        $query = $sql->prepare("SELECT `ip` FROM `rserverdata` AS r WHERE `id`=? AND (`resellerid`=? OR EXISTS (SELECT 1 FROM `userdata` WHERE `resellerid`=? AND `id`=r.`resellerid`)) LIMIT 1");
         $query->execute(array($id, $resellerLockupID, $resellerLockupID));
     }
 
@@ -443,7 +446,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     $started[] = $row['serverip'] . ':' . $row['port'];
 
-                    $appServer->addApp(array($row['shorten']));
+                    $appServer->addApp(array(), true);
                 }
             }
 
@@ -451,7 +454,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $template_file = $gsSprache->reinstall . ': ' . implode('<br>', $started);
 
-                $return = $appServer->execute();
+                $appServer->execute();
 
                 if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
                     $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';

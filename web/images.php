@@ -57,7 +57,7 @@ if (((isset($admin_id) and $ui->w('from', 5,'get') == 'admin') or (isset($user_i
 
         $query = $sql->prepare("SELECT `multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $multiplier = $row['multiplier'];
             $text_colour_1 = $row['text_colour_1'];
             $text_colour_2 = $row['text_colour_2'];
@@ -170,7 +170,7 @@ if (((isset($admin_id) and $ui->w('from', 5,'get') == 'admin') or (isset($user_i
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data` WHERE `day` LIKE :like");
                         $query->execute(array(':like' => $like));
                     }
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         if (isset($row['ingoing']) or isset($row['outgoing']) or isset($row['total'])) {
                             $ingoing = (isset($row['ingoing'])) ? ($multiplier * $row['ingoing']) / $divisor : 0;
                             $outgoing = (isset($row['outgoing'])) ? ($multiplier * $row['outgoing']) / $divisor : 0;
@@ -221,7 +221,7 @@ if (((isset($admin_id) and $ui->w('from', 5,'get') == 'admin') or (isset($user_i
                         $query = $sql->prepare("SELECT SUM(`in`) AS `ingoing`,SUM(`out`) AS `outgoing`,SUM(`in`)+SUM(`out`) AS `total` FROM `traffic_data_day` WHERE `day` LIKE :like");
                         $query->execute(array(':like' => $like));
                     }
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $ingoing = ($multiplier * $row['ingoing']) / $divisor;
                         $outgoing = ($multiplier * $row['outgoing']) / $divisor;
                         $total = ($multiplier * $row['total']) / $divisor;
@@ -344,7 +344,7 @@ if (((isset($admin_id) and $ui->w('from', 5,'get') == 'admin') or (isset($user_i
 
         $query = $sql->prepare("SELECT * FROM `voice_stats_settings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $text_colour_1 = $row['text_colour_1'];
             $text_colour_2 = $row['text_colour_2'];
             $text_colour_3 = $row['text_colour_3'];
@@ -453,7 +453,7 @@ if (((isset($admin_id) and $ui->w('from', 5,'get') == 'admin') or (isset($user_i
                         }
                     }
 
-                    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $averageused = (isset($row['averageused'])) ? round($row['averageused']) : 0;
                         $averageinstalled = (isset($row['averageinstalled'])) ? round($row['averageinstalled']) : 0;
                         $fileTrafficGB = (isset($row['fileTrafficGB'])) ? $row['fileTrafficGB'] : 0;

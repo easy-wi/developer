@@ -57,62 +57,74 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $template_file = $spracheResponse->token;
 
-} else if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['vd']))) {
+} else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'),$substituteAccess['vd']))) {
 
-    $id = $ui->id('id',19, 'get');
+    $id = $ui->id('id', 10, 'get');
 
-    if (!$ui->smallletters('action',2, 'post')) {
-        $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
+    if (!$ui->smallletters('action', 2, 'post')) {
+
+        $query = $sql->prepare("SELECT d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns`,CASE WHEN t.`connect_ip_only`='Y' THEN `external_ip` ELSE `ssh2ip` END AS `dns_ip` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $dnsIp = $row['dns_ip'];
             $dns = $row['dns'];
             $ip = $row['ip'];
             $port = $row['port'];
-            $defaultdns=strtolower($row['dnsID'] . '-' . getusername($user_id).$row['defaultdns']);
+            $defaultdns = strtolower($row['dnsID'] . '-' . getusername($user_id) . $row['defaultdns']);
         }
-        if (isset($dns)) {
-            $template_file = 'userpanel_voiceserver_dns_md.tpl';
-        } else {
-            $template_file = 'userpanel_404.tpl';
-        }
-    } else if ($ui->smallletters('action',2, 'post') == 'md') {
-        $query = $sql->prepare("SELECT d.`tsdnsID`,d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d LEFT JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
+
+        $template_file = (isset($dns)) ? 'userpanel_voiceserver_dns_md.tpl' : 'userpanel_404.tpl';
+
+    } else if ($ui->smallletters('action', 2, 'post') == 'md') {
+
+        $query = $sql->prepare("SELECT d.`tsdnsID`,d.`dnsID`,d.`dns`,d.`ip`,d.`port`,t.`defaultdns` FROM `voice_dns` d INNER JOIN `voice_tsdns` t ON d.`tsdnsID`=t.`id` WHERE d.`active`='Y' AND d.`dnsID`=? AND d.`resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $tsdnsID = $row['tsdnsID'];
             $olddns = $row['dns'];
             $oldip = $row['ip'];
             $oldport = $row['port'];
         }
+
         if (isset($olddns)) {
+
             $error = array();
+
             if ($ui->ip('ip', 'post')) {
                 $ip = $ui->ip('ip', 'post');
             } else {
-                $error[]="IP";
+                $error[] = "IP";
             }
+
             if ($ui->port('port', 'post')) {
                 $port = $ui->port('port', 'post');
             } else {
-                $error[]="Port";
+                $error[] = "Port";
             }
+
             if ($ui->domain('dns', 'post')) {
-                $dns=strtolower($ui->domain('dns', 'post'));
+                $dns = strtolower($ui->domain('dns', 'post'));
             } else {
-                $error[]="DNS";
+                $error[] = "DNS";
             }
-            if (count($error)==0 and $ip==$oldip and $dns==$olddns and $port==$oldport) {
+
+            if (count($error) == 0 and $ip == $oldip and $dns == $olddns and $port == $oldport) {
                 $error[] = $spracheResponse->error_table;
-            } else if (count($error)==0 and checkDNS($dns,$id,$user_id,$type='dns') === false) {
-                $error[]="DNS";
+            } else if (count($error)==0 and checkDNS($dns, $id, $user_id, 'dns') === false) {
+                $error[] = "DNS";
             }
+
             if (count($error)>0) {
-                $template_file = 'Error: '.implode('<br />',$error);
+
+                $template_file = 'Error: ' . implode('<br />', $error);
+
             } else {
+
 				include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
                 $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                 $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsID,':reseller_id' => $reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $publickey = $row['publickey'];
                     $queryip = $row['ssh2ip'];
                     $ssh2port = $row['decryptedssh2port'];
@@ -122,6 +134,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $keyname = $row['keyname'];
                     $bitversion = $row['bitversion'];
                 }
+
                 if (isset($publickey)) {
                     $template_file = tsdns('md',$queryip,$ssh2port,$ssh2user,$publickey,$keyname,$ssh2password,0,$serverdir,$bitversion, array($ip,$oldip), array($port,$oldport), array($dns,$olddns),$reseller_id);
                     $query = $sql->prepare("UPDATE `voice_dns` SET `dns`=?,`ip`=?,`port`=? WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");
@@ -130,12 +143,17 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $template_file = 'userpanel_404.tpl';
                 }
             }
+
         } else {
             $template_file = 'userpanel_404.tpl';
         }
     }
 } else {
+
+    $table = array();
+
     $o = $ui->st('o', 'get');
+
     if ($ui->st('o', 'get') == 'dd') {
         $orderby = '`dns` DESC';
     } else if ($ui->st('o', 'get') == 'ad') {
@@ -150,11 +168,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $orderby = '`dnsID` ASC';
         $o = 'ai';
     }
-    $table = array();
+
     $query = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `active`='Y' AND `userID`=? AND `resellerID`=? ORDER BY $orderby");
     $query->execute(array($user_id,$reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) $table[] = array('id' => $row['dnsID'], 'dns' => $row['dns'], 'address' => $row['ip'] . ':' . $row['port']);
+
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        if (!isset($_SESSION['sID']) or in_array($row['dnsID'],$substituteAccess['vd'])) {
+            $table[] = array('id' => $row['dnsID'], 'dns' => $row['dns'], 'address' => $row['ip'] . ':' . $row['port']);
+        }
     }
+
     $template_file = 'userpanel_voiceserver_dns_list.tpl';
 }

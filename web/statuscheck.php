@@ -72,8 +72,10 @@ include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
-include(EASYWIDIR . '/third_party/gameq/GameQ.php');
+include(EASYWIDIR . '/third_party/gameq/GameQ/Autoloader.php');
+include(EASYWIDIR . '/third_party/gameq_v2/GameQ.php');
 include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -105,7 +107,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             print 'Getting MySQL DB sizes' . "\r\n";
         }
     } else {
-        $checkTypeOfServer='all';
+        $checkTypeOfServer = 'all';
         print 'Checking Gameserver, Voiceserver MySQL DB sizes and Web Quotas' . "\r\n";
     }
 
@@ -124,14 +126,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql->prepare("SELECT `brandname`,`noservertag`,`nopassword`,`tohighslots`,`down_checks`,`resellerid` FROM `settings`");
     $query2 = $sql->prepare("SELECT `shutdownempty`,`shutdownemptytime`,`lastcheck`,`oldcheck` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
     $query->execute();
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         unset($shutdownempty);
 
         $resellerid = $row['resellerid'];
 
         $query2->execute(array($resellerid));
-        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $shutdownempty = $row2['shutdownempty'];
             $shutdownemptytime = $row2['shutdownemptytime'];
             $firstcheck = '00-00-' . round(2 * (strtotime($row2['lastcheck']) - strtotime($row2['oldcheck'])) / 60);
@@ -149,6 +151,8 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     # Game Server
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'gs') {
 
+        $startStopList = array();
+
         // Lend server stopping.
         // We want only one socket per root server. Collect the to be stopped lendservers in an array and sort by root ID
         $rtmp = array();
@@ -157,7 +161,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query2 = $sql->prepare("SELECT g.`rootID`,g.`id`,g.`userid`,g.`serverip`,g.`port` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? LIMIT 1");
         $query3 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute();
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $id = $row['id'];
             $lendtime = $row['lendtime'];
             $serverid = $row['serverid'];
@@ -168,23 +172,15 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $query3->execute(array($id, $resellerid));
 
                 $query2->execute(array($row['serverid']));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                     $loguserid = $row2['userid'];
                     $reseller_id = $row['resellerid'];
                     $loguseraction = "%stop% %gserver% {$row2['serverip']}:{$row2['port']} (Lend stop)";
                     $insertlog->execute();
 
-                    $tmp = gsrestart($row2['id'], 'so', $aeskey, $resellerid);
-
-                    if (is_array($tmp)) {
-                        foreach($tmp as $t) {
-                            $rtmp[$row2['rootID']][] = $t;
-                        }
-                    }
-
+                    $startStopList[$row['resellerid']][$row2['rootID']]['stop'][] = $id;
                 }
-
 
                 print "Time is up, stopping lendserver: $id\r\n";
 
@@ -193,358 +189,435 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             }
         }
 
-        // Send stop commands to rootserver
-        foreach ($rtmp as $k => $v) {
-            if (count($v) > 0) {
-                ssh2_execute('gs', $k, $v);
-            }
-        }
-
-
         // Define basic variables for GS status checks
+        $gameQv3Protocols = getGameQ3List();
+
         $other = array();
-        $i = 1;
-        $totalCount = 0;
-        $serverBatchArray = array();
-        $allServersArray = array();
-        $shellCmds = array();
+        $rootID = 0;
+        $iV2 = 1;
+        $totalV2Count = 0;
+        $serverBatchV2Array = array();
+        $allServersV2Array = array();
+        $iV3 = 1;
+        $totalV3Count = 0;
+        $serverBatchV3Array = array();
+        $allServersV3Array = array();
 
-        // Get the list of servers which are active and are not stopped. The array to be created will support batch mode.
-        $query = $sql->prepare("SELECT g.`id`,g.`rootID`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`stopped`='N' AND g.`active`='Y'");
+        $query2 = $sql->prepare("SELECT g.`id`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`stopped`='N' AND g.`active`='Y'");
+        $query = $sql->prepare("SELECT DISTINCT(`rootID`) AS `root_id` FROM `gsswitch` WHERE `active`='Y'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            // without the gameq value we cannot query. So this results need to be sorted out.
-            if (!in_array($row['gameq'], array('', null, false))) {
+            // Avoid that servers belonging to different roots are checked together
+            // If combined more false positives are possible
+            if ($rootID != 0) {
+                $allServersV3Array[] = $serverBatchV3Array;
+                $serverBatchV3Array = array();
+                $allServersV2Array[] = $serverBatchV2Array;
+                $serverBatchV2Array = array();
+                $iV2 = 1;
+                $iV3 = 1;
+            }
 
-                $checkAtIPPort = $row['serverip'] . ':';
+            // Get the list of servers which are active and are not stopped. The array to be created will support batch mode.
+            $query2->execute(array($row['root_id']));
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
-                if ($row['useQueryPort'] == 5) {
-                    $checkAtIPPort .= $row['port5'];
-                } else if ($row['useQueryPort'] == 4) {
-                    $checkAtIPPort .= $row['port4'];
-                } else if ($row['useQueryPort'] == 3) {
-                    $checkAtIPPort .= $row['port3'];
-                } else if ($row['useQueryPort'] == 2) {
-                    $checkAtIPPort .= $row['port2'];
+                // without the gameq value we cannot query. So this results need to be sorted out.
+                if (!in_array($row2['gameq'], array('', null, false))) {
+
+                    if ($row2['useQueryPort'] == 5) {
+                        $queryPort = $row2['port5'];
+                    } else if ($row2['useQueryPort'] == 4) {
+                        $queryPort = $row2['port4'];
+                    } else if ($row2['useQueryPort'] == 3) {
+                        $queryPort = $row2['port3'];
+                    } else if ($row2['useQueryPort'] == 2) {
+                        $queryPort = $row2['port2'];
+                    } else {
+                        $queryPort = $row2['port'];
+                    }
+
+                    if (isset($gameQv3Protocols[$row2['gameq']])) {
+
+                        print "GameQ v3 support for {$row2['shorten']} {$row2['serverip']}:{$row2['port']}\r\n";
+
+                        $serverBatchV3Array[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $row2['serverip'] . ':' . $row2['port'], 'options' => array('query_port' => $queryPort));
+                        $iV3++;
+
+                        if ($iV3 == 5) {
+                            $allServersV3Array[] = $serverBatchV3Array;
+                            $serverBatchV3Array = array();
+                            $iV3 = 1;
+                        }
+
+                        $totalV3Count++;
+
+                    } else {
+
+                        print "GameQ v2 support for {$row2['shorten']} {$row2['serverip']}:{$row2['port']}\r\n";
+
+                        $checkAtIPPort = $row2['serverip'] . ':';
+
+                        if ($row2['useQueryPort'] == 5) {
+                            $checkAtIPPort .= $row2['port5'];
+                        } else if ($row2['useQueryPort'] == 4) {
+                            $checkAtIPPort .= $row2['port4'];
+                        } else if ($row2['useQueryPort'] == 3) {
+                            $checkAtIPPort .= $row2['port3'];
+                        } else if ($row2['useQueryPort'] == 2) {
+                            $checkAtIPPort .= $row2['port2'];
+                        } else {
+                            $checkAtIPPort .= $row2['port'];
+                        }
+
+                        $serverBatchV2Array[] = array('id' => $row2['id'], 'type' => $row2['gameq'], 'host' => $checkAtIPPort);
+
+                        $iV2++;
+
+                        if ($iV2 == 5) {
+                            $allServersV2Array[] = $serverBatchV2Array;
+                            $serverBatchV2Array = array();
+                            $iV2 = 1;
+                        }
+
+                        $totalV2Count++;
+                    }
+
                 } else {
-                    $checkAtIPPort .= $row['port'];
+                    print "No GameQ found for {$row2['shorten']}\r\n";
+                }
+            }
+
+            // Set and used in order to prevent that GS from different roots are checked together
+            $rootID = $row['root_id'];
+        }
+
+        $allServersV2Array[] = $serverBatchV2Array;
+        $allServersV3Array[] = $serverBatchV3Array;
+
+        $serverReplies = array();
+
+        print "Checking $totalV3Count server(s) with GameQ v3 query\r\n";
+        foreach ($allServersV3Array as $servers) {
+            if (count($servers) > 0) {
+
+                $gq = new \GameQ\GameQ();
+                $gq->addServers($servers);
+                $gq->setOption('timeout', 60);
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    $gq->setOption('debug', true);
                 }
 
-                $serverBatchArray[] = array('id' => $row['id'], 'type' => $row['gameq'], 'host' => $checkAtIPPort);
-                $i++;
+                $gq->addFilter('normalise');
+                $gq->addFilter('stripcolor');
 
-                if ($i == 5) {
-                    $allServersArray[] = $serverBatchArray;
-                    $serverBatchArray = array();
-                    $i = 1;
+                foreach($gq->process() as $switchID => $v) {
+                    $serverReplies[$switchID] = $v;
                 }
-
-                $totalCount++;
-
-            } else {
-                print "No GameQ found for {$row['shorten']}\r\n";
             }
         }
 
-        $allServersArray[] = $serverBatchArray;
+        print "Checking $totalV2Count server(s) with GameQ v2 query\r\n";
+        foreach ($allServersV2Array as $servers) {
+            if (count($servers) > 0) {
 
+                $gq = new GameQ();
+                $gq->setOption('timeout', 60);
 
-        print "Checking $totalCount server(s) with GameQ query\r\n";
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    $gq->setOption('debug', true);
+                }
 
-        foreach ($allServersArray as $servers) {
+                $gq->setFilter('normalise');
+                $gq->addServers($servers);
 
-            $gq = new GameQ();
-            $gq->setOption('timeout', 60);
+                foreach($gq->requestData() as $switchID => $v) {
+                    $serverReplies[$switchID] = $v;
+                }
+            }
+        }
+        unset($gq);
 
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $gq->setOption('debug', true);
+        foreach($serverReplies as $switchID => $v) {
+
+            unset($userid, $resellerid, $lendserver, $stopserver, $doNotRestart);
+
+            $lid = 0;
+            $elapsed = 0;
+            $shutdownemptytime = 0;
+            $notified = 0;
+
+            $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`description`,t.`gamebinary`,l.`id` AS `lend_id`,l.`started` AS `lend_started`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` AS l ON l.`serverid`=s.`id` WHERE g.`id`=? LIMIT 1");
+            $query->execute(array($switchID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+                $serverip = $row['serverip'];
+                $autoRestart = $row['autoRestart'];
+                $port = $row['port'];
+                $address = $row['serverip'] . ':' . $row['port'];
+                $gametype = $row['description'];
+                $notified = $row['notified'];
+                $secnotified = $row['secnotified'];
+                $lendserver = $row['lendserver'];
+                $userid = $row['userid'];
+                $resellerid = $row['resellerid'];
+                $brandname = $row['brandname'];
+                $rootID = $row['rootID'];
+                $war = $row['war'];
+                $slots = $row['slots'];
+
+                if (($row['gamebinary'] == 'hlds_run' or $row['gamebinary'] == 'srcds_run') and $row['tvenable'] == 'Y') {
+                    $slots++;
+                }
+
+                if ($lendserver == 'Y' and $lendActive == 'Y') {
+                    $lid = $row['lend_id'];
+                    $shutdownemptytime = $resellersettings[$resellerid]['shutdownemptytime'];
+                    $elapsed = round((strtotime('now') - strtotime($row['lend_started'])) / 60);
+                }
             }
 
-            $gq->setFilter('normalise');
-            $gq->addServers($servers);
+            if ($v['gq_online'] == 1) {
+                $name = normalizeName($v['gq_hostname']);
+                $numplayers = $v['gq_numplayers'];
+                $maxplayers = $v['gq_maxplayers'];
+                $map = $v['gq_mapname'];
+                $password = ($v['gq_password'] == 1) ? 'Y' : 'N';
+            } else {
+                $name = 'OFFLINE';
+                $numplayers = 0;
+                $maxplayers = 0;
+                $map = '';
+                $password = 'Y';
+            }
 
-            foreach($gq->requestData() as $switchID => $v) {
+            $lendStop = array();
 
-                unset($userid, $resellerid, $lendserver, $stopserver, $doNotRestart);
+            // Check lendserver specific settings
+            if (isset($userid) and isset($lendserver) and $lendserver == 'Y') {
 
-                $lid = 0;
-                $elapsed = 0;
-                $shutdownemptytime = 0;
-                $notified = 0;
-
-                $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`description`,t.`gamebinary`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? LIMIT 1");
-                $query2 = $sql->prepare("SELECT `id`,`started` FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
-                $query->execute(array($switchID));
-                foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-
-                    $serverip = $row['serverip'];
-                    $autoRestart = $row['autoRestart'];
-                    $port = $row['port'];
-                    $address = $row['serverip'] . ':' . $row['port'];
-                    $gametype = $row['description'];
-                    $notified = $row['notified'];
-                    $secnotified = $row['secnotified'];
-                    $lendserver = $row['lendserver'];
-                    $userid = $row['userid'];
-                    $resellerid = $row['resellerid'];
-                    $brandname = $row['brandname'];
-                    $rootID = $row['rootID'];
-                    $war = $row['war'];
-                    $slots = $row['slots'];
-
-                    if (($row['gamebinary'] == 'hlds_run' or $row['gamebinary'] == 'srcds_run') and $row['tvenable'] == 'Y') {
-                        $slots++;
-                    }
-
-                    if ($lendserver == 'Y' and $lendActive == 'Y') {
-
-                        $shutdownemptytime = $resellersettings[$resellerid]['shutdownemptytime'];
-
-                        $query2->execute(array($row['serverID']));
-                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                            $lid = $row2['id'];
-                            $elapsed = round((strtotime('now') - strtotime($row2['started'])) / 60);
-                        }
-                    }
-                }
-
+                // Running but no lend information in temp table
                 if ($v['gq_online'] == 1) {
-                    $name = normalizeName($v['gq_hostname']);
-                    $numplayers = $v['gq_numplayers'];
-                    $maxplayers = $v['gq_maxplayers'];
-                    $map = $v['gq_mapname'];
-                    $password = ($v['gq_password'] == 1) ? 'Y' : 'N';
-                } else {
-                    $name = 'OFFLINE';
+                    $query = $sql->prepare("SELECT 1 FROM `lendedserver` WHERE `id`=? LIMIT 1");
+                    $query->execute(array($lid));
+
+                    if ($query->rowCount() == 0) {
+
+                        print "Will stop lendserver $address because not lendet\r\n";
+
+                        $lendStop[] = 'not lended';
+
+                        $stopserver = true;
+                    }
+
+                    if (!isset($stopserver) and $lendserver == 'Y' and $lendActive == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y' and $elapsed > $shutdownemptytime and $numplayers == 0 and $maxplayers != 0 and $slots != 0) {
+
+                        print "Will stop server $address after $elapsed minutes, because it is empty and threshold is $shutdownemptytime minutes \r\n";
+
+                        $lendStop[] = 'stop empty lended';
+
+                        $stopserver = true;
+                    }
+                }
+
+                // Expected to be running but is not, so remove from temp table
+                if (isset($stopserver) or $v['gq_online'] != 1) {
+
+                    if (!isset($stopserver)) {
+                        print "Will remove lendserver $address with lendID $lid because it is lendet but stopped \r\n";
+                    }
+
+                    $doNotRestart = true;
+
+                    $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
+                    $query->execute(array($lid));
+                }
+            }
+
+            if (isset($userid) and $v['gq_online'] == 1) {
+
+                $rulebreak = array();
+
+                if ($war == 'Y' and $password == 'N') {
+
+                    $rulebreak[] = $ssprache->nopassword;
+
+                    if ($resellersettings[$resellerid]['nopassword'] == 1) {
+                        $stopserver = true;
+                        print "Will stop server $address because running without password. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+
+                    } else {
+                        print "Server with address $address is running as $gametype and illegal without password. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+                    }
+                }
+
+                if ($maxplayers > $slots) {
+
+                    $rulebreak[] = $ssprache->tohighslots;
+
+                    if ($resellersettings[$resellerid]['tohighslots'] == 1) {
+                        $stopserver = true;
+                        print "Will stop server $address because running with to much slots. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+                    } else {
+                        print "Server $address is running as $gametype and with illegal slotamount. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+                    }
+                }
+
+                if ($brandname == 'Y' and $resellersettings[$resellerid]['brandname'] != '' and strpos(strtolower($name),strtolower($resellersettings[$resellerid]['brandname'])) === false) {
+
+                    $rulebreak[] = $ssprache->noservertag;
+
+                    if ($resellersettings[$resellerid]['noservertag'] == 1) {
+                        $stopserver = true;
+                        print "Will stop server $address because running without servertag. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+                    } else {
+                        print "Server $address is running as $gametype and illegal without servertag. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+                    }
+                }
+
+                if (count($rulebreak) == 0 and !isset($stopserver)) {
+                    print "Server $address is running as $gametype. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
+                }
+
+                if ($secnotified == 'N' and count($rulebreak) > 0) {
+
+                    if ($resellerid == 0) {
+                        $query = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`resellerid`=0 AND `accounttype`='a')");
+                        $query->execute(array($userid));
+
+                    } else {
+                        $query = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`id`=? AND `accounttype`='r')");
+                        $query->execute(array($userid, $resellerid));
+                    }
+
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                        if ($row['mail_securitybreach'] == 'Y') {
+                            sendmail('emailsecuritybreach', $row['id'], $address, implode('<br>', $rulebreak));
+                        }
+                    }
+
+                    $query = $sql->prepare("UPDATE `gsswitch` SET `secnotified`='Y' WHERE `id`=? LIMIT 1");
+                    $query->execute(array($switchID));
+
+                }
+
+                if ($secnotified == 'Y' and count($rulebreak) == 0) {
+                    $query = $sql->prepare("UPDATE `gsswitch` SET `secnotified`='N' WHERE `id`=? LIMIT 1");
+                    $query->execute(array($switchID));
+                }
+
+                if (isset($stopserver) and $stopserver === true) {
+
                     $numplayers = 0;
-                    $maxplayers = 0;
                     $map = '';
-                    $password = 'Y';
+
+                    $loguserid = $userid;
+                    $reseller_id = $resellerid;
+                    $loguseraction = "%stop% %gserver% {$address}";
+                    $loguseraction .= (count($rulebreak) > 0) ? " " . implode(', ', $rulebreak) : "";
+                    $loguseraction .= (count($lendStop) > 0 && count($rulebreak) == 0) ? " " . implode(', ', $lendStop) : "";
+                    $insertlog->execute();
+
+                    $startStopList[$resellerid][$rootID]['stop'][] = $switchID;
+
+                    $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `serverid`=? AND `resellerid`=? AND `servertype`='g' LIMIT 1");
+                    $query->execute(array($switchID, $resellerid));
                 }
 
-                $returnCmd = array();
-                $lendStop = array();
-
-                // Check lendserver specific settings
-                if (isset($userid) and isset($lendserver) and $lendserver == 'Y') {
-
-                    // Running but no lend information in temp table
-                    if ($v['gq_online'] == 1) {
-                        $query = $sql->prepare("SELECT 1 FROM `lendedserver` WHERE `id`=? LIMIT 1");
-                        $query->execute(array($lid));
-
-                        if ($query->rowCount() == 0) {
-
-                            print "Will stop lendserver $address because not lendet\r\n";
-
-                            $lendStop[] = 'not lended';
-
-                            $stopserver = true;
-                        }
-
-                        if (!isset($stopserver) and $lendserver == 'Y' and $lendActive == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y' and $elapsed > $shutdownemptytime and $numplayers == 0 and $maxplayers != 0 and $slots != 0) {
-
-                            print "Will stop server $address after $elapsed minutes, because it is empty and threshold is $shutdownemptytime minutes \r\n";
-
-                            $lendStop[] = 'stop empty lended';
-
-                            $stopserver = true;
-                        }
-                    }
-
-                    // Expected to be running but is not, so remove from temp table
-                    if (isset($stopserver) or $v['gq_online'] != 1) {
-
-                        if (!isset($stopserver)) {
-                            print "Will remove lendserver $address with lendID $lid because it is lendet but stopped \r\n";
-                        }
-
-                        $doNotRestart = true;
-
-                        $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
-                        $query->execute(array($lid));
-                    }
+                if ($notified > 0) {
+                    $query = $sql->prepare("UPDATE `gsswitch` SET `notified`=0 WHERE `id`=? LIMIT 1");
+                    $query->execute(array($switchID));
                 }
 
-                if (isset($userid) and $v['gq_online'] == 1) {
+            } else if (isset($userid) and isset($autoRestart)) {
 
-                    $rulebreak = array();
+                $name = 'OFFLINE';
+                $numplayers = 0;
+                $maxplayers = 0;
+                $map = '';
+                $password = 'Y';
 
-                    if ($war == 'Y' and $password == 'N') {
+                if (!isset($doNotRestart)) {
 
-                        $rulebreak[] = $ssprache->nopassword;
+                    $notified++;
 
-                        if ($resellersettings[$resellerid]['nopassword'] == 1) {
-                            $stopserver = true;
-                            print "Will stop server $address because running without password. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-
-                        } else {
-                            print "Server with address $address is running as $gametype and illegal without password. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-                        }
+                    if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                        print_r($v);
                     }
 
-                    if ($maxplayers > $slots) {
+                    if ($autoRestart == 'Y' and $notified >= $resellersettings[$resellerid]['down_checks']) {
 
-                        $rulebreak[] = $ssprache->tohighslots;
-
-                        if ($resellersettings[$resellerid]['tohighslots'] == 1) {
-                            $stopserver = true;
-                            print "Will stop server $address because running with to much slots. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-                        } else {
-                            print "Server $address is running as $gametype and with illegal slotamount. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-                        }
-                    }
-
-                    if ($brandname == 'Y' and $resellersettings[$resellerid]['brandname'] != '' and strpos(strtolower($name),strtolower($resellersettings[$resellerid]['brandname'])) === false) {
-
-                        $rulebreak[] = $ssprache->noservertag;
-
-                        if ($resellersettings[$resellerid]['noservertag'] == 1) {
-                            $stopserver = true;
-                            print "Will stop server $address because running without servertag. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-                        } else {
-                            print "Server $address is running as $gametype and illegal without servertag. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-                        }
-                    }
-
-                    if (count($rulebreak) == 0 and !isset($stopserver)) {
-                        print "Server $address is running as $gametype. The name converted to ISO-8859-1 is ".iconv('UTF-8','ISO-8859-1//TRANSLIT', $name).".\r\n";
-                    }
-
-                    if ($secnotified == 'N' and count($rulebreak) > 0) {
-
-                        if ($resellerid == 0) {
-                            $query = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`resellerid`=0 AND `accounttype`='a')");
-                            $query->execute(array($userid));
-
-                        } else {
-                            $query = $sql->prepare("SELECT `id`,`mail_securitybreach` FROM `userdata` WHERE `id`=? OR (`id`=? AND `accounttype`='r')");
-                            $query->execute(array($userid, $resellerid));
-                        }
-
-                        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-                            if ($row['mail_securitybreach'] == 'Y') {
-                                sendmail('emailsecuritybreach', $row['id'], $address, implode('<br>', $rulebreak));
-                            }
-                        }
-
-                        $query = $sql->prepare("UPDATE `gsswitch` SET `secnotified`='Y' WHERE `id`=? LIMIT 1");
-                        $query->execute(array($switchID));
-
-                    }
-
-                    if ($secnotified == 'Y' and count($rulebreak) == 0) {
-                        $query = $sql->prepare("UPDATE `gsswitch` SET `secnotified`='N' WHERE `id`=? LIMIT 1");
-                        $query->execute(array($switchID));
-                    }
-
-                    if (isset($stopserver) and $stopserver === true) {
-
-                        $numplayers = 0;
-                        $map = '';
+                        print "Restarting: $address\r\n";
 
                         $loguserid = $userid;
                         $reseller_id = $resellerid;
-                        $loguseraction = "%stop% %gserver% {$address}";
-                        $loguseraction .= (count($rulebreak) > 0) ? " " . implode(', ', $rulebreak) : "";
-                        $loguseraction .= (count($lendStop) > 0 && count($rulebreak) == 0) ? " " . implode(', ', $lendStop) : "";
+                        $loguseraction = "%start% %gserver% {$address} (Found offline since {$notified} checks)";
                         $insertlog->execute();
 
-                        $tmp = gsrestart($switchID, 'so', $aeskey, $resellerid);
-                        if (is_array($tmp)) {
-                            foreach($tmp as $t) {
-                                $returnCmd[] = $t;
-                            }
-                        }
+                        $startStopList[$resellerid][$rootID]['start'][] = $switchID;
 
-                        $query = $sql->prepare("DELETE FROM `lendedserver` WHERE `serverid`=? AND `resellerid`=? AND `servertype`='g' LIMIT 1");
-                        $query->execute(array($switchID, $resellerid));
-                    }
-
-                    if ($notified > 0) {
-                        $query = $sql->prepare("UPDATE `gsswitch` SET `notified`=0 WHERE `id`=? LIMIT 1");
-                        $query->execute(array($switchID));
-                    }
-
-                } else if (isset($userid) and isset($autoRestart)) {
-
-                    $name = 'OFFLINE';
-                    $numplayers = 0;
-                    $maxplayers = 0;
-                    $map = '';
-                    $password = 'Y';
-
-                    if (!isset($doNotRestart)) {
-
-                        $notified++;
-
-                        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                            print_r($v);
-                        }
-
-                        if ($autoRestart == 'Y' and $notified >= $resellersettings[$resellerid]['down_checks']) {
-
-                            print "Restarting: $address\r\n";
-
-                            $loguserid = $userid;
-                            $reseller_id = $resellerid;
-                            $loguseraction = "%start% %gserver% {$address} (Found offline since {$notified} checks)";
-                            $insertlog->execute();
-
-                            $tmp = gsrestart($switchID, 're', $aeskey, $resellerid);
-                            if (is_array($tmp)) {
-                                foreach($tmp as $t) {
-                                    $returnCmd[] = $t;
-                                }
-                            }
-
-                        } else {
-                            print "Not Restarting: $address\r\n";
-                        }
-
-                        if ($notified == $resellersettings[$resellerid]['down_checks']) {
-                            $query = $sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
-                            $query->execute(array($userid));
-                            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-                                if ($row['mail_serverdown'] == 'Y') {
-                                    sendmail('emaildownrestart', $userid, $address,'');
-                                }
-                            }
-                        }
                     } else {
-                        print "Not Stopping as database leftover: $address\r\n";
+                        print "Not Restarting: $address\r\n";
                     }
-                }
 
-                $query = $sql->prepare("UPDATE `gsswitch` SET `queryName`=?,`queryNumplayers`=?,`queryMaxplayers`=?,`queryMap`=?,`queryPassword`=?,`queryUpdatetime`=?,`notified`=? WHERE `id`=? LIMIT 1");
-                $query->execute(array($name, $numplayers, $maxplayers, $map, $password, $logdate, $notified, $switchID));
-
-                foreach($returnCmd as $t) {
-                    $shellCmds[$rootID][] = $t;
+                    if ($notified == $resellersettings[$resellerid]['down_checks']) {
+                        $query = $sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
+                        $query->execute(array($userid));
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                            if ($row['mail_serverdown'] == 'Y') {
+                                sendmail('emaildownrestart', $userid, $address,'');
+                            }
+                        }
+                    }
+                } else {
+                    print "Not Stopping as database leftover: $address\r\n";
                 }
             }
+
+            $query = $sql->prepare("UPDATE `gsswitch` SET `queryName`=?,`queryNumplayers`=?,`queryMaxplayers`=?,`queryMap`=?,`queryPassword`=?,`queryUpdatetime`=?,`notified`=? WHERE `id`=? LIMIT 1");
+            $query->execute(array($name, $numplayers, $maxplayers, $map, $password, $logdate, $notified, $switchID));
         }
 
-        unset($gq);
+        foreach ($startStopList as $resellerLockupID => $rootServer) {
 
-        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-            print_r($shellCmds);
-        }
+            foreach ($rootServer as $rootID => $actionList) {
 
-        foreach($shellCmds as $k => $v) {
-            ssh2_execute('gs', $k, $v);
+                $appServer = new AppServer($rootID);
+
+                foreach ($actionList as $action => $switchIDs) {
+
+                     foreach ($switchIDs as $switchID) {
+
+                         $appServer->getAppServerDetails($switchID);
+
+                        if ($action == 'start') {
+                            $appServer->startApp();
+                        } else {
+                            $appServer->stopApp();
+                        }
+                    }
+                }
+
+                $appServer->execute();
+
+                if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                    print implode("\r\n", $appServer->debug()) . "\r\n";
+                }
+            }
         }
     }
 
     # Voice Server
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'vs') {
-        #voice_tsdns
+
+        # voice_tsdns
 
         print 'Checking TSDNS' . "\r\n";
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y'");
         $query->execute(array(':aeskey' => $aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $resellerid = $row['resellerid'];
 
@@ -574,7 +647,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $query3->execute(array($resellerid));
                     }
 
-                    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+                    while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                         if ($row3['mail_serverdown'] == 'Y') {
                             sendmail('emaildownrestart', $row3['id'], $row['ssh2ip'].' (External TSDNS)','');
                         }
@@ -644,6 +717,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $querypassword = $vrow['decryptedquerypassword'];
             $resellerid = $vrow['resellerid'];
             $autorestart = $vrow['autorestart'];
+            $latestVersion = $vrow['latest_version'];
 
             if ($addedby == 1) {
                 $vselect2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
@@ -724,7 +798,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $query2->execute(array($resellerid));
                         }
 
-                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                             if ($row2['mail_serverdown'] == 'Y') {
                                 sendmail('emaildownrestart', $row2['id'], $queryip . ' (' . $restartreturn . ')', '');
                             }
@@ -798,6 +872,20 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         $pupdate->execute(array($ts3masterid));
                     }
 
+                    $serverVersion = $connection->getServerVersion();
+
+                    if ($serverVersion and preg_match('/^([\d]{1,2}.)*[\d]{1,2}$/', $serverVersion)) {
+
+                        if ($serverVersion == $latestVersion) {
+                            echo "TS3 server version is running up to date version $serverVersion\r\n";
+                        } else {
+                            echo "TS3 server version is running outdated version $serverVersion. Latest is $latestVersion\r\n";
+                        }
+
+                        $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `local_version`=? WHERE `id`=? LIMIT 1");
+                        $pupdate->execute(array($serverVersion, $ts3masterid));
+                    }
+
                     $serverlist = $connection->ServerList();
 
                     if (!isset($serverlist[0]['id']) or $serverlist[0]['id'] == 0) {
@@ -813,9 +901,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $vs = $server['virtualserver_status'];
                             $uptime = (isset($server['virtualserver_uptime'])) ? $server['virtualserver_uptime'] : 0;
 
-                            $vselect2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `localserverid`=? AND `masterserver`=? AND `resellerid`=? AND `autoRestart`='Y' LIMIT 1");
+                            $vselect2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `localserverid`=? AND `masterserver`=? AND `resellerid`=? LIMIT 1");
                             $vselect2->execute(array($virtualserver_id, $vrow['id'], $resellerid));
                             foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) {
+                                $autoRestart = $vrow2['autoRestart'];
                                 $queryName = $vrow2['queryName'];
                                 $lendserver = $vrow2['lendserver'];
                                 $ts3id = $vrow2['id'];
@@ -1042,7 +1131,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $query2->execute(array($userid, $resellerid));
                                     }
 
-                                    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                                         if ($row2['mail_securitybreach'] == 'Y' or $row2['id'] == $userid) {
                                             sendmail('emailsecuritybreach', $row2['id'], $address, $rulebreak);
                                         }
@@ -1050,6 +1139,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                     $pupdate2 = $sql->prepare("UPDATE `voice_server` SET `notified`='1' WHERE `id`=? LIMIT 1");
                                     $pupdate2->execute(array($ts3id));
                                 }
+
                                 if (isset($ts3id) and $lendserver == 'Y' and $resellersettings[$resellerid]['shutdownempty'] == 'Y') {
                                     $stop = false;
                                     $dataloss = true;
@@ -1083,38 +1173,56 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                         $connection->StopServer($virtualserver_id);
                                     }
                                 }
+
                                 $query = $sql->prepare("INSERT INTO `voice_server_stats` (`sid`,`mid`,`installed`,`used`,`traffic`,`date`,`uid`,`resellerid`) VALUES (?,?,?,?,?,CURRENT_DATE(),?,?) ON DUPLICATE KEY UPDATE `traffic`=`traffic`+VALUES(`traffic`),`used`=(`used`*(`count`/(`count`+1))+(VALUES(`used`)*(1/(`count`+1)))),`installed`=(`installed`*(`count`/(`count`+1))+(VALUES(`installed`)*(1/(`count`+1)))),`count`=`count`+1");
                                 $query->execute(array($ts3id, $ts3masterid, $server['virtualserver_maxclients'], $usedslots, $addedtraffic, $userid, $resellerid));
+
                             } else if (isset($ts3id)) {
+
                                 $uptime = 1;
                                 $usedslots = 0;
+
                                 if ($lendserver == 'Y' and $lendActive == 'Y') {
+
                                     $removedeadvoiceserver = $sql->prepare("DELETE FROM `lendedserver` WHERE `serverid`=? LIMIT 1");
                                     $removedeadvoiceserver->execute(array($ts3id));
-                                } else if ($active == 'Y' and $vs != 'online' and $olduptime>1 and $olduptime != null) {
+
+                                } else if ($active == 'Y' and $vs != 'online' and $olduptime > 1 and $olduptime != null and $autoRestart == 'Y') {
+
                                     $notified++;
-                                    if ($notified>=$ts3masternotified == $resellersettings[$resellerid]['down_checks']){
+
+                                    if ($notified >= $ts3masternotified == $resellersettings[$resellerid]['down_checks']){
                                         print "TS3 server $address not running. Starting it.\r\n";
                                         $connection->StartServer($virtualserver_id);
                                     }
+
                                     if ($notified == $resellersettings[$resellerid]['down_checks']) {
+
                                         $query2 = $sql->prepare("SELECT `mail_serverdown` FROM `userdata` WHERE `id`=? LIMIT 1");
                                         $query2->execute(array($userid));
-                                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
-                                            if ($row2['mail_serverdown'] == 'Y') sendmail('emaildownrestart', $userid, $address,'');
+                                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                                            if ($row2['mail_serverdown'] == 'Y') {
+                                                sendmail('emaildownrestart', $userid, $address,'');
+                                            }
                                         }
+
                                         $newnotified = $notified;
                                     }
                                 }
                             }
+
                             if (isset($ts3id)) {
+
                                 $flagPassword = 'N';
+
                                 if (isset($sd['virtualserver_flag_password']) and $sd['virtualserver_flag_password'] == 1) {
                                     $flagPassword = 'Y';
                                 }
+
                                 $query2 = $sql->prepare("UPDATE `voice_server` SET `usedslots`=?,`uptime`=?,`notified`=?,`filetraffic`=?,`lastfiletraffic`=?,`queryName`=?,`queryNumplayers`=?,`queryMaxplayers`=?,`queryPassword`=?,`queryUpdatetime`=NOW() WHERE `id`=? AND `resellerid`=? LIMIT 1");
                                 $query2->execute(array($usedslots, $uptime, $newnotified, $newtraffic, $newtrafficdata, $queryName,((isset($server['virtualserver_clientsonline'])) ? $server['virtualserver_clientsonline'] : 0 - 1),(isset($server['virtualserver_maxclients'])) ? $server['virtualserver_maxclients'] : 0, $flagPassword, $ts3id, $resellerid));
                             }
+
                             if (isset($args['coolDown'])) {
 
                                 $nano = time_nanosleep(0, $args['coolDown']);
@@ -1152,7 +1260,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query3 = $sql->prepare("UPDATE `mysql_external_dbs` SET `dbSize`=? WHERE `id`=? LIMIT 1");
 
         $query->execute(array($aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword']);
 
@@ -1198,7 +1306,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         $query = $sql->prepare("SELECT `webMasterID`,`ip`,`resellerID` FROM `webMaster` WHERE `active`='Y'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             echo 'Checking webMaster ' . $row['ip'] . ' with webMasterID ' . $row['webMasterID'] . "\r\n";
 
@@ -1214,12 +1322,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     if ($checkTypeOfServer == 'all' or $checkTypeOfServer == 'st') {
 
         $query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`resellerid`,u.`accounttype`,s.`brandname` FROM `userdata` AS u LEFT JOIN `settings` AS s ON u.`resellerid`=s.`resellerid` WHERE u.`active`='Y'");
-
-        $query3 = $sql->prepare("INSERT INTO `easywi_statistics` (`gameMasterInstalled`,`gameMasterActive`,`gameMasterSlotsAvailable`,`gameserverInstalled`,`gameserverActive`,`gameserverSlotsInstalled`,`gameserverSlotsActive`,`gameserverSlotsUsed`,`gameserverNoPassword`,`gameserverNoTag`,`gameserverNotRunning`,`ticketsCompleted`,`ticketsInProcess`,`ticketsNew`,`userAmount`,`userAmountActive`,`virtualMasterInstalled`,`virtualMasterActive`,`virtualMasterVserverAvailable`,`virtualInstalled`,`virtualActive`,`voiceMasterInstalled`,`voiceMasterActive`,`voiceMasterSlotsAvailable`,`voiceserverInstalled`,`voiceserverActive`,`voiceserverSlotsInstalled`,`voiceserverSlotsActive`,`voiceserverSlotsUsed`,`voiceserverTrafficAllowed`,`voiceserverTrafficUsed`,`webMasterInstalled`,`webMasterActive`,`webMasterSlotsAvailable`,`webspaceInstalled`,`webspaceActive`,`webspaceSpaceGiven`,`webspaceSpaceUsed`,`userID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-        $query4 = $sql->prepare("UPDATE `easywi_statistics_current` SET `gameMasterInstalled`=?,`gameMasterActive`=?,`gameMasterSlotsAvailable`=?,`gameserverInstalled`=?,`gameserverActive`=?,`gameserverSlotsInstalled`=?,`gameserverSlotsActive`=?,`gameserverSlotsUsed`=?,`gameserverNoPassword`=?,`gameserverNoTag`=?,`gameserverNotRunning`=?,`ticketsCompleted`=?,`ticketsInProcess`=?,`ticketsNew`=?,`userAmount`=?,`userAmountActive`=?,`virtualMasterInstalled`=?,`virtualMasterActive`=?,`virtualMasterVserverAvailable`=?,`virtualInstalled`=?,`virtualActive`=?,`voiceMasterInstalled`=?,`voiceMasterActive`=?,`voiceMasterSlotsAvailable`=?,`voiceserverInstalled`=?,`voiceserverActive`=?,`voiceserverSlotsInstalled`=?,`voiceserverSlotsActive`=?,`voiceserverSlotsUsed`=?,`voiceserverTrafficAllowed`=?,`voiceserverTrafficUsed`=?,`webMasterInstalled`=?,`webMasterActive`=?,`webMasterSlotsAvailable`=?,`webspaceInstalled`=?,`webspaceActive`=?,`webspaceSpaceGiven`=?,`webspaceSpaceUsed`=? WHERE `userID`=? LIMIT 1");
-
         $query->execute();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             if (($row['accounttype'] == 'a' and !isset($adminStatsCollected)) or $row['accounttype'] != 'a') {
 
                 echo "Gathering statistics for user " . $row['cname'] . " with ID " . $row['id'] . " \r\n";
@@ -1524,7 +1629,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $query2 = $sql->prepare("UPDATE `easywi_statistics_current` SET " . $updateString . " WHERE `userID`= " . $insertID . " LIMIT 1");
                     $query2->execute();
 
-                    $query2 = $sql->prepare("INSERT INTO `easywi_statistics` (" . $insertColumns . ",`userID`,`statDate`,`countUpdates`) VALUES (" . implode(',', $statsArray) . "," . $insertID . ",'" . date('Y-m-d H:00:00') . "',1) ON DUPLICATE KEY UPDATE " . $duplicateString . ",`countUpdates`=`countUpdates`+1");
+                    $query2 = $sql->prepare("INSERT INTO `easywi_statistics` (" . $insertColumns . ",`userID`,`statDate`,`countUpdates`) VALUES (" . implode(',', $statsArray) . "," . $insertID . ",CURDATE(),1) ON DUPLICATE KEY UPDATE " . $duplicateString . ",`countUpdates`=`countUpdates`+1");
                     $query2->execute();
                 }
             }

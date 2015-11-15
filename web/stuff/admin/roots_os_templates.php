@@ -66,7 +66,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $id = $ui->id('id', 10, 'get');
         $query = $sql->prepare("SELECT * FROM `resellerimages` WHERE `id`=? LIMIT 1");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $distro = $row['distro'];
             $description = $row['description'];
@@ -154,7 +154,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
     $query = $sql->prepare("SELECT * FROM `resellerimages` ORDER BY $orderby");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $table[] = array('id' => $row['id'], 'distro' => $row['distro'], 'description' => $row['description'], 'bitversion' => $row['bitversion']);
     }
     $template_file = 'admin_root_templates_list.tpl';

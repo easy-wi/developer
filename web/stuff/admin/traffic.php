@@ -36,7 +36,7 @@
  */
 if (!isset($admin_id) or $main != 1 or (isset($admin_id) and !$pa['traffic'])) {
 	header('Location: admin.php');
-	die('No acces');
+	die('No Access');
 }
 $sprache = getlanguagefile('traffic',$user_language,$reseller_id);
 if ($d== 'se' and $reseller_id == 0) {
@@ -89,7 +89,7 @@ if ($d== 'se' and $reseller_id == 0) {
 	} else {
         $query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date`,`multiplier`,`text_colour_1`,`text_colour_2`,`text_colour_3`,`barin_colour_1`,`barin_colour_2`,`barin_colour_3`,`barout_colour_1`,`barout_colour_2`,`barout_colour_3`,`bartotal_colour_1`,`bartotal_colour_2`,`bartotal_colour_3`,`bg_colour_1`,`bg_colour_2`,`bg_colour_3`,`border_colour_1`,`border_colour_2`,`border_colour_3`,`line_colour_1`,`line_colour_2`,`line_colour_3` FROM `traffic_settings` LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey));
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			$type = $row['type'];
 			$statip = $row['statip'];
 			$dbname = $row['decpteddbname'];

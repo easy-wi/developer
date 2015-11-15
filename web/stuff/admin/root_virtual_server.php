@@ -77,7 +77,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         $query->execute(array($reseller_id));
 
         if ($query->rowCount() > 0) {
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 unset($ramused);
                 unset($cpucore);
                 unset($mountunused);
@@ -116,7 +116,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                 $query2 = $sql->prepare("SELECT `cores`,`minmhz`,`maxmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE `hostid`=:id");
                 $query2->execute(array(':id' => $id));
                 $i2 = 0;
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $mountpoint = $row2['mountpoint'];
                     $addstracthdd = $mountunused[$mountpoint]+($row2['hddsize']*($percent/100));
                     $mountunused[$mountpoint] = $addstracthdd;
@@ -177,7 +177,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
 
                 $query = $sql->prepare("SELECT `cores`,`cpu`,`esxi`,`mhz`,`hdd`,`ram`,`maxserver` FROM `virtualhosts` WHERE `id`=:bestserver LIMIT 1");
                 $query->execute(array(':bestserver' => $bestserver));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $mhz = $row['mhz'];
                     $ram = $row['ram'];
                     $besthostcpu = $row['cpu'] . '  ' . $row['cores']."x".$row['mhz']." MHz";
@@ -225,7 +225,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
 
                 $query = $sql->prepare("SELECT `esxi`,`cpu`,`ip`,`cores`,`mhz`,`hdd`,`ram`,`maxserver` FROM `virtualhosts` WHERE `id`=? LIMIT 1");
                 $query->execute(array($bestserver));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $esxi = $row['esxi'];
                     $notexclusive = 1;
                     $mhz = $row['mhz'];
@@ -283,7 +283,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
 
             $query = $sql->prepare("SELECT `maxvserver`, `maxuserram`, `maxusermhz` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $maxvserver = $row['maxvserver'];
                 $maxuserram = $row['maxuserram'];
                 $maxusermhz = $row['maxusermhz'];
@@ -291,7 +291,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
 
             $query = $sql->prepare("SELECT COUNT( DISTINCT `id` ) AS `usedservers`, SUM( `minram` ) AS `usedram`, SUM( `cores` * `minmhz` ) AS `usedcpu` FROM `virtualcontainer` WHERE `resellerid`=? LIMIT 1 ");
             $query->execute(array($reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $usedservers = $row['usedservers'];
                 $useduserram = ($row['usedram'] != null) ? $row['usedram'] : 0;
                 $usedusercpu = ($row['usedcpu'] != null) ? $row['usedcpu'] : 0;
@@ -302,7 +302,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
 
         $query = ($reseller_id == 0) ? $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE (`id`=`resellerid` OR `resellerid`=?) AND `accounttype` IN ('r','u') ORDER BY `id` DESC") : $sql->prepare("SELECT `id`,`cname`,`vname`,`name`,`accounttype` FROM `userdata` WHERE `resellerid`=? AND `accounttype` IN ('r','u') ORDER BY `id` DESC");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if (!isset($firstresellerip)) {
                 $checkedips = freeips(($row['accounttype'] == 'u') ? $reseller_id : $row['id']);
@@ -322,7 +322,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
 
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $templates[] = array('id' => $row['id'], 'description' => $row['description'] . '  ' . $row['bitversion']." Bit");
         }
 
@@ -420,7 +420,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                     $query = $sql->prepare("SELECT `ips` FROM `resellerdata` WHERE `resellerid`=? LIMIT 1");
                     $query2 = $sql->prepare("UPDATE `resellerdata` SET `ips`=? WHERE `resellerid`=?");
                     $query->execute(array($userid));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $query2->execute(array($row['ips']."\r\n".$ip,$userid));
                     }
                 }
@@ -436,14 +436,14 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         if ($reseller_id != 0) {
             $query = $sql->prepare("SELECT `maxvserver`, `maxuserram`, `maxusermhz` FROM `resellerdata` WHERE `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':reseller_id' => $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $maxvserver = $row['maxvserver'];
                 $maxuserram = $row['maxuserram'];
                 $maxusermhz = $row['maxusermhz'];
             }
             $query = $sql->prepare("SELECT COUNT( DISTINCT `id` ) AS `usedservers`, SUM( `minram` ) AS `usedram`, SUM( `cores` * `minmhz` ) AS `usedcpu` FROM `virtualcontainer` WHERE `resellerid`=? LIMIT 1");
             $query->execute(array($reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $usedservers = $row['usedservers'];
                 if ($row['usedram'] != null){
                     $useduserram = $row['usedram']+$ram;
@@ -464,7 +464,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         $query = $sql->prepare("SELECT h.`id`, h.`cores`, h.`mhz`, h.`hdd`, h.`ram`, h.`maxserver`, h.`maxserver`-COUNT(DISTINCT v.`id`) AS `freeserver`, h.`ram`-SUM(v.`minram`) AS `freeram`, h.`cores`*h.`mhz`-SUM(v.`cores`*v.`minmhz`) AS `freecpu`, h.`active` AS `active`,h.`thin`,h.`thinquota`, h.`resellerid` AS `resellerid` FROM `virtualhosts` h LEFT JOIN `virtualcontainer` v ON v.`hostid`=h.`id` GROUP BY h.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`freecpu` > 0 OR `freecpu` IS NULL) AND (`freeram` > 0 OR `freeram` IS NULL) AND `active`='Y' AND (`resellerid`=? OR `resellerid`='0') AND h.`id`=?)");
         $query2 = $sql->prepare("SELECT `hddsize` FROM `virtualcontainer` WHERE `hostid`=? AND `mountpoint`=?");
         $query->execute(array($reseller_id,$hostid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $freeram=($row['freeram'] == false) ? $row['ram'] : $row['freeram'];
             $freecpu=($row['freecpu'] == false) ? $row['cores']*$row['mhz'] : $row['freecpu'];
             if ($freeram<$ram) {
@@ -493,7 +493,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
                 }
             }
             $query2->execute(array($hostid,$mountpoint));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $substracthdd = $mountspace-($row2['hddsize']*($percent/100));
                 $mountspace = $substracthdd;
             }
@@ -578,7 +578,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         $query = $sql->prepare("SELECT c.`ip`,c.`hostid`,c.`userid`,r.`description`,r.`bitversion` FROM `virtualcontainer` c LEFT JOIN `resellerimages` r ON c.`imageid`=r.id WHERE c.`id`=? AND c.`resellerid`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
     }
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ip = $row['ip'];
         $hostID = $row['hostid'];
         $userID = $row['userid'];
@@ -619,7 +619,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $query = $sql->prepare("SELECT c.`active`,c.`ip`,c.`ips`,c.`mac`,c.`cores`,c.`minmhz`,c.`maxmhz`,c.`hddsize`,c.`mountpoint`,c.`ram`,c.`minram`,c.`maxram`,AES_DECRYPT(c.`pass`, :aeskey) AS `decryptedpass`,r.`description`,r.`bitversion`,u.`cname`,h.`cores` AS `hcore`,h.`esxi`,u.`id` AS `userid` FROM `virtualcontainer` c LEFT JOIN `resellerimages` r ON c.`imageid`=r.`id` LEFT JOIN `userdata` u ON c.`userid`=u.`id` LEFT JOIN `virtualhosts` h ON c.`hostid`=h.`id` WHERE c.`id`=:id AND c.`userid`=:admin_id AND c.`resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':id' => $id,':aeskey' => $aeskey,':admin_id' => $admin_id,':reseller_id' => $reseller_id));
         }
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $description = $row['description'];
             $bitversion = $row['bitversion'];
@@ -707,7 +707,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $query = $sql->prepare("SELECT * FROM `virtualcontainer` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id,$reseller_id));
         }
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $oldactive = $row['active'];
             $hostid = $row['hostid'];
             $oldip = $row['ip'];
@@ -724,7 +724,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         if ($reseller_id != 0) {
             $query = $sql->prepare("SELECT r.`maxvserver`,r.`maxuserram`,r.`maxusermhz`, COUNT( DISTINCT v.`id`) AS `usedservers`, SUM(v.`minram`) AS `usedram`, SUM(v.`cores` * v.`minmhz`) AS `usedcpu` FROM `resellerdata` r LEFT JOIN `virtualcontainer` v ON v.`userid`=r.`resellerid` WHERE r.`resellerid`=? GROUP BY v.`id` LIMIT 1");
             $query->execute(array($reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $maxvserver = $row['maxvserver'];
                 $maxuserram = $row['maxuserram'];
                 $maxusermhz = $row['maxusermhz'];
@@ -827,7 +827,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
             $query = $sql->prepare("SELECT c.ip,c.status,AES_DECRYPT(c.pass, :aeskey) AS decryptedpass,r.description,r.bitversion FROM `virtualcontainer` c LEFT JOIN `resellerimages` r ON c.imageid=r.id WHERE c.id=:id AND c.userid=:userid AND c.resellerid=:reseller_id LIMIT 1");
             $query->execute(array(':id' => $id,':aeskey' => $aeskey,':userid' => $admin_id,':reseller_id' => $reseller_id));
         }
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             if ($row['status'] == null or $row['status']==2) {
                 $option[] = '<option value="rc">'.$sprache->rescue_start.'</option>';
@@ -852,14 +852,14 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         $templates = array();
         $query = $sql->prepare("SELECT `id`,`description`,`bitversion` FROM `resellerimages` ORDER BY `distro`,`bitversion`,`description`");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['description'] != 'Rescue 32bit' and $row['description'] != 'Rescue 64bit') $templates[] = array('id' => $row['id'], 'description' => $row['description']);
         }
         $template_file = "admin_root_vserver_re.tpl";
     } else if (in_array($ui->st('action', 'post'), array('ri','rc','rs','st'))) {
         $query = $sql->prepare("SELECT v.`ip`,v.`userid`,v.`hostid`,i.`bitversion` FROM `virtualcontainer` v LEFT JOIN `resellerimages` i ON v.`imageid`=i.`id` WHERE v.`id`=? LIMIT 1");
         $query->execute(array($id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $userID = $row['userid'];
             $bitversion = $row['bitversion'];
@@ -926,11 +926,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVs']) and $lice
         $query->execute(array($admin_id,$reseller_id));
     } 
     $query2 = $sql->prepare("SELECT `action`,`extraData` FROM `jobs` WHERE `affectedID`=? AND `type`='vs' AND (`status` IS NULL OR `status`=1 OR `status`=4) ORDER BY `jobID` DESC LIMIT 1");
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $jobPending = $gsprache->no;
         if ($row['jobPending'] == 'Y') {
             $query2->execute(array($row['id']));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 if ($row2['action'] == 'ad') $jobPending = $gsprache->add;
                 else if ($row2['action'] == 'dl') $jobPending = $gsprache->del;
                 else if ($row2['action'] == 'ri') $jobPending = $sprache->reinstall;

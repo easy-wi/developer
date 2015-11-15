@@ -59,12 +59,28 @@ if ($endYear > 2000 and $startYear > 2000) {
     $startDateFormatted = date('Y-m-d', strtotime($startYear . '-' . $startMonth . '-' . $startDay));
     $endDateFormatted = date('Y-m-d', strtotime($endYear . '-' . $endMonth . '-' . $endDay));
 
-    if ($ui->id('serverID', 10, 'get')) {
-        $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `sid`=? AND `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
-        $query->execute(array($ui->id('serverID', 10, 'get'), $user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
+    if ($ui->w('d', 15, 'get') == 'voiceAdminStats') {
+        if ($ui->id('masterID', 10, 'get')) {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `mid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($ui->id('masterID', 10, 'get'), $resellerLockupID, $startDateFormatted, $endDateFormatted));
+        } else if ($ui->id('userID', 10, 'get')) {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($ui->id('userID', 10, 'get'), $resellerLockupID, $startDateFormatted, $endDateFormatted));
+        } else if ($ui->id('serverID', 10, 'post')) {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `sid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($ui->id('serverID', 10, 'get'), $resellerLockupID, $startDateFormatted, $endDateFormatted));
+        } else {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($resellerLockupID, $startDateFormatted, $endDateFormatted));
+        }
     } else {
-        $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
-        $query->execute(array($user_id, $reseller_id, $startDateFormatted, $endDateFormatted));
+        if ($ui->id('serverID', 10, 'get')) {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `sid`=? AND `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($ui->id('serverID', 10, 'get'), $user_id, $resellerLockupID, $startDateFormatted, $endDateFormatted));
+        } else {
+            $query = $sql->prepare("SELECT $extractOrNormal AS `groupedDate`,SUM(`used`)/COUNT(`sid`) AS `averageused`,SUM(`traffic`)/1024 as `fileTrafficMB` FROM `voice_server_stats` WHERE `uid`=? AND `resellerid`=? AND `date` BETWEEN ? AND ? GROUP BY `groupedDate` ORDER BY `groupedDate`");
+            $query->execute(array($user_id, $resellerLockupID, $startDateFormatted, $endDateFormatted));
+        }
     }
 
     while($row = $query->fetch(PDO::FETCH_ASSOC)) {

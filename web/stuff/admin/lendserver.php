@@ -44,6 +44,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 $sprache = getlanguagefile('lendserver', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
@@ -73,7 +74,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else {
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $activeGS = $row['activeGS'];
             $activeVS = $row['activeVS'];
             $mintime = (int) $row['mintime'];
@@ -117,7 +118,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT * FROM `lendstats` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $servertype = $row['servertype'];
         $lendtime = $row['lendtime'];
@@ -140,11 +141,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($pa['lendserver']) {
 
-    if ($ui->id('id',19, 'post')) {
+    if ($ui->id('id', 19, 'post')) {
 
         $query = $sql->prepare("SELECT `serverid`,`servertype` FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',19, 'post'), $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $id = $row['serverid'];
             $servertype = $row['servertype'];
         }
@@ -153,16 +154,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
-            foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                $cmds = gsrestart($row['switchID'], 'so', $aeskey, $reseller_id);
-                ssh2_execute('gs', $row['rootID'], $cmds);
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $appServer = new AppServer($row['rootID']);
+                $appServer->getAppServerDetails($row['switchID']);
+                $appServer->stopApp();
+                $appServer->execute();
             }
 
         } else if (isset($servertype) and $servertype == 'v') {
 
             $query = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $queryport = $row['queryport'];
                 $querypassword = $row['decryptedquerypassword'];
@@ -193,9 +196,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else {
 
-        $htmlExtraInformation['css'][] = '<link href="css/adminlte/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
-        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
-        $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
+        $htmlExtraInformation['css'][] = '<link href="css/default/datatables/dataTables.bootstrap.css" rel="stylesheet" type="text/css">';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/jquery.datatables.js" type="text/javascript"></script>';
+        $htmlExtraInformation['js'][] = '<script src="js/default/plugins/datatables/datatables.bootstrap.js" type="text/javascript"></script>';
 
         $lendGameServers = array();
         $lendVoiceServers = array();
@@ -211,7 +214,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $deleteQuery = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
 
-        $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
+        $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid`,`rootID` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
         $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
         $query3 = $sql->prepare("SELECT `id`,`slots`,`started`,`lendtime`,`password`,`rcon`,CURRENT_TIMESTAMP AS `now` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
 
@@ -227,7 +230,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $rcon = null;
 
             $query2->execute(array($row['id']));
-            foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $installedShorten[$row2['shorten']] = $row2['description'];
 
                 if ($row2['id'] == $row['serverid']) {
@@ -236,7 +239,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             $query3->execute(array($row['serverid']));
-            foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+            while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                 $lendID = $row3['id'];
                 $password = $row3['password'];
@@ -248,8 +251,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if ($time == 0 or ($shutDownEmpty == 'Y' and ($row3['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['queryNumplayers'] < 1)) {
 
-                    $cmds = gsrestart($row['id'], 'so', $aeskey, $reseller_id);
-                    ssh2_execute('gs', $row['id'], $cmds);
+                    $appServer = new AppServer($row['rootID']);
+                    $appServer->getAppServerDetails($row['id']);
+                    $appServer->stopApp();
+                    $appServer->execute();
 
                     $deleteQuery->execute(array($row3['id']));
 
@@ -272,7 +277,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`password`,l.`slots`,l.`started`,l.`lendtime`,CURRENT_TIMESTAMP AS `now`,l.`id` AS `lend_id` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
         $query2 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $time = 0;
             $lendID = null;
@@ -290,7 +295,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($time == 0 or ($shutDownEmpty == 'Y' and ($row['lendtime'] - $timeleft) > $shutDownEmptyTime and $row['usedslots'] < 1)) {
 
                     $query2->execute(array($aeskey, $row['id'], $reseller_id));
-                    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                         $queryport = $row2['queryport'];
                         $querypassword = $row2['decryptedquerypassword'];

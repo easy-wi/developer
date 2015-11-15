@@ -44,67 +44,67 @@
 
                     <div class="form-group">
                         <label for="hostname">hostname</label>
-                        <input class="form-control" id="hostname" type="text" name="hostname" value="<?php if(isset($linearray['hostname'])) echo $linearray['hostname']; echo 'Hostname';?>">
+                        <input class="form-control" id="hostname" type="text" name="hostname" value="<?php echo (isset($linearray['hostname'])) ? $linearray['hostname'] : 'Hostname';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_password">sv_password</label>
-                        <input class="form-control" id="sv_password" type="text" name="sv_password" value="<?php if(isset($linearray['sv_password'])) echo $linearray['sv_password']; echo '';?>">
+                        <input class="form-control" id="sv_password" type="text" name="sv_password" value="<?php echo (isset($linearray['sv_password'])) ? $linearray['sv_password'] : '';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_contact">sv_contact</label>
-                        <input class="form-control" id="sv_contact" type="text" name="sv_contact" value="<?php if(isset($linearray['sv_contact'])) echo $linearray['sv_contact']; echo 'email@mail.tld';?>">
+                        <input class="form-control" id="sv_contact" type="text" name="sv_contact" value="<?php echo (isset($linearray['sv_contact'])) ? $linearray['sv_contact'] : 'email@mail.tld';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_tags">sv_tags</label>
-                        <input class="form-control" id="sv_tags" type="text" name="sv_tags" value="<?php if(isset($linearray['sv_tags'])) echo $linearray['sv_tags']; echo 'Homepage, Clanname';?>">
+                        <input class="form-control" id="sv_tags" type="text" name="sv_tags" value="<?php echo (isset($linearray['sv_tags'])) ? $linearray['sv_tags'] : 'Homepage, Clanname';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="motdfile">motdfile</label>
-                        <input class="form-control" id="motdfile" type="text" name="motdfile" value="<?php if(isset($linearray['motdfile'])) echo $linearray['motdfile']; echo 'motd.txt';?>">
+                        <input class="form-control" id="motdfile" type="text" name="motdfile" value="<?php echo (isset($linearray['motdfile'])) ? $linearray['motdfile'] : 'motd.txt';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mapcyclefile">mapcyclefile</label>
-                        <input class="form-control" id="mapcyclefile" type="text" name="mapcyclefile" value="<?php if(isset($linearray['mapcyclefile'])) echo $linearray['mapcyclefile']; echo 'mapcycle.txt';?>">
+                        <input class="form-control" id="mapcyclefile" type="text" name="mapcyclefile" value="<?php echo (isset($linearray['mapcyclefile'])) ? $linearray['mapcyclefile'] : 'mapcycle.txt';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_downloadurl">sv_downloadurl</label>
-                        <input class="form-control" id="sv_downloadurl" type="text" name="sv_downloadurl" value="<?php if(isset($linearray['sv_downloadurl'])) echo $linearray['sv_downloadurl']; else echo 'http://www.domain.tld/fastdownload';?>">
+                        <input class="form-control" id="sv_downloadurl" type="text" name="sv_downloadurl" value="<?php echo (isset($linearray['sv_downloadurl'])) ? $linearray['sv_downloadurl'] : 'http://www.domain.tld/fastdownload';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="net_maxfilesize">net_maxfilesize</label>
-                        <input class="form-control" id="net_maxfilesize" type="text" name="net_maxfilesize" value="<?php if(isset($linearray['net_maxfilesize'])) echo $linearray['net_maxfilesize']; echo '64';?>">
+                        <input class="form-control" id="net_maxfilesize" type="text" name="net_maxfilesize" value="<?php echo (isset($linearray['net_maxfilesize'])) ? $linearray['net_maxfilesize'] : '64';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="rcon_password">rcon_password</label>
-                        <input class="form-control" id="rcon_password" type="text" name="rcon_password" value="<?php if(isset($linearray['rcon_password'])) echo $linearray['rcon_password']; echo 'RconPassword';?>">
+                        <input class="form-control" id="rcon_password" type="text" name="rcon_password" value="<?php echo (isset($linearray['rcon_password'])) ? $linearray['rcon_password'] : 'RconPassword';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_rcon_minfailures">sv_rcon_minfailures</label>
-                        <input class="form-control" id="sv_rcon_minfailures" type="text" name="sv_rcon_minfailures" value="<?php if(isset($linearray['sv_rcon_minfailures'])) echo $linearray['sv_rcon_minfailures']; echo 3;?>">
+                        <input class="form-control" id="sv_rcon_minfailures" type="text" name="sv_rcon_minfailures" value="<?php echo (isset($linearray['sv_rcon_minfailures'])) ? $linearray['sv_rcon_minfailures'] : 3;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_rcon_maxfailures">sv_rcon_maxfailures</label>
-                        <input class="form-control" id="sv_rcon_maxfailures" type="text" name="sv_rcon_maxfailures" value="<?php if(isset($linearray['sv_rcon_maxfailures'])) echo $linearray['sv_rcon_maxfailures']; echo 5;?>">
+                        <input class="form-control" id="sv_rcon_maxfailures" type="text" name="sv_rcon_maxfailures" value="<?php echo (isset($linearray['sv_rcon_maxfailures'])) ? $linearray['sv_rcon_maxfailures'] : 5;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_rcon_banpenalty">sv_rcon_banpenalty</label>
-                        <input class="form-control" id="sv_rcon_banpenalty" type="text" name="sv_rcon_banpenalty" value="<?php if(isset($linearray['sv_rcon_banpenalty'])) echo $linearray['sv_rcon_banpenalty']; echo 0;?>">
+                        <input class="form-control" id="sv_rcon_banpenalty" type="text" name="sv_rcon_banpenalty" value="<?php echo (isset($linearray['sv_rcon_banpenalty'])) ? $linearray['sv_rcon_banpenalty'] : 0;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_rcon_minfailuretime">sv_rcon_minfailuretime</label>
-                        <input class="form-control" id="sv_rcon_minfailuretime" type="text" name="sv_rcon_minfailuretime" value="<?php if(isset($linearray['sv_rcon_minfailuretime'])) echo $linearray['sv_rcon_minfailuretime']; echo '15';?>">
+                        <input class="form-control" id="sv_rcon_minfailuretime" type="text" name="sv_rcon_minfailuretime" value="<?php echo (isset($linearray['sv_rcon_minfailuretime'])) ? $linearray['sv_rcon_minfailuretime'] : '15';?>">
                     </div>
 
                     <div class="form-group">
@@ -126,7 +126,7 @@
 
                     <div class="form-group">
                         <label for="sv_timeout">sv_timeout</label>
-                        <input class="form-control" id="sv_timeout" type="text" name="sv_timeout" value="<?php if(isset($linearray['sv_timeout'])) echo $linearray['sv_timeout']; echo '65';?>">
+                        <input class="form-control" id="sv_timeout" type="text" name="sv_timeout" value="<?php echo (isset($linearray['sv_timeout'])) ? $linearray['sv_timeout'] : '65';?>">
                     </div>
 
                     <div class="form-group">
@@ -163,37 +163,37 @@
 
                     <div class="form-group">
                         <label for="sv_region">sv_region</label>
-                        <input class="form-control" id="sv_region" type="text" name="sv_region" value="<?php if(isset($linearray['sv_region'])) echo $linearray['sv_region']; echo '225';?>">
+                        <input class="form-control" id="sv_region" type="text" name="sv_region" value="<?php echo (isset($linearray['sv_region'])) ? $linearray['sv_region'] : '225';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_friction">sv_friction</label>
-                        <input class="form-control" id="sv_friction" type="text" name="sv_friction" value="<?php if(isset($linearray['sv_friction'])) echo $linearray['sv_friction']; echo 4;?>">
+                        <input class="form-control" id="sv_friction" type="text" name="sv_friction" value="<?php echo (isset($linearray['sv_friction'])) ? $linearray['sv_friction'] : 4;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_stopspeed">sv_stopspeed</label>
-                        <input class="form-control" id="sv_stopspeed" type="text" name="sv_stopspeed" value="<?php if(isset($linearray['sv_stopspeed'])) echo $linearray['sv_stopspeed']; echo '50';?>">
+                        <input class="form-control" id="sv_stopspeed" type="text" name="sv_stopspeed" value="<?php echo (isset($linearray['sv_stopspeed'])) ? $linearray['sv_stopspeed'] : '50';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_gravity">sv_gravity</label>
-                        <input class="form-control" id="sv_gravity" type="text" name="sv_gravity" value="<?php if(isset($linearray['sv_gravity'])) echo $linearray['sv_gravity']; echo '800';?>">
+                        <input class="form-control" id="sv_gravity" type="text" name="sv_gravity" value="<?php echo (isset($linearray['sv_gravity'])) ? $linearray['sv_gravity'] : '800';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_accelerate">sv_accelerate</label>
-                        <input class="form-control" id="sv_accelerate" type="text" name="sv_accelerate" value="<?php if(isset($linearray['sv_accelerate'])) echo $linearray['sv_accelerate']; echo 5;?>">
+                        <input class="form-control" id="sv_accelerate" type="text" name="sv_accelerate" value="<?php echo (isset($linearray['sv_accelerate'])) ? $linearray['sv_accelerate'] : 5;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_airaccelerate">sv_airaccelerate</label>
-                        <input class="form-control" id="sv_airaccelerate" type="text" name="sv_airaccelerate" value="<?php if(isset($linearray['sv_airaccelerate'])) echo $linearray['sv_airaccelerate']; echo '10';?>">
+                        <input class="form-control" id="sv_airaccelerate" type="text" name="sv_airaccelerate" value="<?php echo (isset($linearray['sv_airaccelerate'])) ? $linearray['sv_airaccelerate'] : '10';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_wateraccelerate">sv_wateraccelerate</label>
-                        <input class="form-control" id="sv_wateraccelerate" type="text" name="sv_wateraccelerate" value="<?php if(isset($linearray['sv_wateraccelerate'])) echo $linearray['sv_wateraccelerate']; echo '10';?>">
+                        <input class="form-control" id="sv_wateraccelerate" type="text" name="sv_wateraccelerate" value="<?php echo (isset($linearray['sv_wateraccelerate'])) ? $linearray['sv_wateraccelerate'] : '10';?>">
                     </div>
 
                     <div class="form-group">
@@ -287,7 +287,7 @@
 
                     <div class="form-group">
                         <label for="mp_chattime">mp_chattime</label>
-                        <input class="form-control" id="mp_chattime" type="text" name="mp_chattime" value="<?php if(isset($linearray['mp_chattime'])) echo $linearray['mp_chattime']; echo '10';?>">
+                        <input class="form-control" id="mp_chattime" type="text" name="mp_chattime" value="<?php echo (isset($linearray['mp_chattime'])) ? $linearray['mp_chattime'] : '10';?>">
                     </div>
 
                     <div class="form-group">
@@ -342,47 +342,47 @@
 
                     <div class="form-group">
                         <label for="mp_timelimit">mp_timelimit</label>
-                        <input class="form-control" id="mp_timelimit" type="text" name="mp_timelimit" value="<?php if(isset($linearray['mp_timelimit'])) echo $linearray['mp_timelimit']; echo '20';?>">
+                        <input class="form-control" id="mp_timelimit" type="text" name="mp_timelimit" value="<?php echo (isset($linearray['mp_timelimit'])) ? $linearray['mp_timelimit'] : '20';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_winlimit">mp_winlimit</label>
-                        <input class="form-control" id="mp_winlimit" type="text" name="mp_winlimit" value="<?php if(isset($linearray['mp_winlimit'])) echo $linearray['mp_winlimit']; echo 0;?>">
+                        <input class="form-control" id="mp_winlimit" type="text" name="mp_winlimit" value="<?php echo (isset($linearray['mp_winlimit'])) ? $linearray['mp_winlimit'] : 0;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_minrate">sv_minrate</label>
-                        <input class="form-control" id="sv_minrate" type="text" name="sv_minrate" value="<?php if(isset($linearray['sv_minrate'])) echo $linearray['sv_minrate']; echo '20000';?>">
+                        <input class="form-control" id="sv_minrate" type="text" name="sv_minrate" value="<?php echo (isset($linearray['sv_minrate'])) ? $linearray['sv_minrate'] : '20000';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_maxrate">sv_maxrate</label>
-                        <input class="form-control" id="sv_maxrate" type="text" name="sv_maxrate" value="<?php if(isset($linearray['sv_maxrate'])) echo $linearray['sv_maxrate']; echo '100000';?>">
+                        <input class="form-control" id="sv_maxrate" type="text" name="sv_maxrate" value="<?php echo (isset($linearray['sv_maxrate'])) ? $linearray['sv_maxrate'] : '100000';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_minupdaterate">sv_minupdaterate</label>
-                        <input class="form-control" id="sv_minupdaterate" type="text" name="sv_minupdaterate" value="<?php if(isset($linearray['sv_minupdaterate'])) echo $linearray['sv_minupdaterate']; echo '40';?>">
+                        <input class="form-control" id="sv_minupdaterate" type="text" name="sv_minupdaterate" value="<?php echo (isset($linearray['sv_minupdaterate'])) ? $linearray['sv_minupdaterate'] : '40';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_maxupdaterate">sv_maxupdaterate</label>
-                        <input class="form-control" id="sv_maxupdaterate" type="text" name="sv_maxupdaterate" value="<?php if(isset($linearray['sv_maxupdaterate'])) echo $linearray['sv_maxupdaterate']; echo '66';?>">
+                        <input class="form-control" id="sv_maxupdaterate" type="text" name="sv_maxupdaterate" value="<?php echo (isset($linearray['sv_maxupdaterate'])) ? $linearray['sv_maxupdaterate'] : '66';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_mincmdrate">sv_mincmdrate</label>
-                        <input class="form-control" id="sv_mincmdrate" type="text" name="sv_mincmdrate" value="<?php if(isset($linearray['sv_mincmdrate'])) echo $linearray['sv_mincmdrate']; echo '40';?>">
+                        <input class="form-control" id="sv_mincmdrate" type="text" name="sv_mincmdrate" value="<?php echo (isset($linearray['sv_mincmdrate'])) ? $linearray['sv_mincmdrate'] : '40';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_maxcmdrate">sv_maxcmdrate</label>
-                        <input class="form-control" id="sv_maxcmdrate" type="text" name="sv_maxcmdrate" value="<?php if(isset($linearray['sv_maxcmdrate'])) echo $linearray['sv_maxcmdrate']; echo '66';?>">
+                        <input class="form-control" id="sv_maxcmdrate" type="text" name="sv_maxcmdrate" value="<?php echo (isset($linearray['sv_maxcmdrate'])) ? $linearray['sv_maxcmdrate'] : '66';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="sv_client_cmdrate_difference">sv_client_cmdrate_difference</label>
-                        <input class="form-control" id="sv_client_cmdrate_difference" type="text" name="sv_client_cmdrate_difference" value="<?php if(isset($linearray['sv_client_cmdrate_difference'])) echo $linearray['sv_client_cmdrate_difference']; echo '30';?>">
+                        <input class="form-control" id="sv_client_cmdrate_difference" type="text" name="sv_client_cmdrate_difference" value="<?php echo (isset($linearray['sv_client_cmdrate_difference'])) ? $linearray['sv_client_cmdrate_difference'] : '30';?>">
                     </div>
 
                     <div class="form-group">
@@ -405,19 +405,19 @@
 
                     <div class="form-group">
                         <label for="mp_fraglimit">mp_fraglimit</label>
-                        <input class="form-control" id="mp_fraglimit" type="text" name="mp_fraglimit" value="<?php if(isset($linearray['mp_fraglimit'])) echo $linearray['mp_fraglimit']; echo 0;?>">
+                        <input class="form-control" id="mp_fraglimit" type="text" name="mp_fraglimit" value="<?php echo (isset($linearray['mp_fraglimit'])) ? $linearray['mp_fraglimit'] : 0;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_maxrounds">mp_maxrounds</label>
-                        <input class="form-control" id="mp_maxrounds" type="text" name="mp_maxrounds" value="<?php if(isset($linearray['mp_maxrounds'])) echo $linearray['mp_maxrounds']; echo 0;?>">
+                        <input class="form-control" id="mp_maxrounds" type="text" name="mp_maxrounds" value="<?php echo (isset($linearray['mp_maxrounds'])) ? $linearray['mp_maxrounds'] : 0;?>">
                     </div>
                     <?php } ?>
 
                     <?php if ($shorten=="css" and $configname=="server.cfg"){ ?>
                     <div class="form-group">
                         <label for="motdfile_text">motdfile_text</label>
-                        <input class="form-control" id="motdfile_text" type="text" name="motdfile_text" value="<?php if(isset($linearray['motdfile_text'])) echo $linearray['motdfile_text']; echo '';?>">
+                        <input class="form-control" id="motdfile_text" type="text" name="motdfile_text" value="<?php echo (isset($linearray['motdfile_text'])) ? $linearray['motdfile_text'] : '';?>">
                     </div>
 
                     <div class="form-group">
@@ -518,37 +518,37 @@
 
                     <div class="form-group">
                         <label for="mp_startmoney">mp_startmoney</label>
-                        <input class="form-control" id="mp_startmoney" type="text" name="mp_startmoney" value="<?php if(isset($linearray['mp_startmoney'])) echo $linearray['mp_startmoney']; echo 800;?>">
+                        <input class="form-control" id="mp_startmoney" type="text" name="mp_startmoney" value="<?php echo (isset($linearray['mp_startmoney'])) ? $linearray['mp_startmoney'] : 800;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_roundtime">mp_roundtime</label>
-                        <input class="form-control" id="mp_roundtime" type="text" name="mp_roundtime" value="<?php if(isset($linearray['mp_roundtime'])) echo $linearray['mp_roundtime']; echo 5;?>">
+                        <input class="form-control" id="mp_roundtime" type="text" name="mp_roundtime" value="<?php echo (isset($linearray['mp_roundtime'])) ? $linearray['mp_roundtime'] : 5;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_buytime">mp_buytime</label>
-                        <input class="form-control" id="mp_buytime" type="text" name="mp_buytime" value="<?php if(isset($linearray['mp_buytime'])) echo $linearray['mp_buytime']; echo '0.5';?>">
+                        <input class="form-control" id="mp_buytime" type="text" name="mp_buytime" value="<?php echo (isset($linearray['mp_buytime'])) ? $linearray['mp_buytime'] : '0.5';?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_c4timer">mp_c4timer</label>
-                        <input class="form-control" id="mp_c4timer" type="text" name="mp_c4timer" value="<?php if(isset($linearray['mp_c4timer'])) echo $linearray['mp_c4timer']; echo 45;?>">
+                        <input class="form-control" id="mp_c4timer" type="text" name="mp_c4timer" value="<?php echo (isset($linearray['mp_c4timer'])) ? $linearray['mp_c4timer'] : 45;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_freezetime">mp_freezetime</label>
-                        <input class="form-control" id="mp_freezetime" type="text" name="mp_freezetime" value="<?php if(isset($linearray['mp_freezetime'])) echo $linearray['mp_freezetime']; echo 6;?>">
+                        <input class="form-control" id="mp_freezetime" type="text" name="mp_freezetime" value="<?php echo (isset($linearray['mp_freezetime'])) ? $linearray['mp_freezetime'] : 6;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_spawnprotectiontime">mp_spawnprotectiontime</label>
-                        <input class="form-control" id="mp_spawnprotectiontime" type="text" name="mp_spawnprotectiontime" value="<?php if(isset($linearray['mp_spawnprotectiontime'])) echo $linearray['mp_spawnprotectiontime']; echo 0;?>">
+                        <input class="form-control" id="mp_spawnprotectiontime" type="text" name="mp_spawnprotectiontime" value="<?php echo (isset($linearray['mp_spawnprotectiontime'])) ? $linearray['mp_spawnprotectiontime'] : 0;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_hostagepenalty">mp_hostagepenalty</label>
-                        <input class="form-control" id="mp_hostagepenalty" type="text" name="mp_hostagepenalty" value="<?php if(isset($linearray['mp_hostagepenalty'])) echo $linearray['mp_hostagepenalty']; echo 0;?>">
+                        <input class="form-control" id="mp_hostagepenalty" type="text" name="mp_hostagepenalty" value="<?php echo (isset($linearray['mp_hostagepenalty'])) ? $linearray['mp_hostagepenalty'] : 0;?>">
                     </div>
 
                     <div class="form-group">
@@ -571,7 +571,7 @@
 
                     <div class="form-group">
                         <label for="dod_bonusroundtime">dod_bonusroundtime</label>
-                        <input class="form-control" id="dod_bonusroundtime" type="text" name="dod_bonusroundtime" value="<?php if(isset($linearray['dod_bonusroundtime'])) echo $linearray['dod_bonusroundtime']; echo '10';?>">
+                        <input class="form-control" id="dod_bonusroundtime" type="text" name="dod_bonusroundtime" value="<?php echo (isset($linearray['dod_bonusroundtime'])) ? $linearray['dod_bonusroundtime'] : '10';?>">
                     </div>
 
                     <div class="form-group">
@@ -592,62 +592,62 @@
 
                     <div class="form-group">
                         <label for="mp_limit_allies_rifleman">mp_limit_allies_rifleman</label>
-                        <input class="form-control" id="mp_limit_allies_rifleman" type="text" name="mp_limit_allies_rifleman" value="<?php if(isset($linearray['mp_limit_allies_rifleman'])) echo $linearray['mp_limit_allies_rifleman']; echo 3;?>">
+                        <input class="form-control" id="mp_limit_allies_rifleman" type="text" name="mp_limit_allies_rifleman" value="<?php echo (isset($linearray['mp_limit_allies_rifleman'])) ? $linearray['mp_limit_allies_rifleman'] : 3;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_allies_support">mp_limit_allies_support</label>
-                        <input class="form-control" id="mp_limit_allies_support" type="text" name="mp_limit_allies_support" value="<?php if(isset($linearray['mp_limit_allies_support'])) echo $linearray['mp_limit_allies_support']; echo -1;?>">
+                        <input class="form-control" id="mp_limit_allies_support" type="text" name="mp_limit_allies_support" value="<?php echo (isset($linearray['mp_limit_allies_support'])) ? $linearray['mp_limit_allies_support'] : -1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_allies_assault">mp_limit_allies_assault</label>
-                        <input class="form-control" id="mp_limit_allies_assault" type="text" name="mp_limit_allies_assault" value="<?php if(isset($linearray['mp_limit_allies_assault'])) echo $linearray['mp_limit_allies_assault']; echo -1;?>">
+                        <input class="form-control" id="mp_limit_allies_assault" type="text" name="mp_limit_allies_assault" value="<?php echo (isset($linearray['mp_limit_allies_assault'])) ? $linearray['mp_limit_allies_assault'] : -1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_allies_sniper">mp_limit_allies_sniper</label>
-                        <input class="form-control" id="mp_limit_allies_sniper" type="text" name="mp_limit_allies_sniper" value="<?php if(isset($linearray['mp_limit_allies_sniper'])) echo $linearray['mp_limit_allies_sniper']; else echo 1;?>">
+                        <input class="form-control" id="mp_limit_allies_sniper" type="text" name="mp_limit_allies_sniper" value="<?php echo (isset($linearray['mp_limit_allies_sniper'])) ? $linearray['mp_limit_allies_sniper'] : 1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_allies_mg">mp_limit_allies_mg</label>
-                        <input class="form-control" id="mp_limit_allies_mg" type="text" name="mp_limit_allies_mg" value="<?php if(isset($linearray['mp_limit_allies_mg'])) echo $linearray['mp_limit_allies_mg']; else echo 1;?>">
+                        <input class="form-control" id="mp_limit_allies_mg" type="text" name="mp_limit_allies_mg" value="<?php echo (isset($linearray['mp_limit_allies_mg'])) ? $linearray['mp_limit_allies_mg'] : 1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_allies_rocket">mp_limit_allies_rocket</label>
-                        <input class="form-control" id="mp_limit_allies_rocket" type="text" name="mp_limit_allies_rocket" value="<?php if(isset($linearray['mp_limit_allies_rocket'])) echo $linearray['mp_limit_allies_rocket']; else echo 2;?>">
+                        <input class="form-control" id="mp_limit_allies_rocket" type="text" name="mp_limit_allies_rocket" value="<?php echo (isset($linearray['mp_limit_allies_rocket'])) ? $linearray['mp_limit_allies_rocket'] : 2;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_axis_rifleman">mp_limit_axis_rifleman</label>
-                        <input class="form-control" id="mp_limit_axis_rifleman" type="text" name="mp_limit_axis_rifleman" value="<?php if(isset($linearray['mp_limit_axis_rifleman'])) echo $linearray['mp_limit_axis_rifleman']; echo 3;?>">
+                        <input class="form-control" id="mp_limit_axis_rifleman" type="text" name="mp_limit_axis_rifleman" value="<?php echo (isset($linearray['mp_limit_axis_rifleman'])) ? $linearray['mp_limit_axis_rifleman'] : 3;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_axis_support">mp_limit_axis_support</label>
-                        <input class="form-control" id="mp_limit_axis_support" type="text" name="mp_limit_axis_support" value="<?php if(isset($linearray['mp_limit_axis_support'])) echo $linearray['mp_limit_axis_support']; echo -1;?>">
+                        <input class="form-control" id="mp_limit_axis_support" type="text" name="mp_limit_axis_support" value="<?php echo (isset($linearray['mp_limit_axis_support'])) ? $linearray['mp_limit_axis_support'] : -1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_axis_assault">mp_limit_axis_assault</label>
-                        <input class="form-control" id="mp_limit_axis_assault" type="text" name="mp_limit_axis_assault" value="<?php if(isset($linearray['mp_limit_axis_assault'])) echo $linearray['mp_limit_axis_assault']; echo -1;?>">
+                        <input class="form-control" id="mp_limit_axis_assault" type="text" name="mp_limit_axis_assault" value="<?php echo (isset($linearray['mp_limit_axis_assault'])) ? $linearray['mp_limit_axis_assault'] : -1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_axis_sniper">mp_limit_axis_sniper</label>
-                        <input class="form-control" id="mp_limit_axis_sniper" type="text" name="mp_limit_axis_sniper" value="<?php if(isset($linearray['mp_limit_axis_sniper'])) echo $linearray['mp_limit_axis_sniper']; else echo 1;?>">
+                        <input class="form-control" id="mp_limit_axis_sniper" type="text" name="mp_limit_axis_sniper" value="<?php echo (isset($linearray['mp_limit_axis_sniper'])) ? $linearray['mp_limit_axis_sniper'] : 1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_axis_mg">mp_limit_axis_mg</label>
-                        <input class="form-control" id="mp_limit_axis_mg" type="text" name="mp_limit_axis_mg" value="<?php if(isset($linearray['mp_limit_axis_mg'])) echo $linearray['mp_limit_axis_mg']; else echo 1;?>">
+                        <input class="form-control" id="mp_limit_axis_mg" type="text" name="mp_limit_axis_mg" value="<?php echo (isset($linearray['mp_limit_axis_mg'])) ? $linearray['mp_limit_axis_mg'] : 1;?>">
                     </div>
 
                     <div class="form-group">
                         <label for="mp_limit_axis_rocket">mp_limit_axis_rocket</label>
-                        <input class="form-control" id="mp_limit_axis_rocket" type="text" name="mp_limit_axis_rocket" value="<?php if(isset($linearray['mp_limit_axis_rocket'])) echo $linearray['mp_limit_axis_rocket']; else echo 2;?>">
+                        <input class="form-control" id="mp_limit_axis_rocket" type="text" name="mp_limit_axis_rocket" value="<?php echo (isset($linearray['mp_limit_axis_rocket'])) ? $linearray['mp_limit_axis_rocket'] : 2;?>">
                     </div>
                     <?php } ?>
 

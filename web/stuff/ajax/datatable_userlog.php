@@ -44,10 +44,10 @@ if (!defined('AJAXINCLUDED')) {
 $sprache = getlanguagefile('logs', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 
-$placeholders = array('%%', '%ad%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
-$replace = array('', $gsprache->add, $gsprache->add, $gsprache->del, $gsprache->del, $gsprache->mod, $gsprache->mod, $gsprache->start, $gsprache->start, $gsprache->stop, $gsprache->update,'','', $gssprache->password, $gssprache->config, $gsprache->import, $gssprache->reinstall, $gsprache->backup, $gsprache->use);
-$placeholders2 = array('%modules%', '%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%', '%file%');
-$replace2 = array($gsprache->modules, $gsprache->voiceserver, $gsprache->gameserver, $gsprache->user, $gsprache->fastdownload, $gsprache->master, $gsprache->user, $gsprache->root, $gsprache->addon2, $gsprache->settings, $gsprache->virtual, $gsprache->support, $gsprache->reseller, $gsprache->hostsystem,'Easy Anti Cheat', $gssprache->resync, $gsprache->virtual . ' ' . $gsprache->template, $gsprache->template, $gsprache->voiceserver,'E-Mail '.$gsprache->settings, 'TSDNS', 'TSDNS', $gssprache->protect, $gsprache->file);
+$placeholders = array('%%', '%ad%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%ri%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
+$replace = array('', $gsprache->add, $gsprache->add, $gsprache->del, $gsprache->del, $gsprache->mod, $gsprache->mod, $gsprache->reinstall, $gsprache->start, $gsprache->start, $gsprache->stop, $gsprache->update,'','', $gssprache->password, $gssprache->config, $gsprache->import, $gssprache->reinstall, $gsprache->backup, $gsprache->use);
+$placeholders2 = array('%modules%', '%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%', '%file%', '%webmaster%', '%webvhost%');
+$replace2 = array($gsprache->modules, $gsprache->voiceserver, $gsprache->gameserver, $gsprache->user, $gsprache->fastdownload, $gsprache->master, $gsprache->user, $gsprache->root, $gsprache->addon2, $gsprache->settings, $gsprache->virtual, $gsprache->support, $gsprache->reseller, $gsprache->hostsystem,'Easy Anti Cheat', $gssprache->resync, $gsprache->virtual . ' ' . $gsprache->template, $gsprache->template, $gsprache->voiceserver,'E-Mail '.$gsprache->settings, 'TSDNS', 'TSDNS', $gssprache->protect, $gsprache->file, $gsprache->webspace . ' ' . $gsprache->master, $gsprache->webspace);
 
 if ($sSearch) {
     $sSearch = str_replace($replace, $placeholders, str_replace($replace2, $placeholders2, $sSearch));
@@ -57,7 +57,7 @@ if ($adminLookup) {
     $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `resellerid`=?");
     $query->execute(array($resellerLockupID));
 } else {
-    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `usertype`='user' AND `userid`=? AND `resellerid`=?");
+    $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` WHERE `usertype` IN ('user','cron') AND `userid`=? AND `resellerid`=?");
     $query->execute(array($user_id, $reseller_id));
 }
 $array['iTotalRecords'] = $query->fetchColumn();
@@ -68,7 +68,7 @@ if ($sSearch) {
         $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
         $query->execute(array(':search' => '%' . $sSearch . '%', ':resellerid' => $resellerLockupID));
     } else {
-        $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype`='user' AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
+        $query = $sql->prepare("SELECT COUNT(1) AS `amount` FROM `userlog` AS l LEFT JOIN `userdata` AS s ON s.`id`=l.`subuser` AND l.`subuser`!=0 WHERE l.`usertype` IN ('user','cron') AND l.`userid`=:userid AND l.`resellerid`=:resellerid AND (`username` LIKE :search OR `cname` LIKE :search OR `ip` LIKE :search OR `logdate` LIKE :search OR `useraction` LIKE :search)");
         $query->execute(array(':search' => '%' . $sSearch . '%', ':userid' => $user_id, ':resellerid' => $reseller_id));
     }
 
@@ -109,7 +109,7 @@ if ($sSearch) {
     }
 }
 
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if ($row['subuser'] == 0 or $adminLookup) {
         $username = $row['username'];

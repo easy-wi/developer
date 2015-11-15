@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
+    <aRecordMissing>A Record der Domain %domain% nicht auf die IP %ip% konfiguriert</aRecordMissing>
     <blocksize>Block Größe</blocksize>
     <defaultdns>Standard Domain</defaultdns>
     <dirHttpd>Htdocs Verzeichnis</dirHttpd>
     <dirLogs>Logs Verzeichnis</dirLogs>
+    <defaultDns>Standard Domain</defaultDns>
     <dns>Domain</dns>
+    <domainNotUsed>Unzulässige Domain %domain% verworfen</domainNotUsed>
     <error_password_not_match>FTP Passwörter stimmen nicht überein</error_password_not_match>
     <error_password_not_set>FTP Passwort unzulässig, nicht angegeben, oder Wiederholung nicht angegeben.</error_password_not_set>
     <fdlInfo>FastDL Info</fdlInfo>
@@ -17,6 +20,7 @@
     <hddOverbook>HDD Überbuchen</hddOverbook>
     <hddUsage>Belegter Speicherplatz</hddUsage>
     <help_blocksize>Bei den meisten Systemen beträgt die Block Größe 4096. D.h. ein Block enthält 4096 Byte an Daten.</help_blocksize>
+    <help_default_dns>Diese (Sub) Domain kann im Domain Bereich eingegeben werden. Wird sie in diesem entfernt, ist sie inaktiv.</help_default_dns>
     <help_fdl_attention>Achtung! Es wird empfohlen, dass man je Spiel einen eigenen Unterordner wie cod4, cstrike, css, etc. erstellt und den Ordner in der Config mit angibt.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) und Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) basierende Server brauchen folgenden Eintrag in der server.cfg</help_fdl_hl>
     <help_fdl_cod>Call of Duty Server brauchen folgenden Eintrag in der server.cfg</help_fdl_cod>
@@ -32,6 +36,9 @@
     <other>Andere</other>
     <overbookPercent>Überbuchen um</overbookPercent>
     <ownVhost>Eigenes Vhosttemplate</ownVhost>
+    <path>Pfad</path>
+    <pathCorrected>Pfad von %pathGiven% zu %pathConverted% zur Domain %domain% korrigiert</pathCorrected>
+    <phpConfiguration>PHP Konfiguration</phpConfiguration>
     <quotaActive>Quotas Aktivieren</quotaActive>
     <quotaCmd>Quota Befehl</quotaCmd>
     <quotaWarning>Achtung! Ohne Quotas kann der User unbegrenzt Dateien hochladen!</quotaWarning>

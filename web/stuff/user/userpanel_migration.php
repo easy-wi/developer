@@ -43,8 +43,9 @@ if ((!isset($main) or $main != 1) or (!isset($user_id) or (isset($user_id) and !
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 $sprache = getlanguagefile('gserver',$user_language,$reseller_id);
 $loguserid = $user_id;
@@ -71,24 +72,23 @@ $ssl=($ui->active('ssl', 'post')) ? $ui->active('ssl', 'post') : 'N';
 $error = array();
 $table = array();
 
-$query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,g.`homeLabel`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=? AND g.`active`='Y'");
+$query = $sql->prepare("SELECT AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,g.`id`,g.`newlayout`,g.`rootID`,g.`serverip`,g.`port`,g.`pallowed`,g.`protected`,u.`cname` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` WHERE g.`userid`=? AND g.`resellerid`=? AND g.`active`='Y'");
 $query2 = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary`,t.`binarydir`,t.`modfolder`,t.`appID` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? GROUP BY t.`shorten` ORDER BY t.`shorten`");
 $query->execute(array($aeskey, $user_id, $reseller_id));
 
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['gs'])) {
 
         $temp = array();
         $search = '';
         $customer = $row['cname'];
-        $homeLabel = $row['homeLabel'];
 
         if ($row['newlayout'] == 'Y') {
             $customer = $row['cname'] . '-' . $row['id'];
         }
 
         $query2->execute(array($row['id']));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row2['gamebinary'] == 'hlds_run' or ($row2['gamebinary'] == 'srcds_run' and ($row2['appID'] == 740 or $row2['appID'] == 730))) {
                 $search = '/' . $row2['modfolder'];
@@ -165,15 +165,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             if (isset($temp)) {
-                $template = $temp;
-                $shorten = $game['shorten'];
+                $gameSwitchTemplate = ($temp == 1) ? $game['shorten'] : $game['shorten'] . '-' . $temp;
                 $searchFor = str_replace('/', '', $game['searchFor']);
-                $modFolder = (strlen($game['modfolder']) > 0) ? $game['modfolder'] : 'none';
+                $modFolder = $game['modfolder'];
             }
         }
 
-        if (isset($shorten)) {
-            $thisTemplate = $ui->config('template', 'post',$thisID);
+        if (isset($gameSwitchTemplate)) {
+            $thisTemplate = $ui->config('template', 'post', $thisID);
         } else if (!in_array($gsprache->template, $error)) {
             $error[] = $gsprache->template;
         }
@@ -217,33 +216,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-    if (count($error) == 0 and isset($rootID) and isset($homeLabel)) {
+    if (count($error) == 0 and isset($rootID)) {
 
-        $rdata = serverdata('root', $rootID, $aeskey);
-        $sship = $rdata['ip'];
-        $sshport = $rdata['port'];
-        $sshuser = $rdata['user'];
-        $sshpass = $rdata['pass'];
+        $ftpConnectString = ($ssl == 'N') ? 'ftp://' : 'ftps://';
+        $ftpConnectString .= $ftpAddress . ':' . $ftpPort . str_replace(array('//', '///'), '/', '/' . $ftpPath);
 
-        $iniVars = parse_ini_string($rdata['install_paths'], true);
-        $homeDir = ($iniVars and isset($iniVars[$homeLabel]['path'])) ? $iniVars[$homeLabel]['path'] : '/home';
-
-        $ftpConnect = ($ssl == 'N') ? 'ftp://' : 'ftps://';
-
-        $ftpConnect .= str_replace('//', '/', $ftpAddress . ':' . $ftpPort. '/' . $ftpPath);
-
-        $cmd = "sudo -u {$customer} ./control.sh migrateserver {$customer} 1_{$shorten} {$gsfolder} {$template} {$ftpUser} {$ftpPassword} {$ftpConnect} {$modFolder} {$homeDir}";
-
-        $shellReturn = ssh2_execute('gs', $rootID, $cmd);
-
-        $loguseraction = '%import% %gserver% ' . $address;
-        $insertlog->execute();
+        $appServer = new AppServer($rootID);
+        $appServer->getAppServerDetails($thisID);
+        $appServer->migrateToEasyWi(array('user' => $ftpUser, 'password' => $ftpPassword, 'path' => $ftpPath, 'connectString' => $ftpConnectString), $gameSwitchTemplate, $modFolder);
+        $appServer->execute();
 
         $template_file = $sprache->import_start;
 
         if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-            $template_file .= '<pre>' . $cmd . "\r\n" . $shellReturn . '</pre>';
+            $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
         }
+
+        $loguseraction = '%import% %gserver% ' . $address;
+        $insertlog->execute();
     }
 }
 

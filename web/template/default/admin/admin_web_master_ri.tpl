@@ -1,33 +1,40 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=wm"><?php echo $gsprache->webspace." ".$gsprache->master;?></a> <span class="divider">/</span></li>
-            <li><?php echo $dedicatedLanguage->reinstall;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $ip;?></li>
-        </ul>
-    </div>
-</div>
+<section class="content-header">
+    <h1><?php echo $gsprache->webspace.' '.$gsprache->master;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=wv"><i class="fa fa-cubes"></i> <?php echo $gsprache->webspace;?></a></li>
+        <li><a href="admin.php?w=wm"><i class="fa fa-server"></i> <?php echo $gsprache->webspace.' '.$gsprache->master;?></a></li>
+        <li><?php echo $gsprache->reinstall;?></li>
+        <li class="active"><?php echo $ip;?></li>
+    </ol>
+</section>
 
-<div class="row-fluid">
-    <div class="span8">
-        <form class="form-horizontal" action="admin.php?w=wm&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=wm" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ri">
-            <?php foreach($table as $k=>$v){ ?>
-            <div class="control-group">
-                <label class="control-label" for="inputDNS-<?php echo $k;?>"><?php echo $v;?></label>
-                <div class="controls">
-                    <input id="inputDNS-<?php echo $k;?>" type="checkbox" name="dnsID[]" value="<?php echo $k;?>" checked="checked">
-                </div>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+
+                <form role="form" action="admin.php?w=wm&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=wm" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ri">
+
+                    <div class="box-body">
+                        <?php foreach($table as $id=>$vhostName){ ?>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputVhost-<?php echo $id;?>" type="checkbox" name="dnsID[]" value="<?php echo $id;?>" checked="checked">
+                                <?php echo $vhostName;?>
+                            </label>
+                        </div>
+                        <?php }?>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-warning" id="inputReinstall" type="submit"><i class="fa fa-refresg">&nbsp;<?php echo $gsprache->reinstall;?></i></button>
+                    </div>
+                </form>
             </div>
-            <?php }?>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i></button>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

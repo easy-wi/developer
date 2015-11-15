@@ -133,7 +133,7 @@ if ($query2->rowCount()==0) {
 	$query3->execute(array(0));
 }
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 	$query2->execute(array($row['resellerid']));
 	if ($query2->rowCount()==0) {
 		$query3->execute(array($row['resellerid']));

@@ -53,7 +53,7 @@ class HttpdManagement {
 
     // Data
     private $sql, $aeskey, $resellerID, $hostID, $ssh2Pass, $hostData = array(), $vhostData = false, $dataPrepared = false;
-    public $ssh2Object = false, $sftpObject = false;
+    public $ssh2Object = false, $sftpObject = false, $masterNotfound = false;
 
     public function __destruct() {
         unset($this->sql, $this->aeskey, $this->hostID, $this->ssh2Object, $this->sftpObject);
@@ -71,12 +71,13 @@ class HttpdManagement {
 
         $query = $this->sql->prepare("SELECT *,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `webMaster` WHERE `webMasterID`=:id AND `resellerID`=:resellerID LIMIT 1");
         $query->execute(array(':aeskey' => $this->aeskey, ':id' => $hostID, ':resellerID' => $this->resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row['active'] == 'N') {
                 return false;
             }
 
+            $this->hostData['defaultdns'] = $row['defaultdns'];
             $this->hostData['ip'] = $row['ip'];
             $this->hostData['port'] = $row['port'];
             $this->hostData['ftpIP'] = (strlen($row['ftpIP']) > 0) ? $row['ftpIP'] : $row['ip'];
@@ -94,6 +95,7 @@ class HttpdManagement {
             $this->hostData['inodeBlockRatio'] = $row['inodeBlockRatio'];
             $this->hostData['dirHttpd'] = $row['dirHttpd'];
             $this->hostData['dirLogs'] = $row['dirLogs'];
+            $this->hostData['usageType'] = $row['usageType'];
             $this->hostData['skelDir'] = $this->removeNotNeededSlashes($this->hostData['vhostStoragePath'] . '/' . $this->hostData['user'] . '/skel/');
 
             if ($row['quotaActive'] == 'Y') {
@@ -129,8 +131,9 @@ class HttpdManagement {
             return true;
         }
 
-        return false;
+        $this->masterNotfound = true;
 
+        return false;
     }
 
     private function removeNotNeededSlashes ($value) {
@@ -141,21 +144,71 @@ class HttpdManagement {
 
         if ($this->vhostData == false) {
 
-            $query = $this->sql->prepare("SELECT v.`active`,v.`ownVhost`,v.`vhostTemplate`,v.`dns`,v.`hdd`,v.`ftpUser`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
+            $query = $this->sql->prepare("SELECT v.`active`,v.`userID`,v.`description`,v.`hdd`,v.`ftpUser`,v.`phpConfiguration`,v.`defaultDomain`,AES_DECRYPT(v.`ftpPassword`,?) AS `decryptedFTPPass`,u.`mail` FROM `webVhost` AS v INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`webVhostID`=? AND v.`resellerID`=? LIMIT 1");
             $query->execute(array($this->aeskey, $vhostID, $this->resellerID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+                $this->vhostData['userID'] = $row['userID'];
                 $this->vhostData['hdd'] = $row['hdd'];
-                $this->vhostData['dns'] = $row['dns'];
                 $this->vhostData['ftpUser'] = $row['ftpUser'];
                 $this->vhostData['ftpPassword'] = $row['decryptedFTPPass'];
-                $this->vhostData['vhostConfigFile'] = $this->removeNotNeededSlashes($this->hostData['vhostConfigPath'] . '/' . $this->vhostData['ftpUser'] . '.conf');
+                $this->vhostData['vhostConfigFile'] = $this->removeNotNeededSlashes($this->hostData['vhostConfigPath'] . '/' . $this->vhostData['ftpUser']) . '.conf';
                 $this->vhostData['vhostHomeDir'] = $this->removeNotNeededSlashes($this->hostData['vhostStoragePath'] . '/' . $this->vhostData['ftpUser']);
+                $this->vhostData['description'] = (strlen($row['description']) > 0) ? $row['description'] : 'web-' . $vhostID;
+
+                $this->vhostData['defaultDomain'] = (isdomain($row['defaultDomain'])) ? $row['defaultDomain'] : 'web-' . $vhostID . '.' . $this->hostData['defaultdns'];
+
+                $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
+                $this->vhostData['dns'] = array();
+
+                // Workaround for migrations and other admin is breaking something faults
+                $query2 = $this->sql->prepare("SELECT 1 FROM `webVhostDomain` WHERE `webVhostID`=? LIMIT 1");
+                $query2->execute(array($vhostID));
+                if ($query2->rowCount() == 0) {
+
+                    try {
+                        $query2 = $this->sql->prepare("INSERT INTO `webVhostDomain` (`webVhostID`,`userID`,`resellerID`,`domain`,`path`,`ownVhost`,`vhostTemplate`) VALUES (?,?,?,?,'','N',?)");
+                        $query2->execute(array($vhostID, $row['userID'], $this->resellerID, $this->vhostData['defaultDomain'], $this->hostData['vhostTemplate']));
+
+                        // There is always a catch ...
+                    } catch(PDOException $error) {
+                        $error = $error->getMessage();
+                    }
+                }
 
                 $this->vhostData['templateFileContent'] = "# DO NOT EDIT DIRECTLY!\r\n# This file is autogenerated by easy-wi.com.\r\n# Date and time of generation was " . date('Y-m-d H:i:s') . "\r\n\r\n";
-                $this->vhostData['templateFileContent'] .= ($row['ownVhost'] == 'Y') ? $row['vhostTemplate'] : $this->hostData['vhostTemplate'];
 
-                $this->vhostData['templateFileContent'] = $this->removeNotNeededSlashes(str_replace(array('%url%', '%user%', '%vhostpath%', '%email%', '%htdocs%', '%logDir%'), array($row['dns'], $row['ftpUser'], $this->hostData['vhostStoragePath'], $row['mail'], $this->hostData['dirHttpd'], $this->hostData['dirLogs']), $this->vhostData['templateFileContent'])) . "\r\n";
+                $query2 = $this->sql->prepare("SELECT `path`,`domain`,`ownVhost`,`vhostTemplate` FROM `webVhostDomain` WHERE `webVhostID`=?");
+                $query2->execute(array($vhostID));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
+                    $this->vhostData['dns'][] = $row2['domain'];
+
+                    $templateFileContentTemp = ($row2['ownVhost'] == 'Y') ? $row2['vhostTemplate'] : $this->hostData['vhostTemplate'];
+
+                    if ($phpConfigurationVhost and $this->hostData['usageType'] == 'W') {
+
+                        preg_match('/(\s{1,}%phpConfiguration%)/', $templateFileContentTemp, $matches);
+                        $match = array_shift($matches);
+                        $whiteSpace = str_replace('%phpConfiguration%', '', $match);
+
+                        $phpOptions = '';
+
+                        foreach ($phpConfigurationVhost as $phpOption) {
+                            $phpOptions .= $whiteSpace . $phpOption;
+                        }
+
+                        $templateFileContentTemp = str_replace('%phpConfiguration%', $phpOptions, $templateFileContentTemp);
+
+                    } else {
+                        $templateFileContentTemp = str_replace('%phpConfiguration%', '', $templateFileContentTemp);
+                    }
+
+                    $templateFileContentTemp = $this->removeNotNeededSlashes(str_replace(array('%user%', '%group%', '%vhostpath%', '%email%', '%htdocs%', '%logDir%'), array($row['ftpUser'], $this->hostData['userGroup'], $this->hostData['vhostStoragePath'], $row['mail'], $this->hostData['dirHttpd'], $this->hostData['dirLogs']), $templateFileContentTemp)) . "\r\n";
+                    $templateFileContentTemp = $this->removeNotNeededSlashes(str_replace(array('%path%', '%url%', '%domain%'), array($row2['path'], $row2['domain'], $row2['domain']), $templateFileContentTemp)) . "\r\n";
+
+                    $this->vhostData['templateFileContent'] .= $templateFileContentTemp;
+                }
 
                 return true;
             }
@@ -174,6 +227,13 @@ class HttpdManagement {
             if ($this->ssh2Object != false) {
 
                 if ($fullAdd == true) {
+
+                    $mailConnectInfo = array(
+                        'ip' => $this->hostData['ftpIP'],
+                        'port' => $this->hostData['ftpPort']
+                    );
+
+                    sendmail('emailserverinstall', $this->vhostData['userID'], $this->vhostData['description'], implode(', ', $this->vhostData['dns']), $mailConnectInfo);
 
                     $removeCmd = '';
 
@@ -278,7 +338,7 @@ class HttpdManagement {
 
     public function setInactive ($vhostID) {
 
-        $this->changePassword ($vhostID, passwordgenerate(10));
+        $this->changePassword($vhostID, passwordgenerate(10));
         $this->removeVhost($vhostID, false);
 
         $this->vhostData = false;
@@ -331,7 +391,7 @@ class HttpdManagement {
 
         if ($this->ssh2Object != false and isset($this->hostData['repquotaCmd']) and strlen($this->hostData['repquotaCmd']) > 0) {
 
-            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u -v / | grep \'web\' | awk \'{print $1":"$6}\'`; do USERS="$USERS;$USER"; done; echo $USERS';
+            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u -v -s / | grep \'web\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; echo "$USERS;"';
 
             $return = $this->ssh2Object->exec($cmd);
 
@@ -340,7 +400,7 @@ class HttpdManagement {
                 echo "Command returns: {$return}\r\n";
             }
 
-            $splitIntoHosts = preg_split('/;/', $return, -1, PREG_SPLIT_NO_EMPTY);
+            $splitIntoHosts = preg_split('/;/', trim(preg_replace('/\s+/', '', $return)), -1, PREG_SPLIT_NO_EMPTY);
 
             $query = $this->sql->prepare("UPDATE `webVhost` SET `hddUsage`=? WHERE `webVhostID`=? LIMIT 1");
 
@@ -353,8 +413,17 @@ class HttpdManagement {
 
                 if (isset($usage) and isset($webVhostID)) {
 
-                    $usage = (int) $usage;
                     $webVhostID = (int) $webVhostID;
+
+                    if (substr($usage, -1) == 'K') {
+                        $usage = round(((int) substr($usage, 0, (strlen($usage) - 1))) / 1000);
+                    } else if  (substr($usage, -1) == 'M') {
+                        $usage = (int) substr($usage, 0, (strlen($usage) - 1));
+                    } else if  (substr($usage, -1) == 'G') {
+                        $usage = ((int) substr($usage, 0, (strlen($usage) - 1))) * 1000;
+                    } else {
+                        $usage = 0;
+                    }
 
                     $query->execute(array($usage, $webVhostID));
 

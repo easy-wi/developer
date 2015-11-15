@@ -1,53 +1,65 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li class="active"><?php echo $gsprache->columns;?></li>
-        </ul>
+<section class="content-header">
+    <h1><?php echo $gsprache->columns;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
+        <li><a href="admin.php?w=cc"><i class="fa fa-list"></i> <?php echo $gsprache->columns;?></a></li>
+        <li class="active"><?php echo $gsprache->overview;?></li>
+    </ol>
+</section>
+
+<section class="content">
+
+    <div class="row">
+        <div class="col-md-12">
+            <?php echo $gsprache->columns;?>: <a href="admin.php?w=cc&amp;d=ad"><span class="btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <?php echo $gsprache->columns;?>: <a href="admin.php?w=cc&amp;d=ad"><span class="btn btn-primary btn-mini"><i class="icon-white icon-plus-sign"></i></span></a>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table id="dataTable" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th><?php echo $sprache->name;?></th>
+                                <th>ID</a></th>
+                                <th><?php echo $gsprache->status;?></th>
+                                <th><?php echo $sprache->type; ?></th>
+                                <th><?php echo $gsprache->action;?></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($table as $table_row) { ?>
+                            <tr>
+                                <td><?php echo $table_row['name'];?></td>
+                                <td><?php echo $table_row['id'];?></td>
+                                <td><?php echo ($table_row['active']=='Y') ? '<span class="btn btn-sm btn-success"><i class="fa fa-check-circle"></i>' : '<span class="btn btn-sm btn-warning"><i class="fa fa-exclamation-triangle"></i>';?></td>
+                                <td><?php echo $table_row['type'];?></td>
+                                <td>
+                                    <a href="admin.php?w=cc&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></span></a>
+                                    <a href="admin.php?w=cc&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-sm btn-primary"><i class="fa fa-edit"></i> <?php echo $gsprache->mod;?></span></a>
+                                </td>
+                            </tr>
+                            <?php } ?>
+                            </tbody>
+                            <tfoot>
+                            <tr>
+                                <th><?php echo $sprache->name;?></th>
+                                <th>ID</a></th>
+                                <th><?php echo $gsprache->status;?></th>
+                                <th><?php echo $sprache->type; ?></th>
+                                <th><?php echo $gsprache->action;?></th>
+                            </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<hr>
-<div class="row-fluid">
-    <div class="span11 pagination">
-        <ul>
-            <li><a href="admin.php?w=cc&amp;o=<?php echo $o;?>&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $zur;?>"><i class="icon-step-backward"></i></a></li>
-            <li><a href="admin.php?w=cc&amp;o=<?php echo $o;?>&amp;a=20&amp;p=<?php echo $start; ?>">20</a></li>
-            <li><a href="admin.php?w=cc&amp;o=<?php echo $o;?>&amp;a=50&amp;p=<?php echo $start; ?>">50</a></li>
-            <li><a href="admin.php?w=cc&amp;o=<?php echo $o;?>&amp;a=100&amp;p=<?php echo $start; ?>">100</a></li>
-            <li><a href="admin.php?w=cc&amp;o=<?php echo $o;?>&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $vor;?>"><i class="icon-step-forward"></i></a></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span11">
-        <table class="table table-bordered table-hover table-striped footable">
-            <thead>
-            <tr>
-                <th data-class="expand"><a href="admin.php?w=cc&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dn') { echo 'an'; } else { echo 'dn'; } ?>"><?php echo $sprache->name;?></a></th>
-                <th data-hide="phone,tablet"><a href="admin.php?w=cc&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='da') { echo 'aa'; } else { echo 'da'; } ?>"><?php echo $gsprache->status;?></a></th>
-                <th data-hide="phone,tablet"><a href="admin.php?w=cc&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='di') { echo 'ai'; } else { echo 'di'; } ?>">ID</a></th>
-                <th data-hide="phone,tablet"><a href="admin.php?w=cc&amp;a=<?php if(!isset($amount)) echo "20"; else echo $amount; ?>&amp;p=<?php echo $start;?>&amp;o=<?php if ($o=='dt') { echo 'dt'; } else { echo 'dt'; } ?>"><?php echo $sprache->type; ?></a></th>
-                <th><?php echo $gsprache->del;?></th>
-                <th><?php echo $gsprache->mod;?></th>
-            </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($table as $table_row) { ?>
-            <tr>
-                <td><?php echo $table_row['name'];?></td>
-                <td><i class="<?php if($table_row['active']=='Y') echo 'icon-ok'; else echo 'icon-ban-circle';?>"></i></td>
-                <td><?php echo $table_row['id'];?></td>
-                <td><?php echo $table_row['type'];?></td>
-                <td><a href="admin.php?w=cc&amp;d=dl&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-danger"><i class="fa fa-trash-o"></i></span></a></td>
-                <td><a href="admin.php?w=cc&amp;d=md&amp;id=<?php echo $table_row['id'];?>" ><span class="btn btn-mini btn-primary"><i class="icon-white icon-edit"></i></span></a></td>
-            </tr>
-            <?php } ?>
-            </tbody>
-        </table>
-    </div>
-</div>
+</section>

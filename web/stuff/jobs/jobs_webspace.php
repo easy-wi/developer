@@ -43,23 +43,30 @@ $query3 = $sql->prepare("DELETE FROM `webVhost` WHERE `webVhostID`=? LIMIT 1");
 $query4 = $sql->prepare("SELECT `active` FROM `webVhost` WHERE `webVhostID`=? LIMIT 1");
 $query5 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? LIMIT 1");
 $query6 = $sql->prepare("UPDATE `webVhost` SET `jobPending`='N' WHERE `webVhostID`=? LIMIT 1");
-$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') IS NULL AND `type`='wv' AND `hostID`=?");
+$query7 = $sql->prepare("UPDATE `jobs` SET `status`='1' WHERE (`status` IS NULL OR `status`='1') AND `type`='wv' AND `hostID`=?");
+$query8 = $sql->prepare("UPDATE `jobs` SET `action`='dl' WHERE `hostID`=? AND `type`='wv'");
 
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $vhostObject = new HttpdManagement($row['hostID'], $row['resellerID']);
 
-    if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+    if (($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) or $vhostObject->masterNotfound) {
+
+        if ($vhostObject->masterNotfound) {
+            $query8->execute(array($row['hostID']));
+        }
 
         $query2->execute(array($row['hostID']));
-        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
             $extraData = @json_decode($row2['extraData']);
 
             if ($row2['action'] == 'dl') {
 
-                $vhostObject->vhostDelete($row2['affectedID']);
+                if (!$vhostObject->masterNotfound) {
+                    $vhostObject->vhostDelete($row2['affectedID']);
+                }
 
                 $query3->execute(array($row2['affectedID']));
 
@@ -70,8 +77,9 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
             } else if ($row2['action'] == 'md') {
 
                 $query4->execute(array($row2['affectedID']));
+                $active = $query4->fetchColumn();
 
-                if ($query4->fetchColumn() == 'N') {
+                if ($active == 'N' or (property_exists($extraData, 'newActive') and $extraData->newActive == 'N')) {
                     $vhostObject->setInactive($row2['affectedID']);
                 } else {
                     $vhostObject->vhostMod($row2['affectedID']);
@@ -90,6 +98,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
         $vhostObject->restartHttpdServer();
 
     } else {
+        $theOutput->printGraph('cannot connect to web host with ID: ' . $row['hostID']);
         $query7->execute(array($row['hostID']));
     }
 }

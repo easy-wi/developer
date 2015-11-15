@@ -103,19 +103,26 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
             $opts = stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 
+            $response->add('Downloading: '. $licenceDetails['v'] . '.zip');
+
             $fp = @fopen('http://update.easy-wi.com/ew/' . $licenceDetails['v'] . '.zip', 'rb', false, $opts);
             $zip = @fopen(EASYWIDIR . '/tmp/' . $licenceDetails['v'] . '.zip', 'wb');
 
             if ($fp == true and $zip == true) {
+
                 while (!feof($fp)){
                     fwrite($zip, fread($fp, 8192));
                 }
+
                 fclose($fp);
                 fclose($zip);
+
+                $response->add('Unpacking archive: '. $licenceDetails['v'] . '.zip');
 
                 $zo = @zip_open(EASYWIDIR . '/tmp/'. $licenceDetails['v'] . '.zip');
 
                 if (is_resource($zo)) {
+
                     while ($ze = zip_read($zo)) {
 
                         $name = zip_entry_name($ze);
@@ -198,20 +205,10 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 
-                if (!isset($alreadyRepaired)) {
-                    $response->add('Adding tables if needed.');
-                    include(EASYWIDIR . '/stuff/methods/tables_add.php');
-                }
-
                 if ($ewVersions['cVersion'] < $ewVersions['version'] and is_file(EASYWIDIR . '/install/update.php')) {
                     include(EASYWIDIR . '/install/update.php');
                 } else {
                     $response->addError('Can not open: '. EASYWIDIR . '/install/update.php');
-                }
-
-                if (!isset($alreadyRepaired)) {
-                    $response->add('Repairing tables if needed.');
-                    include(EASYWIDIR . '/stuff/methods/tables_repair.php');
                 }
 
             }
@@ -270,7 +267,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
     $query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if ($row[$column] != null and $row[$column] != '') {
             $table[] = array('version' => $row['version'], 'text' => $row[$column]);
         }

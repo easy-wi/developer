@@ -51,7 +51,7 @@ if (!isanyadmin($admin_id) and count($pa) == 0) {
     redirect('login.php');
 }
 
-$ewVersions['files'] = '4.40';
+$ewVersions['files'] = '5.10';
 
 $vcsprache = getlanguagefile('versioncheck', $user_language, $reseller_id);
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
@@ -60,7 +60,7 @@ $ewVersions['cVersion'] = $query->fetchColumn();
 
 $query = $sql->prepare("SELECT `version`,`releasenotesDE`,`releasenotesEN` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $ewVersions['version'] = $row['version'];
     $ewVersions['releasenotesDE'] = $row['releasenotesDE'];
     $ewVersions['releasenotesEN'] = $row['releasenotesEN'];
@@ -72,7 +72,7 @@ if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion
 
 $query = $sql->prepare("SELECT `cname`,`name`,`vname`,`lastlogin` FROM `userdata` WHERE `id`=? LIMIT 1");
 $query->execute(array($admin_id));
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $great_name = $row['name'];
     $great_vname = $row['vname'];
 
@@ -87,6 +87,7 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
 # https://github.com/easy-wi/developer/issues/61 modules management
 $what_to_be_included_array = array(
+    'sc' => 'system_check.php',
     'fe' => 'feeds.php', 'fn' => 'feeds_entries.php',
     'ap' => 'api_settings.php', 'aa' => 'api_external_auth.php', 'ui' => 'api_import_users.php', 'jb' => 'jobs_list.php', 'bu' => 'mysql_root.php',
     'vc' => 'versioncheck.php', 'ib' => 'ip_bans.php', 'se' => 'panel_settings.php', 'cc' => 'panel_settings_columns.php', 'sm' => 'panel_settings_email.php', 'lo' => 'logdata.php', 'ml' => 'maillog.php', 'sr' => 'admin_search.php',
@@ -101,7 +102,7 @@ $customFiles = array();
 $query = $sql->prepare("SELECT * FROM `modules` WHERE `type` IN ('A','C')");
 $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if ($row['active'] == 'Y' and $row['type'] == 'A' and is_file(EASYWIDIR . '/stuff/custom_modules/' . $row['file'])) {
 
@@ -173,9 +174,11 @@ if ($easywiModules['ws'] === true) {
 }
 
 if ($easywiModules['my'] === true) {
+    $what_to_be_included_array['md'] = 'mysql_db.php';
     $what_to_be_included_array['my'] = 'mysql_server.php';
 }
 
+/*
 if ($easywiModules['ro'] === true) {
     $what_to_be_included_array['rh'] = 'root_dedicated.php';
     $what_to_be_included_array['vs'] = 'root_virtual_server.php';
@@ -189,6 +192,7 @@ if ($easywiModules['ro'] === true) {
         $what_to_be_included_array['sn'] = 'roots_subnets.php';
     }
 }
+*/
 
 if ($easywiModules['ti'] === true) {
     $what_to_be_included_array['ti'] = 'tickets.php';

@@ -34,7 +34,12 @@
                         <?php if ($usedns=='Y'){ ?>
                         <div class="form-group">
                             <label for="defaultdns"><?php echo $sprache->defaultdns;?></label>
-                            <input class="form-control" id="defaultdns" type="text" name="defaultdns" value="<?php echo $defaultdns; ?>" disabled>
+                            <div class="controls">
+                                <input class="form-control" id="defaultdns" type="text" name="defaultdns" value="<?php echo $defaultdns; ?>" readonly>
+                                <span class="help-block alert alert-info">
+                                    <?php echo $sprache->help_tsdns_default_dns;?>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="form-group">

@@ -72,7 +72,7 @@ if (!function_exists('ssh2_execute')) {
 
             $query->execute(array(':serverID' => $id,':aeskey' => $aeskey));
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $serverID = (int) $row['id'];
                 $resellerID = (int) $row['resellerid'];
                 $notified = (int) $row['notified'];
@@ -129,7 +129,7 @@ if (!function_exists('ssh2_execute')) {
                 if ($notified == $rSA['down_checks']) {
                     $query = ($resellerID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
                     $query->execute();
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         if ($row2['mail_serverdown'] == 'Y') {
                             sendmail('emaildown', $row2['id'], $ssh2IP, '');
                         }

@@ -40,7 +40,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['userGroups'])) {
     header('Location: admin.php');
-    die('No acces');
+    die('No Access');
 }
 
 $sprache = getlanguagefile('user', $user_language, $reseller_id);
@@ -75,7 +75,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $lookIpID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $grouptype = $row['grouptype'];
             $defaultgroup = $row['defaultgroup'];
@@ -387,7 +387,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `active`,`grouptype`,`name` FROM `usergroups` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $lookIpID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             if ($row['active'] == 'Y') {
                 $imgName = '16_ok';
@@ -415,7 +415,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT c.`id`,g.`name` FROM `usergroups` g LEFT JOIN `usergroups` c ON g.`grouptype`=c.`grouptype` AND c.`defaultgroup`='Y' WHERE g.`id`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($id, $lookIpID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $default_id = $row['id'];
             $name = $row['name'];
         }
@@ -449,41 +449,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $table = array();
 
-    $o = $ui->st('o', 'get');
-
-    if ($ui->st('o', 'get') == 'da') {
-        $orderby = '`active` DESC';
-    } else if ($ui->st('o', 'get') == 'aa') {
-        $orderby = '`active` ASC';
-    } else if ($ui->st('o', 'get') == 'dt') {
-        $orderby = '`grouptype` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`grouptype` ASC';
-    } else if ($ui->st('o', 'get') == 'dd') {
-        $orderby = '`defaultgroup` DESC';
-    } else if ($ui->st('o', 'get') == 'ad') {
-        $orderby = '`defaultgroup` ASC';
-    } else if ($ui->st('o', 'get') == 'dn') {
-        $orderby = '`name` DESC';
-    } else if ($ui->st('o', 'get') == 'at') {
-        $orderby = '`name` ASC';
-    } else if ($ui->st('o', 'get') == 'di') {
-        $orderby = '`id` DESC';
-    } else {
-        $orderby = '`id` ASC';
-    }
-
-    $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=? ORDER BY $orderby");
+    $query = $sql->prepare("SELECT * FROM `usergroups` WHERE `resellerid`=?");
     $query->execute(array($lookIpID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
-        if ($row['active'] == 'Y') {
-            $imgName = '16_ok';
-            $imgAlt='ok';
-        } else {
-            $imgName = '16_bad';
-            $imgAlt='inactive';
-        }
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['grouptype'] == 'r') {
             $grouptype = $sprache->accounttype_reseller;
@@ -493,8 +461,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $grouptype = $sprache->accounttype_user;
         }
 
-        $table[] = array('id' => $row['id'], 'img' => $imgName, 'alt' => $imgAlt, 'grouptype' => $grouptype, 'defaultgroup' => ($row['defaultgroup'] == 'Y') ? $gsprache->yes : $gsprache->no, 'name' => $row['name'], 'active' => $row['active']);
+        $table[] = array('id' => $row['id'], 'grouptype' => $grouptype, 'defaultgroup' => ($row['defaultgroup'] == 'Y') ? $gsprache->yes : $gsprache->no, 'name' => $row['name'], 'active' => $row['active']);
     }
+
+    configureDateTables('-1');
 
     $template_file = 'admin_user_groups_list.tpl';
 }

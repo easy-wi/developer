@@ -23,11 +23,13 @@
     <delSafe>Sikker Slat</delSafe>
     <delAny>Slet i hvert fald</delAny>
     <delDB>Fjern fra database</delDB>
+    <domains>Domains</domains>
     <feeds>Feeds</feeds>
 	<edit>Rediger</edit>
     <errors></errors>
 	<exec></exec>
     <externalID></externalID>
+    <externalIP></externalIP>
 	<fastdownload>Fastdownload</fastdownload>
     <free></free>
 	<game></game>
@@ -36,6 +38,7 @@
 	<groups>Grupper</groups>
 	<hostsystem>Værtssystem</hostsystem>
 	<hotline>Hotline</hotline>
+    <inactive></inactive>
 	<imprint>Impressum</imprint>
     <jobs>Job</jobs>
     <jobPending>Job afventer</jobPending>

@@ -17,7 +17,6 @@
     <configUserID>UserIDs beginnend ab</configUserID>
     <configZtmpTime>ZTMP Dateien entfernen nach N Tagen</configZtmpTime>
 	<confirm1>Update(s) starten?</confirm1>
-    <connect_ip_only>SSH2 IP nur für Admin (Zusätzliche IPs für Apps)</connect_ip_only>
 	<desc>Beschreibung</desc>
 	<error_root_dbmasterdel>Master Server konnte nicht aus der Datenbank gelöscht werden</error_root_dbmasterdel>
 	<error_root_install>Fehler: Folgende Installation konnte auf dem Rootserver nicht gestartet werden</error_root_install>
@@ -63,6 +62,7 @@
 	<ssh_port>SSH2 Port</ssh_port>
 	<ssh_user>SSH2 Benutzername</ssh_user>
 	<steam>Steam Spiel</steam>
+    <steamWarning>Achtung! Wenn hier Daten eingegeben werden, überschreiben diese die Einstellungen der Templates!</steamWarning>
     <updateMinute>Stündliches Update bei Minute</updateMinute>
 	<useds>Benutze Slots: </useds>
 	<zusatz_ip>Zusatz IP</zusatz_ip>

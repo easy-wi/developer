@@ -88,7 +88,8 @@ if ($ui->st('d', 'get') == 'pw') {
     if (!$ui->smallletters('action',2, 'post')) {
         $template_file = ($logusertype == 'user') ? 'userpanel_pass.tpl' : 'admin_user_own_pass.tpl';
 
-    } else if ($ui->smallletters('action',2, 'post') == 'md'){
+    } else if ($ui->smallletters('action',2, 'post') == 'md') {
+
         $errors = array();
 
         if (!$ui->password('password', 255, 'post')) {
@@ -153,7 +154,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($lookUpID, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $cname = $row['cname'];
         $name = $row['name'];
         $vname = $row['vname'];
@@ -194,7 +195,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
 
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $query2->execute(array($row['serviceProviderID'], $lookUpID));
 

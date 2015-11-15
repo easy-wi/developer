@@ -293,7 +293,7 @@ if (isset($include) and $include == true) {
         $response->add($error->errorInfo);
     }
 
-    require_once(EASYWIDIR . '/stuff/addonslist.php');
+    require_once(EASYWIDIR . '/data/addonslist.php');
 
     try {
 
@@ -305,7 +305,7 @@ if (isset($include) and $include == true) {
         $query = $sql->prepare("SELECT DISTINCT(`resellerid`) FROM `userdata` WHERE `accounttype` IN ('a','r')");
         $query->execute();
 
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             // add additional game images
             $query = $sql->prepare("SELECT 1 FROM `servertypes` WHERE `shorten`='killingfloor252' AND `resellerid`=? LIMIT 1");
@@ -405,7 +405,7 @@ if (isset($include) and $include == true) {
         $query = $sql->prepare("SELECT `id`,AES_DECRYPT(`imageserver`,?) AS `decryptedimageserver` FROM `settings`");
         $query2 = $sql->prepare("UPDATE `settings` SET `imageserver`=? WHERE `id`=? LIMIT 1");
         $query->execute(array($aeskey));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $query2->execute(array($row['decryptedimageserver'], $row['id']));
         }
     } catch (PDOException $error) {

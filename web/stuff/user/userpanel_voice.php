@@ -38,7 +38,7 @@
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['voiceserver'])) {
     header('Location: userpanel.php');
-    die('No acces');
+    die('No Access');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -66,11 +66,11 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,v.`localserverid`,v.`masterserver`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,:aeskey) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`type`,m.`usedns`,m.`publickey`,m.`ssh2ip`,AES_DECRYPT(m.`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(m.`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(m.`ssh2password`,:aeskey) AS `decryptedssh2password`,m.`serverdir`,m.`keyname`,m.`notified` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`backup`='Y' AND v.`id`=:server_id AND v.`userid`=:user_id AND v.`resellerid`=:reseller_id LIMIT 1");
     $query->execute(array(':aeskey' => $aeskey,':server_id' => $id,':user_id' => $user_id,':reseller_id' => $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['type'] == 'ts3') {
             $type = $sprache->ts3;
-            $server=($row['usedns'] == 'N' or $row['dns']==null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'] . ' (' . $row['ip'] . ':' . $row['port'] . ')';
+            $server=($row['usedns'] == 'N' or $row['dns'] == null or $row['dns'] == '') ? $row['ip'] . ':' . $row['port'] : $row['dns'] . ' (' . $row['ip'] . ':' . $row['port'] . ')';
         }
 
         $dns = $row['dns'];
@@ -113,7 +113,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         $query = $sql->prepare("SELECT `id`,`name`,`date` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `date` DESC");
         $query->execute(array($id, $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[] = array('id' => $row['id'], 'date' => $row['date'], 'name' => $row['name']);
         }
 
@@ -131,7 +131,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         if ($toomuch > 0) {
             $query = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` ASC LIMIT " . $toomuch);
             $query->execute(array($id, $user_id, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $delete = $sql->prepare("DELETE FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
                 $delete->execute(array($row['id'], $user_id, $reseller_id));
@@ -187,7 +187,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         $query = $sql->prepare("SELECT `name`,`sid` FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',10, 'post'), $user_id, $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $name = $row['name'];
             $sid = $row['sid'];
         }
@@ -215,7 +215,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         $query = $sql->prepare("SELECT `snapshot`,`name`,`sid`,`channels` FROM `voice_server_backup` WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('id',10, 'post'), $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $snapshot= @gzuncompress($row['snapshot']);
             $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
@@ -266,7 +266,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $query = $sql->prepare("SELECT `masterserver`,`localserverid`,CONCAT(`ip`,':',`port`) AS `address` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id, $user_id, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $masterserver = $row['masterserver'];
         $localserverid = $row['localserverid'];
         $address = $row['address'];
@@ -276,7 +276,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR (`managedServer`='Y' AND `managedForID`=:reseller_id)) LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $masteractive = $row['active'];
             $addedby = $row['addedby'];
             $queryport = $row['queryport'];
@@ -357,7 +357,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`defaultname`,m.`defaultwelcome`,m.`defaulthostbanner_url`,m.`defaulthostbanner_gfx_url`,m.`defaulthostbutton_tooltip`,m.`defaulthostbutton_url`,m.`defaulthostbutton_gfx_url`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $user_id, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $addedby = $row['addedby'];
         $queryport = $row['queryport'];
         $querypassword = $row['decryptedquerypassword'];
@@ -385,7 +385,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         } else if ($addedby == 1) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($vrow['rootid'], $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $queryip = $row['ip'];
             }
         }
@@ -462,7 +462,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $masterserver = $row['masterserver'];
             $ip = $row['ip'];
             $port = $row['port'];
@@ -479,7 +479,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             if ($active == 'Y') {
                 $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,?) AS `decryptedquerypassword`  FROM `voice_masterserver` WHERE `id`=? AND (`resellerid`=? OR (`managedServer`='Y' AND `managedForID`=?)) LIMIT 1");
                 $query2->execute(array($aeskey, $row['masterserver'], $reseller_id, $reseller_id));
-                foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $resellerToUse = $row2['resellerid'];
                     $masteractive = $row2['active'];
                     $usedns = $row2['usedns'];
@@ -494,7 +494,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     } else if ($addedby == 1) {
                         $query3 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                         $query3->execute(array($row2['rootid'], $resellerToUse));
-                        foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+                        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                             $queryip = $row3['ip'];
                         }
                     }
@@ -503,7 +503,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 if (isset($tsdnsServerID) and isid($tsdnsServerID,10)) {
                     $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($tsdnsServerID, $resellerToUse));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         if ($externalDefaultDNS== 'Y') {
                             $defaultdns=strtolower($id . '.' . $row2['defaultdns']);
                         }
@@ -546,14 +546,14 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $template_file = 'userpanel_404.tpl';
         }
 
-    } else if ($ui->smallletters('action', 2, 'post') == 'md' and token(true)){
+    } else if ($ui->smallletters('action', 2, 'post') == 'md' and token(true)) {
 
         unset ($active);
         $errors = array();
 
         $query = $sql->prepare("SELECT `active`,`ip`,`port`,`slots`,`dns`,`masterserver`,`localserverid`,`password`,`forceservertag`,`forcebanner`,`forcebutton`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $ip = $row['ip'];
             $port = $row['port'];
@@ -572,9 +572,10 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         }
 
         if (isset($active) and $active == 'Y') {
+
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR (`managedServer`='Y' AND `managedForID`=:reseller_id)) LIMIT 1");
             $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $resellerToUse = $row['resellerid'];
                 $masteractive = $row['active'];
                 $serverdir = $row['serverdir'];
@@ -598,7 +599,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 } else if ($addedby == 1) {
                     $query2 = $sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($row['rootid'], $resellerToUse));
-                    foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                         $queryip = $row2['ip'];
                         $bitversion = $row2['bitversion'];
                     }
@@ -615,19 +616,20 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                 if ($usedns == 'Y' and $dns != $olddns and $dns != '' and $dnsCheck !== false) {
 
-                    if (isset($tsdnsServerID) and isid($tsdnsServerID,10) and isset($resellerToUse)) {
+                    if (isset($tsdnsServerID) and isid($tsdnsServerID, 10) and isset($resellerToUse)) {
+
                         $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                         $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $resellerToUse));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $publickey = $row['publickey'];
-                            $ip = $row['ssh2ip'];
-                            $port = $row['decryptedssh2port'];
-                            $user = $row['decryptedssh2user'];
-                            $pass = $row['decryptedssh2password'];
+                            $queryip = $row['ssh2ip'];
+                            $ssh2port = $row['decryptedssh2port'];
+                            $ssh2user = $row['decryptedssh2user'];
+                            $ssh2password = $row['decryptedssh2password'];
                             $serverdir = $row['serverdir'];
                             $keyname = $row['keyname'];
                             $bit = $row['bitversion'];
-                            $slots = $row['slots'];
+                            $bitversion = $row['bitversion'];
                         }
                     }
 
@@ -715,7 +717,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`localserverid`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
     $query->execute(array($aeskey, $id, $user_id, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $addedby = $row['addedby'];
         $queryport = $row['queryport'];
         $querypassword = $row['decryptedquerypassword'];
@@ -738,7 +740,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         } else {
 
             if ($ui->smallletters('action', 2, 'get') == 're') {
+
                 $uptime = 2;
+
                 $reply = $connection->StopServer($volocalserverid);
                 $reply = $connection->StartServer($volocalserverid);
 
@@ -746,7 +750,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $insertlog->execute();
 
             } else if ($ui->smallletters('action', 2, 'get') == 'so') {
+
                 $uptime = 1;
+
                 $reply = $connection->StopServer($volocalserverid);
 
                 $loguseraction = '%stop% %voserver% ' . $row['ip'] . ':' . $row['port'];
@@ -754,6 +760,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             }
 
             if (isset($reply)) {
+
                 $query2 = $sql->prepare("UPDATE `voice_server` SET `uptime`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query2->execute(array($uptime, $id, $reseller_id));
                 $template_file = $spracheResponse->ts_query_success . $reply[0]['msg'];
@@ -774,7 +781,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,v.`localserverid`,v.`masterserver`,m.`type`,m.`queryport`,AES_DECRYPT(m.`querypassword`,:aeskey) AS `decryptedquerypassword`,m.`rootid`,m.`addedby`,m.`ssh2ip`,m.`type`,m.`usedns`,m.`publickey`,m.`ssh2ip`,AES_DECRYPT(m.`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(m.`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(m.`ssh2password`,:aeskey) AS `decryptedssh2password`,m.`serverdir`,m.`keyname`,m.`notified` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`backup`='Y' AND v.`id`=:server_id AND v.`userid`=:user_id AND v.`resellerid`=:reseller_id LIMIT 1");
     $query->execute(array(':aeskey' => $aeskey,':server_id' => $id,':user_id' => $user_id,':reseller_id' => $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['type'] == 'ts3') {
             $type = $sprache->ts3;
@@ -915,7 +922,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     $query = $sql->prepare("SELECT v.*,m.`type`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`active`='Y' AND m.`active`='Y' AND v.`userid`=? AND v.`resellerid`=? ORDER BY $orderby");
     $query->execute(array($user_id, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['vo'])) {
             $dns = $row['dns'];

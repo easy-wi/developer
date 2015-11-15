@@ -50,7 +50,7 @@ if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
 if (!isset($_SESSION['sID']) or in_array($id, $substituteAccess['gs'])) {
     $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`protected`,s.`anticheat`,g.`pallowed`,g.`eacallowed`,s.`map`,s.`mapGroup`,t.`shorten`,t.`mapGroup` AS `defaultMapGroup` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($id, $user_id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $serverip = $row['serverip'];
         $port = $row['port'];
         $map = $row['map'];
@@ -115,7 +115,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 
     $rowcount = $query->rowCount();
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $normal_3 = $row['normal_3'];
         $normal_4 = $row['normal_4'];
         $hlds_3 = $row['hlds_3'];
@@ -126,7 +126,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 
     $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`gameq`,t.`gamebinary`,t.`mapGroup`,t.`protected` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $shorten = $row['shorten'];
         $uploadallowed[] = $row['upload'];
         $gameqArray[$shorten] = $row['gameq'];
@@ -141,7 +141,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 
     $query = $sql->prepare("SELECT * FROM `gserver_restarts` WHERE `restarttime`=? AND `switchID`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($date2, $id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $template = $row['template'];
         $anticheat = $row['anticheat'];
         $gsswitch = $row['gsswitch'];
@@ -237,7 +237,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
     $query = $sql->prepare("SELECT `normal_3`,`normal_4`,`hlds_3`,`hlds_4`,`hlds_5`,`hlds_6` FROM `eac` WHERE `active`='Y' AND `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
     $rowcount = $query->rowCount();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $normal_3 = $row['normal_3'];
         $normal_4 = $row['normal_4'];
         $hlds_3 = $row['hlds_3'];
@@ -330,14 +330,14 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 
     $query = $sql->prepare("SELECT t.`shorten`,t.`gameq`,t.`gamebinary` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
     $query->execute(array($id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $shorten = $row['shorten'];
         $gameqArray[$shorten] = array('gameq' => $row['gameq'], 'gamebinary' => $row['gamebinary']);
     }
 
     $query = $sql->prepare("SELECT `template`,`restarttime`,`gsswitch`,`anticheat`,`protected`,`map`,`restart`,`backup`,`worldsafe`,`upload` FROM `gserver_restarts` WHERE `switchID`=? AND `resellerid`=?");
     $query->execute(array($id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $shorten = $row['gsswitch'];
         $template = $row['template'];

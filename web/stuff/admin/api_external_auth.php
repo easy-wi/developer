@@ -39,7 +39,7 @@
 
 if ($main != 1 or !isset($admin_id) or (isset($admin_id) and !$pa['apiSettings'])) {
     header('Location: admin.php');
-    die('No acces');
+    die('No Access');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -101,7 +101,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `active`,`ssl`,`user`,`domain`,AES_DECRYPT(`pwd`,?) AS `decryptedPWD`,`file` FROM `api_external_auth` WHERE `resellerID`=? LIMIT 1");
     $query->execute(array($aeskey,$lookupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $active = $row['active'];
         $ssl = $row['ssl'];
         $user = $row['user'];

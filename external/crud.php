@@ -44,110 +44,143 @@ $id = $ui->id('id', 10, 'get');
 $defaultVar = ($ui->id('id', 10, 'get')) ? $ui->id('id', 10, 'get') : 10;
 
 // At this point all variables are defined that can come from the user
- 
+
+$table = array();
+
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
-if ($ui->w('action',4, 'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
 
     unset($header, $text);
 
-    $errors = array($spracheResponse->token);
+    $errors = array('token' => $spracheResponse->token);
 
-    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
-
-
-// Add and modify entries. Same validation can be used.
-} else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
-
-	// Error handling. Check if required attributes are set and can be validated
+} else {
     $errors = array();
+}
 
-	// Add or mod is opened
-    if (!$ui->smallletters('action', 2, 'post')) {
+if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
-		// Gather data for adding if needed and define add template
-        if ($ui->st('d', 'get') == 'ad') {
-            $template_file = 'admin_roots_add.tpl';
+    // Add jQuery plugin chosen to the header
+	/*
+    $htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
+	*/
 
-		// Gather data for modding in case we have an ID and define mod template
-        } else if ($ui->st('d', 'get') == 'md' and $id) {
-		
-			// Check if database entry exists and if not display 404 page
-            $template_file =  ($query->rowCount() > 0) ? 'admin_roots_md.tpl' : 'admin_404.tpl';
+    if ($id and $ui->st('d', 'get') == 'md') {
 
-		// Show 404 if GET parameters did not add up or no ID was given with mod
-        } else {
-            $template_file = 'admin_404.tpl';
+        $query = $sql->prepare("SELECT `a`,b`,`c` FROM `table` WHERE `id`=? AND `reseller_id`=? LIMIT 1");
+        $query->execute(array($id, $resellerLockupID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            if (!$ui->st('action', 'post')) {
+                $a = $row['a'];
+                $b = $row['b'];
+                $c = $row['c'];
+            }
+
+            $oldA = $row['a'];
+            $oldB = $row['b'];
+            $oldC = $row['c'];
         }
+    }
 
-	// Form is submitted
-    } else if ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') {
+    if (count($errors) == 0 and ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad')) {
 
-        if (!$ui->active('active', 'post')) {
+        if (!$active) {
             $errors['active'] = $sprache->active;
         }
 
-		// Submitted values are OK
         if (count($errors) == 0) {
 
-			// Make the inserts or updates define the log entry and get the affected rows from insert
-            if ($ui->st('action', 'post') == 'ad') {
+            if ($ui->st('action', 'post') == 'ad' and isset($rootServer)) {
 
+                $query = $sql->prepare("INSERT INTO `table` (`a`,`b`,`c`,`reseller_id`) VALUES (?,?,?,?)");
+                $query->execute(array($a, $b, $c, $resellerLockupID));
                 $rowCount = $query->rowCount();
-                $loguseraction = '%add% %root% ' . $ip;
 
-            } else if ($ui->st('action', 'post') == 'md' and $id) {
+                $loguseraction = '%add% %yourmodule% ' . $a;
 
-               $rowCount = $query->rowCount();
-                $loguseraction = '%mod% %root% ' . $ip;
+            } else if ($ui->st('action', 'post') == 'md' and $id and isset($rootServer)) {
+
+                $query = $sql->prepare("UPDATE `table` SET `a`=?,`b`=?,`c`=? WHERE `id`=? AND `reseller_id`=? LIMIT 1");
+                $query->execute(array($a, $b, $c, $id, $resellerLockupID));
+                $rowCount = $query->rowCount();
+
+                $loguseraction = '%mod% %yourmodule% ' . $a;
             }
 
-			// Check if a row was affected during insert or update
             if (isset($rowCount) and $rowCount > 0) {
+
                 $insertlog->execute();
                 $template_file = $spracheResponse->table_add;
 
-			// No update or insert failed
+                // No update or insert failed
             } else {
                 $template_file = $spracheResponse->error_table;
             }
-
-		// An error occurred during validation unset the redirect information and display the form again
-        } else {
-            unset($header, $text);
-            $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
         }
     }
 
-// Remove entries in case we have an ID given with the GET request
+    // An error occurred during validation
+    // unset the redirect information and display the form again
+    if (!$ui->smallletters('action', 2, 'post') or count($errors) != 0) {
+
+        unset($header, $text);
+
+        // Gather data for adding if needed and define add template
+        if ($ui->st('d', 'get') == 'ad') {
+
+            $table = getUserList($resellerLockupID);
+
+            $template_file = 'admin_your_module_add.tpl';
+
+            // Gather data for modding in case we have an ID and define mod template
+        } else if ($ui->st('d', 'get') == 'md' and $id) {
+
+            // Check if database entry exists and if not display 404 page
+            $template_file =  (isset($oldActive)) ? 'admin_your_module_md.tpl' : 'admin_404.tpl';
+
+            // Show 404 if GET parameters did not add up or no ID was given with mod
+        } else {
+            $template_file = 'admin_404.tpl';
+        }
+    }
+
 } else if ($ui->st('d', 'get') == 'dl' and $id) {
 
-	// Nothing submitted yet, display the delete form
-    if (!$ui->st('action', 'post')) {
+    $query = $sql->prepare("SELECT `a`,`b`,`c` FROM `table` WHERE `id`=? AND `reseller_id`=? LIMIT 1");
+    $query->execute(array($id, $resellerLockupID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $a = $row['a'];
+    }
 
-		// Check if we could find an entry and if not display 404 page
-        $template_file = ($query->rowCount() > 0) ? 'admin_roots_dl.tpl' : 'admin_404.tpl';
+    $serverFound = $query->rowCount();
 
-	// User submitted remove the entry
-    } else if ($ui->st('action', 'post') == 'dl') {
+    if ($ui->st('action', 'post') == 'dl' and count($errors) == 0 and $serverFound > 0) {
 
-		// Check if a row was affected meaning an entry could be deleted. If yes add log entry and display success message
+        $query = $sql->prepare("DELETE FROM `table` table `id`=? AND `reseller_id`=? LIMIT 1");
+        $query->execute(array($id, $resellerLockupID));
+
         if ($query->rowCount() > 0) {
-		
-            $template_file = $spracheResponse->table_del;
-            $loguseraction = '%del% %root% ' . $ip;
+
+            $loguseraction = '%del% %yourmodule% ' . $a;
             $insertlog->execute();
 
-		// Nothing was deleted, display an error
+            $template_file = $spracheResponse->table_del;
         } else {
             $template_file = $spracheResponse->error_table;
         }
-
-	// GET Request did not add up. Display 404 error.
-    } else {
-        $template_file = 'admin_404.tpl';
     }
 
-// List the available entries
+    // Nothing submitted yet or csfr error, display the delete form
+    if (!$ui->st('action', 'post') or count($errors) != 0) {
+        // Check if we could find an entry and if not display 404 page
+        $template_file = ($serverFound > 0) ? 'admin_your_module_dl.tpl' : 'admin_404.tpl';
+    }
+
 } else {
-    $table = array();
+
+    configureDateTables('-1', '1, "asc"', 'ajax.php?w=datatable&d=yourmodule');
+
+    $template_file = 'admin_your_module_list.tpl';
 }

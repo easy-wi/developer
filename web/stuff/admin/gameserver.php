@@ -65,7 +65,7 @@ if ($reseller_id == 0) {
 $id = $ui->id('id', 10, 'get');
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
-if ($ui->w('action',4, 'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
 
     unset($header, $text);
 
@@ -75,8 +75,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
     // Add jQuery plugin chosen to the header
-    $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
     // Error handling. Check if required attributes are set and can be validated
     $errors = array();
@@ -361,8 +361,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),?,1,'Y',?)");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $resellerLockupID, $ui->externalID('externalID', 'post')));
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`ppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,1,'Y',?)");
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, passwordgenerate(10), $aeskey, $resellerLockupID, $ui->externalID('externalID', 'post')));
 
                 $id = $sql->lastInsertId();
 
@@ -501,7 +501,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $loguseraction .= ', %add%: ' . implode(', ', $gamesToBeInstalled);
 
                     if ($ui->st('action', 'post') == 'ad') {
-                        $appServer->addApp($gamesToBeInstalled);
+                        $appServer->addApp($gamesToBeInstalled, true);
                     }
                 }
 
@@ -658,15 +658,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
         # https://github.com/easy-wi/developer/issues/69
-        $game = $ui->id('game',10, 'post');
+        $game = $ui->id('game', 10, 'post');
 
         if ($ui->active('type', 'post') == 'Y') {
             $query = $sql->prepare("DELETE FROM `addons_installed` WHERE `serverid`=? AND `resellerid`=?");
-            $query->execute(array($game, $reseller_id));
+            $query->execute(array($game, $resellerLockupID));
         }
 
         $query = $sql->prepare("SELECT t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-        $query->execute(array($game, $reseller_id));
+        $query->execute(array($game, $resellerLockupID));
         $shorten = $query->fetchColumn();
 
 
@@ -692,15 +692,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $appServer->stopAppHard();
                 $appServer->removeApp($templates);
 
-                $loguseraction = "%reinstall% %gserver% ${serverip}:${port}";
+                $loguseraction = "%reinstall% %gserver% {$serverip}:{$port}";
 
             } else {
                 $loguseraction = "%resync% %gserver% {$serverip}:{$port}";
             }
 
-            $appServer->addApp($templates);
+            $appServer->addApp($templates, true);
 
-            $return = $appServer->execute();
+            $appServer->execute();
 
             $template_file = $sprache->server_installed;
 

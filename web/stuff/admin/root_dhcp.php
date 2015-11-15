@@ -104,7 +104,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `decryptedport`,AES_DECRYPT(`user`,:aeskey) AS `decrypteduser`,AES_DECRYPT(`pass`,:aeskey) AS `decryptedpass` FROM `rootsDHCP` WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':aeskey' => $aeskey,':id' => $id,':reseller_id' => $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $active = $row['active'];
                 $ip = $row['ip'];
                 $port = $row['decryptedport'];
@@ -228,7 +228,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `ip`,`description` FROM `rootsDHCP` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $ip = $row['ip'];
         $description = $row['description'];
     }
@@ -289,7 +289,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `active`,`id`,`ip`,`description`,`notified` FROM `rootsDHCP` WHERE `resellerid`=? ORDER BY $orderby");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['active'] == 'Y' and $row['notified'] > 0) {
             $imgName = '16_error';

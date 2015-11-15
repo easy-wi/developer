@@ -38,7 +38,7 @@
  */
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !isanyadmin($admin_id) and !rsellerpermisions($admin_id)) or (!isset($pa))) {
     header('Location: login.php');
-    die('No acces');
+    die('No Access');
 }
 $sprache = getlanguagefile('search',$user_language,$reseller_id);
 $results = array();
@@ -96,14 +96,15 @@ if (isset($ui->get['q'])) {
                 break;
             case(ipport($s)):
                 $addresses[] = $s;
+                list($ips[], $ports[]) = explode(':' , preg_replace('/\s+/', '', $s));
                 $q[] = $s;
                 break;
-            case(names($s,strlen($s))):
+            default:
                 $words[]=strtolower($s);
                 $q[] = $s;
-                break;
         }
     }
+
     $ips=array_unique($ips);
     $addresses=array_unique($addresses);
     $words=array_unique($words);
@@ -300,12 +301,8 @@ if (isset($ui->get['q'])) {
                 $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE $notIN (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
                 $query->execute(array(':word' => $word));
             } else {
-                $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE `resellerid`=? ".notIN($usIDs,'`id`')." AND (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
-                if ($admin_id==$reseller_id) {
-                    $query->execute(array(':resellerID' => $reseller_id,':word' => $word));
-                } else {
-                    $query->execute(array(':resellerID' => $admin_id,':word' => $word));
-                }
+                $query = $sql->prepare("SELECT `id`,`cname`,CONCAT(`vname`,' ',`name`) AS `username` FROM `userdata` WHERE `resellerid`=:resellerID ".notIN($usIDs,'`id`')." AND (`cname` LIKE :word OR vname LIKE :word OR name LIKE :word)");
+                $query->execute(array(':resellerID' => ($admin_id == $reseller_id) ? $reseller_id : $admin_id, ':word' => $word));
             }
             foreach($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $usIDs[] = $row['id'];
@@ -314,5 +311,8 @@ if (isset($ui->get['q'])) {
         }
     }
 }
+
+configureDateTables('-1', '1, "desc"');
+
 $q=implode(' ',$q);
 $template_file = 'admin_search.tpl';

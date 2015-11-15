@@ -17,7 +17,6 @@
     <configUserID>UserIDs starting at</configUserID>
     <configZtmpTime>Remove ZTMP files after N days</configZtmpTime>
     <confirm1>Start update(s)?</confirm1>
-    <connect_ip_only>SSH2 IP admin only (additional ips for apps)</connect_ip_only>
     <desc>Description</desc>
     <error_root_db>Error: Could not delete the root server from the database!</error_root_db>
     <error_root_dbmasterdel>Error: Could not delete the master server from the database!</error_root_dbmasterdel>
@@ -63,6 +62,7 @@
     <ssh_port>SSH2 port</ssh_port>
     <ssh_user>SSH2 username</ssh_user>
     <steam>Steam game</steam>
+    <steamWarning>Warning! If you enter any data here, it will overwrite the login data given at the gameserver templates!</steamWarning>
     <updateMinute>Hourly update at minute</updateMinute>
     <useds>Used slots:</useds>
     <zusatz_ip>Additional IPs</zusatz_ip>

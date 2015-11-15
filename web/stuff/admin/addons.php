@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or !$main == 1) or (isset($admin_id) and !$pa['addons'])) {
 	header('Location: admin.php');
-	die('No acces');
+	die('No Access');
 }
 
 $sprache = getlanguagefile('images', $user_language, $reseller_id);
@@ -75,7 +75,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=?");
     $query->execute(array($ui->id('id', 10, 'get'), $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $addon = $row['addon'];
         foreach ($row as $k => $v) {
             if (!in_array($k, array('id','resellerid','depending'))) {
@@ -108,7 +108,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $shortens = (array) $ui->id('shorten', 10, 'post');
     $type = (string) $ui->smallletters('type', 99, 'post');
     $addon = (string) $ui->gamestring('addon', 'post');
-    $folder = (string) $ui->folder('folders', 'post');
+    $folder = (string) $ui->folder('folder', 'post');
     $active = (string) $ui->active('active', 'post');
     $menudescription = (string) $ui->description('menudescription', 'post');
     $configs = (string) $ui->startparameter('configs', 'post');
@@ -125,8 +125,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $depending = ($ui->id('depending',19, 'post')) ? (int) $ui->id('depending', 19, 'post') : 0;
 
     // Add jQuery plugin chosen to the header
-    $htmlExtraInformation['css'][] = '<link href="css/adminlte/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['css'][] = '<link href="css/default/chosen/chosen.min.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/chosen/chosen.jquery.min.js" type="text/javascript"></script>';
 
     // Error handling. Check if required attributes are set and can be validated
     $errors = array();
@@ -141,7 +141,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `resellerid`=? ORDER BY `menudescription`");
             $query->execute(array($reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $dependings[] = '<option value="'.$row['id'].'">'.$row['menudescription'].'</option>';
             }
 
@@ -192,7 +192,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT * FROM `addons` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $type = $row['type'];
                 $addon = $row['addon'];
                 $paddon = $row['paddon'];
@@ -209,7 +209,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `servertype_id` FROM `addons_allowed` WHERE `addon_id`=? AND `reseller_id`=?");
             $query->execute(array($id, $reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $shortens[] = $row['servertype_id'];
             }
             $rowCount += $query->rowCount();
@@ -271,9 +271,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ad',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($array as $language) {
                     if (small_letters_check($language, 2)) {
-                        $description = $ui->description('description', 'post', $language);
-                        $query->execute(array($id, $language, $description, $reseller_id));
-
+                        $query->execute(array($id, $language, $ui->description('description', 'post', $language), $reseller_id));
                         $rowCount += $query->rowCount();
                     }
                 }
@@ -281,7 +279,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `resellerID`=?");
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($id, $reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if (!in_array($row['lang'], $array)) {
                         $query2->execute(array($id, $row['lang'], $reseller_id));
 
@@ -307,7 +305,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT `servertype_id` FROM `addons_allowed` WHERE `addon_id`=? AND `reseller_id`=?");
                 $query2 = $sql->prepare("DELETE FROM `addons_allowed` WHERE `addon_id`=? AND `servertype_id`=? AND `reseller_id`=? LIMIT 1");
                 $query->execute(array($id, $reseller_id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if (!in_array($row['servertype_id'], $shortens)) {
                         $query2->execute(array($id, $row['servertype_id'], $reseller_id));
 
@@ -346,38 +344,38 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `id`,`description` FROM `servertypes` WHERE `resellerid`=?");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $gamesAssigned[$row['id']] = $row['description'];
     }
 
     $query = $sql->prepare("SELECT `id`,`menudescription` FROM `addons` WHERE `type`='tool' AND `type`=? AND `resellerid`=? ORDER BY `menudescription`");
     $query->execute(array($type,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $dependings[] = (isset($depending) and $depending == $row['id']) ? '<option value="' . $row['id'] . '" selected="selected">' . $row['menudescription'] . '</option>' : '<option value="' . $row['id'] . '">' . $row['menudescription'] . '</option>';
     }
 
     $query = $sql->prepare("SELECT `lang`,`text` FROM `translations` WHERE `type`='ad' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
-    foreach ($languages as $row) {
-        if (small_letters_check($row, 2)) {
+    foreach ($languages as $lg) {
+        if (small_letters_check($lg, 2)) {
             unset($lang);
             $description = '';
 
-            $query->execute(array($id, $row,$reseller_id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                $lang = $row2['lang'];
-                $description = $row2['text'];
+            $query->execute(array($id, $lg, $reseller_id));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $lang = $row['lang'];
+                $description = $row['text'];
             }
 
             if (isset($lang)) {
                 $style = '';
                 $displayNone = '';
-                $definedLanguages[] = $row;
+                $definedLanguages[] = $lg;
             } else {
                 $displayNone = 'display_none';
                 $style = 'style="display: none;"';
             }
 
-            $foundLanguages[] = array('style' => $style, 'lang' => $row, 'description' => $description, 'display' => $displayNone);
+            $foundLanguages[] = array('style' => $style, 'lang' => $lg, 'description' => $description, 'display' => $displayNone);
         }
     }
 
@@ -490,7 +488,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `id`,`menudescription`,`active`,`type` FROM `addons` WHERE `resellerid`=? ORDER BY $orderby LIMIT $start,$amount");
     $query2 = $sql->prepare("SELECT GROUP_CONCAT(DISTINCT s.`shorten` ORDER BY s.`shorten` ASC SEPARATOR ', ') AS `list`, COUNT(s.`id`) AS `amount` FROM `addons_allowed` AS a INNER JOIN `servertypes` AS s ON a.`servertype_id`=s.`id` WHERE a.`addon_id`=? AND s.`resellerid`=?");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $gamesList = '(0)';
 
@@ -503,7 +501,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
         $query2->execute(array($row['id'], $reseller_id));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $gamesList = '(' . $row2['amount'] . ') ' . $row2['list'];
         }
 

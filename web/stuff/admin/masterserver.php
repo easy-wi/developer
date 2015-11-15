@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['masterServer'])) {
 	header('Location: admin.php');
-	die('No acces');
+	die('No Access');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -78,20 +78,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query2 = $sql->prepare("SELECT * FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query3 = $sql->prepare("INSERT INTO rservermasterg (`serverid`,`servertypeid`,`installing`,`installstarted`,`resellerid`) VALUES (?,?,'Y',NOW(),?)");
 
-            foreach($ui->id('id', 10, 'post') as $masterID) {
+            foreach ($ui->id('id', 10, 'post') as $masterID) {
 
-                $query->execute(array($id, $masterID ,$resellerLockupID));
+                $query->execute(array($id, $masterID, $resellerLockupID));
 
-                if ($query->rowcount() == 0) {
+                if ($query->rowCount() == 0) {
 
                     $query2->execute(array($masterID, $resellerLockupID));
-                    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-
-                        $description = $row2['description'];
-                        $shorten = $row2['shorten'];
-
-                        $template_file .= '<b>' . $description . '</b> ' . $sprache->root_masterinstall;
-                        $loguseraction = '%add% %master% ' . $shorten;
+                    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+                        $template_file .= '<b>' . $row2['description'] . '</b> ' . $sprache->root_masterinstall . '<br>';
+                        $loguseraction = '%add% %master% ' . $row2['shorten'];
                         $insertlog->execute();
                     }
 
@@ -101,10 +97,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $rootServer->collectData($masterID, true);
             }
 
-            $sshcmd = $rootServer->returnCmds('install','all');
+            $rootServer->sshConnectAndExecute();
 
-            if ($rootServer->sshcmd !== null) {
-                ssh2_execute('gs', $id, $rootServer->sshcmd);
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                $template_file .= '<br>' . nl2br($rootServer->getCommands());
             }
 
         } else {
@@ -117,7 +113,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ip`,`os`,`description` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $os = $row['os'];
             $description = $row['description'];
@@ -127,7 +123,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $query = $sql->prepare("SELECT `id`,`shorten`,`steamgame`,`description` FROM `servertypes` AS t WHERE `resellerid`=? AND (`os`='B' OR `os`=?) AND NOT EXISTS (SELECT 1 FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND s.`shorten`=t.`shorten`) ORDER BY `description`");
             $query->execute(array($resellerLockupID, $os, $id));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
             }
 
@@ -138,42 +134,41 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
     }
 
-} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id',19, 'get')) {
+} else if ($ui->st('d', 'get') == 'dl' and $ui->id('id', 10, 'get')) {
 
     if ($ui->smallletters('action', 2, 'post') == 'dl') {
 
-        $serverid = $ui->id('id', 19, 'get');
-
-        $rdata = serverdata('root', $serverid, $aeskey);
-        $sship = $rdata['ip'];
+        $rootServer = new masterServer($ui->id('id', 10, 'get'), $aeskey);
 
         if ($ui->id('id', 10, 'post')) {
 
             $template_file = '';
-            $deletestring = '';
-            $i = 0;
 
-            foreach($ui->id('id',30, 'post') as $id) {
+            $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
+            $query2 = $sql->prepare("DELETE FROM `rservermasterg` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
-                $query = $sql->prepare("SELECT s.`shorten` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
+            foreach ($ui->id('id', 10, 'post') as $id) {
+
                 $query->execute(array($id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                    $shorten = $row['shorten'];
-                    $deletestring .= '_' . $shorten;
-                }
+                $shorten = $query->fetchColumn();
 
-                $query = $sql->prepare("DELETE FROM `rservermasterg` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($id, $resellerLockupID));
+                $rootServer->masterRemove($shorten);
 
-                $template_file .= $spracheResponse->table_del . ": $shorten<br />";
-                $loguseraction = "%del% %master% $sship $shorten";
+                $query2->execute(array($id, $resellerLockupID));
+
+                $template_file .= $spracheResponse->table_del . ': ' . $shorten . '<br />';
+
+                $loguseraction = '%del% %master% ' . $rootServer->sship . ' ' . $shorten;
                 $insertlog->execute();
-                $i++;
             }
 
-            $deletestring = $i . $deletestring;
+            $rootServer->sshConnectAndExecute(false);
 
-            $template_file .= (ssh2_execute('gs', $serverid, "./control.sh delete $deletestring")) ? $sprache->root_masterdel : $sprache->error_root_masterdel2;
+            $template_file .= $sprache->root_masterdel;
+
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                $template_file .= '<br>' . nl2br($rootServer->getCommands());
+            }
 
         } else {
             $template_file = $sprache->error_root_noselect;
@@ -187,14 +182,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $ip = $row['ip'];
             $description = $row['description'];
         }
 
         $query = $sql->prepare("SELECT r.`id`,s.`shorten`,s.`description` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE r.`serverid`=? AND r.`resellerid`=? ORDER BY `description`");
         $query->execute(array($id,$resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[] = array('id' => $row['id'], 'shorten' => $row['shorten'], 'description' => $row['description']);
         }
 
@@ -217,7 +212,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         foreach($ui->id('serverID', 10, 'post') as $id) {
             $query = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $ips[$id] = $row['ip'];
             }
         }
@@ -233,7 +228,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             foreach($ui->id('masterID', 10, 'post') as $masterID) {
                 $query->execute(array($masterID, $id, $resellerLockupID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $ajaxStringIDs[] = $row['id'];
                 }
             }
@@ -255,7 +250,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT `id`,`ip`,`description` FROM `rserverdata` WHERE `active`='Y' AND `resellerid`=?");
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $appServer[$row['id']] = array('ip' => $row['ip'], 'description' => $row['description']);
     }
 
@@ -263,7 +258,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query2 = $sql->prepare("SELECT r.`id` FROM `rservermasterg` AS m INNER JOIN `rserverdata` AS r ON r.`id`=m.`serverid` WHERE m.`servertypeid`=?");
 
     $query->execute(array($resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $serverIDs = array();
 

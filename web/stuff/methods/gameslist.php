@@ -72,7 +72,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -107,7 +108,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -142,7 +144,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -177,7 +180,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -212,7 +216,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'main/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -247,7 +252,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -282,7 +288,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -317,7 +324,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -352,7 +360,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -387,7 +396,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -422,7 +432,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -457,7 +468,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -492,7 +504,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -527,7 +540,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' =>  'S',
@@ -562,7 +576,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -597,7 +612,8 @@ $gameImages = array(
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -632,7 +648,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -646,7 +663,7 @@ $gameImages = array(
         ':modfolder' => 'csgo',
         ':fps' => null,
         ':slots' => 12,
-        ':map' => 'de_dust',
+        ':map' => 'de_dust2',
         ':cmd' => './%binary% -game csgo -console -usercon +ip %ip% +hostport %port% +tv_port %tvport% +clientport %port3% -maxplayers_override %slots% -tickrate %tickrate% +mapgroup %mapgroup% +map %map%',
         ':modcmds' => "[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1",
         ':tic' => 66,
@@ -663,11 +680,84 @@ $gameImages = array(
         ':portFour' => null,
         ':portFive' => null,
         ':useQueryPort' => 1,
-        ':mapGroup' => 'mg_demolition',
+        ':mapGroup' => 'mg_active',
         ':protected' => 'Y',
         ':protectedSaveCFGs' => 'cfg/server.cfg',
         ':ramLimited' => 'N',
-        ':os' => 'B'
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
+    ),
+    array(
+        ':steamgame' => 'S',
+        ':appID' => 317670,
+        ':updates' => 1,
+        ':shorten' => 'nmrih',
+        ':description' => 'No More Room in Hell',
+        ':gamebinary' => 'srcds_run',
+        ':gamebinaryWin' => 'srcds.exe',
+        ':binarydir' => null,
+        ':modfolder' => 'nmrih',
+        ':fps' => null,
+        ':slots' => 8,
+        ':map' => 'nmo_broadway',
+        ':cmd' => './%binary% -game nmrih -ip %ip% -port %port% -hostport %port% +maxplayers %slots% +map %map% +clientport %port3%',
+        ':modcmds' => "",
+        ':tic' => 66,
+        ':gameq' => 'nmrih',
+        ':gamemod' => 'N',
+        ':gamemod2' => null,
+        ':configs' => "cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes_server.txt\r\ncfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ncfg/gamemode_armsrace.cfg\r\ncfg/gamemode_casual.cfg\r\ncfg/gamemode_competitive.cfg\r\ncfg/gamemode_custom.cfg\r\ncfg/gamemode_deathmatch.cfg\r\ncfg/gamemode_demolition.cfg\r\ncfg/gamemode_training.cfg",
+        ':configedit' => null,
+        ':portStep' => 10,
+        ':portMax' => 4,
+        ':portOne' => 27015,
+        ':portTwo' => 27016,
+        ':portThree' => 27017,
+        ':portFour' => 27018,
+        ':portFive' => null,
+        ':useQueryPort' => 1,
+        ':mapGroup' => '',
+        ':protected' => 'N',
+        ':protectedSaveCFGs' => '',
+        ':ramLimited' => 'N',
+        ':os' => 'B',
+        ':copyStartBinary' => 'N'
+    ),
+    array(
+        ':steamgame' => 'S',
+        ':appID' => 234630,
+        ':updates' => 1,
+        ':shorten' => 'projectcars',
+        ':description' => 'Project Cars',
+        ':gamebinary' => 'DedicatedServerCmd',
+        ':gamebinaryWin' => '',
+        ':binarydir' => null,
+        ':modfolder' => 'nmrih',
+        ':fps' => null,
+        ':slots' => 8,
+        ':map' => 'nmo_broadway',
+        ':cmd' => './%binary% -a server.log  -p %port% -s %slots% -c server.cfg',
+        ':modcmds' => "",
+        ':tic' => 66,
+        ':gameq' => 'nmrih',
+        ':gamemod' => 'N',
+        ':gamemod2' => null,
+        ':configs' => "server.cfg\r\nblacklist.cfg\r\nwhitelist.cfg",
+        ':configedit' => "[server.cfg] ddot\r\nmaxPlayerCount : %slots%\r\nbindIP : \"%ip%\"\r\nhostPort : %port%\r\nqueryPort : %port2%\r\nhttpApiPort : %port3%\r\nsteamPort : %port4%\r\nsecure : true\r\nsleepWaiting : 250\r\nsleepActive : 10\r\nenableHttpApi : true\r\nhttpApiInterface : \"%ip%\"",
+        ':portStep' => 10,
+        ':portMax' => 4,
+        ':portOne' => 27015,
+        ':portTwo' => 27016,
+        ':portThree' => 27017,
+        ':portFour' => 27018,
+        ':portFive' => null,
+        ':useQueryPort' => 2,
+        ':mapGroup' => '',
+        ':protected' => 'N',
+        ':protectedSaveCFGs' => '',
+        ':ramLimited' => 'N',
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -702,12 +792,13 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
         ':appID' => null,
-        ':updates' => 4,
+        ':updates' => 1,
         ':shorten' => 'bukkit',
         ':description' => 'MC Bukkit',
         ':gamebinary' => 'craftbukkit.jar',
@@ -737,7 +828,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -772,7 +864,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -807,7 +900,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -842,7 +936,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -857,7 +952,7 @@ $gameImages = array(
         ':fps' => null,
         ':slots' => 12,
         ':map' => null,
-        ':cmd' => './%binary%',
+        ':cmd' => './%binary% -n',
         ':modcmds' => "[mods/deathmatch/mtaserver.conf] xml\r\n<serverip>%ip%</serverip>\r\n<serverport>%port%</serverport> \r\n<httpport>%port3%</httpport>\r\n<ase>1</ase>\r\n<maxplayers>%slots%</maxplayers>\r\n<httpserver>0</httpserver>",
         ':tic' => null,
         ':gameq' => 'mta',
@@ -877,7 +972,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -912,7 +1008,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => '',
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -947,7 +1044,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -982,7 +1080,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1017,7 +1116,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1052,7 +1152,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1087,7 +1188,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1122,7 +1224,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1157,7 +1260,8 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -1192,6 +1296,43 @@ $gameImages = array(
         ':protected' => 'N',
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
-        ':os' => 'L'
+        ':os' => 'L',
+        ':copyStartBinary' => 'N'
+    ),
+    array(
+        ':steamgame' => 'S',
+        ':appID' => 376030,
+        ':updates' => 1,
+        ':shorten' => 'ark',
+        ':description' => 'ARK: Survival Evolved',
+        ':gamebinary' => 'ShooterGameServer',
+        ':gamebinaryWin' => '',
+        ':binarydir' => 'ShooterGame/Binaries/Linux',
+        ':modfolder' => null,
+        ':fps' => null,
+        ':slots' => 20,
+        ':map' => 'TheIsland',
+        ':cmd' => './%binary% %map%?listen?MultiHome=%ip%?Port=%port%?QueryPort=%port2%?RCONPort=%port3%?MaxPlayers=%slots% -server -log',
+        ':modcmds' => null,
+        ':tic' => null,
+        ':gameq' => 'source',
+        ':gamemod' => 'N',
+        ':gamemod2' => null,
+        ':configs' => "ShooterGame/Saved/Config/LinuxServer/GameUserSettings.ini both",
+        ':configedit' => null,
+        ':portStep' => 10,
+        ':portMax' => 3,
+        ':portOne' => 27015,
+        ':portTwo' => 27016,
+        ':portThree' => 27017,
+        ':portFour' => null,
+        ':portFive' => null,
+        ':useQueryPort' => 2,
+        ':mapGroup' => null,
+        ':protected' => 'N',
+        ':protectedSaveCFGs' => null,
+        ':ramLimited' => 'N',
+        ':os' => 'L',
+        ':copyStartBinary' => 'Y'
     )
 );

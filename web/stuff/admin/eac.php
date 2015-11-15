@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['eac'])) {
 	header('Location: admin.php');
-	die('No acces');
+	die('No Access');
 }
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -71,7 +71,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 	$query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass` FROM `eac` WHERE resellerid=:reseller_id LIMIT 1");
     $query->execute(array(':aeskey' => $aeskey,':reseller_id' => $reseller_id));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$eac_active = $row['active'];
 		$eac_ip = $row['ip'];
 		$eac_port = $row['dport'];

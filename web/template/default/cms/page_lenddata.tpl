@@ -18,6 +18,7 @@
         <p><?php echo $sprache->timeleft.' '.$timeleft.'/'.$lendtime.' '.$sprache->minutes;?></p>
         <p><?php echo $gssprache->rcon.' '.$rcon;?></p>
         <p><?php echo $gssprache->password.' '.$password;?></p>
+        <?php echo $debug;?>
         <?php } else if ($volallowed==true) { ?>
         <h2 class="form-signin-heading"><?php echo $gsprache->lendserver.' '.$gsprache->voiceserver; ?></h2>
         <?php if ($gslallowed==true) { ?><h3 class="middle"><a href="lend.php?w=gs"><?php echo $gsprache->gameserver;?></a></h3><?php } ?>

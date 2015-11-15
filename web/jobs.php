@@ -86,6 +86,8 @@ include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/class_rootserver.php');
+include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 include(EASYWIDIR . '/stuff/methods/class_httpd.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
@@ -94,6 +96,13 @@ include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
 include(EASYWIDIR . '/stuff/methods/class_mysql.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+
+$logreseller = 0;
+$logsubuser = 0;
+$loguserip = '127.0.0.1';
+$userHostname = 'localhost';
+$logusername = 'Cronjob';
+$logusertype = 'cron';
 
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 

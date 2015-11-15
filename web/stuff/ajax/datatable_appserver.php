@@ -64,7 +64,7 @@ if ($sSearch) {
     $array['iTotalDisplayRecords'] = $array['iTotalRecords'];
 }
 
-$orderFields = array(0 => 'r.`ip`', 1 => 'r.`id`', 2 => 'r.`active`', 3 => 'r.`os`', 4 => '`gameserver_amount`', 5 => '`gameserver_ram`', 6 => 'r.`description`');
+$orderFields = array(0 => 'r.`ip`', 1 => 'r.`id`', 2 => 'r.`active`', 3 => 'r.`description`', 4 => '`gameserver_amount`', 5 => '`gameserver_ram`');
 
 if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
     $orderBy = implode(' ' . $sSortDir . ', ', $orderFields[$iSortCol]) . ' ' . $sSortDir;
@@ -93,5 +93,5 @@ if ($sSearch) {
 }
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-    $array['aaData'][] = array($row['ip'], $row['id'], ($row['active'] == 'Y') ? (string) $gsprache->yes : (string) $gsprache->no, ($row['os'] == 'L') ? 'Linux' : 'Windows', (int) $row['gameserver_amount'] . '/' . (int) $row['maxserver'], (int) $row['gameserver_ram'] . '/' . (int) $row['ram'], $row['description'], returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'ro', 'ri', $row['id'], $gsprache->reinstall) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ro', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'ro', 'md', $row['id'], $gsprache->mod));
+    $array['aaData'][] = array($row['ip'], $row['id'], ($row['active'] == 'Y') ? (string) $gsprache->yes : (string) $gsprache->no, $row['description'], (int) $row['gameserver_amount'] . '/' . (int) $row['maxserver'], (int) $row['gameserver_ram'] . '/' . (int) $row['ram'], returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'ro', 'ri', $row['id'], $gsprache->reinstall) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ro', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'ro', 'md', $row['id'], $gsprache->mod));
 }

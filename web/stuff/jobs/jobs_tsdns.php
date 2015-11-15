@@ -46,10 +46,10 @@ $query5 = $sql->prepare("DELETE FROM `voice_dns` WHERE `dnsID`=? AND `resellerID
 $query6 = $sql->prepare("UPDATE `jobs` SET `status`='3' WHERE `jobID`=? AND `type`='ds' LIMIT 1");
 $query7 = $sql->prepare("UPDATE `voice_dns` SET `active`=?,`jobPending`='N' WHERE  `dnsID`=? LIMIT 1");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $query2->execute(array(':aeskey' => $aeskey,':id' => $row['hostID'], ':reseller_id' => $row['resellerID']));
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
         $publickey = $row2['publickey'];
         $queryip = $row2['ssh2ip'];
         $ssh2port = $row2['decryptedssh2port'];
@@ -61,10 +61,10 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     }
 
     $query3->execute(array($row['hostID']));
-    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row3) {
+    while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
         $query4->execute(array($row3['affectedID'], $row3['resellerID']));
-        foreach ($query4->fetchAll(PDO::FETCH_ASSOC) as $row4) {
+        while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
 
             $active = $row4['active'];
             $ipArray = array($row4['ip']);

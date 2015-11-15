@@ -61,7 +61,7 @@ if (isset($downloadID)) {
     $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? WHERE d.`fileID`=? LIMIT 1");
     $query->execute(array($user_language, $downloadID));
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}")) {
 
@@ -117,7 +117,7 @@ if (isset($downloadID)) {
 
     $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? ORDER BY d.`order`,d.`fileID`");
     $query->execute(array($user_language));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and file_exists(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}")) {
             $table[] = array('id' => $row['fileID'], 'description' => $row['description'], 'link' => (isset($seo) and $seo == 'Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'], 'text' => $row['text']);
         }

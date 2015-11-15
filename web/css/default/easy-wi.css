@@ -1,3 +1,4 @@
+
 @media (min-width: 979px) {
     #content {
         padding-top: 60px;
@@ -60,4 +61,11 @@ table form {
 
 .collapse :not(in) {
     margin-bottom: 0;
+}
+
+/* Remove the horizontal scroll in desktop view */
+@media (min-width: 768px) {
+    .table-responsive {
+        overflow-x: hidden;
+    }
 }

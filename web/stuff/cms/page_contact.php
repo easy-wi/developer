@@ -70,11 +70,21 @@ if ($ui->escaped('email', 'post')) {
 
     } else {
 
-        unset($error);
-        $success = true;
         $comments = $name . ' (' . $email . '):<br />' . $comments;
-        sendmail('contact', $name, $comments, $rSA['email']);
 
+        $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`='email' LIMIT 1");
+        $query->execute(array($reseller_id));
+
+        if (sendmail('contact', $name, $comments, $query->fetchColumn())) {
+            unset($error);
+            $success = true;
+        } else {
+
+            $error[] = 'Sending the mail failed';
+
+            $token = md5(passwordgenerate(32));
+            $_SESSION['token'] = $token;
+        }
     }
 
 } else {

@@ -44,6 +44,8 @@
 	<ftpport>FTP port</ftpport>
 	<generate>generere</generate>
 	<groupname>Gruppenavn</groupname>
+    <help_tsdns_external_ip></help_tsdns_external_ip>
+    <help_tsdns_default_dns></help_tsdns_default_dns>
 	<hostbanner_gfx_url>Hostbanner GFX Url</hostbanner_gfx_url>
 	<hostbanner_url>Hostbanner Url</hostbanner_url>
 	<hostbutton_gfx_url>Hostbutton GFX Url</hostbutton_gfx_url>

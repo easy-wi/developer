@@ -69,7 +69,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=`id` AND `resellerid`=? ORDER BY id");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $topic = '';
 
             $query3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
@@ -90,7 +90,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($i == 1) {
                 $query2 = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
                 $query2->execute(array($row['id'], $reseller_id));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                     $topic = '';
 
@@ -142,7 +142,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($reseller_id));
             }
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket', $row['id'], $ticketText, array($lastID, $user_id));
             }
 
@@ -182,12 +182,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query4 = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
         $query->execute(array($id, $user_id, $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $userPriority = $row['userPriority'];
 
             $query2->execute(array($id, $reseller_id));
-            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                 $table[] = array('writedate' => ($user_language == 'de') ? date('d.m.Y', strtotime($row2['writeDate'])) : date('Y-m-d', strtotime($row2['writeDate'])), 'writeTime' => date('H:i:s', strtotime($row2['writeDate'])),'ticket' => nl2br(htmlspecialchars(stripslashes($row2['message']))), 'writer' => (trim($row2['vname'] . ' ' . $row2['name']) != '') ? trim($row2['vname'] . ' ' . $row2['name']) : $row2['cname']);
             }
 
@@ -262,7 +262,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT `supporter`,`state` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $userid = $row['supporter'];
             $state = $row['state'];
         }
@@ -293,7 +293,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if ($row['mail_ticket'] == 'Y') {
                         sendmail('emailnewticket', $userid, $ui->post['ticket'], array($id, $user_id));
                     }
@@ -367,7 +367,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $query = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject`,u.`cname`,u.`name`,u.`vname` FROM `tickets` t LEFT JOIN `ticket_topics` o ON t.`topic`=o.`id` LEFT JOIN `translations` l ON o.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? LEFT JOIN `userdata` u ON t.`supporter`=u.`id` " . $where);
     $query->execute(array($user_language, $default_language, $user_id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if ($row['userPriority'] == 1) {
             $priority = $sprache->priority_low;

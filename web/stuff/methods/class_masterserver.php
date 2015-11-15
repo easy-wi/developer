@@ -37,20 +37,28 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
+// Include PHPSeclib if not already included
+if (!class_exists('Net_SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
+}
+
+if (!class_exists('Crypt_RSA')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
+}
+
+if (!class_exists('Net_SFTP')) {
+    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+}
+
 class masterServer {
 
-    // General Data
-    private $imageserver, $resellerID, $webhost, $rootOK;
-    
-    // root data
-    private $rootID, $steamAccount, $steamPassword;
+    private $updateIDs = array();
+    private $removeLogs = array();
+    private $winCmds = array();
+    private $imageserver, $resellerID, $webhost, $rootOK, $rootID, $rootNotifiedCount, $steamAccount, $steamPassword, $updates, $os, $aeskey, $shellScript, $uniqueHex, $masterserverDir;
     public $sship, $sshport, $sshuser, $sshpass, $publickey, $keyname;
-    
-    // master gamedata
-    private $updateIDs = array(), $syncList = array(), $steamCmdTotal = array('sync' => array(), 'nosync' => array()), $steamCmdOutdated = array('sync' => array(),'nosync' => array()), $mcTotal = array('sync' => array(),'nosync' => array()), $mcOutdated = array('sync' => array(),'nosync' => array()), $noSteam = array('sync' => array(),'nosync' => array()), $maps = array(), $addons = array(), $aeskey;
-    
-    //ssh command
-    public $sshcmd;
+    public $updateAmount = 0;
 
     function __construct($rootID, $aeskey) {
 
@@ -59,98 +67,495 @@ class masterServer {
 
         $this->aeskey = $aeskey;
 
-        // get the current webhost
-        $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`='0' LIMIT 1");
-        $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $this->webhost = $row['paneldomain'];
-        }
-
         // store the rootserverID
         $this->rootID = $rootID;
 
         // fetch rootserverdata
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`port`,:aeskey) AS `dport`,AES_DECRYPT(`user`,:aeskey) AS `duser`,AES_DECRYPT(`pass`,:aeskey) AS `dpass`,AES_DECRYPT(`steamAccount`,:aeskey) AS `steamAcc`,AES_DECRYPT(`steamPassword`,:aeskey) AS `steamPwd` FROM `rserverdata` WHERE `id`=:id LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $rootID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
+            $this->rootNotifiedCount = $row['notified'];
             $this->sship = $row['ip'];
             $this->sshport = $row['dport'];
             $this->sshuser = $row['duser'];
             $this->sshpass = $row['dpass'];
             $this->publickey = $row['publickey'];
-            $this->keyname = $row['keyname'];
+            $this->keyname = EASYWIDIR . '/keys/' . removePub($row['keyname']);
             $this->steamAccount = $row['steamAcc'];
             $this->steamPassword = $row['steamPwd'];
             $this->resellerID = $row['resellerid'];
-
-            // Get the imageserver if possible and use Easy-WI server as fallback
-            $mainip = explode('.', $this->sship);
-            $mainsubnet = $mainip[0] . '.' . $mainip[1] . '.' . $mainip[2];
-
-            $query = $sql->prepare("SELECT `imageserver` FROM `settings` WHERE `resellerid`=? LIMIT 1");
-            $query->execute(array($this->resellerID));
-
-            $splitImageservers = preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
-            $imageservers = array();
-            foreach ($splitImageservers as $server) {
-                $split2 = array();
-                
-                if (isurl($server)) {
-                    $imageservers[] = $server;
-                    $split1 = preg_split('/\//', $server, -1, PREG_SPLIT_NO_EMPTY);
-                    $split2 = (isset($split1[1])) ? preg_split('/\@/', $split1[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\@/', $split1[0], -1, PREG_SPLIT_NO_EMPTY);
-                    
-                } else if (isRsync($server)) {
-                    $imageservers[] = $server;
-                    $split1 = preg_split('/\//', $server, -1, PREG_SPLIT_NO_EMPTY);
-                    $split2 = (isset($split1[1])) ? preg_split('/\:/', $split1[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\:/', $split1[0], -1, PREG_SPLIT_NO_EMPTY);
-                }
-                
-                foreach ($split2 as $splitip) {
-                    
-                    if ($splitip == $this->sship) {
-                        $noSync = true;
-                        
-                    } else if (isip($splitip,'all')) {
-                        $ipparts = explode('.', $splitip);
-                        $subnet = $ipparts[0] . '.' . $ipparts[1] . '.' . $ipparts[2];
-                        
-                        if ($mainsubnet == $subnet) {
-                            $imageserver = $server;
-                        }
-                    }
-                }
-            }
-            
-            if (!isset($imageserver) and count($imageservers) > 0) {
-                $imageserver_count = count($imageservers) - 1;
-                $arrayentry = rand(0, $imageserver_count);
-                $imageserver = $imageservers[$arrayentry];
-            }
-            
-            if (!isset($imageserver)) {
-                $imageserver = 'easywi';
-            }
-            
-            if (isset($noSync) or $row['updates'] == 2) {
-                $imageserver = 'none';
-            }
-            
-            $this->imageserver = $imageserver;
+            $this->updates = $row['updates'];
+            $this->os = $row['os'];
+            $this->masterserverDir = '/home/' . $row['duser'] . '/masterserver/';
         }
 
         // In case the rootserver could be found and it is active return true
         if (isset($active) and $active == 'Y') {
+
             $this->rootOK = true;
+
+            $this->getWebHost();
+
+            $this->getImageServer();
+
+            if ($this->os == 'L') {
+                $this->startShellScript();
+            }
+
         } else {
             $this->rootOK = false;
         }
     }
 
+    private function getWebHost () {
+
+        global $sql;
+
+        // get the current webhost
+        $query = $sql->prepare("SELECT `paneldomain` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+        $query->execute();
+        $this->webhost = $query->fetchColumn();
+    }
+
+    private function checkIfImageServerIsInSameSubnet ($type, $imageString) {
+
+        // Get the imageserver if possible and use Easy-WI server as fallback
+        $mainIp = explode('.', $this->sship);
+        $mainSubnet = $mainIp[0] . '.' . $mainIp[1] . '.' . $mainIp[2];
+
+        if ($type == 'rsync') {
+            $splitPaths = @preg_split('/\//', $imageString, -1, PREG_SPLIT_NO_EMPTY);
+            $splitCredentialsAndServer = (isset($split1[1])) ? preg_split('/\:/', $splitPaths[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\:/', $splitPaths[0], -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            $splitPaths = @preg_split('/\//', $imageString, -1, PREG_SPLIT_NO_EMPTY);
+            $splitCredentialsAndServer = (isset($split1[1])) ? preg_split('/\@/', $splitPaths[1], -1, PREG_SPLIT_NO_EMPTY) : preg_split('/\@/', $splitPaths[0], -1, PREG_SPLIT_NO_EMPTY);
+        }
+
+        foreach ($splitCredentialsAndServer as $splitIp) {
+
+            if ($splitIp != $this->sship && isip($splitIp, 'all')) {
+
+                $ipParts = explode('.', $splitIp);
+                $subnet = $ipParts[0] . '.' . $ipParts[1] . '.' . $ipParts[2];
+
+                if ($mainSubnet == $subnet) {
+                    return $imageString;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private function getPreferdImageServer ($preferedServer, $allServer) {
+
+        if (count($preferedServer) > 0) {
+            $allServer = $preferedServer;
+        }
+
+        $serverAmount = count($allServer);
+        
+        if ($serverAmount > 0) {
+            $imageserverCount = $serverAmount - 1;
+            $arrayEntry = rand(0, $imageserverCount);
+            return $allServer[$arrayEntry];
+        }
+
+        return false;
+    }
+
+    private function getImageServer () {
+
+        global $sql;
+
+        $query = $sql->prepare("SELECT `imageserver` FROM `settings` WHERE `resellerid`=? LIMIT 1");
+        $query->execute(array($this->resellerID));
+
+        $splitImageservers = preg_split('/\r\n/', $query->fetchColumn(), -1, PREG_SPLIT_NO_EMPTY);
+        $rsyncServers = array();
+        $ftpServers = array();
+
+
+        foreach ($splitImageservers as $server) {
+            if (isurl($server)) {
+                $ftpServers[] = $server;
+            } else if (isRsync($server)) {
+                $rsyncServers[] = $server;
+            }
+        }
+
+        $preferedServer = array();
+
+        if ($this->os == 'L' and count($rsyncServers) > 0) {
+
+            foreach ($rsyncServers as $server) {
+
+                $imageServer = $this->checkIfImageServerIsInSameSubnet('rsync', $server);
+
+                if ($imageServer) {
+                    $preferedServer[] = $imageServer;
+                }
+            }
+
+            $imageServer = $this->getPreferdImageServer($preferedServer, $rsyncServers);
+        }
+
+        if (!isset($imageServer) and count($ftpServers) > 0) {
+
+            foreach ($ftpServers as $server) {
+
+                $imageServer = $this->checkIfImageServerIsInSameSubnet('ftp', $server);
+
+                if ($imageServer) {
+                    $preferedServer[] = $imageServer;
+                }
+            }
+
+            $imageServer = $this->getPreferdImageServer($preferedServer, $ftpServers);
+        }
+
+        if (!isset($imageServer) or !$imageServer or $this->updates == 2) {
+            $imageServer = 'none';
+        }
+
+        $this->imageserver = $imageServer;
+    }
+
+    private function imageStringtoWinDeamon () {
+
+        if (isurl($this->imageserver)) {
+            return ftpStringToData($this->imageserver);
+        }
+
+        return false;
+    }
+
+    public function getCommands () {
+
+        if ($this->os == 'L') {
+            return $this->shellScript;
+        }
+
+        return implode('<br>', $this->winCmds);
+    }
+
+    private function startShellScript () {
+
+        $this->uniqueHex = dechex(mt_rand());
+
+        $this->shellScript = "#!/bin/bash\n";
+        $this->shellScript .= 'rm -f /home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh' . "\n";
+        $this->shellScript .= "if ionice -c3 true 2>/dev/null; then IONICE='ionice -n 7 '; else IONICE=''; fi\n";
+        $this->shellScript .= 'UPDATESTATUS=""' . "\n";
+        $this->shellScript .= 'BOMRM="sed \"\'s/^\xef\xbb\xbf//g\'\""' . "\n";
+        $this->shellScript .= 'PATTERN="\.log\|\.txt\|\.cfg\|\.vdf\|\.db\|\.dat\|\.ztmp\|\.blib\|log\/\|logs\/\|downloads\/\|DownloadLists\/\|metamod\/\|amxmodx\/\|hl\/\|hl2\/\|cfg\/\|addons\/\|bin\/\|classes/"' . "\n";
+
+        if ($this->imageserver != 'none') {
+
+            $this->shellScript .= 'if [ "`which rsync`" != "" -a "`echo ' . $this->imageserver . ' | grep -E \'^ftp(s|)\:(.*)\'`" == "" ]; then' . "\n";
+            $this->shellScript .= 'SYNCTOOL="rsync"' . "\n";
+            $this->shellScript .= 'SYNCCMD="rsync -azuvx ' . $this->imageserver . '"' . "\n";
+            $this->shellScript .= 'else' . "\n";
+            $this->shellScript .= 'SYNCTOOL="wget"' . "\n";
+            $this->shellScript .= 'SYNCCMD="wget -r -N -l inf -nH --no-check-certificate --cut-dirs=1 ' . $this->imageserver . '"' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+        }
+
+        $this->shellScript .= 'if [ ! -d "' . $this->masterserverDir . 'steamCMD/" ]; then' . "\n";
+        $this->shellScript .= 'mkdir -p "' . $this->masterserverDir . 'steamCMD/"' . "\n";
+        $this->shellScript .= 'cd "' . $this->masterserverDir . 'steamCMD/"' . "\n";
+        $this->shellScript .= 'if [ ! -f steamcmd.sh ]; then' . "\n";
+        $this->shellScript .= 'wget -q --timeout=10 http://media.steampowered.com/client/steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'if [ -f steamcmd_linux.tar.gz ]; then' . "\n";
+        $this->shellScript .= 'tar xfz steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'rm -f steamcmd_linux.tar.gz' . "\n";
+        $this->shellScript .= 'chmod +x steamcmd.sh' . "\n";
+        $this->shellScript .= './steamcmd.sh +login anonymous +quit' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'cd' . "\n";
+    }
+
+    private function serverSync ($shorten, $updateLog) {
+
+        if ($this->os == 'L') {
+            $this->shellScript .= 'if [ "$SYNCTOOL" == "rsync" ]; then' . "\n";
+            $this->shellScript .= '$SYNCCMD/masterserver/' . $shorten . ' ' . $this->masterserverDir . ' > ' . $updateLog . "\n";
+            $this->shellScript .= 'elif [ "$SYNCTOOL" == "wget" ]; then' . "\n";
+            $this->shellScript .= '$SYNCCMD/masterserver/' . $shorten . ' > ' . $updateLog . "\n";
+            $this->shellScript .= '${IONICE}nice -n +19 find ' . $this->masterserverDir . $shorten . '/ -type f -name "*.listing" -delete' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+        } else {
+
+            $imageServer = $this->imageStringtoWinDeamon();
+
+            if (is_array($imageServer)) {
+                $this->winCmds[] = 'master ' . $shorten . ' ftp:' . $imageServer['server'] . ':' . $imageServer['port'] . ':' . $imageServer['user'] . ':'  . $imageServer['pwd'] . ':/Masterserver ' . $this->webhost . '/get_password.php?w=ms&shorten=' . $shorten;
+            }
+        }
+    }
+
+    private function houseKeeping ($absoluteGamePath) {
+
+        // Workaround for another valve chaos. If the files exist, mapgroups will not work properly
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -maxdepth 2 -type f -name "subscribed_file_ids.txt" -o -name "subscribed_collection_ids.txt" -delete' . "\n";
+
+        // Chmods should be aligned or else the server install for customer will not work
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.0" -or -iname "*.1" -or -iname "*.2" -or -iname "*.3" -or -iname "*.3ds" -or -iname "*.4" -or -iname "*.5" -or -iname "*.6" -or -iname "*.7" -or -iname "*.8" -or -iname "*.9" -or -iname "*.amx" -or -iname "*.asi" -or -iname "*.asm" -or -iname "*.bin" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.bmp" -or -iname "*.BMP" -or -iname "*.bsp" -or -iname "*.bz2" -or -iname "*.c" -or -iname "*.cab" -or -iname "*.cache" -or -iname "*.cfg" -or -iname "*.cmake" -or -iname "*.col" -or -iname "*.conf" -or -iname "*.cpp" -or -iname "*.css" -or -iname "*.csv" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.cur" -or -iname "*.dat" -or -iname "*.db" -or -iname "*.dds" -or -iname "*.def" -or -iname "*.dff" -or -iname "*.dll" -or -iname "*.doc" -or -iname "*.dsp" -or -iname "*.dxf" -or -iname "*.dylib" -or -iname "*.edf" -or -iname "*.ekv" -or -iname "*.example" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.exe" -or -iname "*.exp" -or -iname "*.fgd" -or -iname "*.flt" -or -iname "*.fx" -or -iname "*.gam" -or -iname "*.Gbx" -or -iname "*.gif" -or -iname "*.h" -or -iname "*.hpp" -or -iname "*.htm" -or -iname "*.html" -or -iname "*.icns" -or -iname "*.ico" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.image" -or -iname "*.inc" -or -iname "*.inf" -or -iname "*.ini" -or -iname "*.installed" -or -iname "*.jpg" -or -iname "*.js" -or -iname "*.key" -or -iname "*.kv" -or -iname "*.lib" -or -iname "*.lmp" -or -iname "*.lst" -or -iname "*.lua" -or -iname "*.LUA" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.manifest" -or -iname "*.map" -or -iname "*.mapRACE" -or -iname "*.mdl" -or -iname "*.mix" -or -iname "*.mp3" -or -iname "*.nav" -or -iname "*.nod" -or -iname "*.nut" -or -iname "*.pak" -or -iname "*.pcx" -or -iname "*.pem" -or -iname "*.pl" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.png" -or -iname "*.properties" -or -iname "*.psd" -or -iname "*.pwn" -or -iname "*.rad" -or -iname "*.raw" -or -iname "*.rc" -or -iname "*.rec" -or -iname "*.res" -or -iname "*.rules" -or -iname "*.sc" -or -iname "*.scr" -or -iname "*.sfk" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.sln" -or -iname "*.so" -or -iname "*.spr" -or -iname "*.suo" -or -iname "*.swf" -or -iname "*.tar" -or -iname "*.tga" -or -iname "*.ttf" -or -iname "*.txd" -or -iname "*.txt" -or -iname "*.vbf" -or -iname "*.vcproj" -or -iname "*.vcs" -or -iname "*.vdf" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.vfe" -or -iname "*.vfont" -or -iname "*.vmf" -or -iname "*.vmt" -or -iname "*.vpk" -or -iname "*.vtf" -or -iname "*.wad" -or -iname "*.wav" -or -iname "*.wv" -or -iname "*.xml" -or -iname "*.xsc" -or -iname "*.yml" -or -iname "*.zip" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f -name "srcds_*" -o -name "hlds_*" -o -name "*.run" -o -name "*.sh" -o -name "*.jar" -exec chmod 750 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f ! -perm -750 ! -perm -755 -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type d -exec chmod 750 {} \;' . "\n";
+
+        // Check for temp files belonging to the steam updater
+        $this->shellScript .= 'ls ' . $absoluteGamePath . ' | while read dir; do' . "\n";
+        $this->shellScript .= 'if [[ `echo $dir| grep \'[a-z0-9]\{40\}\'` ]]; then rm -rf ' . $absoluteGamePath . '/$dir; fi' . "\n";
+        $this->shellScript .= 'done' . "\n";
+
+        // Remove wget left overs
+        $this->shellScript .= 'find ' . $absoluteGamePath . ' -type f -iname "wget-*" -delete' . "\n";
+    }
+
+    private function createFdlList ($row) {
+
+        $fastDownloadList = '/home/' . $this->sshuser . '/conf/fdl-' . $row['shorten'] . '.list';
+
+        $this->shellScript .= 'if [ -f ' . $fastDownloadList . ' ]; then rm -f ' . $fastDownloadList . '; fi' . "\n";
+        $this->shellScript .= 'touch ' . $fastDownloadList . "\n";
+        $this->shellScript .= 'cd "' . $this->masterserverDir . '$UPDATE"' . "\n";
+        $this->shellScript .= 'SEARCH=0' . "\n";
+        $this->shellScript .= 'if [[ `find -maxdepth 2 -name srcds_run` ]]; then' . "\n";
+        $this->shellScript .= 'cd `find -mindepth 1 -maxdepth 2 -type d -name "' . $row['modfolder'] . '" | head -n 1`' . "\n";
+        $this->shellScript .= 'SEARCHFOLDERS="particles/ maps/ materials/ resource/ models/ sound/"' . "\n";
+        $this->shellScript .= 'SEARCH=1' . "\n";
+        $this->shellScript .= 'elif [[ `find -maxdepth 2 -name hlds_run` ]]; then' . "\n";
+        $this->shellScript .= 'cd `find -mindepth 1 -maxdepth 1 -type d -name "' . $row['modfolder'] . '" | head -n 1`' . "\n";
+        $this->shellScript .= 'SEARCHFOLDERS=""' . "\n";
+        $this->shellScript .= 'SEARCH=1' . "\n";
+        $this->shellScript .= 'elif [[ `find -maxdepth 2 -name "cod4_lnxded"` ]]; then' . "\n";
+        $this->shellScript .= 'SEARCHFOLDERS="usermaps/ mods/"' . "\n";
+        $this->shellScript .= 'SEARCH=1' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+        $this->shellScript .= 'if [ "$SEARCH" == "1" ]; then' . "\n";
+        $this->shellScript .= '${IONICE}nice -n +19 find $SEARCHFOLDERS -type f 2> /dev/null | grep -v "$PATTERN" | sed \'s/\.\///g\' | while read FILTEREDFILES; do' . "\n";
+        $this->shellScript .= 'echo $FILTEREDFILES >> ' . $fastDownloadList . "\n";
+        $this->shellScript .= 'done' . "\n";
+        $this->shellScript .= 'if [ -f ' . $fastDownloadList . ' ]; then chmod 640 ' . $fastDownloadList . '; fi' . "\n";
+        $this->shellScript .= 'if [ -f /home/' . $this->sshuser . '/logs/fdl.log ]; then echo "`date`: Updated filelist for the game ' . $row['shorten'] . '" >> /home/' . $this->sshuser . '/logs/fdl.log; fi' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+    }
+
+    private function sendUpdateSuccess ($updateLog, $force, $row, $returnSuccessInAnyCase) {
+
+        if (strlen($this->webhost) > 0) {
+
+            if ($force === true or $returnSuccessInAnyCase === true) {
+                $this->shellScript .= 'SENDUPDATE="YES"' . "\n";
+            }
+
+            // Check if update or install succeeded
+            $this->shellScript .= 'if [ -f "' . $updateLog . '" ]; then' . "\n";
+
+            // Check for sync
+            $this->shellScript .= 'if [ "`grep ' . $row['appID'] . ' \"' . $updateLog . '\" | grep \'Success!\' | grep \'fully installed!\'`" != "" ]; then' . "\n";
+            $this->shellScript .= 'SENDUPDATE="YES"' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+
+            // Check for steamCMD updater
+            $this->shellScript .= 'if [ "`grep \'' . $row['shorten'] . '/\' \"' . $updateLog . '\" | head -n 1`" != "" ]; then' . "\n";
+            $this->shellScript .= 'SENDUPDATE="YES"' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+
+            $this->shellScript .= 'fi' . "\n";
+
+            $this->shellScript .= 'if [ "$SENDUPDATE" == "YES" ]; then' . "\n";
+            $this->shellScript .= 'I=0' . "\n";
+            $this->shellScript .= 'CHECK=`wget -q --timeout=10 --no-check-certificate -O - ' . $this->webhost . '/get_password.php?w=ms\&shorten=' . $row['shorten'] . ' | $BOMRM`' . "\n";
+            $this->shellScript .= 'while [ "$CHECK" != "ok" -a "$I" -le "10" ]; do' . "\n";
+            $this->shellScript .= 'if [ "$CHECK" == "" ]; then' . "\n";
+            $this->shellScript .= 'I=11' . "\n";
+            $this->shellScript .= 'else' . "\n";
+            $this->shellScript .= 'sleep 30' . "\n";
+            $this->shellScript .= 'I=$[I+1]' . "\n";
+            $this->shellScript .= 'CHECK=`wget -q --timeout=10 --no-check-certificate -O - ' . $this->webhost . '/get_password.php?w=ms\&shorten=' . $row['shorten'] . ' | $BOMRM`' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+            $this->shellScript .= 'done' . "\n";
+            $this->shellScript .= 'fi' . "\n";
+        }
+    }
+
+    private function linuxCollectData ($row, $force, $returnSuccessInAnyCase) {
+
+        $absoluteGamePath = $this->masterserverDir . $row['shorten'];
+        $updateLog = '/home/' . $this->sshuser . '/logs/update-' . $row['shorten'] . '.log';
+
+        // Ensure we are in the home folder
+        $this->shellScript .= 'cd /home/' . $this->sshuser . "\n";
+
+        if ($row['supdates'] != 3 and $row['updates'] != 3) {
+
+            // Create masterserver folder if it does not exists
+            $this->shellScript .= 'if [ ! -d "' . $absoluteGamePath . '" ]; then mkdir -p "' . $absoluteGamePath . '"; fi' . "\n";
+
+            // If template and app master configs allow sync
+            if (in_array($row['supdates'], array(1, 4)) and in_array($row['updates'], array(1, 4))) {
+                $this->serverSync($row['shorten'], $updateLog);
+            }
+
+            // If template and app master configs allow vendor update
+            if (in_array($row['supdates'], array(1, 2)) and in_array($row['updates'], array(1, 2))) {
+
+                //Steam updater
+                if ($row['steamgame'] == 'S') {
+
+                    $this->shellScript .= 'cd /home/' . $this->sshuser . '/masterserver/steamCMD/'. "\n";
+
+                    $this->shellScript .= 'taskset -c 0 ${IONICE}nice -n +19 ./steamcmd.sh +login ';
+
+                    if (strlen($this->steamAccount) > 0) {
+                        $this->shellScript .= $this->steamAccount . ' ' . $this->steamPassword;
+                    } else if (strlen($row['steamAcc']) > 0) {
+                        $this->shellScript .= $row['steamAcc'] . ' ' . $row['steamPwd'];
+                    } else {
+                        $this->shellScript .= 'anonymous';
+                    }
+
+                    $this->shellScript .= ' +force_install_dir ' . $absoluteGamePath . ' ';
+
+                    $fixedId = workAroundForValveChaos($row['appID'], $row['shorten'], false);
+
+                    $this->shellScript .= ($fixedId == 90) ?  '+app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : '+app_update ' . $fixedId;
+                    $this->shellScript .= ' validate  +quit > ' . $updateLog . "\n";
+
+                } else if ($row['steamgame'] == 'N' and ($row['shorten'] == 'mc')) {
+
+                    if (!isurl($row['downloadPath'])) {
+
+                        if (!function_exists('getMinecraftVersion')) {
+                            require_once(EASYWIDIR . '/stuff/methods/queries_updates.php');
+                        }
+
+                        $mcVersion = getMinecraftVersion();
+
+                        if (isset($mcVersion['downloadPath']) and isurl($mcVersion['downloadPath'])) {
+                            $row['downloadPath'] = $mcVersion['downloadPath'];
+                        }
+                    }
+
+                    if (isurl($row['downloadPath'])) {
+                        $this->shellScript .= 'cd ' . $absoluteGamePath . "\n";
+                        $this->shellScript .= 'wget -q ' . $row['downloadPath'] . ' --output-document ' . $row['gamebinary'] . '.new' . "\n";
+                        $this->shellScript .= 'if [ `stat -c %s ' . $row['gamebinary'] . '.new` -gt 0 ]; then'. "\n";
+                        $this->shellScript .= 'mv ' . $row['gamebinary'] . '.new ' . $row['gamebinary'] . "\n";
+                        $this->shellScript .= 'else' . "\n";
+                        $this->shellScript .= 'rm -f ' . $row['gamebinary'] . '.new ' . "\n";
+                        $this->shellScript .= 'fi' . "\n";
+                        $this->shellScript .= 'chmod 750 ' . $row['gamebinary'] . "\n";
+                    }
+                }
+            }
+
+            // Housekeeping
+            $this->houseKeeping($absoluteGamePath);
+
+            $this->createFdlList($row);
+
+            $this->sendUpdateSuccess($updateLog, $force, $row, $returnSuccessInAnyCase);
+
+            $this->removeLogs[] = $updateLog;
+
+            $this->updateAmount++;
+        }
+    }
+
+    private function windowsCollectData ($row) {
+
+        if ($row['supdates'] != 3 and $row['updates'] != 3) {
+
+            if (strlen($this->steamAccount) > 0) {
+
+                $connectData = $this->steamAccount;
+
+                if (strlen($this->steamPassword) > 0) {
+                    $connectData .= ':' . $this->steamPassword;
+                }
+
+            } else if (strlen($row['steamAcc']) > 0) {
+
+                $connectData = $row['steamAcc'];
+
+                if (strlen($this->steamPassword) > 0) {
+                    $connectData .= ':' . $row['steamPwd'];
+                }
+
+            } else {
+                $connectData = 'anonymous';
+            }
+
+            $callBackUrl = (strlen($this->webhost) > 0) ? $this->webhost . '/get_password.php?w=ms&shorten=' . $row['shorten'] : '';
+
+            $this->winCmds[] = 'master ' . $row['shorten'] . ' steam:' . $connectData . ':' . workAroundForValveChaos($row['appID'], $row['shorten'], false) . ' ' . $callBackUrl;
+        }
+
+        $this->updateAmount++;
+    }
+
+    private function addonSync ($serverTypeIDs) {
+
+        if (count($serverTypeIDs) > 0) {
+
+            global $sql;
+
+            $query = $sql->prepare("SELECT t.`addon`,t.`type` FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` WHERE a.`servertype_id` IN (" . implode(',', $serverTypeIDs) . ") AND a.`reseller_id`=? GROUP BY t.`type`,t.`addon`");
+            $query->execute(array($this->resellerID));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+                if ($this->os == 'L') {
+
+                    $addonMasterFolder = ($row['type'] == 'tool') ? 'masteraddons' : 'mastermaps';
+                    $absoluteMasterPath = '/home/' . $this->sshuser . '/' . $addonMasterFolder;
+                    $absoluteAddonPath = $absoluteMasterPath . '/' . $row['addon'];
+
+                    $this->shellScript .= 'if [ "$SYNCTOOL" == "rsync" ]; then' . "\n";
+                    $this->shellScript .= '$SYNCCMD/' . $addonMasterFolder . '/' . $row['addon'] . ' ' . $absoluteMasterPath . '/' . "\n";
+                    $this->shellScript .= 'elif [ "$SYNCTOOL" == "wget" ]; then' . "\n";
+                    $this->shellScript .= '$SYNCCMD/' . $addonMasterFolder . '/' . $row['addon'] . "\n";
+                    $this->shellScript .= 'find ' . $absoluteAddonPath . ' -name .listing -delete' . "\n";
+                    $this->shellScript .= 'fi' . "\n";
+                    $this->shellScript .= 'find ' . $absoluteAddonPath . ' -type d -exec chmod 750 {} \;' . "\n";
+                    $this->shellScript .= 'find ' . $absoluteAddonPath . ' -type f -exec chmod 640 {} \;' . "\n";
+
+                } else {
+
+                    $imageServer = $this->imageStringtoWinDeamon();
+
+                    if ($row['type'] == 'tool') {
+                        $addonMasterFolder = 'MasterAddons';
+                        $addonCmd = 'masteraddon';
+                    } else {
+                        $addonMasterFolder = 'MasterMaps';
+                        $addonCmd = 'mastermaps';
+                    }
+
+                    if (is_array($imageServer)) {
+                        $this->winCmds[] = $addonCmd . ' install ' . $imageServer['server'] . ' ' . $imageServer['port'] . ' ' . $imageServer['user'] . ' '  . $imageServer['pwd'] . ' /' . $addonMasterFolder . ' ' . $row['addon'];
+                    }
+                }
+            }
+        }
+    }
+
     // collect data regarding installed games
-    public function collectData ($all = true, $force = false) {
+    public function collectData ($all = true, $force = false, $returnSuccessInAnyCase = true) {
         
         if ($this->rootOK != true) {
             return null;
@@ -167,314 +572,263 @@ class masterServer {
 
         // if an ID is given collect only data for this ID, else collect all game data for this rootserver
         if ($all === true) {
-            
-            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? " . $extraSQL);
-            $query->execute(array($this->rootID));
-            
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`modfolder`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,t.`gameq`,AES_DECRYPT(t.`steam_account`,?) AS `steamAcc`,AES_DECRYPT(t.`steam_password`,?) AS `steamPwd`,r.`id` AS `update_id`,r.`localVersion`,s.`updates` AS `supdates`,s.`id` AS `root_id` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? " . $extraSQL);
+            $query->execute(array($this->aeskey, $this->aeskey, $this->rootID));
         } else {
-            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,r.`localVersion`,s.`updates` AS `supdates` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? " . $extraSQL . " LIMIT 1");
-            $query->execute(array($this->rootID, $all));
+            $query = $sql->prepare("SELECT t.`id` AS `servertype_id`,t.`shorten`,t.`modfolder`,t.`steamgame`,t.`appID`,t.`steamVersion`,t.`updates`,t.`downloadPath`,t.`gamebinary`,t.`gameq`,AES_DECRYPT(t.`steam_account`,?) AS `steamAcc`,AES_DECRYPT(t.`steam_password`,?) AS `steamPwd`,r.`id` AS `update_id`,r.`localVersion`,s.`updates` AS `supdates`,s.`id` AS `root_id` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` INNER JOIN `rserverdata` s ON r.`serverid`=s.`id` WHERE r.`serverid`=? AND r.`servertypeid`=? " . $extraSQL . " LIMIT 1");
+            $query->execute(array($this->aeskey, $this->aeskey, $this->rootID, $all));
         }
+
+
+        // Used for addon sync which will be started after the server updates in order to ensure uniqueness of update run
+        $serverTypeIDs = array();
         
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            // 3 = no Update; 1 = Vendor + Sync; 2 = Vendor; 4 = Sync
+        // 3 = no Update; 1 = Vendor + Sync; 2 = Vendor; 4 = Sync
+        // supdates = appmaster setting; updates = template setting
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            // Defined as Sync Only
-            if (($row['supdates'] == 4 and $row['updates'] == 1) or (($row['supdates'] == 1 or $row['supdates'] == 4) and $row['updates'] == 4)) {
+            $steamVersion = floatval($row['steamVersion']);
+            $localVersion = floatval($row['localVersion']);
 
-                $this->syncList[] = $row['shorten'];
+            if (($steamVersion != $localVersion and ($row['steamgame'] == 'S' or $row['gameq'] == 'minecraft' or $row['gameq'] == 'minequery')) or $force === true) {
 
-                // Games defined to sync with 2 or 1
-            } else if (($row['supdates'] == 1 or $row['supdates'] == 2) and ($row['updates'] == 1 or $row['updates'] == 2)) {
-
-                // as rootserver and templates settings can be different, go with the least root settings
-                $updateType = 0;
-                
-                if ($row['supdates'] == 1 and $row['updates'] == 1) {
-                    $updateType = 1;
-                    
-                } else if ($row['supdates'] == 1 and $row['updates'] == 2) {
-                    $updateType = 2;
-                    
-                } else if ($row['supdates'] == 2) {
-                    $updateType = 2;
+                if ($this->os == 'L') {
+                    $this->linuxCollectData($row, $force, $returnSuccessInAnyCase);
+                } else {
+                    $this->windowsCollectData($row, $force, $returnSuccessInAnyCase);
                 }
 
-                // steamCmd installations
-                if ($row['steamgame'] == 'S') {
-                    
-                    $lookUpAppID=($row['appID'] == 90) ? $row['appID'] . '-' . $row['shorten'] : $row['appID'];
-                    
-                    if ($row['localVersion'] == null or ($row['localVersion'] != null and $row['localVersion'] < $row['steamVersion'])) {
-                        if ($updateType == 1 and !isset($this->steamCmdOutdated['sync'][$lookUpAppID])) {
-                            $this->steamCmdOutdated['sync'][$lookUpAppID] = $row['shorten'];
-                            
-                        } else if ($updateType == 2 and !isset($this->steamCmdOutdated['nosync'][$lookUpAppID])) {
-                            $this->steamCmdOutdated['nosync'][$lookUpAppID] = $row['shorten'];
-                        }
-                        
-                    } else if ($updateType == 1) {
-                        $this->syncList[] = $row['shorten'];
-                    }
-                    
-                    if ($updateType == 1 and !isset($this->steamCmdTotal['sync'][$lookUpAppID])) {
-                        $this->steamCmdTotal['sync'][$lookUpAppID] = $row['shorten'];
-                        
-                    } else if ($updateType == 2 and !isset($this->steamCmdTotal['nosync'][$lookUpAppID])) {
-                        $this->steamCmdTotal['nosync'][$lookUpAppID] = $row['shorten'];
-                    }
-
-                // Minecraft and Craftbukkit autoupdater
-                // https://github.com/easy-wi/developer/issues/90 https://github.com/easy-wi/developer/issues/91
-                } else if ($row['steamgame'] == 'N' and ($row['shorten'] == 'mc' or $row['shorten'] == 'bukkit')) {
-
-                    
-                    if ($row['localVersion'] == null or ($row['localVersion'] != null and $row['localVersion'] != $row['steamVersion'])) {
-                        if ($updateType == 1) {
-                            $this->mcOutdated['sync'][] = array('shorten' => $row['shorten'], 'url' => $row['downloadPath'], 'gamebinary' => $row['gamebinary']);
-
-                        } else if ($updateType == 2) {
-                            $this->mcOutdated['nosync'][] = array('shorten' => $row['shorten'], 'url' => $row['downloadPath'], 'gamebinary' => $row['gamebinary']);
-                        }
-
-                    } else if ($updateType == 1) {
-                        $this->syncList[] = $row['shorten'];
-                    }
-
-                    if ($updateType == 1) {
-                        $this->mcTotal['sync'][] = array('shorten' => $row['shorten'], 'url' => $row['downloadPath'], 'gamebinary' => $row['gamebinary']);
-
-                    } else if ($updateType == 2) {
-                        $this->mcTotal['nosync'][] = array('shorten' => $row['shorten'], 'url' => $row['downloadPath'], 'gamebinary' => $row['gamebinary']);
-                    }
-                    
-                // the rest
-                } else if ($row['steamgame'] == 'N') {
-                    
-                    if ($row['updates'] == 1) {
-                        $this->noSteam['sync'][] = $row['shorten'];
-                        
-                    } else if ($updateType == 2) {
-                        $this->noSteam['nosync'][] = $row['shorten'];
-                    }
-                }
-            }
-
-            if (($row['supdates'] == 1 or $row['supdates'] == 4) and ($row['updates'] == 1 or $row['updates'] == 4)) {
-                // collect maps
-                $query2 = $sql->prepare("SELECT DISTINCT(t.`addon`) FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` WHERE t.`type`='map' AND a.`servertype_id`=? AND a.`reseller_id`=?");
-                $query2->execute(array($row['servertype_id'], $this->resellerID));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    $this->maps[] = $row2['addon'];
+                // Set masterserver to updating
+                if ($row['supdates'] != 3 and $row['updates'] != 3) {
+                    $this->updateIDs[$row['update_id']] = $row['update_id'];
                 }
 
-                // collect addons
-                $query2 = $sql->prepare("SELECT DISTINCT(t.`addon`) FROM `addons_allowed` AS a INNER JOIN `addons` t ON a.`addon_id`=t.`id` WHERE t.`type`='tool' AND a.`servertype_id`=? AND a.`reseller_id`=?");
-                $query2->execute(array($row['servertype_id'], $this->resellerID));
-                foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-                    $this->addons[] = $row2['addon'];
+                // If template and app master configs allow sync
+                if (in_array($row['supdates'], array(1, 4)) and in_array($row['updates'], array(1, 4))) {
+                    $serverTypeIDs[] = $row['servertype_id'];
                 }
             }
         }
 
-        $this->syncList = array_unique($this->syncList);
-        $this->noSteam['sync'] = array_unique( $this->noSteam['sync']);
-        $this->noSteam['nosync'] = array_unique($this->noSteam['nosync']);
-        $this->maps = array_unique($this->maps);
-        $this->addons = array_unique($this->addons);
-
+        $this->addonSync($serverTypeIDs);
     }
 
-    // return command only for outdated servers
-    public function returnCmds ($install = 'update', $update = true) {
+    private function removeUpdateLogs () {
 
-        global $sql;
+        if (count($this->removeLogs) > 0) {
 
-        if ($this->rootOK != true) {
-            $this->sshcmd = null;
+            $shellScript = '#!/bin/bash'. "\n";
+            $shellScript .= 'rm -f /home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh'. "\n";
+
+            foreach ($this->removeLogs as $log) {
+                $shellScript .= 'if [ -f "' . $log . '" ]; then rm -f "' . $log . '"; fi' . "\n";
+            }
+
+            return $shellScript;
         }
-        
-        // Update if needed
-        if ($update === true) {
-            $steamCmdCount = count($this->steamCmdOutdated['sync']) + count($this->steamCmdOutdated['nosync']);
-            $mcCount = count($this->mcOutdated['sync']) + count($this->mcOutdated['nosync']);
-            $steam = 'steamCmdOutdated';
-            $mc = 'mcOutdated';
 
-        // Update in any case
-        } else {
-            $steamCmdCount = count($this->steamCmdTotal['sync']) + count($this->steamCmdTotal['nosync']);
-            $mcCount = count($this->mcTotal['sync']) + count($this->mcTotal['nosync']);
-            $steam = 'steamCmdTotal';
-            $mc = 'mcTotal';
-            
-            foreach (array_unique(array_merge($this->steamCmdTotal['sync'], $this->steamCmdTotal['nosync'], $this->noSteam['sync'], $this->noSteam['nosync'])) as $shorten) {
-                if (in_array($shorten, $this->syncList)) {
-                    unset($this->syncList[array_search($shorten, $this->syncList)]);
-                }
-            }
-        }
-        
-        $syncCount = count($this->syncList);
-        $noSteamCount = count($this->noSteam['sync']) + count($this->noSteam['nosync']);
-        $addonCount = count($this->maps) + count($this->addons);
-
-        $query = $sql->prepare("SELECT r.`id` FROM `rservermasterg` r INNER JOIN `servertypes` t ON r.`servertypeid`=t.`id` WHERE r.`serverid`=? AND t.`shorten`=? LIMIT 1");
-
-        // Nothing to update
-        if ($syncCount == 0 and $noSteamCount == 0 and $steamCmdCount == 0 and $mcCount == 0) {
-            $this->sshcmd = null;
-            
-        } else {
-
-            $tempCmd = array();
-
-            // Sync games
-            if ($syncCount>0 and $this->imageserver!='none') {
-                foreach ($this->syncList as $k) {
-                    $query->execute(array($this->rootID, $k));
-                    $this->updateIDs[] = $query->fetchColumn();
-                }
-
-                $tempCmd[] = './control.sh syncserver '.$this->imageserver . ' "' . implode(' ', $this->syncList) . '" ' . $this->webhost;
-            }
-
-            // No Steam games
-            if ($noSteamCount > 0) {
-                foreach (array_unique(array_merge($this->noSteam['sync'], $this->noSteam['nosync'])) as $k) {
-                    $query->execute(array($this->rootID, $k));
-                    $this->updateIDs[] = $query->fetchColumn();
-                }
-                if ($this->imageserver ==  'none') {
-                    $tempCmd[] = './control.sh noSteamCmd '.$install . ' "' . implode(' ', array_unique(array_merge($this->noSteam['sync'], $this->noSteam['nosync']))) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                
-                } else if (count($this->noSteam['sync']) > 0 and count($this->noSteam['nosync']) > 0) {
-                    $tempCmd[] = './control.sh noSteamCmd '.$install . ' "' . implode(' ', $this->noSteam['sync']) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                    $tempCmd[] = './control.sh noSteamCmd '.$install . ' "' . implode(' ', $this->noSteam['nosync']) . '" ' . $this->webhost.' none';
-                
-                } else if (count($this->noSteam['sync']) > 0 and count($this->noSteam['nosync']) == 0) {
-                    $tempCmd[] = './control.sh noSteamCmd '.$install . ' "' . implode(' ', $this->noSteam['sync']) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                
-                } else if (count($this->noSteam['sync']) == 0 and count($this->noSteam['nosync']) > 0) {
-                    $tempCmd[] = './control.sh noSteamCmd '.$install . ' "' . implode(' ', $this->noSteam['nosync']) . '" ' . $this->webhost.' none';
-                }
-            }
-
-            // Minecraft Updates
-            if ($mcCount>0) {
-
-                $goFor = $this->$mc;
-
-                $setToUpdate = array();
-                $gameCommandListSync = array();
-                $gameCommandListNoSync = array();
-
-                foreach ($goFor['sync'] as $k) {
-                    $setToUpdate[] = $k['shorten'];
-                    $gameCommandListSync[] = $k['shorten'] . ';' . $k['gamebinary'] . ';' . $k['url'];
-                }
-
-                foreach ($goFor['nosync'] as $k) {
-                    $setToUpdate[] = $k['shorten'];
-                    $gameCommandListNoSync[] = $k['shorten'] . ';' . $k['gamebinary'] . ';' . $k['url'];
-                }
-
-                foreach (array_unique($setToUpdate) as $k) {
-                    $query->execute(array($this->rootID, $k));
-                    $this->updateIDs[] = $query->fetchColumn();
-                }
-
-                if ($this->imageserver ==  'none') {
-                    $tempCmd[] = './control.sh mcUpdate '.$install . ' "' . implode(' ', array_unique(array_merge($gameCommandListSync, $gameCommandListNoSync))) . '" ' . $this->webhost . ' ' . $this->imageserver;
-
-                } else if (count($goFor['sync']) > 0 and count($goFor['nosync']) > 0) {
-                    $tempCmd[] = './control.sh mcUpdate '.$install . ' "' . implode(' ', $gameCommandListSync) . '" ' . $this->webhost . ' ' . $this->imageserver;
-                    $tempCmd[] = './control.sh mcUpdate '.$install . ' "' . implode(' ', $gameCommandListNoSync) . '" ' . $this->webhost.' none';
-
-                } else if (count($goFor['sync']) > 0 and count($goFor['nosync']) == 0) {
-                    $tempCmd[] = './control.sh mcUpdate '.$install . ' "' . implode(' ', $gameCommandListSync) . '" ' . $this->webhost . ' ' . $this->imageserver;
-
-                } else if (count($goFor['sync']) == 0 and count($goFor['nosync']) > 0) {
-                    $tempCmd[] = './control.sh mcUpdate '.$install . ' "' . implode(' ', $gameCommandListNoSync) . '" ' . $this->webhost.' none';
-                }
-            }
-
-            // steamCmd updates
-            if ($steamCmdCount > 0) {
-                
-                $goFor = $this->$steam;
-                
-                foreach (array_unique(array_merge($goFor['sync'], $goFor['nosync'])) as $k) {
-                    $query->execute(array($this->rootID, $k));
-                    $this->updateIDs[] = $query->fetchColumn();
-                }
-                
-                if ($this->imageserver ==  'none') {
-                    $combined = array();
-                    
-                    foreach ($goFor['sync'] as $k => $v) {
-                        $combined[$k] = $v;
-                    }
-                    
-                    foreach ($goFor['nosync'] as $k => $v) {
-                        $combined[$k] = $v;
-                    }
-
-                    $tempCmd[] = './control.sh steamCmd '.$install . ' "' . trim($this->makeSteamCmd($combined)) . '" ' . $this->webhost . ' ' . $this->imageserver . ' ' . $this->steamAccount . ' ' . $this->steamPassword;
-                
-                } else if (count($goFor['sync']) > 0 and count($goFor['nosync']) > 0) {
-                    $tempCmd[] = './control.sh steamCmd '.$install . ' "' . trim($this->makeSteamCmd($goFor['sync'])) . '" ' . $this->webhost . ' ' . $this->imageserver . ' ' . $this->steamAccount . ' ' . $this->steamPassword;
-                    $tempCmd[] = './control.sh steamCmd '.$install . ' "' . trim($this->makeSteamCmd($goFor['nosync'])) . '" ' . $this->webhost.' none '.$this->steamAccount . ' ' . $this->steamPassword;
-                
-                } else if (count($goFor['sync']) > 0 and count($goFor['nosync']) == 0) {
-                    $tempCmd[] = './control.sh steamCmd '.$install . ' "' . trim($this->makeSteamCmd($goFor['sync'])) . '" ' . $this->webhost . ' ' . $this->imageserver . ' ' . $this->steamAccount . ' ' . $this->steamPassword;
-                
-                } else if (count($goFor['sync']) == 0 and count($goFor['nosync']) > 0) {
-                    $tempCmd[] = './control.sh steamCmd '.$install . ' "' . trim($this->makeSteamCmd($goFor['nosync'])) . '" ' . $this->webhost.' none '.$this->steamAccount . ' ' . $this->steamPassword;
-                }
-            }
-
-            // sync maps and addons
-            if ($addonCount > 0) {
-                $tempCmd[] = './control.sh syncaddons '.$this->imageserver . ' "' . implode(' ', $this->maps).'" "'.implode(' ', $this->addons).'"';
-            }
-
-            $this->sshcmd = $tempCmd;
-        }
-        #print_r($this->sshcmd);
-        return $this->sshcmd;
+        return false;
     }
 
-    public function setUpdating () {
-        
-        global $sql;
-        
-        $query = $sql->prepare("UPDATE `rservermasterg` SET `updating`='Y' WHERE `id`=? LIMIT 1");
-        foreach ($this->updateIDs as $id) {
-            $query->execute(array($id));
+    private function setUpdating () {
+
+        if (count($this->updateIDs) > 0) {
+
+            global $sql;
+
+            $query = $sql->prepare("UPDATE `rservermasterg` SET `updating`='Y' WHERE `id` IN (" . implode(',', $this->updateIDs) . ")");
+            $query->execute();
         }
     }
 
-    private function makeSteamCmd ($array) {
-        
-        $steamCmd = '';
-        
-        foreach ($array as $key=>$val) {
-            
-            if (is_numeric($key)) {
-                $steamCmd .= $val . ' ' . workAroundForValveChaos($key, $val, false) . ' ';
-                
-            } else {
-                list($appID) = explode('-', $key);
-                $steamCmd .= $val . ' ' . workAroundForValveChaos($appID, $val, false) . ' ';
+    private function handleFailedConnectAttemps () {
+
+        global $sql, $resellerLockupID, $rSA;
+
+        $query = $sql->prepare("UPDATE `rserverdata` SET `notified`=`notified`+1 WHERE `id`=? LIMIT 1");
+        $query->execute(array($this->rootID));
+
+        // While we keep on counting up, the mail is send only once to prevent spam
+        if (($this->rootNotifiedCount + 1) == $rSA['down_checks']) {
+            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
+            $query->execute();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                if ($row['mail_serverdown'] == 'Y') {
+                    sendmail('emaildown', $row['id'], $this->sship, '');
+                }
+            }
+        }
+    }
+
+    private function getKeyAndOrPassword () {
+
+        if ($this->publickey != 'N' and file_exists($this->keyname)) {
+
+            $ssh2Pass = new Crypt_RSA();
+
+            if ($this->publickey == 'B') {
+                $ssh2Pass->setPassword($this->sshpass);
+            }
+
+            $ssh2Pass->loadKey(file_get_contents($this->keyname));
+
+        } else {
+            $ssh2Pass = $this->sshpass;
+        }
+
+        return $ssh2Pass;
+    }
+
+    private function linuxSshConnectAndExecute ($updating, $getReturn, $ssh2Pass) {
+
+        $sftpObject = new Net_SFTP($this->sship, $this->sshport);
+
+        $loginReturn = $sftpObject->login($this->sshuser, $ssh2Pass);
+
+        if ($loginReturn) {
+
+            $sftpObject->put('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh', $this->shellScript);
+            $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh');
+
+            // File has been created, now login with SSH2 and execute the script
+            $sshObject = new Net_SSH2($this->sship, $this->sshport);
+
+            if ($sshObject->login($this->sshuser, $ssh2Pass)) {
+
+                if ($updating === true) {
+
+                    $this->setUpdating();
+
+                    $removeLogs = $this->removeUpdateLogs();
+
+                    if ($removeLogs !== false) {
+
+                        $sftpObject->put('/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh', $removeLogs);
+                        $sftpObject->chmod(0700, '/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh');
+
+                        $sshObject->exec('/home/' . $this->sshuser . '/temp/remove-update-logs-' . $this->uniqueHex . '.sh & ');
+                    }
+                }
+
+                if ($getReturn === false) {
+
+                    $sshObject->exec('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh & ');
+
+                    return true;
+                }
+
+                return $sshObject->exec('/home/' . $this->sshuser . '/temp/master-' . $this->uniqueHex . '.sh');
             }
         }
 
-        return $steamCmd;
+        return false;
+    }
 
+    private function windowsSshConnectAndExecute ($updating, $getReturn, $ssh2Pass) {
+
+        $sshObject = new Net_SSH2($this->sship, $this->sshport);
+
+        if ($sshObject->login($this->sshuser, $ssh2Pass)) {
+
+            if ($updating === true) {
+                $this->setUpdating();
+            }
+
+            if ($getReturn === false) {
+
+                foreach ($this->winCmds as $command) {
+                    $sshObject->exec($command . "\r\n");
+                }
+
+                return true;
+            }
+
+            $return = '';
+
+            foreach ($this->winCmds as $command) {
+
+                $temp = $sshObject->exec($command . "\r\n");
+
+                if ($temp) {
+                    $return .= $temp;
+                }
+            }
+
+            return $return;
+        }
+
+        return false;
+    }
+
+    public function sshConnectAndExecute ($updating = true, $getReturn = false) {
+
+        $ssh2Pass = $this->getKeyAndOrPassword();
+
+        $return = ($this->os == 'L') ? $this->linuxSshConnectAndExecute($updating, $getReturn, $ssh2Pass) : $this->windowsSshConnectAndExecute($updating, $getReturn, $ssh2Pass);
+
+        if (!$return) {
+            $this->handleFailedConnectAttemps();
+        }
+
+        return $return;
+    }
+
+    private function linuxCheckForUpdate ($shorten) {
+
+        $updateLog = '/home/' . $this->sshuser . '/logs/update-' . $shorten . '.log';
+
+        // When the logfile is missing the update is still running
+        $this->shellScript .= 'if [ ! -f ' . $updateLog . ' ]; then' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=1"' . "\n";
+        $this->shellScript .= 'else' . "\n";
+
+        // If it exists and the update is not running, the update is finished
+        $this->shellScript .= 'if [ "`ps fx | grep \'masterserver/' . $shorten . '\' | grep -v grep | head -n 1`" ]; then' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=1"' . "\n";
+        $this->shellScript .= 'else' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=0"' . "\n";
+        $this->shellScript .= 'fi' . "\n";
+
+        $this->shellScript .= 'fi' . "\n";
+    }
+
+    public function checkForUpdate ($shorten) {
+        if ($this->os == 'L') {
+            $this->linuxCheckForUpdate($shorten);
+        } else {
+
+        }
+    }
+
+    public function getUpdateStatus() {
+
+        if ($this->os == 'L') {
+            $this->shellScript .= 'echo $UPDATESTATUS' . "\n";
+        } else {
+
+        }
+
+        return $this->sshConnectAndExecute (false, true);
+    }
+
+    private function linuxMasterRemove ($shorten) {
+        $this->shellScript .= 'if [ -d "' . $this->masterserverDir . $shorten . '" ]; then rm -rf "' . $this->masterserverDir . $shorten . '"; fi' . "\n";
+    }
+
+    private function WindowsMasterRemove ($shorten) {
+        $this->winCmds[] = 'delmaster ' . $shorten;
+    }
+
+    public function masterRemove ($shorten) {
+
+        if ($this->os == 'L') {
+            $this->linuxMasterRemove($shorten);
+        } else {
+            $this->WindowsMasterRemove($shorten);
+        }
     }
 
     function __destruct() {
-        unset($this->updateIDs, $this->aeskey, $this->imageserver, $this->resellerID, $this->webhost, $this->rootID, $this->steamAccount, $this->steamPassword, $this->sship, $this->sshport, $this->sshuser, $this->sshpass, $this->publickey, $this->keyname, $this->syncList, $this->steamCmdTotal, $this->steamCmdOutdated, $this->noSteam, $this->maps, $this->addons, $this->sshcmd);
+        unset($this->imageserver, $this->resellerID, $this->webhost, $this->rootOK, $this->rootID, $this->steamAccount, $this->steamPassword, $this->updates, $this->os, $this->aeskey, $this->shellScript, $this->uniqueHex, $this->sship, $this->sshport, $this->sshuser, $this->sshpass, $this->publickey, $this->keyname);
     }
 }

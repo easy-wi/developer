@@ -71,13 +71,16 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
     include(EASYWIDIR . '/stuff/settings.php');
     include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
+    include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+    include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+    include(EASYWIDIR . '/stuff/methods/class_app.php');
 
     printText('File include and parameters fetched. Start connecting to external systems.');
 
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `active`='Y'");
 
     $query->execute();
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $resellerID = $row['resellerID'];
         $start = 0;
@@ -206,7 +209,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
         $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`user`,?) AS `duser`,AES_DECRYPT(`pass`,?) AS `dpass` FROM `rserverdata` WHERE `resellerid`=?");
         $query2->execute(array($aeskey, $aeskey, $resellerID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             if (($row2['publickey'] != 'N' and strlen($row2['keyname']) > 0) or ($row2['publickey'] == 'N' and strlen($row2['dpass']) > 0)) {
                 $gameRootIPs[$row2['ip']] = array('id' => $row2['id'], 'ftpPort' => $row2['ftpport'], 'user' => $row2['duser'], 'sourceSystemID' => $row2['sourceSystemID'], 'externalID' => $row2['externalID']);
                 foreach (ipstoarray($row2['altips']) as $ip) {
@@ -360,13 +363,14 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                         // Check if a rootserver entry already exists at easy-wi with the used IP
                         $arrayIP = getParam('ip');
+
                         if (isset($gameRootIPs[$arrayIP]['id'])) {
 
-                            unset($servertypeID,$servertypeModFolder,$switchID);
+                            unset($servertypeID, $servertypeModFolder, $switchID);
 
                             // Check if the rootserver has a masterserver with this shorten
                             $query2->execute(array(getParam('shorten'), $row['resellerID'], $gameRootIPs[$arrayIP]['id']));
-                            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                                 $servertypeID = $row2['id'];
                                 $defaultMap = $row2['map'];
 
@@ -387,7 +391,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
                                 }
 
                                 $query3->execute(array(getParam('ip'), getParam('port'), $resellerID));
-                                foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                                while ($row2 = $query3->fetch(PDO::FETCH_ASSOC)) {
                                     $switchID = $row2['id'];
                                     $sourceSystemID = $row2['sourceSystemID'];
                                     $externalID = $row2['externalID'];
@@ -431,11 +435,12 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                                         $query7->execute(array($sql->lastInsertId(), $switchID));
 
-                                        $gameRootIP = $gameRootIPs[$arrayIP]['user'];
-                                        $gameRootCmds[$gameRootIPs[$arrayIP]['id']][] = "./control.sh add ${customer}-${switchID} ${passwordGenerate} ${gameRootIP} ${passwordGenerate}";
+                                        $ftpConnectString = 'ftp://' . str_replace('//', '/', getParam('ip') . ':' . $gameRootIPs[$arrayIP]['ftpPort'] . '/' . getParam('path') . '/' . $servertypeModFolder);
 
-                                        $ftpConnect = 'ftp://' . str_replace('//', '/', getParam('ip') . ':' . $gameRootIPs[$arrayIP]['ftpPort'] . '/' . getParam('path') . '/' . $servertypeModFolder);
-                                        $gameRootCmds[$gameRootIPs[$arrayIP]['id']][] = "sudo -u ${customer}-${switchID} ./control.sh migrateserver ${customer}-${switchID} 1_" . getParam('shorten') . " " .getParam('ip') . "_" . getParam('port'). " 1 " . getParam('ftpUser') ." " . getParam('ftpPass'). " ${ftpConnect} ${servertypeModFolder}";
+                                        $appServer = new AppServer($gameRootIPs[$arrayIP]['id']);
+                                        $appServer->getAppServerDetails($switchID);
+                                        $appServer->migrateToEasyWi(array('user' => getParam('ftpUser'), 'password' => getParam('ftpPass'), 'path' => '/' . getParam('path') . '/' . $servertypeModFolder, 'connectString' => $ftpConnectString), getParam('shorten'), $servertypeModFolder);
+                                        $appServer->execute();
 
                                         printText('Import Gameserver. Address: ' . getParam('ip') . ':' . getParam('port') . '. And shorten:' . getParam('shorten'));
 
@@ -492,7 +497,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
         $query2 = $sql->prepare("SELECT `id`,`ssh2ip`,`ips`,`sourceSystemID`,`externalID` FROM `voice_masterserver` WHERE `resellerid`=?");
         $query2->execute(array($resellerID));
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $ts3MasterIPs[$row2['ssh2ip']] = array('id' => $row2['id'], 'sourceSystemID' => $row2['sourceSystemID'], 'externalID' => $row2['externalID']);
             foreach (ipstoarray($row2['ips']) as $ip) {
                 $ts3MasterIPs[$ip] = array('id' => $row2['id'], 'sourceSystemID' => $row2['sourceSystemID'], 'externalID' => $row2['externalID']);
@@ -639,7 +644,7 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
 
                             // Get TS3 data if server exists
                             $query2->execute(array(getParam('ip'), getParam('port'), $resellerID));
-                            foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                                 $ts3ID = $row2['id'];
                                 $sourceSystemID = $row2['sourceSystemID'];
                                 $externalID = $row2['externalID'];
@@ -708,9 +713,9 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
         $query3 = $sql->prepare("UPDATE `voice_server` SET `localserverid`=? WHERE `masterserver`=? AND `resellerid`=? AND `port`=? AND (`localserverid`<1 OR `localserverid` IS NULL)");
 
         $query->execute(array($resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $query2->execute(array(':aeskey' => $aeskey, ':id' => $row2['masterserver']));
-            foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row3) {
+            while ($row3 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 $ts3 = new TS3($row3['ssh2ip'], $row3['queryport'], 'serveradmin', $row3['decryptedquerypassword'], false);
 

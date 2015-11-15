@@ -38,7 +38,7 @@
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['cms_settings']) or $reseller_id != 0) {
     header('Location: admin.php');
-    die('No acces');
+    die('No Access');
 }
 $sprache = getlanguagefile('page',$user_language,$reseller_id);
 $loguserid = $admin_id;
@@ -94,28 +94,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $about_id = $query->fetchColumn();
 
     if (count($posted_languages) > 0) {
+
         $query = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
-        $query2 = $sql->prepare("UPDATE `page_pages_text` SET `text`=? WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
-        $query3 = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($about_id,$reseller_id));
-        $lang_exist = array();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $lang_exist[] = $row['language'];
-            if (in_array($row['language'],$posted_languages)) {
-                $query2->execute(array($ui->escaped('about', 'post', $row['language']),$about_id, $row['language'],$reseller_id));
-                $queryAffected += $query2->rowCount();
-            } else {
-                $query3->execute(array($about_id, $row['language'],$reseller_id));
+        $query2 = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($about_id, $reseller_id));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            if (!in_array($row['language'],$posted_languages)) {
+                $query2->execute(array($about_id, $row['language'], $reseller_id));
                 $queryAffected += $query3->rowCount();
             }
         }
-        $query = $sql->prepare("INSERT INTO `page_pages_text` (`pageid`,`language`,`text`,`resellerid`) VALUES (?,?,?,?)");
+
+        $query = $sql->prepare("INSERT INTO `page_pages_text` (`pageid`,`language`,`text`,`resellerid`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
         $queryAffected += $query->rowCount();
         foreach ($posted_languages as $lg) {
-            if (!in_array($lg,$lang_exist)) {
-                $query->execute(array($about_id,$lg,nl2br($ui->escaped('about', 'post',$lg)),$reseller_id));
-            }
+            $query->execute(array($about_id, $lg, nl2br((string) $ui->escaped('about', 'post', $lg)), $reseller_id));
         }
+
     } else {
         $query = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
         $query->execute(array($about_id,$reseller_id));
@@ -132,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query3 = $sql->prepare("DELETE FROM `translations` WHERE `type`='to' AND `lang`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($reseller_id));
         $lang_exist = array();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $lang_exist[] = $row['lang'];
             if (in_array($row['lang'],$posted_touLanguages)) {
                 $query2->execute(array($ui->escaped('tou', 'post', $row['lang']), $row['lang'],$reseller_id));
@@ -166,7 +162,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     foreach ($lang_avail as $lg) $about_text[$lg] = false;
     $query = $sql->prepare("SELECT * FROM `page_settings` WHERE `resellerid`=? LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $seo = $row['seo'];
         $rssfeed = $row['rssfeed'];
         $rssfeed_fulltext = $row['rssfeed_fulltext'];
@@ -201,7 +197,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`resellerid`=? AND p.`type`='page' ORDER BY t.`title`");
     $query2 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
     $query->execute(array($user_language,$reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $page_title = $row['title'];
         if ($row['title'] == null or $row['title'] == '') {
             $query2->execute(array($row['id'],$reseller_id));

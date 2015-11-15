@@ -72,7 +72,7 @@ function isurl($value) {
 }
 
 function isdomain($value) {
-    return (preg_match("/^[a-z0-9\-\.]+\.[a-z]{1,5}$/", $value) !== false) ? $value : false;
+    return (preg_match("/^[a-z0-9\-\.]+\.[a-z]{1,10}$/", $value) !== false) ? $value : false;
 }
 
 function isRsync($value) {
@@ -116,7 +116,7 @@ function cores($value) {
     return (preg_match("/^[0-9\,]+$/", $value)) ? $value : false;
 }
 function ipport($value) {
-    $adresse_awk=explode(':',preg_replace(array('/\s+/',' '), '', $value));
+    $adresse_awk = explode(':' , preg_replace('/\s+/', '', $value));
     return ((!isset($adresse_awk[0]) or !filter_var($adresse_awk[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) or (!isset($adresse_awk[1]) or !preg_match("/^(0|([1-9]\d{0,3}|[1-5]\d{4}|[6][0-5][0-5]([0-2]\d|[3][0-5])))$/", $adresse_awk[1]))) ? false : $value;
 }
 function port($value) {

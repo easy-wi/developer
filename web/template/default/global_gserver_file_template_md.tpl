@@ -40,12 +40,12 @@
                         <input type="hidden" name="token" value="<?php echo token();?>">
                         <input type="hidden" name="action" value="md">
 
-                        <div class="form-group<?php if(isset($errors['name'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['name'])) echo ' has-error';?>">
                             <label for="inputName"><?php echo $sprache->description;?></label>
                             <input class="form-control" id="inputName" type="text" name="name" value="<?php echo $name;?>" required>
                         </div>
 
-                        <div id="mods" class="form-group<?php if(isset($errors['servertype'])) echo ' error';?>">
+                        <div id="mods" class="form-group<?php if(isset($errors['servertype'])) echo ' has-error';?>">
                             <label for="inputServertype"><?php echo $sprache->game;?></label>
                             <select class="form-control chosen-select" id="inputServertype" name="servertype">
                                 <?php foreach ($table as $k=>$v) { ?>
@@ -54,7 +54,7 @@
                             </select>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['content'])) echo ' error';?>">
+                        <div class="form-group<?php if(isset($errors['content'])) echo ' has-error';?>">
                             <label for="inputContent"><?php echo $gsprache->template;?></label>
                             <textarea class="form-control" id="inputContent" rows="20" name="content" required><?php echo $content;?></textarea>
                         </div>

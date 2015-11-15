@@ -1,32 +1,39 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=ro"><?php echo $gsprache->gameroot;?></a> <span class="divider">/</span></li>
-            <li class="active"><?php echo $gsSprache->reinstall;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $ip;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span8">
-        <form class="form-horizontal" action="admin.php?w=ro&amp;d=ri&amp;id=<?php echo $id;?>" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ri">
-            <?php foreach($table as $k=>$v){ ?>
-            <div class="control-group">
-                <label class="control-label" for="inputServer-<?php echo $k;?>"><?php echo $v['ip'].':'.$v['port'];?></label>
-                <div class="controls">
-                    <input id="inputServer-<?php echo $k;?>" type="checkbox" name="serverID[]" value="<?php echo $k;?>" checked="checked">
-                </div>
+<section class="content-header">
+    <h1><?php echo $gsprache->appRoot;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=ro"><i class="fa fa-server"></i> <?php echo $gsprache->appRoot;?></a></li>
+        <li><?php echo $gsprache->reinstall;?></li>
+        <li class="active"><?php echo $ip;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+
+                <form role="form" action="admin.php?w=ro&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=ro" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post" >
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ri">
+
+                    <div class="box-body">
+                        <?php foreach($table as $k=>$v){ ?>
+                        <div class="checkbox">
+                            <label>
+                                <input id="inputServer-<?php echo $k;?>" type="checkbox" name="serverID[]" value="<?php echo $k;?>" checked="checked">
+                                <?php echo $v['ip'].':'.$v['port'];?>
+                            </label>
+                        </div>
+                        <?php }?>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-warning" id="inputReinstall" type="submit"><i class="fa fa-refresg">&nbsp;<?php echo $gsprache->reinstall;?></i></button>
+                    </div>
+                </form>
             </div>
-            <?php }?>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i></button>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

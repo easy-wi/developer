@@ -37,7 +37,7 @@
                         <?php if($table_row['stopped']=='N'){ ?><a href="userpanel.php?w=gs&amp;d=st&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_stop;?>');"><button class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> <?php echo $sprache->stop;?></button></a><?php } ?>
                         <?php if(!empty($table_row['pro'])){ ?><a href="userpanel.php?w=pr&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->protect . ' '; echo ($table_row['imgp']=='16_protected') ? $sprache->off2 : $sprache->on;?>?');"><button class="btn btn-sm <?php if($table_row['imgp']=='16_protected')echo 'btn-info';else if($table_row['imgp']=='16_unprotected') echo 'btn-warning';?>"><i class="fa fa-shield"></i> <?php echo $sprache->protect.' '.$table_row['pro'];?></button></a><?php } ?>
                         <a href="userpanel.php?w=gs&amp;d=cf&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-cogs"></i> <?php echo $sprache->config;?></button></a>
-                        <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['imgp']!='16_protected' and $table_row['ftpAllowed']) { ?>
+                        <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['ftpAllowed']) { ?>
                         <a href="userpanel.php?w=gs&amp;d=wf&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-files-o"></i> <?php echo $sprache->webFtp;?></button></a>
                         <?php } ?>
                         <?php if($pa['useraddons']){ ?><a href="userpanel.php?w=ao&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-puzzle-piece"></i> 				<?php echo $gsprache->addon;?></button></a><?php } ?>
@@ -50,15 +50,7 @@
                                 <li><a href="userpanel.php?w=bu&amp;id=<?php echo $table_row['id'];?>&amp;action=md"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                             </ul>
                         </div>
-
-                        <a class="btn btn-sm btn-primary" data-toggle="modal" data-target="#compose-modal-<?php echo $table_row['id'];?>"><i class="fa fa-terminal"></i> <?php echo $gsprache->logs;?></a>
-
-                        <div class="modal fade" id="compose-modal-<?php echo $table_row['id'];?>" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content" id="modal-content-<?php echo $table_row['id'];?>">
-                                </div>
-                            </div>
-                        </div>
+                        <a href="userpanel.php?w=gs&amp;d=sl&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-terminal"></i> <?php echo $imageSprache->liveConsole;?></button></a>
                         <a href="userpanel.php?w=gs&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></button></a>
                         <a href="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-warning"><i class="fa fa-refresh"></i> <?php echo $sprache->reinstall;?></button></a>
                         <?php if($table_row['upload']==true){ ?><a href="userpanel.php?w=gs&amp;d=du&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');"><button class="btn btn-sm btn-info"><i class="icon-white icon-film"></i> SourceTV</button></a><?php } ?>
@@ -81,7 +73,7 @@
                         <dt><?php echo $sprache->coreBind;?></dt>
                         <dd><?php echo $table_row['cores'].' ('.$table_row['coreCount'].')';?></dd>
                         <?php } ?>
-                        <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['imgp']!='16_protected' and $table_row['ftpAllowed']) { ?>
+                        <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['ftpAllowed']) { ?>
                         <dt><?php echo $sprache->ftp_link;?></dt>
                         <dd><a href="<?php echo $table_row['ftpdata'];?>"><?php echo $table_row['ftpdata'];?></a></dd>
                         <dt><?php echo $sprache->ftp_adresse;?></dt>
@@ -96,6 +88,5 @@
             </div>
         </div>
     </div>
-    <script type='text/javascript'>$('#compose-modal-<?php echo $table_row['id'];?>').on('show.bs.modal',function(){ $('#modal-content-<?php echo $table_row['id'];?>').load('serverlog.php?id=<?php echo $table_row['id'];?>');});</script>
     <?php }?>
 </section>

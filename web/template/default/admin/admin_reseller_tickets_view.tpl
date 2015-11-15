@@ -1,35 +1,63 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=tr"><?php echo $gsprache->support;?></a> <span class="divider">/</span></li>
-            <li class="active"><?php echo $topic;?></li>
-        </ul>
+<section class="content-header">
+    <h1><?php echo $gsprache->reseller . ' ' . $gsprache->support;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=tr"><i class="fa fa-life-ring"></i> <?php echo $gsprache->reseller . ' ' . $gsprache->support;?></a></li>
+        <li class="active"><?php echo $topic;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-primary">
+                <div class="box-body">
+                    <dl class="dl-horizontal">
+                        <dt><?php echo $sprache->status;?></dt>
+                        <dd><?php echo $status;?></dd>
+                        <br>
+                        <dt><?php echo $sprache->priority;?></dt>
+                        <dd><?php echo $priority;?></dd>
+                        <br>
+                        <?php if($open=="Y") { ?>
+                        <dt><?php echo $gsprache->mod;?></dt>
+                        <dd><a href="admin.php?w=tr&d=md&amp;id=<?php echo $id;?>&amp;action=md"><span class="btn btn-primary btn-sm"><i class="fa fa-edit"></i></a></dd>
+                        <br>
+                        <dt><?php echo $sprache->close_heading;?></dt>
+                        <dd><a href="admin.php?w=tr&d=md&amp;id=<?php echo $id;?>&amp;action=cl"><span class="btn btn-primary btn-sm"><i class="fa fa-lock"></i></span></a></dd>
+                        <br>
+                        <?php } else if ($open=="D") { ?>
+                        <dt><?php echo $sprache->reopen;?></dt>
+                        <dd><a href="admin.php?w=tr&d=md&amp;id=<?php echo $id;?>&amp;action=op&amp;r=ti"><span class="btn btn-primary btn-sm"><i class="fa fa-unlock"></i></a></dd>
+                        <?php } ?>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <ul class="timeline">
+                <?php foreach ($table as $table_row) { ?>
+                <?php if($lastdate!=$table_row['writedate']){ ?>
+                <li class="time-label"><span class="bg-green"><?php echo $table_row['writedate'];?></span></li>
+                <?php }; $lastdate=$table_row['writedate'];?>
+
+                <li>
+                    <i class="fa fa-envelope bg-blue"></i>
+                    <div class="timeline-item">
+                        <span class="time"><i class="fa fa-clock-o"></i> <?php echo $table_row['writeTime'];?></span>
+                        <h3 class="timeline-header"><?php echo $sprache->writer.': '.$table_row['writer'];?> ...</h3>
+                        <div class="timeline-body">
+                            <?php echo $table_row['ticket'];?>
+                        </div>
+                    </div>
+                </li>
+                <?php } ?>
+
+                <li>
+                    <i class="fa fa-clock-o"></i>
+                </li>
+            </ul>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <dl class="dl-horizontal">
-        <dt><?php echo $sprache->status;?></dt>
-        <dd><?php echo $status;?></dd>
-        <dt><?php echo $sprache->priority;?></dt>
-        <dd><?php echo $priority;?></dd>
-        <?php if($open=="Y") { ?>
-        <dt><?php echo $gsprache->mod;?></dt>
-        <dd><a href="admin.php?w=tr&d=md&amp;id=<?php echo $id;?>&amp;action=md"><span class="btn btn-primary btn-mini"><i class="icon-edit icon-white"></i></a></dd>
-        <dt><?php echo $sprache->close_heading;?></dt>
-        <dd><a href="admin.php?w=tr&d=md&amp;id=<?php echo $id;?>&amp;action=cl"><span class="btn btn-primary btn-mini"><i class="icon-lock icon-white"></i></span></a></dd>
-        <?php } else if ($open=="D") { ?>
-        <dt><?php echo $sprache->reopen;?></dt>
-        <dd><a href="admin.php?w=tr&d=md&amp;id=<?php echo $id;?>&amp;action=op&amp;r=ti"><span class="btn btn-primary btn-mini"><i class="icon-lock icon-white"></i></a></dd>
-        <?php } ?>
-    </dl>
-</div>
-<hr>
-<?php foreach ($table as $table_row) { ?>
-<div class="row-fluid">
-    <h5><a href="#" onclick="textdrop('<?php echo $table_row['writedate'];?>')"><?php echo $table_row['writedate'];?></a> <?php echo $sprache->writer.': '.$table_row['writer'];?></h5>
-    <div id="<?php echo $table_row['writedate'];?>" class="span12">
-        <?php echo $table_row['ticket'];?>
-    </div>
-</div>
-<?php } ?>
+</section>

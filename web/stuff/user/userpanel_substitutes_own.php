@@ -134,7 +134,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
 
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $query2->execute(array($row['serviceProviderID'], $_SESSION['sID']));
 
@@ -147,7 +147,7 @@ if ($ui->st('d', 'get') == 'pw') {
 
         $query = $sql->prepare("SELECT `name`,`vname`,`show_help_text` FROM `userdata_substitutes` WHERE `sID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($_SESSION['sID'], $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $name = $row['name'];
             $vname = $row['vname'];
             $show_help_text = $row['show_help_text'];

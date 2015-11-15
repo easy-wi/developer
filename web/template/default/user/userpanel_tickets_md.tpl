@@ -33,13 +33,13 @@
                                 <option value="4" <?php if($userPriority==4) echo 'selected="selected"'; ?>><?php echo $sprache->priority_very_high;?></option>
                                 <option value="5" <?php if($userPriority==5) echo 'selected="selected"'; ?>><?php echo $sprache->priority_critical;?></option>
                             </select>
-                            <?php } ?>
                         </div>
 
                         <div class="form-group">
                             <label for="problem"><?php echo $sprache->answer;?></label>
                             <textarea class="form-control" id="problem" name="ticket" rows="10"></textarea>
                         </div>
+                        <?php } ?>
                     </div>
 
                     <div class="box-footer">

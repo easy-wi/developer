@@ -71,7 +71,7 @@ if ($die == true) {
 	$query = $sql->prepare("SELECT `id`,`cpu`,`active`,`ip`,`esxi`,`description`,`cores`,`mhz`,`hdd`,`ram`,`maxserver`,`thin`,`thinquota` FROM `virtualhosts` WHERE `id`=?");
     $query2 = $sql->prepare("SELECT `cores`,`minmhz`,`hddsize`,`mountpoint`,`minram` FROM `virtualcontainer` WHERE hostid=?");
     $query->execute(array($ui->id('id',19, 'get')));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$id = $row['id'];
 		$cores = $row['cores'];
 		$mhz = $row['mhz'];
@@ -114,7 +114,7 @@ if ($die == true) {
 		}
         $query2->execute(array($id));
 		$i2 = 0;
-		foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+		while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 			$mountpoint = $row2['mountpoint'];
 			$addstracthdd = $mountunused[$mountpoint]+($row2['hddsize']*($percent/100));
 			$mountunused[$mountpoint] = $addstracthdd;
@@ -157,7 +157,7 @@ if ($die == true) {
 } else if ($ui->st('d', 'get')=="my" and $ui->id('id',19, 'get')) {
 	$query = $sql->prepare("SELECT s.`ip`,s.`max_databases`,COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`id`=? AND s.`active`='Y' AND s.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19, 'get'), $reseller_id));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$installed = $row['installed'];
 		$max_databases = $row['max_databases'];
 	}
@@ -236,7 +236,7 @@ if ($die == true) {
             $query->execute(array($admin_id, $reseller_id));
 		}
 		$ips = array();
-		foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+		while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 			foreach (ipstoarray($row['ips']) as $userip) $userips[] = $userip;
 		}
 		$ips=array_unique($userips);
@@ -284,7 +284,7 @@ if ($die == true) {
     $count = $query->rowCount();
     $query2 = $sql->prepare("SELECT `gamebinary` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
     $query2->execute(array($get_shorten, $reseller_id));
-	foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+	while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 		if ($row['gamebinary'] == 'srcds_run' or $row['gamebinary'] == 'hlds_run') {
 			$anticheatsoft="Valve Anti Cheat";
 		} else if ($row2['gamebinary'] == 'cod4_lnxded') {
@@ -317,7 +317,7 @@ if ($die == true) {
 	$sprache = getlanguagefile('voice', $user_language, $reseller_id);
 	$query = $sql->prepare("SELECT m.`maxserver`,COUNT(v.`id`) AS `installedserver`,m.`maxslots`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots` FROM `voice_masterserver` m LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`resellerid`=? LIMIT 1");
 	$query->execute(array($ui->id('id',19, 'get'), $reseller_id));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		if ($row['installedserver'] == null) {
 			$installedserver = 0;
 		} else {
@@ -351,7 +351,7 @@ if ($die == true) {
         $default_language = $query->fetchColumn();
         $query = $sql->prepare("SELECT * FROM `ticket_topics` WHERE `maintopic`=? AND `maintopic`!=`id` AND `resellerid`=? ORDER BY `id`");
         $query->execute(array($ui->port('po', 'get'), $resellerid));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $topic = '';
             $pselect3 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
             $pselect3->execute(array($user_language, $row['id'], $resellerid));

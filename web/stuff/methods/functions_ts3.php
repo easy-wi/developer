@@ -132,7 +132,11 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
             $sshpw->setPassword($sshpw);
         }
 
-        $sshpw->loadKey(file_get_contents($privateKey));
+        $keyContent = @file_get_contents($privateKey);
+
+        if ($keyContent) {
+            $sshpw->loadKey($keyContent);
+        }
     }
 
     if ($sshSftpObject->login($sshuser, $sshpw)) {
@@ -177,8 +181,6 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
             $data = $sshSftpObject->get($file);
             $data = str_replace(array("\0", "\b", "\r", "\Z"), '', $data);
         }
-
-
 
         if ($action != 'rs' and $action != 'mw') {
 
@@ -331,7 +333,7 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
             $query = $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=? AND `id`=`resellerid`) OR (`resellerid`=0 AND `accounttype`='a')");
             $query->execute(array($reseller_id));
         }
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['mail_serverdown'] == 'Y') {
                 sendmail('emaildown', $row['id'], 'TS3 Master ' . $sship . ' ( ' . $bad . ' )', '');
             }
@@ -402,7 +404,7 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
 
         $query = $sql->prepare("SELECT `id`,`defaultdns`,`externalDefaultDNS`,`tsdnsServerID` FROM `voice_masterserver` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['externalDefaultDNS'] == 'N') {
 
                 unset($temp);
@@ -429,7 +431,7 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
 
         $query = $sql->prepare("SELECT `id`,`defaultdns` FROM `voice_tsdns` WHERE `resellerid`=?");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             unset($temp);
 
@@ -462,7 +464,8 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
         }
 
         $ex = explode('-', $first);
-        if ($type == 'dns' and isset($partCount) and $partCount==$dnsPartCount and $ex[0] != $id) {
+
+        if ($type == 'dns' and isset($partCount) and $partCount == $dnsPartCount and isid($ex[0], 10) and $ex[0] != $id) {
             return false;
         }
 
@@ -477,6 +480,10 @@ function checkDNS ($dns, $id = null, $user_id = null, $type = '') {
 
 }
 
+/*
+ * They probably do not expect scripts like this on the mirror side
+ * But so what as long as it works...
+ */
 function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null) {
 
     // check if entered parameters are correct
@@ -575,4 +582,19 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
     }
 
     return false;
+}
+
+function getVoiceMasterList ($resellerID, $adminID) {
+
+    $table = array();
+
+    global $sql;
+
+    $query = $sql->prepare("SELECT m.`id`,m.`ssh2ip`,m.`description`,m.`maxserver`,m.`maxslots`,m.`active`,m.`resellerid`,m.`managedForID`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL) AND `active`='Y' AND (`resellerid`=? OR m.`managedForID`=?)) ORDER BY `slotpercent`,`serverpercent` ASC");
+    $query->execute(array($resellerID, $adminID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $table[$row['id']] = ($row['description'] != null and $row['description'] != '') ? $row['ssh2ip'] . ' ' . $row['description'] : $row['ssh2ip'];
+    }
+
+    return $table;
 }

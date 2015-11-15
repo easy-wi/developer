@@ -52,6 +52,7 @@ $sprache = getlanguagefile('roots', $user_language, $resellerLockupID);
 $rootServer = new masterServer($ui->id('serverID', 10, 'get'), $aeskey);
 
 $query = $sql->prepare("SELECT `shorten` FROM `servertypes` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+
 foreach($ui->id('masterIDs', 10, 'get') as $masterID) {
 
     $query->execute(array($masterID, $resellerLockupID));
@@ -66,22 +67,21 @@ foreach($ui->id('masterIDs', 10, 'get') as $masterID) {
     }
 }
 
-$sshcmd = $rootServer->returnCmds('install', 'all');
+$return = $rootServer->sshConnectAndExecute();
 
-if ($rootServer->sshcmd === null) {
+if (count($gamelist) == 0) {
 
     echo 'Nothing to update/sync!';
 
 } else {
 
-    if (ssh2_execute('gs', $ui->id('serverID', 10, 'get'), $rootServer->sshcmd) === false) {
+    if ($return === false) {
         echo $sprache->error_root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
     } else {
-        $rootServer->setUpdating();
         echo $sprache->root_updatemaster . ' ( ' . implode(', ', $gamelist) . ' )';
     }
 
     if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-        echo '<br>' . implode('<br>', $rootServer->sshcmd);
+        echo '<br>' . nl2br($rootServer->getCommands());
     }
 }

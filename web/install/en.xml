@@ -31,12 +31,12 @@
     <error_system_fopen>fopen function cannot be used. please enable it.</error_system_fopen>
     <error_system_gd>gd extension is not installed, please install it.</error_system_gd>
     <error_system_hash>hash extension is not installed, please install it.</error_system_hash>
-    <error_system_php_version>At least PHP 5.3 is required. Your PHP version is to old: </error_system_php_version>
+    <error_system_php_version>At least PHP 5.4 is required. Your PHP version is to old: </error_system_php_version>
     <error_system_json>json extension is not installed, please install it.</error_system_json>
     <error_system_openssl>openssl extension is not installed, please install it.</error_system_openssl>
     <error_system_PDO>PDO extension is not installed, please install it.</error_system_PDO>
     <error_system_pdo_mysql>pdo_mysql extension is not installed, please install it.</error_system_pdo_mysql>
-    <error_system_php_version>Es wird mindestens PHP 5.3 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML extension is not installed, please install it.</error_system_SimpleXML>
     <faillogins>Failed logins</faillogins>
 	<faillogins2>Possible failed Logins in a row</faillogins2>
@@ -85,7 +85,7 @@
     <system_ok_openssl>openssl extension is installed.</system_ok_openssl>
     <system_ok_PDO>PDO extension is installed.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql extension is installed.</system_ok_pdo_mysql>
-    <system_ok_php_version>At least PHP 5.3 is required. Your PHP version is ok: </system_ok_php_version>
+    <system_ok_php_version>At least PHP 5.4 is required. Your PHP version is ok: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
     <timezone>Timezone</timezone>
 	<title>Homepage title</title>

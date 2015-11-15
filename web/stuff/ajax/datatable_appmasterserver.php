@@ -43,7 +43,7 @@ if (!defined('AJAXINCLUDED')) {
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+include(EASYWIDIR . '/stuff/methods/class_masterserver.php');
 
 $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `rserverdata` WHERE `resellerid`=?");
 $query->execute(array($resellerLockupID));
@@ -82,24 +82,33 @@ if ($sSearch) {
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+    $rootServer = new masterServer($row['id'], $aeskey);
+
     $statusList = array();
     $sshcheck = array();
 
     $description = $row['description'];
 
     $query2->execute(array($row['id'], $resellerLockupID));
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
         $shorten = $row2['shorten'];
 
         if ($row2['installing'] == 'N' and $row2['updating'] == 'N') {
+
             $statusList[$row2['shorten']] = true;
+
         } else {
 
             $toolong = date($row2['installstarted'], strtotime("+15 minutes"));
 
-            if (strtotime($logdate) > strtotime($toolong) or $row2['updating'] == 'Y') {
+            if (strtotime($logdate) > strtotime($toolong)) {
+
                 $sshcheck[] = $row2['shorten'];
+
+                $rootServer->checkForUpdate($row2['shorten']);
+
             } else {
                 $statusList[$row2['shorten']] = false;
             }
@@ -108,41 +117,39 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if (count($sshcheck) > 0) {
 
-        $serverdata = serverdata('root', $row['id'], $aeskey);
-        $ip = $serverdata['ip'];
+        $checkReturn = $rootServer->getUpdateStatus();
 
-        $check = ssh2_execute('gs', $row['id'], './control.sh updatestatus "' . implode(' ', $sshcheck) . '"');
-
-        if ($check === false) {
+        if ($checkReturn === false) {
 
             $description = 'The login data does not work';
 
-        } else if (preg_match('/^[\w\:\-\=]+$/', $check)) {
+        } else if (strlen($checkReturn) > 0) {
 
             $games = array();
 
-            foreach (preg_split('/\:/',$check,-1,PREG_SPLIT_NO_EMPTY) as $status) {
+            foreach (preg_split('/\;/', $checkReturn, -1, PREG_SPLIT_NO_EMPTY) as $status) {
+
                 $ex = explode('=', $status);
+
                 if (isset($ex[1])) {
                     $games[$ex[0]] = $ex[1];
                 }
             }
 
-            foreach ($games as $k => $v) {
+            foreach ($games as $shorten => $v) {
 
-                if (!in_array($k, array('steamcmd', 'sync'))) {
+                // Check if the shorten exists and the update is done
+                $query3->execute(array($shorten, $resellerLockupID, $rootServer->sship));
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
-                    $query3->execute(array($k, $resellerLockupID, $ip));
-                    foreach ($query3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+                    // If the update is no longer running, update db entry
+                    if ($v == 0) {
 
-                        if (($v == 0 and $row2['rupdates'] != 4 and $row2['updates'] != 4 and $row2['steamgame'] != 'S') or ($row2['steamgame'] == 'S' and (!isset($games['steamcmd']) or $games['steamcmd'] == 0)) or (($row2['rupdates'] == 4 or $row2['updates'] == 4) and (!isset($games['sync']) or $games['sync'] == 0))) {
+                        $statusList[$shorten] = true;
 
-                            $statusList[$k] = true;
+                        $query4->execute(array($row3['id']));
 
-                            $query4->execute(array($row2['id']));
-
-                            unset($sshcheck[array_search($k, $sshcheck)]);
-                        }
+                        unset($sshcheck[array_search($shorten, $sshcheck)]);
                     }
                 }
             }

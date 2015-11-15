@@ -1,29 +1,36 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=im"><?php echo $gsprache->template;?></a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->del;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $description;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <?php echo $sprache->sure3;?>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=im&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="dl">
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-danger pull-left" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
-                </div>
+<section class="content-header">
+    <h1><?php echo $gsprache->gameserver.' '.$gsprache->template;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><a href="admin.php?w=im"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->gameserver.' '.$gsprache->template;?></a></li>
+        <li><?php echo $gsprache->del;?></li>
+        <li class="active"><?php echo $description;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+
+                <form role="form" action="admin.php?w=im&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=im" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="dl">
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label class="control-label" for="inputDesc"><?php echo $sprache->description;?></label>
+                            <div class="controls"><input class="form-control" id="inputDesc" type="text" name="description" value="<?php echo $description;?>" disabled="disabled"></div>
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash">&nbsp;<?php echo $gsprache->del;?></i></button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

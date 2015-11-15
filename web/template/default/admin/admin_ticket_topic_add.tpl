@@ -1,68 +1,82 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><?php echo $sprache->topic_name;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $gsprache->add;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=ti&amp;d=at&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ad">
-            <div class="control-group">
-                <label class="control-label" for="inputMainTopic"><?php echo $sprache->topic;?></label>
-                <div class="controls">
-                    <select id="inputMainTopic" name="maintopic">
-                        <option value="none"><?php echo $sprache->none;?></option>
-                        <?php foreach ($options as $option) { ?><?php echo $option;?><?php }?>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputPriority"><?php echo $sprache->priority;?></label>
-                <div class="controls">
-                    <select id="inputPriority" name="priority">
-                        <option value="1"><?php echo $sprache->priority_low;?></option>
-                        <option value="2"><?php echo $sprache->priority_medium;?></option>
-                        <option value="3"><?php echo $sprache->priority_high;?></option>
-                        <option value="4"><?php echo $sprache->priority_very_high;?></option>
-                        <option value="5"><?php echo $sprache->priority_critical;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputTopicName"><?php echo $sprache->topic_name;?></label>
-                <div class="controls">
-                    <input id="inputTopicName" type="text" name="topic_name" value="" required>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputLanguages"><?php echo $sprache->languages;?></label>
-                <div class="controls">
+<section class="content-header">
+    <h1><?php echo $sprache->heading;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=ti"><i class="fa fa-life-ring"></i> <?php echo $gsprache->support;?></a></li>
+        <li><a href="admin.php?w=ti&amp;d=mt"><i class="fa fa-wrench"></i> <?php echo $sprache->heading;?></a></li>
+        <li class="active"><?php echo $gsprache->add;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-success">
+
+                <form role="form" action="admin.php?w=ti&amp;d=at&amp;r=ti" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                <input type="hidden" name="token" value="<?php echo token();?>">
+                <input type="hidden" name="action" value="ad">
+
+                <div class="box-body">
+
+                    <div class="form-group">
+                        <label for="inputMainTopic"><?php echo $sprache->topic;?></label>
+                        <div class="controls">
+                            <select class="form-control" id="inputMainTopic" name="maintopic">
+                                <option value="none"><?php echo $sprache->none;?></option>
+                                <?php foreach ($options as $option) { ?><?php echo $option;?><?php }?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputPriority"><?php echo $sprache->priority;?></label>
+                        <div class="controls">
+                            <select class="form-control" id="inputPriority" name="priority">
+                                <option value="1"><?php echo $sprache->priority_low;?></option>
+                                <option value="2"><?php echo $sprache->priority_medium;?></option>
+                                <option value="3"><?php echo $sprache->priority_high;?></option>
+                                <option value="4"><?php echo $sprache->priority_very_high;?></option>
+                                <option value="5"><?php echo $sprache->priority_critical;?></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputTopicName"><?php echo $sprache->topic_name;?></label>
+                        <div class="controls">
+                            <input class="form-control" id="inputTopicName" type="text" name="topic_name" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <?php foreach ($foundlanguages as $array){ ?>
+                        <label class="checkbox-inline">
+                            <input name="language[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" type="checkbox" <?php echo $array['checked'];?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/>
+                        </label>
+                        <?php } ?>
+                    </div>
+
                     <?php foreach ($foundlanguages as $array) { ?>
-                    <label class="checkbox inline">
-                        <input id="checkboxLanguage-<?php echo $array['lang'];?>" type="checkbox" name="language[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>');" <?php echo $array['checked'];?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="<?php echo $array['lang'];?>"/>
-                    </label>
+                    <div id="<?php echo $array['lang'];?>" class="form-group <?php echo $array['style'];?>">
+                        <label for="inputLangs-<?php echo $array['lang'];?>"></label>
+                        <div class="controls">
+                            <div class="input-group">
+                                <span class="input-group-addon"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/></span>
+                                <input class="form-control" id="inputLangs-<?php echo $array['lang'];?>" type="text" name="subject_<?php echo $array['lang'];?>" value="">
+                            </div>
+                        </div>
+                    </div>
                     <?php } ?>
+
                 </div>
-            </div>
-            <?php foreach ($foundlanguages as $array) { ?>
-            <div id="<?php echo $array['lang'];?>" class="control-group <?php echo $array['style']; ?>">
-                <label class="control-label" for="inputName-<?php echo $array['lang'];?>"><?php echo '<img src="images/flags/'.$array['lang'].'.png" alt="Flag: '.$array['lang'].'.png"/>'; ?></label>
-                <div class="controls">
-                    <input id="inputName-<?php echo $array['lang'];?>" type="text" name="subject_<?php echo $array['lang'];?>" value="">
+
+                <div class="box-footer">
+                    <button class="btn btn-success" id="inputEdit" type="submit"><i class="fa fa-plus-circle">&nbsp;<?php echo $gsprache->add;?></i></button>
                 </div>
+                </form>
             </div>
-            <?php } ?>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

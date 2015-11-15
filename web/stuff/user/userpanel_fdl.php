@@ -38,22 +38,19 @@
 
 if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['fastdl'])) {
 	header('Location: userpanel.php');
-	die('No acces');
+	die('No Access');
 }
 
-require_once(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
-$sprache = getlanguagefile('fastdl', $user_language, $reseller_id);
-$gameSprache = getlanguagefile('gserver', $user_language, $reseller_id);
+$sprache = getlanguagefile('fastdl', $user_language, $resellerLockupID);
+$gameSprache = getlanguagefile('gserver', $user_language, $resellerLockupID);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
-
-if (isset($admin_id) and $reseller_id != 0 and $admin_id != $reseller_id) {
-	$reseller_id = $admin_id;
-}
 
 if (isset($admin_id)) {
 	$logsubuser = $admin_id;
@@ -65,51 +62,25 @@ if (isset($admin_id)) {
 
 if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['gs']))) {
 
-    $serverid = (int) $ui->id('id', 10, 'get');
+    $id = (int) $ui->id('id', 10, 'get');
 
-    $query = $sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,g.`newlayout`,g.`protected`,g.`homeLabel`,r.`install_paths`,s.`servertemplate`,t.`modfolder`,t.`shorten`,u.`fdlpath`,u.`cname` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` INNER JOIN `userdata` AS u ON g.`userid`=u.`id` INNER JOIN `rserverdata` AS r ON r.`id`=g.`rootID` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
-    $query->execute(array($serverid, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $query = $sql->prepare("SELECT g.`rootID`,g.`masterfdl`,g.`mfdldata`,g.`serverip`,g.`port`,u.`fdlpath` FROM `gsswitch` AS g INNER JOIN `userdata` AS u ON g.`userid`=u.`id` WHERE g.`active`='Y' AND g.`id`=? AND g.`resellerid`=? LIMIT 1");
+    $query->execute(array($id, $resellerLockupID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        $ftpupload = ($row['masterfdl'] == 'Y') ? $row['fdlpath'] : $row['mfdldata'];
-        $shorten = ($row['servertemplate'] == 1) ? $row['shorten'] : $row['shorten'] . '-' . $row['servertemplate'];
-        $customer = ($row['newlayout'] == 'Y') ? $row['cname'] . '-' . $serverid : $row['cname'];
-        $protectedString = ($row['protected'] == 'Y') ? 'protected' : 'unprotected';
+        $appServer = new AppServer($row['rootID']);
 
-        $iniVars = parse_ini_string($row['install_paths'], true);
-        $homeDir = ($iniVars and isset($iniVars[$row['homeLabel']]['path'])) ? $iniVars[$row['homeLabel']]['path'] : '/home';
+        $appServer->getAppServerDetails($id);
+        $appServer->fastDLSync(($row['masterfdl'] == 'Y') ? $row['fdlpath'] : $row['mfdldata']);
+        $appServer->execute();
 
-        if ($row['protected'] == 'Y') {
-            $customer .= '-p';
+        $template_file = $sprache->fdlstarted;
+
+        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
         }
 
-        if (strlen($ftpupload) > 0) {
-
-            $serverfolder = $row['serverip'] . '_' . $row['port'] . '/' . $shorten;
-            $modFolder = (strlen($row['modfolder']) > $row['modfolder']) ? $row['modfolder'] : 'none';
-
-            $cmd = "sudo -u {$customer} ./control.sh fastdl {$customer} \"{$serverfolder}\" \"{$ftpupload}\" \"{$modFolder}\" \"{$protectedString}\" \"{$homeDir}\"";
-
-            $sshReturn = ssh2_execute('gs', $row['rootID'], $cmd);
-
-            if ($sshReturn === false) {
-                $template_file = $spracheResponse->error_server;
-                $actionstatus = 'fail';
-            } else {
-                $actionstatus = 'ok';
-                $template_file = $sprache->fdlstarted;
-            }
-
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
-                $template_file .= '<pre>' . $cmd . "\r\n" . $sshReturn . '</pre>';
-            }
-
-        } else {
-            $template_file = $sprache->fdlfailed;
-            $actionstatus = 'fail';
-        }
-
-        $loguseraction = '%start% %fastdl% ' . $row['serverip'] . ':' . $row['port'] . ' %' . $actionstatus . '%';
+        $loguseraction = '%start% %fastdl% ' . $row['serverip'] . ':' . $row['port'];
         $insertlog->execute();
     }
 
@@ -122,8 +93,8 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     if (!$ui->smallletters('action',2, 'post')) {
 
         $query = $sql->prepare("SELECT `serverip`,`port`,`mfdldata`,`masterfdl` FROM `gsswitch` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id, $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $query->execute(array($id, $resellerLockupID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $serverip = $row['serverip'];
             $port = $row['port'];
             $masterfdl = $row['masterfdl'];
@@ -141,8 +112,8 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
 
         $query = $sql->prepare("SELECT `serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($id, $reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $query->execute(array($id, $resellerLockupID));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $serverip = $row['serverip'];
             $port = $row['port'];
         }
@@ -209,7 +180,7 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                 if (isset($serverip) and isset($port)) {
                     $query = $sql->prepare("UPDATE `gsswitch` SET `mfdldata`=?, `masterfdl`=? WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($fdlConnectString, $ui->active('masterfdl', 'post'), $id, $reseller_id));
+                    $query->execute(array($fdlConnectString, $ui->active('masterfdl', 'post'), $id, $resellerLockupID));
 
                     $loguseraction = '%mod% %fastdl% ' . $serverip . ':' . $port;
                     $insertlog->execute();
@@ -249,7 +220,7 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `fdlpath` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($user_id, $reseller_id));
+        $query->execute(array($user_id, $resellerLockupID));
         $fdlData = ftpStringToData($query->fetchColumn());
         $ftp_adresse = $fdlData['server'];
         $ftp_password = $fdlData['pwd'];
@@ -305,7 +276,7 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
             $fdlConnectString = 'ftp://' . $ftp_user . ':' . $ftp_password . '@' . $ftp_adresse . ':' . $ftp_port . $ftp_path;
             $query = $sql->prepare("UPDATE `userdata` SET `fdlpath`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($fdlConnectString, $user_id, $reseller_id));
+            $query->execute(array($fdlConnectString, $user_id, $resellerLockupID));
 
             if ($query->rowCount() > 0) {
 
@@ -327,8 +298,8 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     $table = array();
 
     $query = $sql->prepare("SELECT `cname`,`fdlpath` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query->execute(array($user_id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $query->execute(array($user_id, $resellerLockupID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $splittedConnectionString = preg_split('/\@/', $row['fdlpath'], -1, PREG_SPLIT_NO_EMPTY);
         $splittedConnectionStringArrayCount = count($splittedConnectionString) -1;
@@ -344,8 +315,8 @@ if ($ui->st('d', 'get') == 'ud' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     }
 
     $query = $sql->prepare("SELECT `id`,`serverip`,`port` FROM `gsswitch` WHERE `active`='Y' AND `userid`=? AND `resellerid`=?");
-    $query->execute(array($user_id, $reseller_id));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $query->execute(array($user_id, $resellerLockupID));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['gs'])) {
             $table[] = array('id' => $row['id'], 'serverip' => $row['serverip'], 'port' => $row['port']);
         }

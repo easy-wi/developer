@@ -39,7 +39,7 @@
 
 if (!isset($admin_id) or $main != 1 or !isset($reseller_id) or !$pa['root']) {
     header('Location: admin.php');
-    die('No acces');
+    die('No Access');
 }
 
 
@@ -78,14 +78,23 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
     $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 
-    if (!isset($alreadyRepaired)) {
-        $response->add('Adding tables if needed.');
-        include(EASYWIDIR . '/stuff/methods/tables_add.php');
+    require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
+
+    $tables = new Tables($dbConnect['db']);
+
+    $response->add('Adding tables if needed.');
+    $tables->createMissingTables();
+
+    $response->add('Repairing tables if needed.');
+    $tables->correctTablesStatus();
+    $tables->correctExistingTables();
+
+    foreach($tables->getErrors() as $error){
+        $response->add($error . '<br>');
     }
 
-    if (!isset($alreadyRepaired)) {
-        $response->add('Repairing tables if needed.');
-        include(EASYWIDIR . '/stuff/methods/tables_repair.php');
+    foreach($tables->getExecutedSql() as $change){
+        $response->add($change . '<br>');
     }
 
     $response->add('Fixing data entries if needed.');
@@ -93,9 +102,46 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
     $template_file = $response->response;
 
+    unset($header, $text);
+
+} else if ($ui->st('d', 'get') == 're') {
+
+    $sprache = getlanguagefile('settings', $user_language, $resellerLockupID);
+    $gssprache = getlanguagefile('gserver', $user_language, $resellerLockupID);
+    $usprache = getlanguagefile('user', $user_language, $resellerLockupID);
+
+    include(EASYWIDIR . '/stuff/methods/email_templates.php');
+
+    if ($ui->st('action', 'post') == 're') {
+
+        $rowCount = 0;
+
+        $templateRepair = (array) $ui->w('templates', 255, 'post');
+        foreach ($templateRepair as $template) {
+
+            if (isset($emailTemplates[$template])) {
+
+                $query = $sql->prepare($emailTemplates[$template]['html']);
+                $query->execute(array($resellerLockupID));
+                $rowCount += $query->rowCount();
+
+                foreach ($emailTemplates[$template]['languages'] as $languageSQL) {
+                    $query = $sql->prepare($languageSQL);
+                    $query->execute(array($resellerLockupID));
+                    $rowCount += $query->rowCount();
+                }
+            }
+        }
+
+        $template_file = ($rowCount > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
+
+    } else {
+        $template_file = 'admin_db_operations_et.tpl';
+    }
+
 } else if ($ui->st('d', 'get') == 'rg') {
 
-    include(EASYWIDIR . '/stuff/methods/gameslist.php');
+    include(EASYWIDIR . '/stuff/data/gameslist.php');
 
     if ($ui->st('action', 'post') == 'rg') {
 
@@ -103,12 +149,12 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
         $array = (array) $ui->pregw('games', 255, 'post');
 
         $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-        $query2 = $sql->prepare("INSERT INTO `servertypes` (`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`resellerid`) VALUES (:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:resellerid)");
-        $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`gamebinaryWin`=:gamebinaryWin,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`useQueryPort`=:useQueryPort,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os WHERE `shorten`=:shorten AND `resellerid`=:resellerid LIMIT 1");
+        $query2 = $sql->prepare("INSERT INTO `servertypes` (`type`,`steamgame`,`appID`,`updates`,`shorten`,`description`,`gamebinary`,`gamebinaryWin`,`binarydir`,`modfolder`,`fps`,`slots`,`map`,`cmd`,`modcmds`,`tic`,`gameq`,`gamemod`,`gamemod2`,`configs`,`configedit`,`portStep`,`portMax`,`portOne`,`portTwo`,`portThree`,`portFour`,`portFive`,`useQueryPort`,`mapGroup`,`protected`,`protectedSaveCFGs`,`ramLimited`,`os`,`copyStartBinary`,`resellerid`) VALUES ('',:steamgame,:appID,:updates,:shorten,:description,:gamebinary,:gamebinaryWin,:binarydir,:modfolder,:fps,:slots,:map,:cmd,:modcmds,:tic,:gameq,:gamemod,:gamemod2,:configs,:configedit,:portStep,:portMax,:portOne,:portTwo,:portThree,:portFour,:portFive,:useQueryPort,:mapGroup,:protected,:protectedSaveCFGs,:ramLimited,:os,:copyStartBinary,:resellerid)");
+        $query3 = $sql->prepare("UPDATE `servertypes` SET `steamgame`=:steamgame,`appID`=:appID,`updates`=:updates,`shorten`=:shorten,`description`=:description,`gamebinary`=:gamebinary,`gamebinaryWin`=:gamebinaryWin,`binarydir`=:binarydir,`modfolder`=:modfolder,`fps`=:fps,`slots`=:slots,`map`=:map,`cmd`=:cmd,`modcmds`=:modcmds,`tic`=:tic,`gameq`=:gameq,`gamemod`=:gamemod,`gamemod2`=:gamemod2,`configs`=:configs,`configedit`=:configedit,`portStep`=:portStep,`portMax`=:portMax,`portOne`=:portOne,`portTwo`=:portTwo,`portThree`=:portThree,`portFour`=:portFour,`portFive`=:portFive,`useQueryPort`=:useQueryPort,`mapGroup`=:mapGroup,`protected`=:protected,`protectedSaveCFGs`=:protectedSaveCFGs,`ramLimited`=:ramLimited,`os`=:os,`copyStartBinary`=:copyStartBinary WHERE `shorten`=:shorten AND `resellerid`=:resellerid LIMIT 1");
 
         foreach ($gameImages as $image) {
 
-            if (in_array($image[':shorten'], $array) and count($image) == 33) {
+            if (in_array($image[':shorten'], $array) and count($image) == 34) {
 
                 $image[':resellerid'] = $resellerLockupID;
 
@@ -150,22 +196,21 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
 
 } else if ($ui->st('d', 'get') == 'ra') {
 
-    require_once(EASYWIDIR . '/stuff/methods/addonslist.php');
+    require_once(EASYWIDIR . '/stuff/data/addonslist.php');
 
     if ($ui->st('action', 'post') == 'ra') {
 
         $template_file = '';
-        $array = (array) $ui->pregw('addons', 255, 'post');
+        $array = (array) $ui->gamestring('addons', 'post');
 
         $query = $sql->prepare("SELECT `id` FROM `addons` WHERE `addon`=? AND `resellerid`=? LIMIT 1");
         $query2 = $sql->prepare("INSERT INTO `addons` (`active`,`depending`,`paddon`,`addon`,`type`,`folder`,`menudescription`,`configs`,`cmd`,`rmcmd`,`resellerid`) VALUES ('Y',?,?,?,?,?,?,?,?,?,?)");
         $query3 = $sql->prepare("UPDATE `addons` SET `depending`=?,`type`=?,`paddon`=?,`folder`=?,`menudescription`=?,`configs`=?,`cmd`=?,`rmcmd`=? WHERE `addon`=? AND `resellerid`=? LIMIT 1");
         $query4 = $sql->prepare("SELECT `id` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
-        $query5 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `servertype_id`=VALUES(`servertype_id`),`addon_id`=VALUES(`addon_id`)");
+        $query5 = $sql->prepare("INSERT INTO `addons_allowed` (`addon_id`,`servertype_id`,`reseller_id`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `reseller_id`=VALUES(`reseller_id`)");
         $query6 = $sql->prepare("DELETE FROM `addons_allowed` WHERE `addon_id`=? AND `reseller_id`=?");
 
         foreach ($gameAddons as $addon) {
-
 
             if (in_array($addon[':addon'], $array) and count($addon) == 10) {
 
@@ -227,7 +272,6 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
                     $template_file .= 'Skipped: ' . $addon[':menudescription'] .'<br>';
                 }
             }
-
         }
     } else {
 

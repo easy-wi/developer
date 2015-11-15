@@ -1,61 +1,119 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=vr">TSDNS</a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->mod;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $tsdns;?></li>
-        </ul>
+<section class="content-header">
+    <h1>TSDNS</h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
+        <li><a href="admin.php?w=vr"><i class="fa fa-link"></i> TSDNS</a></li>
+        <li><?php echo $gsprache->mod;?></li>
+        <li class="active"><?php echo $dns;?></li>
+    </ol>
+</section>
+
+<section class="content">
+
+    <?php if (count($errors)>0){ ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <h4><?php echo $gsprache->errors;?></h4>
+                <?php echo implode(', ',$errors);?>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <dl class="dl-horizontal">
-            <dt><?php echo $sprache->user;?></dt>
-            <dd><?php echo $user;?></dd>
-            <dt>TSDNS</dt>
-            <dd><?php echo $tsdns;?></dd>
-            <dt><?php echo $gsprache->jobPending;?></dt>
-            <dd><?php echo $jobPending;?></dd>
-        </dl>
+    <?php }?>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+
+                <form role="form" action="admin.php?w=vr&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vr" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="md">
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="inputExternalID">External ID</label>
+                            <div class="controls"><input class="form-control" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID;?>"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputUser"><?php echo $sprache->user;?></label>
+                            <div class="controls"><input class="form-control" id="inputUser" type="text" name="userName" value="<?php echo $userName;?>" disabled="disabled"></div>
+                        </div>
+
+                        <div class="form-group<?php if(isset($errors['rootID'])) echo ' has-error';?>">
+                            <label for="inputRoot"><?php echo $sprache->rootserver;?></label>
+                            <div class="controls">
+                                <select class="form-control chosen-select" id="inputRoot" name="rootID">
+                                    <?php foreach ($table2 as $key=>$val){ ?>
+                                    <option value="<?php echo $key;?>" <?php if($key==$rootID) echo 'selected="selected"';?>><?php echo $val;?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="rootWrapper">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputActive"><?php echo $sprache->active;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputActive" name="active">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($active=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputIp"><?php echo $sprache->ip;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputIp" type="text" name="ip" value="<?php echo $ip;?>" maxlength="15">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPort"><?php echo $sprache->port;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputPort" type="number" name="port" value="<?php echo $port;?>" maxlength="5" min="1" max="65535">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <form name="form" class="form-horizontal" action="admin.php?w=vr&amp;d=md&amp;id=<?php echo $id;?>&amp;r=vr" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="md">
-            <div class="control-group">
-                <label class="control-label" for="inputActive"><?php echo $sprache->active;?></label>
-                <div class="controls">
-                    <select id="inputActive" name="active">
-                        <option value="Y"><?php echo $gsprache->yes;?></option>
-                        <option value="N" <?php if($active=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                    </select>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputExternalID"><?php echo $gsprache->externalID;?></label>
-                <div class="controls"><input id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID;?>" maxlength="255"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputDns"><?php echo $sprache->dns;?></label>
-                <div class="controls"><input id="inputDns" type="text" name="dns" value="<?php echo $dns;?>"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputIp"><?php echo $sprache->ip;?></label>
-                <div class="controls"><input id="inputIp" type="text" name="ip" maxlength="15" value="<?php echo $ip;?>"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputPort"><?php echo $sprache->port;?></label>
-                <div class="controls"><input id="inputPort" type="text" name="port" value="<?php echo $port;?>" maxlength="5"></div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="icon-edit icon-white"></i> <?php echo $gsprache->save;?></button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+</section>
+
+<script type="text/javascript">
+
+    $("#inputRoot").chosen({
+        disable_search_threshold: 3,
+        inherit_select_classes: true,
+        no_results_text: '<?php echo $gsprache->chosenNoResult;?>',
+        placeholder_text_single: '<?php echo $gsprache->chosenSelect;?>',
+        placeholder_text_multiple: '<?php echo $gsprache->chosenSelect;?>',
+        width: "100%"
+    });
+
+    function loadRootDetails () {
+        $.ajax({ url: 'ajax.php?d=tsdnsmasterusage&id=' + $("#inputRoot").val() + '&serverID=<?php echo $id;?>', cache: false } ).done(function(html) {
+            $('#rootWrapper').html(html);
+        });
+    }
+
+    $('#inputRoot').on('change', function() {
+        loadRootDetails();
+    });
+
+    $(function(){
+        loadRootDetails();
+    });
+</script>

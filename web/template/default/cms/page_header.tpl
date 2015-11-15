@@ -7,9 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index,follow,noodp,noydir" />
     <meta name="description" content="">
-    <meta name="author" content="2012 - <?php echo date('Y'); ?> <?php echo $page_data->title; ?>">
+    <meta name="author" content="2012 - <?php echo date('Y'); ?> Ulrich Block">
 
     <link rel="canonical" href="<?php echo $page_data->canurl;?>" />
+    <link href="<?php echo $page_data->getDefaultUrl();?>" hreflang="x-default" rel="alternate">
+    <?php foreach ($page_data->getLangLinks() as $l=>$v){ ?>
+    <?php echo '<link href="'.$v.'" hreflang="'.$l.'" rel="alternate">'."\n"; ?>
+    <?php }?>
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">

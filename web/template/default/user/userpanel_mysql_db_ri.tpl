@@ -4,7 +4,7 @@
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="userpanel.php?w=my"><i class="fa fa-database"></i> MySQL <?php echo $gsprache->databases;?></a></li>
         <li><i class="fa fa-refresh"></i> <?php echo $sprache->reinstall;?></li>
-        <li class="active"><?php echo $dbname.' ('.$ip.' )';?></li>
+        <li class="active"><?php echo $dbname.' ('.$address.' )';?></li>
     </ol>
 </section>
 
@@ -21,7 +21,7 @@
                     <div class="box-body">
                         <dl class="dl-horizontal">
                             <dt>IP</dt>
-                            <dd><?php echo $ip;?></dd>
+                            <dd><?php echo $address;?></dd>
                             <dt><?php echo $sprache->user;?></dt>
                             <dd><?php echo $dbname;?></dd>
                             <dt><?php echo $sprache->dbname;?></dt>

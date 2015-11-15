@@ -64,6 +64,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
 include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
 
 $validacces = false;
 
@@ -71,7 +72,7 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post') and !i
 
     $query = $sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $pwd = $row['pwd'];
         $salt = $row['salt'];
 
@@ -126,7 +127,7 @@ $active = (active_check($active)) ? $active : 'Y';
 
 $query = $sql->prepare("SELECT *,NOW() AS `mysqlCurrentTime`,AES_DECRYPT(`ftpuploadpath`,?) AS `decyptedftpuploadpath` FROM `lendsettings` WHERE `resellerid`=? LIMIT 1");
 $query->execute(array($aeskey, $reseller_id));
-foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     $activeGS = ($row['activeGS'] == 'B' or ($row['activeGS'] != 'N' and (isset($admin_id) or ($row['activeGS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeGS'] == 'R' and isset($user_id)) or ($row['activeGS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
     $activeVS = ($row['activeVS'] == 'B' or ($row['activeVS'] != 'N' and (isset($admin_id) or ($row['activeVS'] != 'N' and $ui->username('shorten', 50, 'get') == 'api'))) or ($row['activeVS'] == 'R' and isset($user_id)) or ($row['activeVS'] == 'A' and !isset($user_id))) ? 'Y' : 'N';
@@ -295,7 +296,7 @@ if (isset($servertype)) {
     $query4 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
     $query->execute(array($loguserip, $servertype, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $serverid = $row['serverid'];
         $lendtime = $row['lendtime'];
@@ -311,8 +312,10 @@ if (isset($servertype)) {
 
                 $query1->execute(array($serverid, $reseller_id));
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
-                    $cmds = gsrestart($row1['switchID'], 'so', $aeskey, $reseller_id);
-                    ssh2_execute('gs', $row1['rootID'], $cmds);
+                    $appServer = new AppServer($row1['rootID']);
+                    $appServer->getAppServerDetails($row1['switchID']);
+                    $appServer->stopApp();
+                    $appServer->execute();
                 }
 
             } else if ($servertype == 'v') {
@@ -320,7 +323,7 @@ if (isset($servertype)) {
                 unset($_SESSION['lend']['vs']);
 
                 $query3->execute(array($aeskey, $serverid, $reseller_id));
-                foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query3->fetch(PDO::FETCH_ASSOC)) {
                     $queryport = $row2['queryport'];
                     $querypassword = $row2['decryptedquerypassword'];
                     $addedby = $row2['addedby'];
@@ -345,9 +348,11 @@ if (isset($servertype)) {
                 $connection->CloseConnection();
             }
         } else {
+
             $rcon = $row['rcon'];
             $password = $row['password'];
             $slots = $row['slots'];
+
             if ($servertype == 'g') {
 
                 if (!$ui->id('xml', 1, 'post') and (!isset($_SESSION['lend']['gs']) or $_SESSION['lend']['gs'] != $serverid)) {
@@ -360,7 +365,7 @@ if (isset($servertype)) {
                 $port = '';
                 $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`description` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`description` IS NOT NULL LIMIT 1");
                 $query2->execute(array($serverid, $reseller_id));
-                foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $description = $row2['description'];
                     $serverip = $row2['serverip'];
                     $port = $row2['port'];
@@ -395,7 +400,7 @@ if (isset($servertype)) {
                 $vostillrunning = true;
                 $query2 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
                 $query2->execute(array($serverid, $reseller_id));
-                foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $server = ($row2['usedns'] == 'N' or $row2['dns'] == null or $row2['dns'] == '') ? $row2['ip'] . ':' . $row2['port'] : $row2['dns'];
                     $serverip = $row2['ip'];
                     $port = $row2['port'];
@@ -448,12 +453,12 @@ if (isset($servertype)) {
 
                 $tFile = (isset($lendIPBlock)) ? 'lenddata_ipblock.tpl' : 'lenddata.tpl';
 
-                if (isset($template_to_use) and is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $tFile)) {
-                    include(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $tFile);
+                if (isset($template_to_use) and is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $tFile)) {
+                    include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $tFile);
                 } else if (isset($template_to_use) and is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $tFile)) {
                     include(EASYWIDIR . '/template/' . $template_to_use . '/' . $tFile);
-                } else if (is_file(EASYWIDIR . '/template/default/cms/' . $tFile)) {
-                    include(EASYWIDIR . '/template/default/cms/' . $tFile);
+                } else if (is_file(EASYWIDIR . '/template/default/standalone/' . $tFile)) {
+                    include(EASYWIDIR . '/template/default/standalone/' . $tFile);
                 } else if (is_file(EASYWIDIR . '/template/default/' . $tFile)) {
                     include(EASYWIDIR . '/template/default/' . $tFile);
                 } else {
@@ -477,7 +482,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
     $query3 = $sql->prepare("SELECT `slots`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $installedShorten = array();
         $timeleft = 0;
@@ -486,7 +491,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $free = '16_ok.png';
 
         $query2->execute(array($row['id']));
-        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $installedShorten[$row2['shorten']] = $row2['description'];
 
             if ($row2['id'] == $row['serverid']) {
@@ -495,7 +500,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         }
 
         $query3->execute(array($row['serverid']));
-        foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+        while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
             $slots = $row3['slots'];
             $timeleft = round($row3['lendtime'] - (strtotime('now') - strtotime($row3['started'])) / 60);
             $free = '16_bad.png';
@@ -510,7 +515,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
     $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
     $query->execute(array($reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $timeleft = 0;
         $slots = $row['availableSlots'];
         $free = '16_ok.png';
@@ -624,12 +629,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $gscounts = array();
     $gsused = array();
 
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $shortens = array();
         $serverids = array();
 
         $query2->execute(array($row['id'], $reseller_id));
-        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $shorten = $row2['shorten'];
             $serverids[$shorten][] = $row2['id'];
 
@@ -666,7 +671,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $query3 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
     $query->execute(array($reseller_id));
 
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $lendtime = $row['lendtime'];
         $timeleft = round($lendtime-(strtotime('now')-strtotime($row['started']))/60);
 
@@ -688,7 +693,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         if (isid($switchID, 10)) {
 
             $query3->execute(array($switchID, $reseller_id));
-            foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+            while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                 $shorten = $row3['shorten'];
                 $shortens[] = $shorten;
                 $serverids[$shorten][] = $row3['id'];
@@ -870,7 +875,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 $query->execute(array($serverid,'g', $lendtime, $slots, $reseller_id));
                 $query = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`rootID`,t.`description` FROM `gsswitch` g  LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
                 $query->execute(array($serverid, $reseller_id));
-                foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $serverip = $row['serverip'];
                     $port = $row['port'];
                     $description = $row['description'];
@@ -881,8 +886,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 $query = $insert = $sql->prepare("UPDATE `gsswitch` SET `serverid`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($serverid, $updateID, $reseller_id));
 
-                $cmds = gsrestart($updateID, 're', $aeskey, $reseller_id);
-                ssh2_execute('gs', $rootID, $cmds);
+                $appServer = new AppServer($rootID);
+                $appServer->getAppServerDetails($updateID);
+                $appServer->startApp();
+                $appServer->execute();
 
                 if (!isset($page_include) and $ui->id('xml', 1, 'post') == 1) {
 
@@ -921,6 +928,8 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                 } else {
 
+                    $debug = (isset($dbConnect['debug']) and $dbConnect['debug'] == 1)  ? '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>' : '';
+
                     if (!isset($nextfree)) {
                         $nextfree = 0;
                     }
@@ -931,18 +940,14 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                     } else {
 
-                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl')) {
-                            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl');
-
+                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lenddata.tpl')) {
+                            include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lenddata.tpl');
                         } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
                             include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
-
-                        } else if (is_file(EASYWIDIR . '/template/default/cms/lenddata.tpl')) {
-                            include(EASYWIDIR . '/template/default/cms/lenddata.tpl');
-
+                        } else if (is_file(EASYWIDIR . '/template/default/standalone/lenddata.tpl')) {
+                            include(EASYWIDIR . '/template/default/standalone/lenddata.tpl');
                         } else if (is_file(EASYWIDIR . '/template/default/lenddata.tpl')) {
                             include(EASYWIDIR . '/template/default/lenddata.tpl');
-
                         } else {
                             include(EASYWIDIR . '/template/lenddata.tpl');
                         }
@@ -985,19 +990,14 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
             } else {
 
-                if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl')) {
-
-                    include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl');
-
+                if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lend.tpl')) {
+                    include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lend.tpl');
                 } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
                     include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
-
-                } else if (is_file(EASYWIDIR . '/template/default/cms/lend.tpl')) {
-                    include(EASYWIDIR . '/template/default/cms/lend.tpl' );
-
+                } else if (is_file(EASYWIDIR . '/template/default/standalone/lend.tpl')) {
+                    include(EASYWIDIR . '/template/default/standalone/lend.tpl');
                 } else if (is_file(EASYWIDIR . '/template/default/lend.tpl')) {
                     include(EASYWIDIR . '/template/default/lend.tpl');
-
                 } else {
                     include(EASYWIDIR . '/template/lend.tpl');
                 }
@@ -1087,7 +1087,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $query3 = $sql->prepare("SELECT `id`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='v' AND `resellerid`=? LIMIT 1");
         $query->execute(array($reseller_id));
 
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $vomacount = 0;
             $slots = 0;
@@ -1095,13 +1095,13 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
             $query2->execute(array($row['id'], $reseller_id));
 
-            foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+            while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 $lendable = true;
 
                 $query3->execute(array($row2['id'], $reseller_id));
 
-                foreach ($query3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+                while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
                     $lendtime = $row3['lendtime'];
                     $timeleft = round($lendtime - (strtotime('now') - strtotime($row3['started'])) / 60);
@@ -1179,7 +1179,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                 $timeleft = $lendtime;
                 $query = $sql->prepare("SELECT `bitversion`,`type`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`usedns` FROM `voice_masterserver` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                 $query->execute(array(':aeskey' => $aeskey,':id' => $bestmaster,':reseller_id' => $reseller_id));
-                foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $addedby = $row['addedby'];
                     $queryport = $row['queryport'];
                     $querypassword = $row['decryptedquerypassword'];
@@ -1219,7 +1219,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                         $query2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
                         $query2->execute(array($tousevoiceid, $reseller_id));
-                        foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row2) {
+                        while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                             $voip = $row2['ip'];
                             $voport = $row2['port'];
                             $vodns = $row2['dns'];
@@ -1346,18 +1346,14 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                     } else {
 
-                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl')) {
-                            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lenddata.tpl');
-
+                        if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lenddata.tpl')) {
+                            include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lenddata.tpl');
                         } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl')) {
                             include(EASYWIDIR . '/template/' . $template_to_use . '/lenddata.tpl');
-
-                        } else if (is_file(EASYWIDIR . '/template/default/cms/lenddata.tpl')) {
-                            include(EASYWIDIR . '/template/default/cms/lenddata.tpl');
-
+                        } else if (is_file(EASYWIDIR . '/template/default/standalone/lenddata.tpl')) {
+                            include(EASYWIDIR . '/template/default/standalone/lenddata.tpl');
                         } else if (is_file(EASYWIDIR . '/template/default/lenddata.tpl')) {
                             include(EASYWIDIR . '/template/default/lenddata.tpl');
-
                         } else {
                             include(EASYWIDIR . '/template/lenddata.tpl');
                         }
@@ -1393,18 +1389,14 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                 } else {
 
-                    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl')) {
-                        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/lend.tpl');
-
+                    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lend.tpl')) {
+                        include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/lend.tpl');
                     } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl')) {
                         include(EASYWIDIR . '/template/' . $template_to_use . '/lend.tpl');
-
-                    } else if (is_file(EASYWIDIR . '/template/default/cms/lend.tpl')) {
-                        include(EASYWIDIR . '/template/default/cms/lend.tpl');
-
+                    } else if (is_file(EASYWIDIR . '/template/default/standalone/lend.tpl')) {
+                        include(EASYWIDIR . '/template/default/standalone/lend.tpl');
                     } else if (is_file(EASYWIDIR . '/template/default/lend.tpl')) {
                         include(EASYWIDIR . '/template/default/lend.tpl');
-
                     } else {
                         include(EASYWIDIR . '/template/lend.tpl');
                     }

@@ -1,49 +1,73 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=gs"><?php echo $gsprache->gameserver;?></a> <span class="divider">/</span></li>
-            <li><?php echo $sprache->reinstall;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $serverip.':'.$port;?></li>
-        </ul>
+<section class="content-header">
+    <h1><?php echo $gsprache->gameserver;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>
+        <li><?php echo $gsprache->reinstall;?></li>
+        <li class="active"><?php echo $serverip.':'.$port;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-warning">
+
+                <form role="form" action="admin.php?w=gs&amp;d=ri&amp;id=<?php echo $id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="ri">
+                    <input type="hidden" id="type" name="type" value="N">
+
+                    <div class="box-body">
+
+                        <div class="form-group">
+                            <label for="game"><?php echo $gsprache->game;?></label>
+                            <select class="form-control" id="game" name="game" onchange="toggleTemplates();">
+                                <?php foreach ($table as $table_row){ ?>
+                                <option value="<?php echo $table_row['id'];?>" data-shorten="<?php echo $table_row['shorten'];?>"><?php echo $table_row['description'];?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="template"><?php echo $gsprache->template;?></label>
+                            <select class="form-control" id="template" name="template">
+                                <option id="template1" value="1"><?php echo $shorten;?></option>
+                                <option id="template2" value="2"><?php echo $shorten;?>-2</option>
+                                <option id="template3" value="3"><?php echo $shorten;?>-3</option>
+                                <option value="4"><?php echo $gsprache->all;?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label><?php echo $sprache->type;?></label>
+
+                            <div class="btn-group" data-toggle="buttons">
+                                <label class="btn btn-primary active">
+                                    <input type="radio" name="options" value="N" onchange="$('#type').val(this.value);" checked> <?php echo $sprache->resync;?>
+                                </label>
+                                <label class="btn btn-primary">
+                                    <input type="radio" name="options" value="Y" onchange="$('#type').val(this.value);"> <?php echo $sprache->reinstall;?>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-warning" id="inputEdit" type="submit"><i class="fa fa-refresh">&nbsp;<?php echo $gsprache->exec;?></i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=gs&amp;d=ri&amp;id=<?php echo $server_id;?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="ri">
-            <div class="control-group">
-                <label class="control-label"><?php echo $sprache->action;?></label>
-                <div class="controls">
-                    <label class="radio">
-                        <input type="radio" name="type" id="optionsRadios1" value="N" checked="checked"> <?php echo $sprache->resync;?>
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="type" id="optionsRadios2" value="Y"> <?php echo $sprache->reinstall;?>
-                    </label>
-                </div>
-            </div>
-            <?php foreach ($table as $table_row){ ?>
-            <div class="control-group">
-                <label class="control-label" for="inputTemplate-<?php echo $table_row['id'];?>"><?php echo '<img src="images/games/icons/'.$table_row['shorten'].'.png" alt="'.$table_row['shorten'].'" width="16" /> '.$table_row['description'];?></label>
-                <div class="controls">
-                    <select id="inputTemplate-<?php echo $table_row['id'];?>" name="template[<?php echo $table_row['id'];?>]">
-                        <option value="0"><?php echo $gsprache->no;?></option>
-                        <option value="1" <?php if($table_row['servertemplate']==1) echo "selected";?>><?php echo $table_row['shorten'];?></option>
-                        <option value="2" <?php if($table_row['servertemplate']==2) echo "selected";?>><?php echo $table_row['shorten'];?>-2</option>
-                        <option value="3" <?php if($table_row['servertemplate']==3) echo "selected";?>><?php echo $table_row['shorten'];?>-3</option>
-                        <option value="4"><?php echo $gsprache->all;?></option>
-                    </select>
-                </div>
-            </div>
-            <?php } ?>
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"></label>
-                <div class="controls">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-refresh"></i></button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+</section>
+
+<script type="text/javascript">
+    function toggleTemplates () {
+        var shorten = $('#game').find(':selected').data('shorten');
+        $('#template1').text(shorten);
+        $('#template2').text(shorten + '-2');
+        $('#template3').text(shorten + '-3');
+    }
+</script>

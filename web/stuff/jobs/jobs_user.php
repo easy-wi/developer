@@ -39,7 +39,7 @@
 
 $query = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='us'");
 $query->execute();
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
     if ($row['action'] == 'dl') {
         $command = $gsprache->del.' cleanup userID: ' . $row['affectedID'] . ' name:' . $row['name'];
@@ -52,42 +52,42 @@ foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
     $query2 = $sql->prepare("SELECT `id`,`rootID`,`serverip`,`port`,`resellerid` FROM `gsswitch` WHERE `userid`=?");
     $query2->execute(array($row['affectedID']));
     $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','gs',?,?,?,?,?,NULL,NOW(),?,?,?)");
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
         $insert->execute(array($row['invoicedByID'], $row2['id'], $row2['rootID'], $row['affectedID'], $row2['serverip'] . ':' . $row2['port'], $row['action'], $row['extraData'], $row2['resellerid']));
     }
 
     $query2 = $sql->prepare("SELECT `id`,`masterserver`,`ip`,`port`,`resellerid` FROM `voice_server` WHERE `userid`=?");
     $query2->execute(array($row['affectedID']));
     $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','vo',?,?,?,?,?,NULL,NOW(),?,?,?)");
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
         $insert->execute(array($row['invoicedByID'], $row2['id'], $row2['masterserver'], $row['affectedID'], $row2['ip'] . ':' . $row2['port'], $row['action'], $row['extraData'], $row2['resellerid']));
     }
 
     $query2 = $sql->prepare("SELECT `dnsID`,`dns`,`ip`,`port`,`tsdnsID`,`resellerID` FROM `voice_dns` WHERE `userID`=?");
     $query2->execute(array($row['affectedID']));
     $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','ds',?,?,?,?,?,NULL,NOW(),?,?,?)");
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
         $insert->execute(array($row['invoicedByID'], $row2['dnsID'], $row2['tsdnsID'], $row['affectedID'], $row2['ip'] . ':' . $row2['port'] . ' ' . $row2['dns'], $row['action'], $row['extraData'], $row2['resellerID']));
     }
 
     $query2 = $sql->prepare("SELECT `id`,`sid`,`dbname`,`resellerid` FROM `mysql_external_dbs` WHERE `uid`=?");
     $query2->execute(array($row['affectedID']));
     $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','my',?,?,?,?,?,NULL,NOW(),?,?,?)");
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
         $insert->execute(array($row['invoicedByID'], $row2['id'], $row2['sid'], $row['affectedID'], $row2['dbname'], $row['action'], $row['extraData'], $row2['resellerid']));
     }
 
-    $query2 = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`dns`,`resellerID` FROM `webVhost` WHERE `userID`=?");
+    $query2 = $sql->prepare("SELECT `webVhostID`,`webMasterID`,`resellerID` FROM `webVhost` WHERE `userID`=?");
     $query2->execute(array($row['affectedID']));
     $insert = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`invoicedByID`,`affectedID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('S','wv',?,?,?,?,?,NULL,NOW(),?,?,?)");
-    foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) {
-        $insert->execute(array($row['invoicedByID'], $row2['webVhostID'], $row2['webMasterID'], $row['affectedID'], $row2['dns'], $row['action'], $row['extraData'], $row2['resellerID']));
+    while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+        $insert->execute(array($row['invoicedByID'], $row2['webVhostID'], $row2['webMasterID'], $row['affectedID'], 'web-' . $row2['webVhostID'], $row['action'], $row['extraData'], $row2['resellerID']));
     }
 
-    $update = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
-    $update->execute(array($row['jobID']));
+    $query2 = $sql->prepare("UPDATE `jobs` SET `status`='4' WHERE `jobID`=? LIMIT 1");
+    $query2->execute(array($row['jobID']));
 
-    updateJobs($row['affectedID'], $row['resellerID'],$jobPending='Y');
+    updateJobs($row['affectedID'], $row['resellerID'], 'Y');
 
     $theOutput->printGraph($command);
 }

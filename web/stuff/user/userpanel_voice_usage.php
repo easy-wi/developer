@@ -76,7 +76,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($user_id, $reseller_id));
     }
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $freeSlots = (int) ($row['s'] - $row['u']);
         $usedSlots = (int) $row['u'];
         $freeTraffic = ceil($row['m'] - ($row['f'] / 1024));
@@ -89,20 +89,20 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`userid`=? AND v.`resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('serverID', 30, 'post'), $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $display = $row['ip'] . ':' . $row['port'];
         }
 
         $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`userid`=? AND v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
         $query->execute(array($user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $data[] = ($ui->id('serverID', 10, 'post') == $row['id']) ? '<option value='. $row['id'] .' selected="selected">' . $row['ip'] . ':' . $row['port'] . '</option>' : '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
         }
     }
 
-    $htmlExtraInformation['css'][] = '<link href="css/adminlte/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css">';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/daterangepicker/moment.js" type="text/javascript"></script>';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>';
+    $htmlExtraInformation['css'][] = '<link href="css/default/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/daterangepicker/moment.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/daterangepicker/daterangepicker.js" type="text/javascript"></script>';
 
     $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
 $(function() {
@@ -128,9 +128,9 @@ $(function() {
 });
 </script>";
 
-    $htmlExtraInformation['css'][] = '<link href="css/adminlte/morris/morris.css" rel="stylesheet" type="text/css">';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/morris/raphael-min.js" type="text/javascript"></script>';
-    $htmlExtraInformation['js'][] = '<script src="js/adminlte/plugins/morris/morris.min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['css'][] = '<link href="css/default/morris/morris.css" rel="stylesheet" type="text/css">';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/morris/raphael-min.js" type="text/javascript"></script>';
+    $htmlExtraInformation['js'][] = '<script src="js/default/plugins/morris/morris.min.js" type="text/javascript"></script>';
     $htmlExtraInformation['js'][] = "<script type=\"text/javascript\">
 $(function() {
 

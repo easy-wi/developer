@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
+    <aRecordMissing>A record for domain %domain% not configured to %ip%</aRecordMissing>
     <blocksize>Blocksize</blocksize>
     <defaultdns>Default Domain</defaultdns>
     <dirHttpd>Htdocs Folder</dirHttpd>
     <dirLogs>Logs Folder</dirLogs>
+    <defaultDns>Default Domain</defaultDns>
     <dns>Domain</dns>
+    <domainNotUsed>Skipped not allowed domain %domain%</domainNotUsed>
     <error_password_not_match>FTP passwords does not match</error_password_not_match>
     <error_password_not_set>FTP password not allowed, not set, or not repeated.</error_password_not_set>
     <fdlInfo>FastDL Info</fdlInfo>
@@ -17,6 +20,7 @@
     <hddOverbook>HDD Overbooking</hddOverbook>
     <hddUsage>Used Diskspace</hddUsage>
     <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
+    <help_default_dns>This (sub) domain can be entered at domains. In case it is removed at the domain management, this default one is deactivated.</help_default_dns>
     <help_fdl_attention>Warning! Recommended method is to create a subfolder for each game. Naming could be like cod4, cstrike, css, etc.</help_fdl_attention>
     <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) and Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) based servers need entries like this at the server.cfg</help_fdl_hl>
     <help_fdl_cod>Call of Duty Server require eintries like this at the server.cfg</help_fdl_cod>
@@ -32,6 +36,9 @@
     <other>Other</other>
     <overbookPercent>Overbook</overbookPercent>
     <ownVhost>Own Vhost Template</ownVhost>
+    <path>Path</path>
+    <pathCorrected>Path belonging to domain %domain% corrected from %pathGiven% to %pathConverted%</pathCorrected>
+    <phpConfiguration>PHP Configuration</phpConfiguration>
     <quotaActive>Activate Quotas</quotaActive>
     <quotaCmd>Quota Command</quotaCmd>
     <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>

@@ -69,10 +69,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
 
         #https://github.com/easy-wi/developer/issues/42 column description added
-        $query = $sql->prepare("SELECT e.`dbname`,e.`description`,e.`manage_host_table`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,s.`ip`,s.`port`,s.`interface`,u.`cname` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active` AND e.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT e.`dbname`,e.`description`,e.`manage_host_table`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,e.`ips`,s.`port`,s.`interface`,u.`cname`,CASE WHEN s.`connect_ip_only`='Y' THEN s.`external_address` ELSE s.`ip` END AS `address` FROM `mysql_external_dbs` e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active` AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
-            $ip = $row['ip'];
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $address = $row['address'];
             $manage_host_table = $row['manage_host_table'];
             $ips = $row['ips'];
             $port = $row['port'];
@@ -95,9 +95,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else if ($ui->smallletters('action', 2, 'post') == 'ri' and $ui->st('d', 'get') == 'ri'){
 
-        $query = $sql->prepare("SELECT e.`dbname`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT e.`dbname`,e.`description`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,CASE WHEN s.`connect_ip_only`='Y' THEN s.`external_address` ELSE s.`ip` END AS `address` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $id, $user_id, $reseller_id));
-        foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $remotesql = new ExternalSQL ($row['ip'], $row['port'], $row['user'], $row['decryptedpassword2']);
 
@@ -106,9 +106,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $remotesql->DelDB($row['dbname']);
                 $remotesql->DelUser($row['dbname']);
 
-                $remotesql->AddDB($row['dbname'], $row['decryptedpassword'], $row['ips'], $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+                $mailData = array(
+                    'userId' => $user_id,
+                    'name' => (strlen($row['description']) > 0) ? $row['description'] : $row['dbname'],
+                    'mailConnectInfo' => array(
+                        'ip' => $row['address'],
+                        'port' => $row['port']
+                    )
+                );
 
-                $loguseraction = '%ri% MYSQL DB ' . $row['dbname'] . ' (' . $row['ip'] . ')';
+                $remotesql->AddDB($mailData, $row['dbname'], $row['decryptedpassword'], $row['ips'], $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+
+                $loguseraction = '%ri% MYSQL DB ' . $row['dbname'] . ' (' . $row['address'] . ')';
                 $insertlog->execute();
 
                 $template_file = $spracheResponse->reinstall_success;
@@ -126,9 +135,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         if ($ui->password('password', 255, 'post')) {
 
-            $query = $sql->prepare("SELECT e.`dbname`,e.`manage_host_table`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT e.`dbname`,e.`manage_host_table`,e.`ips`,e.`max_queries_per_hour`,e.`max_connections_per_hour`,e.`max_updates_per_hour`,e.`max_userconnections_per_hour`,s.`ip`,AES_DECRYPT(s.`password`,?) AS `decryptedpassword2`,s.`port`,s.`user`,CASE WHEN s.`connect_ip_only`='Y' THEN s.`external_address` ELSE s.`ip` END AS `address` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`id`=? AND e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $user_id, $reseller_id));
-            foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $ips = ($row['manage_host_table'] == 'Y') ? $ui->ips('ips', 'post') : $row['ips'];
 
@@ -137,17 +146,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($remotesql->error == 'ok') {
 
                     #https://github.com/easy-wi/developer/issues/42 column description added
-                    $query = $sql->prepare("UPDATE `mysql_external_dbs` SET `description`=?,`password`=AES_ENCRYPT(?,?),`ips`=? WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array(trim($ui->startparameter('description', 'post')), $ui->password('password', 255, 'post'), $aeskey, $ips, $id, $user_id, $reseller_id));
+                    $query2 = $sql->prepare("UPDATE `mysql_external_dbs` SET `description`=?,`password`=AES_ENCRYPT(?,?),`ips`=? WHERE `id`=? AND `uid`=? AND `resellerid`=? LIMIT 1");
+                    $query2->execute(array(trim($ui->startparameter('description', 'post')), $ui->password('password', 255, 'post'), $aeskey, $ips, $id, $user_id, $reseller_id));
 
-                    if ($query->rowCount() > 0) {
-
-                        $remotesql->ModDB($row['dbname'], $ui->password('password', 255, 'post'), $ips, $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
-
-                        $loguseraction = '%mod% MYSQL DB ' . $row['dbname'] . ' (' . $row['ip'] . ')';
-                        $insertlog->execute();
+                    if ($query2->rowCount() > 0) {
 
                         $template_file = $spracheResponse->table_add;
+
+                        $dbReturn = $remotesql->ModDB($row['dbname'], $ui->password('password', 255, 'post'), $ips, $row['max_queries_per_hour'], $row['max_connections_per_hour'], $row['max_updates_per_hour'], $row['max_userconnections_per_hour']);
+
+                        if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                            $template_file .= '<br>' . $dbReturn;
+                        }
+
+                        $loguseraction = '%mod% MYSQL DB ' . $row['dbname'] . ' (' . $row['address'] . ')';
+                        $insertlog->execute();
 
                     } else {
                         $template_file = $spracheResponse->error_table;
@@ -174,11 +187,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $table = array();
 
-    $query = $sql->prepare("SELECT e.`id`,e.`dbname`,e.`description`,e.`dbSize`,s.`ip`,s.`port`,s.`interface` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=?");
+    $query = $sql->prepare("SELECT e.`id`,e.`dbname`,e.`description`,e.`dbSize`,s.`port`,s.`interface`,CASE WHEN s.`connect_ip_only`='Y' THEN s.`external_address` ELSE s.`ip` END AS `address` FROM `mysql_external_dbs` e INNER JOIN `mysql_external_servers` s ON e.`sid`=s.`id` WHERE e.`active`='Y' AND s.`active`='Y' AND e.`uid`=? AND e.`resellerid`=?");
     $query->execute(array($user_id, $reseller_id));
-    foreach ($query->fetchall(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['db'])) {
-            $table[] = array('id' => $row['id'], 'dbname' => $row['dbname'], 'dbSize' => $row['dbSize'], 'ip' => $row['ip'], 'port' => $row['port'], 'description' => trim($row['description']), 'interface' => $row['interface']);
+            $table[] = array('id' => $row['id'], 'dbname' => $row['dbname'], 'dbSize' => $row['dbSize'], 'address' => $row['address'], 'port' => $row['port'], 'description' => trim($row['description']), 'interface' => $row['interface']);
         }
     }
 

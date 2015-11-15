@@ -44,13 +44,16 @@ class TS3 {
     public $errorcode = false, $socketConnected = false;
 
     public function ReplaceToTS3 ($value) {
-        $return = str_replace(array('\\', '/', ' ', '|'), array('\\\\', '\/', '\s', '\p'), $value);
-        return $return;
+
+        if ($value === false or $value === null) {
+            $value = '';
+        }
+
+        return str_replace(array('\\', '/', ' ', '|'), array('\\\\', '\/', '\s', '\p'), $value);
     }
 
     private function ReplaceFromTS3 ($value) {
-        $return = str_replace(array('\\\\', '\/', '\s', '\p'), array('\\', '/', ' ', '|'), $value);
-        return $return;
+        return str_replace(array('\\\\', '\/', '\s', '\p'), array('\\', '/', ' ', '|'), $value);
     }
 
     public function SendCommand ($value) {
@@ -401,7 +404,7 @@ class TS3 {
             $servergroups = $this->SendCommand('servergrouplist');
 
             foreach ($servergroups as $servegroups) {
-                if ($this->ReplaceFromTS3($servegroups['type']) == 1) {
+                if (isset($servegroups['type']) && $this->ReplaceFromTS3($servegroups['type']) == 1) {
 
                     $newcount = count($this->SendCommand('servergrouppermlist sgid=' . $servegroups['sgid']));
 
@@ -571,7 +574,6 @@ class TS3 {
         }
 
         return $serverdetails;
-
     }
 
     public function ServerDetails ($virtualserver_id) {
@@ -1044,4 +1046,10 @@ class TS3 {
         return false;
     }
 
+    public function getServerVersion() {
+
+        $array = $this->SendCommand('version');
+
+        return (is_array($array) and isset($array[0]['version'])) ? $array[0]['version'] : false;
+    }
 }

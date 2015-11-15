@@ -133,7 +133,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $query = $sql->prepare("SELECT `id`,`cname`,`logintime`,`lastlogin` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('um',50, 'post'), $ui->ismail('um', 'post')));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $userid = $row['id'];
             $md5 = md5($userid . $row['logintime'] . $row['cname'] . $row['lastlogin'] . mt_rand());
 
@@ -163,7 +163,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `token`=? LIMIT 1");
             $query->execute(array($ui->w('token',32, 'get')));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $text = $sprache->passwordreseted;
                 $newHash = passwordCreate($row['cname'], $ui->password('password1', 255, 'post'));
@@ -201,6 +201,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
 } else {
 
+    $serviceProviders = getServiceProviders();
     $serviceProvider = (string) $ui->w('serviceProvider', 255, 'get');
 
     if ($serviceProvider and file_exists(EASYWIDIR . '/third_party/hybridauth/Hybrid/Providers/' . $serviceProvider . '.php')) {
@@ -210,7 +211,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $query = $sql->prepare("SELECT `pageurl`,`seo`,`registration` FROM `page_settings` WHERE `resellerid`=0 LIMIT 1");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $pageUrl = $row['pageurl'];
             $seo = $row['seo'];
             $registration = $row['registration'];
@@ -225,7 +226,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $query = $sql->prepare("SELECT `serviceProviderID`,`filename`,`identifier`,`token` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
         $query->execute();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $serviceProviderConfig['providers'][$row['filename']] = array(
                 'internalID' => $row['serviceProviderID'],
@@ -248,7 +249,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `id`=? LIMIT 1");
             $query->execute(array($ui->id('loginUserId', 10, 'get')));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $username = $row['cname'];
                 $id = $row['id'];
@@ -270,7 +271,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             $query = $sql->prepare("SELECT * FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
             $query->execute(array($ui->id('loginSubstituteId', 10, 'get')));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                 $mail = '';
                 $externalID = 0;
@@ -337,7 +338,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $query = $sql->prepare("SELECT u.`id`,u.`cname`,`mail`,CONCAT(u.`vname`,' ',u.`name`) AS `username` FROM `userdata_social_identities` AS s INNER JOIN `userdata` AS u ON u.`id`=s.`userID` WHERE s.`serviceProviderID`=? AND s.`serviceUserID`=? AND u.`active`='Y'");
                 $query->execute(array($serviceProviderID, $userProfile->identifier));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $username = trim($row['username']);
                     $username = (strlen($username) > 0) ? $username : $row['cname'];
@@ -350,7 +351,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $query = $sql->prepare("SELECT u.`sID`,u.`loginName`,CONCAT(u.`vname`,' ',u.`name`) AS `username` FROM `userdata_social_identities_substitutes` AS s INNER JOIN `userdata_substitutes` AS u ON u.`sID`=s.`userID` WHERE s.`serviceProviderID`=? AND s.`serviceUserID`=? AND u.`active`='Y'");
                 $query->execute(array($serviceProviderID, $userProfile->identifier));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     $connectedSubstitutes[$row['sID']] = (strlen(trim($row['username'])) > 0) ? trim($row['username']) . ' (' . $row['loginName'] . ')' : $row['loginName'];
 
@@ -388,7 +389,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
                     $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `id`=? LIMIT 1");
                     $query->execute(array(key($connectedUsers)));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $username = $row['cname'];
                         $id = $row['id'];
@@ -405,7 +406,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
                     $query = $sql->prepare("SELECT * FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
                     $query->execute(array(key($connectedSubstitutes)));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                         $mail = '';
                         $externalID = 0;
@@ -473,7 +474,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
         $query = $sql->prepare("SELECT `id`,`accounttype`,`cname`,`active`,`security`,`resellerid`,`mail`,`salt`,`externalID` FROM `userdata` WHERE `cname`=? OR `mail`=? ORDER BY `lastlogin` DESC LIMIT 1");
         $query->execute(array($ui->username('username', 255, 'post'), $ui->ismail('username', 'post')));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $username = $row['cname'];
             $id = $row['id'];
@@ -500,7 +501,7 @@ if ($ui->st('w', 'get') == 'lo') {
         if (!isset($active)) {
             $query = $sql->prepare("SELECT * FROM `userdata_substitutes` WHERE `loginName`=? LIMIT 1");
             $query->execute(array($ui->username('username', 255, 'post')));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $mail = '';
                 $externalID = 0;
                 $sID = $row['sID'];
@@ -531,7 +532,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             $query = $sql->prepare("SELECT `active`,`ssl`,`user`,`domain`,AES_DECRYPT(`pwd`,?) AS `decryptedPWD`,`file` FROM `api_external_auth` WHERE `resellerID`=? LIMIT 1");
             $query->execute(array($aeskey, $authLookupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $activeAuth = $row['active'];
                 $portAuth = ($row['ssl'] == 'Y') ? 443 : 80;
                 $userAuth = urlencode($row['user']);
@@ -598,7 +599,7 @@ if ($ui->st('w', 'get') == 'lo') {
             if (isset($sID)) {
                 $query = $sql->prepare("SELECT `logintime`,`language` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
                 $query->execute(array($sID));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $logintime = $row['logintime'];
                     $_SESSION['language'] = $row['language'];
                 }
@@ -609,7 +610,7 @@ if ($ui->st('w', 'get') == 'lo') {
             } else if (isset($id)) {
                 $query = $sql->prepare("SELECT `logintime`,`language` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $logintime = $row['logintime'];
                     $_SESSION['language'] = $row['language'];
                 }
@@ -727,10 +728,12 @@ if ($ui->st('w', 'get') == 'lo') {
 }
 
 if (isset($include) and isset($template_to_use)) {
-    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include)) {
-        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/' . $include);
+    if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $include)) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/' . $include);
     } else if (is_file(EASYWIDIR . '/template/' . $template_to_use . '/' . $include)) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/' . $include);
+    } else if (is_file(EASYWIDIR . '/template/default/standalone/' . $include)) {
+        include(EASYWIDIR . '/template/default/standalone/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/cms/' . $include)) {
         include(EASYWIDIR . '/template/default/cms/' . $include);
     } else if (is_file(EASYWIDIR . '/template/default/' . $include)) {

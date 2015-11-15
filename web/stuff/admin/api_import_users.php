@@ -38,7 +38,7 @@
  */
 if ($main != 1 or !isset($admin_id) or (isset($admin_id) and !$pa['apiSettings'])) {
     header('Location: admin.php');
-    die('No acces');
+    die('No Access');
 }
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache = getlanguagefile('api',$user_language,$reseller_id);
@@ -73,12 +73,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $groupIDS = array();
         $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $groupIDS[$row['id']] = $row['name'];
         }
         $query = $sql->prepare("SELECT * FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
             $ssl = $row['ssl'];
             $token = $row['token'];
@@ -99,7 +99,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $groupIDS = array();
         $query = $sql->prepare("SELECT `id`,`name` FROM `usergroups` WHERE `active`='Y' AND `grouptype`='u' AND `resellerid`=?");
         $query->execute(array($reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $groupIDS[$row['id']] = $row['name'];
         }
         $template_file = 'admin_api_import_users_add.tpl';
@@ -169,7 +169,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
         $query = $sql->prepare("SELECT `ssl`,`domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             if ($row['ssl'] == 'Y') {
                 $ssl='https://';
             } else {
@@ -186,7 +186,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     } else if ($ui->smallletters('action',2, 'post') == 'dl') {
         $query = $sql->prepare("SELECT `domain`,`file` FROM `api_import` WHERE `importID`=? AND `resellerID`=? LIMIT 1");
         $query->execute(array($id,$reseller_id));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $domain = $row['domain'];
             $file = $row['file'];
         }
@@ -202,10 +202,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else {
 
+    $table = array();
+
     $query = $sql->prepare("SELECT * FROM `api_import` WHERE `resellerID`=?");
     $query->execute(array($reseller_id));
 
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if ($row['active'] == 'Y') {
             $imgName = '16_ok';
             $imgAlt = 'Active';

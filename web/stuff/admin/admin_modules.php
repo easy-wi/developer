@@ -215,7 +215,7 @@ if ($ui->st('action', 'post') and !token(true)) {
                         $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='mo' AND `transID`=? AND `resellerID`=?");
                         $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='mo' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
                         $query->execute(array($id, 0));
-                        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                             if (!in_array($row['lang'],$array)) {
 
@@ -257,7 +257,7 @@ if ($ui->st('action', 'post') and !token(true)) {
 
                 $query = $sql->prepare("SELECT * FROM `modules` WHERE `id`=? LIMIT 1");
                 $query->execute(array($id));
-                foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $active = $row['active'];
                     $file = $row['file'];
                     $sub = $row['sub'];
@@ -275,7 +275,7 @@ if ($ui->st('action', 'post') and !token(true)) {
                 if (isset($found)) {
                     $query = $sql->prepare("SELECT `text`,`lang` FROM `translations` WHERE `type`='mo' AND `transID`=?");
                     $query->execute(array($id));
-                    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         if ($row['lang'] == $rSA['language']) {
                             $name = $row['text'];
                         }

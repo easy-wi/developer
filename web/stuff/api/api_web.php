@@ -90,7 +90,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=?");
         $query->execute(array($data[$data['identify_user_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             $localUserLookupID = $row['id'];
             $localUserCname = $row['cname'];
 
@@ -134,14 +135,27 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $inSQLArray = 'm.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
             }
 
-            $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
+            $phpConfiguration = array();
+
+            $query = $sql->prepare("SELECT m.`webMasterID`,m.`defaultdns`,m.`phpConfiguration`,m.`vhostTemplate`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(m.`maxVhost`/100) AS `percentVhostUsage`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`)/(IF(m.`hddOverbook`='Y',(m.`maxHDD`/100) * (100+m.`overbookPercent`),`maxHDD`)/100) AS `percentHDDUsage` FROM `webMaster` AS m WHERE m.`active`='Y' AND m.`resellerID`=? GROUP BY m.`webMasterID` HAVING $inSQLArray (`percentVhostUsage`<100 OR `percentVhostUsage`IS NULL) AND (`percentHDDUsage`<100 OR `percentHDDUsage`IS NULL) ORDER BY `percentHDDUsage` ASC,`percentVhostUsage` ASC LIMIT 1");
             $query->execute(array($resellerID));
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
                 $webMasterID = $row['webMasterID'];
                 $hostExternalID = $row['externalID'];
-                $defaultdns = $row['defaultdns'];
+                $defaultDns = $row['defaultdns'];
+                $vhostTemplate = $row['vhostTemplate'];
+
+                $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
+
+                foreach ($phpConfigurationMaster as $groupName => $array) {
+                    reset($phpConfigurationMaster[$groupName]);
+                    $phpConfiguration[$groupName] = key($phpConfigurationMaster[$groupName]);
+                }
             }
+
+            $phpConfiguration = @json_encode($phpConfiguration);
 
             if (!isid($webMasterID, 10)) {
                 $success['false'][] = 'No free host';
@@ -152,24 +166,22 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
             $password = (isset($data['password']) and strlen($data['password']) > 0) ? $data['password'] : passwordgenerate(10);
 
-            $query = $sql->prepare("INSERT INTO `webVhost` (`externalID`,`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`ownVhost`,`vhostTemplate`,`jobPending`,`resellerID`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,'Y',?)");
-            $query->execute(array($externalServerID, $webMasterID, $localUserLookupID, $active, $hdd, $password, $aeskey, $ownVhost, $vhostTemplate, $resellerID));
+            $query = $sql->prepare("INSERT INTO `webVhost` (`externalID`,`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`phpConfiguration`,`jobPending`,`resellerID`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,'Y',?)");
+            $query->execute(array($externalServerID, $webMasterID, $localUserLookupID, $active, $hdd, $password, $aeskey, $phpConfiguration, $resellerID));
 
             $localServerID = (int) $sql->lastInsertId();
 
-            $query = $sql->prepare("SELECT `defaultdns` FROM `webMaster` WHERE `webMasterID`=? AND `resellerID`=? LIMIT 1");
-            $query->execute(array($webMasterID, $resellerID));
-            $defaultDns = (string) $query->fetchColumn();
-
-            $localUserCname .= '-' . $localServerID;
             $ftpUser = 'web-' . $localServerID;
 
             if ($defaultDns == $dns or $dns == '') {
-                $dns = str_replace('..', '.', $localUserCname . '.' .$defaultDns);
+                $dns = str_replace('..', '.', $ftpUser . '.' .$defaultDns);
             }
 
-            $query = $sql->prepare("UPDATE `webVhost` SET `dns`=?,`ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-            $query->execute(array($dns, $ftpUser, $localServerID, $resellerID));
+            $query = $sql->prepare("UPDATE `webVhost` SET `defaultDomain`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($dns, $localServerID, $resellerID));
+
+            $query = $sql->prepare("UPDATE `webVhost` SET `ftpUser`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+            $query->execute(array($ftpUser, $localServerID, $resellerID));
 
             $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`affectedID`,`invoicedByID`,`hostID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','wv',?,?,?,?,?,NULL,NOW(),'ad','',?)");
             $query->execute(array($localServerID, $resellerID, $webMasterID, $localUserLookupID, $dns, $resellerID));
@@ -188,9 +200,9 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $changedCount = 0;
 
-        $query = $sql->prepare("SELECT w.*,c.`cname` FROM `webVhost` AS w INNER JOIN `userdata` AS u ON u.`id`=w.`userID` WHERE w.`" . $from[$data['identify_server_by']] . "`=? AND w.`resellerID`=?");
+        $query = $sql->prepare("SELECT w.*,u.`cname`,m.`vhostTemplate` FROM `webVhost` AS w INNER JOIN `userdata` AS u ON u.`id`=w.`userID` INNER JOIN `webMaster` AS m ON m.`webMasterID`=w.`webMasterID` WHERE w.`" . $from[$data['identify_server_by']] . "`=? AND w.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $changedCount = 1;
 
@@ -205,16 +217,25 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
             $userID = $row['userID'];
             $oldHDD = $row['hdd'];
 
-            $dns = $row['dns'];
             $active = $row['active'];
             $private = $row['password'];
             $hdd = $row['hdd'];
-            $ownVhost = $row['ownVhost'];
 
-            $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
-            $query->execute(array($localServerID));
-            if ($query->fetchColumn() > 0) {
+            $domainRowCount = 0;
+
+            $query2 = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `type`='wv' AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
+            $query2->execute(array($localServerID));
+
+            if ($query2->fetchColumn() > 0) {
+
                 $success['false'][] = 'Server is marked for deletion';
+
+            } else if (isdomain($dns)) {
+
+                $query = $sql->prepare("UPDATE `webVhost` SET `defaultDomain`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($dns, $localServerID, $resellerID));
+
+                $domainRowCount = $query->rowCount();
             }
 
             $updateArray = array();
@@ -224,12 +245,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 $updateArray[] = $data['active'];
                 $eventualUpdate .= ',`active`=?';
                 $active = $data['active'];
-            }
-
-            if (isset($data['dns']) and isdomain($data['dns'])) {
-                $updateArray[] = $data['dns'];
-                $eventualUpdate .= ',`dns`=?';
-                $dns = $data['dns'];
             }
 
             if (isset($data['password']) and is_password($data['password'], 255)) {
@@ -257,18 +272,12 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
                 }
             }
 
-            if (isset($data['ownVhost']) and active_check($data['ownVhost'])) {
-                $updateArray[] = $data['ownVhost'];
-                $eventualUpdate .= ',`ownVhost`=?';
-                $ownVhost = $data['ownVhost'];
-            }
-
             if (isExternalID($data['server_external_id']) and $data['identify_server_by'] == 'server_local_id') {
                 $updateArray[] = $data['server_external_id'];
                 $eventualUpdate .= ',`externalID`=?';
             }
 
-            if (count($updateArray) > 0 and count($success['false']) == 0) {
+            if (($domainRowCount > 0 or count($updateArray) > 0) and count($success['false']) == 0) {
 
                 $eventualUpdate = trim($eventualUpdate,',');
                 $eventualUpdate .= ',';
@@ -309,7 +318,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT `webVhostID`,`userID`,`webMasterID`,`dns` FROM `webVhost` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localServerID = $row['webVhostID'];
             $localUserLookupID = $row['userID'];
@@ -349,16 +358,14 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $query = $sql->prepare("SELECT v.*,u.`cname`,u.`mail`,u.`externalID` AS `userExternalID`,m.`externalID` AS `masterExternalID` FROM `webVhost` AS v INNER JOIN `webMaster` AS m ON m.`webMasterID`=v.`webMasterID` INNER JOIN `userdata` AS u ON u.`id`=v.`userID` WHERE v.`" . $from[$data['identify_server_by']] . "`=? AND v.`resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
             $localServerID = $row['webVhostID'];
             $localUserLookupID = $row['userID'];
             $webMasterID = $row['webMasterID'];
             $externalServerID = $row['externalID'];
             $active = $row['active'];
-            $dns = $row['dns'];
             $hdd = $row['hdd'];
-            $ownVhost = $row['ownVhost'];
 
             $localUserID = $row['userID'];
             $externalUserID = $row['userExternalID'];

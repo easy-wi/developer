@@ -19,6 +19,7 @@
 	<bin_folder>Binaryverzeichnis(z.B. orangebox)</bin_folder>
 	<configs>Configs, die vom User editierbar sein sollen</configs>
 	<configedit>Cvars, die unveränderbar sein sollen</configedit>
+    <copyStartBinary>Binary Kopieren</copyStartBinary>
 	<del_temp>Template löschen</del_temp>
 	<description>Beschreibung</description>
 	<error_exist>Fehler: Das Addon existiert bereits.</error_exist>
@@ -35,6 +36,7 @@
     <help_addons>Über unser Webinterface können Sie jederzeit die aktuellsten Plugins, Addons, Configs und Mappackages zu Ihrem Gameserver hinzufügen. Diese werden von uns immer aktuell gehalten, um Ihren Administrationsaufwand möglichst gering zu halten.</help_addons>
     <ip>Gameserver IP Adresse</ip>
     <iptables>IP Tables</iptables>
+    <liveConsole>Live Konsole</liveConsole>
 	<map>Mappackage</map>
 	<maps>Mappackages</maps>
 	<mod>Modverzeichnis (z.B. cstrike und dod)</mod>

@@ -102,6 +102,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $nopassword = $ui->id('nopassword', 1, 'post');
         $tohighslots = $ui->id('tohighslots', 1, 'post');
         $cronjobIPs = $ui->ips('cronjobIPs', 'post');
+        $headerIcon = $ui->config('headerIcon', 'post');
+        $headerText = $ui->escaped('headerText', 'post');
+        $headerHref = $ui->url('headerHref', 'post');
 
         $template = ($ui->folder('template', 'post')) ? $ui->folder('template', 'post') : 'default';
         $lastCronWarnStatus = ($ui->active('lastCronWarnStatus', 'post')) ? $ui->active('lastCronWarnStatus', 'post') : 'Y';
@@ -116,8 +119,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			}
 		}
 
-		$query = $sql->prepare("UPDATE `settings` SET `cronjob_ips`=?,`template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
-        $query->execute(array($cronjobIPs, $template, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
+		$query = $sql->prepare("UPDATE `settings` SET `header_icon`=?,`header_text`=?,`header_href`=?,`cronjob_ips`=?,`template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
+        $query->execute(array($headerIcon, $headerText, $headerHref, $cronjobIPs, $template, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
 
 		if ($query->rowCount() > 0) {
             $loguseraction = "%mod% %settings%";
@@ -148,7 +151,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 	$query = $sql->prepare("SELECT * FROM `settings`  WHERE `resellerid`=? LIMIT 1");
 	$query->execute(array($reseller_id));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $headerIcon = $row['header_icon'];
+        $headerText = $row['header_text'];
+        $headerHref = $row['header_href'];
 		$language_choosen = $row['language'];
 		$template_choosen = $row['template'];
         $selectlanguages = getlanguages($template_choosen);

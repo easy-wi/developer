@@ -1,24 +1,35 @@
-<div class="row-fluid">
-    <div class="span12">
-        <ul class="breadcrumb">
-            <li><a href="admin.php">Home</a> <span class="divider">/</span></li>
-            <li><a href="admin.php?w=fe"><?php echo $gsprache->feeds;?></a> <span class="divider">/</span></li>
-            <li><?php echo $gsprache->del;?> <span class="divider">/</span></li>
-            <li class="active"><?php echo $feedUrl;?></li>
-        </ul>
-    </div>
-</div>
-<div class="row-fluid">
-    <div class="span6">
-        <form class="form-horizontal" action="admin.php?w=fe&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=fe" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-            <input type="hidden" name="token" value="<?php echo token();?>">
-            <input type="hidden" name="action" value="dl">
-            <div class="control-group">
-                <label class="control-label" for="inputEdit"><?php echo $feedUrl;?></label>
-                <div class="controls">
-                    <button class="btn btn-danger pull-left" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
-                </div>
+<section class="content-header">
+    <h1><?php echo $gsprache->feeds.' '.$gsprache->del;?></h1>
+    <ol class="breadcrumb">
+        <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
+        <li><a href="admin.php?w=fn"><i class="fa fa-rss"></i> <?php echo $gsprache->feeds;?></a></li>
+        <li><?php echo $gsprache->del;?></li>
+        <li class="active"><?php echo $feedUrl;?></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-danger">
+
+                <form role="form" action="admin.php?w=fe&amp;d=dl&amp;id=<?php echo $id;?>&amp;r=fe" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+
+                    <input type="hidden" name="token" value="<?php echo token();?>">
+                    <input type="hidden" name="action" value="dl">
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputFeedUrl">URL</label>
+                            <input class="form-control" id="inputFeedUrl" type="text" name="feedUrl" value="<?php echo $feedUrl;?>" disabled="disabled">
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-danger" id="inputEdit" type="submit"><i class="fa fa-trash-o"></i> <?php echo $gsprache->del;?></button>
+                    </div>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
-</div>
+</section>

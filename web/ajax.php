@@ -46,11 +46,15 @@ if (is_dir(EASYWIDIR . '/install')) {
     die('Please remove the "install" folder');
 }
 
-include(EASYWIDIR . '/stuff/methods/functions.php');
-include(EASYWIDIR . '/stuff/methods/class_validator.php');
-include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/config.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
+include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/methods/functions_ts3.php');
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/settings.php');
 
 if (!isset($admin_id) and !isset($user_id)) {
@@ -132,6 +136,36 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
         require_once(EASYWIDIR . '/stuff/ajax/datatable_appserver.php');
 
+        // Admins, reseller and user
+    } else if ($ui->smallletters('d', 4, 'get') == 'user' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and ($pa['user'] or $pa['user_users'] or $pa['userPassword'])) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_user.php');
+
+        // Voice master
+    } else if ($ui->smallletters('d', 17, 'get') == 'voicemasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voicemasterserver']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_voicemasterserver.php');
+
+        // TSDNS master
+    } else if ($ui->smallletters('d', 17, 'get') == 'tsdnsmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voicemasterserver']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdnsmasterserver.php');
+
+        // MySQL server
+    } else if ($ui->smallletters('d', 11, 'get') == 'mysqlserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['mysql_settings']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqlserver.php');
+
+        // Web master
+    } else if ($ui->smallletters('d', 15, 'get') == 'webmasterserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['webmaster']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_webmasterserver.php');
+
+        // Page comments
+    } else if ($ui->smallletters('d', 12, 'get') == 'pagecomments' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['cms_pages']) {
+
+        require_once(EASYWIDIR . '/stuff/ajax/datatable_pagecomments.php');
+
         // Code wise it seems odd, but this way we can get plausible userIDs for following queries up front without having to repeat ourselves
     } else {
 
@@ -151,14 +185,25 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
         if ($ui->smallletters('d', 10, 'get') == 'gameserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_gameserver.php');
-/*
-        } else if ($ui->smallletters('d', 10, 'get') == 'voiceserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['gserver']) {
+
+        } else if ($ui->smallletters('d', 11, 'get') == 'voiceserver' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
 
             require_once(EASYWIDIR . '/stuff/ajax/datatable_voiceserver.php');
-*/
+
+        } else if ($ui->smallletters('d', 5, 'get') == 'tsdns' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['voiceserver']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_tsdns.php');
+
+        } else if ($ui->smallletters('d', 7, 'get') == 'mysqldb' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['mysql']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_mysqldb.php');
+
+        } else if ($ui->smallletters('d', 8, 'get') == 'webvhost' and isset($admin_id) and isset($reseller_id) and isset($resellerLockupID) and $pa['webmaster']) {
+
+            require_once(EASYWIDIR . '/stuff/ajax/datatable_webvhost.php');
+
         }
     }
-
 
     die(json_encode($array));
 
@@ -192,6 +237,32 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once(EASYWIDIR . '/stuff/ajax/app_master_app_details.php');
     die;
 
+} else if (isset($admin_id) and $pa['voiceserver'] and $ui->smallletters('d', 16, 'get') == 'voicemasterusage') {
+
+    if ($ui->id('id', 10, 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/voice_master_usage.php');
+    }
+    die;
+
+} else if ($ui->smallletters('d', 20, 'get') == 'voicemasterportusage' and isset($admin_id) and $pa['voiceserver']) {
+
+    if ($ui->ip4('ip', 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/voice_master_port_usage.php');
+    }
+    die;
+
+} else if ($ui->smallletters('d', 16, 'get') == 'tsdnsmasterusage' and isset($admin_id) and $pa['voiceserver']) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/tsdns_master_usage.php');
+    die;
+
+} else if (isset($admin_id) and $ui->smallletters('d', 16, 'get') == 'mysqlmasterusage' and $pa['mysql']) {
+
+    if ($ui->id('id', 10, 'get')) {
+        require_once(EASYWIDIR . '/stuff/ajax/mysql_master_usage.php');
+    }
+    die;
+
 } else if (isset($admin_id) and $pa['dedicatedServer'] and $ui->smallletters('d', 7, 'get') == 'freeips' and $reseller_id == 0) {
 
     if ($ui->id('userID', 10, 'get')) {
@@ -209,71 +280,9 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     die;
 
-} else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 8, 'get') == 'webmaster' and $ui->id('id', 10, 'get')) {
+} else if (isset($admin_id) and $pa['fastdl'] and $ui->smallletters('d', 9, 'get') == 'webmaster' and $ui->id('id', 10, 'get')) {
 
-    $sprache = getlanguagefile('web', $user_language, $resellerLockupID);
-
-    $maxVhost = 0;
-    $maxHDD = 0;
-    $webVhosts = 0;
-    $leftHDD = 0;
-    $totalHDD = 0;
-    $totalVhosts = 0;
-    $quotaActive = 'N';
-    $dns = '';
-
-    $query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
-    $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-        $vhostTemplate = $row['vhostTemplate'];
-        $maxVhost = (int) $row['maxVhost'];
-        $maxHDD = (int) $row['maxHDD'];
-        $totalVhosts = (int) $row['totalVhosts'];
-        $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
-        $quotaActive = $row['quotaActive'];
-        $dns = $row['defaultdns'];
-    }
-
-    require_once IncludeTemplate($template_to_use, 'ajax_admin_web_master.tpl', 'ajax');
-
-    die;
-
-} else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 15, 'get') == 'adminvoicestats' and $ui->st('w', 'get')) {
-
-    $data = array();
-
-    if ($ui->st('w', 'get') == 'us') {
-        $query = $sql->prepare("SELECT u.`id`,u.`cname`,u.`vname`,u.`name` FROM `userdata` u INNER JOIN `voice_server` v ON u.`id`=v.`userid` AND v.`active`='Y' WHERE u.`resellerid`=? GROUP BY u.`id`");
-        $query->execute(array($resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $data[] = '<option value=' . $row['id'] . '>' . trim($row['cname'] . ' ' . $row['vname'] . ' ' . $row['name']) . '</option>';
-        }
-
-    } else if ($ui->st('w', 'get') == 'se') {
-
-        $query = $sql->prepare("SELECT v.`id`,v.`ip`,v.`port`,v.`dns`,m.`usedns` FROM `voice_server` v INNER JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`resellerid`=? ORDER BY v.`ip`,v.`port`");
-        $query->execute(array($resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $data[] = '<option value=' . $row['id'] . '>' . $row['ip'] . ':' . $row['port'] . '</option>';
-        }
-
-    } else if ($ui->st('w', 'get') == 'ma') {
-
-        $query = $sql->prepare("SELECT `id`,`ssh2ip` FROM `voice_masterserver` WHERE `resellerid`=? AND `active`='Y' ORDER BY `ssh2ip`");
-        $query->execute(array($resellerLockupID));
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $data[] = '<option value=' . $row['id'] . '>' . $row['ssh2ip'] . '</option>';
-        }
-
-    }
-
-    require_once IncludeTemplate($template_to_use, 'ajax_admin_voice_stats.tpl', 'ajax');
-
-    die;
-
-} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
-
-    require_once(EASYWIDIR . '/stuff/ajax/userpanel_voice_stats.php');
+    require_once(EASYWIDIR . '/stuff/ajax/web_master_usage.php');
     die;
 
 } else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 20, 'get') == 'userTicketCategories' and $ui->id('topicName', 10, 'get')) {
@@ -281,9 +290,29 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
     require_once(EASYWIDIR . '/stuff/ajax/userpanel_ticket_category.php');
     die;
 
-} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->w('d', 14, 'get') == 'voiceUserStats') {
+} else if (isset($user_id) and $pa['usertickets'] and $ui->w('d', 24, 'get') == 'resellerTicketCategories' and $ui->id('topicName', 10, 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/reseller_ticket_category.php');
+    die;
+
+} else if (isset($admin_id) and $pa['voiceserverStats'] and $ui->w('d', 15, 'get') == 'adminVoiceStats' and $ui->st('w', 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/admin_voice_stats.php');
+    die;
+
+} else if (isset($user_id) and $pa['voiceserverStats'] and $ui->smallletters('d', 14, 'get') == 'uservoicestats' and $ui->st('w', 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/userpanel_voice_stats.php');
+    die;
+
+} else if ($pa['voiceserverStats'] and ((isset($user_id) and $ui->w('d', 14, 'get') == 'voiceUserStats') or (isset($admin_id) and $ui->w('d', 15, 'get') == 'voiceAdminStats'))) {
 
     require_once(EASYWIDIR . '/stuff/ajax/stats_voicestats.php');
+    die;
+
+} else if (($pa['gserver'] or $pa['restart']) and isset($user_id) and $ui->w('d', 9, 'get') == 'serverLog' and $ui->id('id', 10, 'get')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/server_log.php');
     die;
 
 } else if (isset($user_id) and ($pa['gserver'] or $pa['restart']) and $ui->username('mapgroup', 50, 'get')) {

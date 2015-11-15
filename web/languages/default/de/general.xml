@@ -9,13 +9,14 @@
     <api>API</api>
     <apiAuth>Externe Authentifizierung</apiAuth>
     <appMaster>App Master</appMaster>
-    <appRoot>App Server</appRoot>
+    <appRoot>App/Game Master</appRoot>
 	<backup>Backup</backup>
 	<change>ändern</change>
     <chosenNoResult>Kein Suchergebnis für</chosenNoResult>
     <chosenSelect>Bitte triff eine Auswahl</chosenSelect>
     <columns>Custom Columns</columns>
     <comments>Kommentare</comments>
+    <connect_ip_only>Primäre IP/Domain für Verwaltung (DMZ), weitere für externe Verbindungen</connect_ip_only>
 	<databases>DB</databases>
     <dataTablesEmpty>Keine Einträge zum anzeigen</dataTablesEmpty>
     <dataTablesEmptyTable>Keine Daten in der Tabelle verfügbar</dataTablesEmptyTable>
@@ -34,12 +35,14 @@
     <delSafe>Sicheres Löschen</delSafe>
     <delAny>In jedem Fall Löschen</delAny>
     <delDB>Aus der Datenbank Löschen</delDB>
+    <domains>Domains</domains>
     <downloads>Downloads</downloads>
     <edit>Bearbeiten</edit>
     <errors>Fehler</errors>
     <exec>Ausführen</exec>
     <export>Exportieren</export>
     <externalID>Externe ID</externalID>
+    <externalIP>Externe IP</externalIP>
     <fastdownload>Fastdownload</fastdownload>
     <feeds>Feeds</feeds>
     <file>Datei</file>
@@ -53,6 +56,7 @@
     <help_sidebar>Die Status Informationen werden alle %n% Minuten aktualisiert.</help_sidebar>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
+    <inactive>Inaktiv</inactive>
     <import>Importieren</import>
 	<imprint>Impressum</imprint>
     <jobs>Jobs</jobs>
@@ -101,6 +105,7 @@
 	<support>Support</support>
 	<sure>Sind Sie sicher?</sure>
     <sure_delete>Sind Sie sicher? Alle Daten werden beim Zielserver gelöscht!</sure_delete>
+    <system_check>System Check</system_check>
 	<template>Template</template>
 	<templates>Images/Templates</templates>
 	<traffic>Traffic</traffic>

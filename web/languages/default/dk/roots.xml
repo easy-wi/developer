@@ -55,6 +55,7 @@
 	<ssh_port>SSH2 port</ssh_port>
 	<ssh_user>SSH2 Brugernavn</ssh_user>
 	<steam>Steam Spil</steam>
+    <steamWarning></steamWarning>
     <updateMinute>Timevis opdatering pr minut</updateMinute>
 	<useds>Brugt Antal: </useds>
 	<zusatz_ip>Yderligere IP'er</zusatz_ip>

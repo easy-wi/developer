@@ -31,7 +31,7 @@
                         <dt><?php echo $sprache->dbname;?></dt>
                         <dd><?php echo $table_row['dbname'];?></dd>
                         <dt>IP</dt>
-                        <dd><?php echo $table_row['ip'];?></dd>
+                        <dd><?php echo $table_row['address'];?></dd>
                         <dt>Port</dt>
                         <dd><?php echo $table_row['port'];?></dd>
                         <dt><?php echo $sprache->dbSize;?></dt>

@@ -104,6 +104,6 @@ if ($sSearch) {
         $query->execute(array($resellerLockupID));
     }
 }
-foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $array['aaData'][] = array($row['date'], str_replace($placeholders2, $replace2, $row['action']), returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $row['status'], ''), $row['name'], str_replace($placeholders, $replace, $row['type']), returnButton($template_to_use, 'ajax_admin_job_checkbox.tpl', '', '', $row['jobID'], ''));
 }

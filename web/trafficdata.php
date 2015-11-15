@@ -63,7 +63,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
 	$query = $sql->prepare("SELECT `type`,`statip`,AES_DECRYPT(`dbname`,:aeskey) AS `decpteddbname`,AES_DECRYPT(`dbuser`,:aeskey) AS `decpteddbuser`,AES_DECRYPT(`dbpassword`,:aeskey) AS `decpteddbpassword`,`table_name`,`column_sourceip`,`column_destip`,`column_byte`,`column_date` FROM `traffic_settings` LIMIT 1");
     $query->execute(array(':aeskey' => $aeskey));
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$stats_databanktype = $row['type'];
 		$stats_host = $row['statip'];
 		$stats_db = $row['decpteddbname'];
@@ -100,14 +100,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     $query = $sql->prepare("SELECT `ips`,`resellerid`,`resellersid` FROM `resellerdata`");
     $query->execute();
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		$ids = $row['resellerid'] . '-' . $row['resellersid'];
 		$userips[$ids]=ipstoarray($row['ips']);
 	}
 
     $query = $sql->prepare("SELECT `id`,`ip`,`ips` FROM `virtualcontainer`");
     $query->execute();
-	foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 		unset($vserverip);
 		$vserverip[] = $row['ip'];
 		$vserverid = $row['id'];
@@ -120,7 +120,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $query = $sql2->prepare("SHOW PROCESSLIST");
     $query->execute();
     print "Killing active locks and threads regarding database $stats_db\r\n";
-    foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         list($host)=explode(':', $row['Host']);
         if ($host == 'localhost' and $row['db'] == $stats_db) {
             $query2 = $sql2->prepare("KILL ?");

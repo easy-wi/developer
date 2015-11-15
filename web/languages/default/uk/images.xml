@@ -19,6 +19,7 @@
     <bin_folder>Binary folder (e.g. orangebox)</bin_folder>
     <configs>User-editable configs</configs>
     <configedit>Cvars which the user must not modify</configedit>
+    <copyStartBinary>Copy Binary</copyStartBinary>
     <del_temp>Delete template</del_temp>
     <description>Description</description>
     <error_exist>Error: Addon already exists.</error_exist>
@@ -35,6 +36,7 @@
     <help_addons>With our web interface you can easily manage plugins, addons, configs, and map packages for your game server. We will keep everything up-to-date, thus, your administration effort is reduced to a minimum.</help_addons>
     <ip>Game server IP address</ip>
     <iptables>IP tables</iptables>
+    <liveConsole>Live Console</liveConsole>
     <map>Map package</map>
     <maps>Map packages</maps>
     <mod>Mod folder (e.g. cstrike or dod)</mod>

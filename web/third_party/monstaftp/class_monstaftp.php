@@ -1618,7 +1618,7 @@ class Monsta {
 
             $query = $sql->prepare("SELECT `templateID`,`name` FROM `gserver_file_templates` WHERE `servertype`=? AND  (`userID` IS NULL OR `userID`=?) AND `resellerID`=?");
             $query->execute(array($shorten, $user_id, $resellerLockupID));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $return .= "<option value=\"".$row['templateID']."\">".$row['name']."</option>";
             }
 

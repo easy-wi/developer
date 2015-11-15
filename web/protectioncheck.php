@@ -94,7 +94,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
         $query->execute(array($ip, $port));
         $logs = array();
         $xmllogs = array();
-        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $protected = $row['protected'];
             $customer = $row['cname'];
             $psince = $row['psince'];
@@ -105,7 +105,7 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
             $type = $row['description'];
             $query = $sql->prepare("SELECT `useraction`,`logdate` FROM `userlog` WHERE `logdate`>? AND `username`=? AND `useraction` LIKE ?");
             $query->execute(array($psince, $customer,'%'.$serveraddress.'%'));
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $logentry = explode(" ", $row['useraction']);
                 if (($logentry[1] == '%gserver%' or $logentry[1] == '%addon%') and ($logentry[0] != '%resync%' and $logentry[0] != '%mod%')) {
                     if ($default_language == 'de') {
@@ -150,12 +150,12 @@ if ($ui->ipport('serveraddress', 'post')) {
 
     } else {
 
-        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl')) {
-            include(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl');
+        if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl');
         } else if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
-        } else if (is_file(EASYWIDIR . '/template/default/cms/protectioncheck.tpl')) {
-            include(EASYWIDIR . '/template/default/cms/protectioncheck.tpl');
+        } else if (is_file(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl')) {
+            include(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl');
         } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
             include(EASYWIDIR . '/template/default/protectioncheck.tpl');
         } else {
@@ -232,12 +232,12 @@ XML;
     $template_file = 'page_protectioncheck.tpl';
 
 } else {
-    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl')) {
-        include(EASYWIDIR . '/template/' . $template_to_use . '/cms/protectioncheck.tpl');
+    if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/' . $template_to_use . '/standalone/protectioncheck.tpl');
     } else if (file_exists(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/' . $template_to_use . '/protectioncheck.tpl');
-    } else if (is_file(EASYWIDIR . '/template/default/cms/protectioncheck.tpl')) {
-        include(EASYWIDIR . '/template/default/cms/protectioncheck.tpl');
+    } else if (is_file(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl')) {
+        include(EASYWIDIR . '/template/default/standalone/protectioncheck.tpl');
     } else if (file_exists(EASYWIDIR . '/template/default/protectioncheck.tpl')) {
         include(EASYWIDIR . '/template/default/protectioncheck.tpl');
     } else {
