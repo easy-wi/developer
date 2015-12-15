@@ -65,6 +65,7 @@
 	<hostbutton_tooltip>Hostbutton Tooltip</hostbutton_tooltip>
 	<hostbutton_url>Hostbutton Link</hostbutton_url>
 	<import>Importieren</import>
+    <iniConfiguration>Formular Konfiguration</iniConfiguration>
 	<initialpassword>Initiales Passwort</initialpassword>
 	<installedserver>Installierte Server</installedserver>
 	<installedslots>Installierte Slots</installedslots>

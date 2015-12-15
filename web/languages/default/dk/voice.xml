@@ -52,6 +52,7 @@
 	<hostbutton_tooltip>Hostbutton Tooltip</hostbutton_tooltip>
 	<hostbutton_url>Hostbutton Url</hostbutton_url>
 	<import>Importer</import>
+    <iniConfiguration></iniConfiguration>
 	<initialpassword>indledende adgangskode</initialpassword>
 	<installedserver>Installeret server</installedserver>
 	<installedslots>Installeret antal</installedslots>
