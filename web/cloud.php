@@ -49,7 +49,7 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 
 set_time_limit($timelimit);
 
-if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip) {
+if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
     function printText ($text) {
         echo $text."\r\n";
