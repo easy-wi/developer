@@ -145,7 +145,11 @@ function update {
 
 function updatesAddonSnapshots {
 
-    cyanMessage "Searching snapshot updates for $1 ($3) and revision $2"
+    if [ "$3" == "" ]; then
+        cyanMessage "Searching updates for $1 and revision $2"
+    else
+        cyanMessage "Searching snapshot updates for $1 ($3) and revision $2"
+    fi
 
     if [ "$1" == "sourcemod" ]; then
         DOWNLOAD_URL=`lynx -dump "http://www.sourcemod.net/smdrop/$2/" | egrep -o "http:.*sourcemod-.*-linux.*" | tail -2 | head -n 1`
@@ -153,9 +157,12 @@ function updatesAddonSnapshots {
         DOWNLOAD_URL=`lynx -dump "http://www.metamodsource.net/mmsdrop/$2/" | egrep -o "http:.*mmsource-.*-git.*-linux.*" | tail -1`
     fi
 
-    update "${1}_snapshot_${3}.txt" "$DOWNLOAD_URL" "${1}-${3}" "masteraddons"
+    if [ "$3" == "" ]; then
+        update "${1}.txt" "$DOWNLOAD_URL" "${1}" "masteraddons"
+    else
+        update "${1}_snapshot_${3}.txt" "$DOWNLOAD_URL" "${1}-${3}" "masteraddons"
+    fi
 }
-
 function fileUpdate {
 
     checkCreateVersionFile "$1"
@@ -209,9 +216,11 @@ checkCreateFolder $HOME/versions
 
 case $1 in
     "mta") updateMTA;;
-    "mms"|"mms_snapshot") updatesAddonSnapshots "metamod" "1.10" "stable";;
+    "mms") updatesAddonSnapshots "metamod" "1.10" "";;
+    "mms_snapshot") updatesAddonSnapshots "metamod" "1.10" "dev";;
     "mms_dev") updatesAddonSnapshots "metamod" "1.11" "dev";;
-    "sm"|"sm_snapshot") updatesAddonSnapshots "sourcemod" "1.7" "stable";;
+    "sm") updatesAddonSnapshots "sourcemod" "1.7" "";;
+    "sm_snapshot") updatesAddonSnapshots "sourcemod" "1.7" "dev";;
     "sm_dev") updatesAddonSnapshots "sourcemod" "1.8" "dev";;
     *) cyanMessage "Usage: ${0} mta|mms|mms_snapshot|mms_dev|sm|sm_snapshot|sm_dev";;
 esac
