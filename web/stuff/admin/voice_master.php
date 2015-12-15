@@ -46,7 +46,7 @@ include(EASYWIDIR . '/third_party/password_compat/password.php');
 
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['voicemasterserver'])) {
     header('Location: admin.php');
-    die;
+    die('No access');
 }
 $sprache = getlanguagefile('voice', $user_language, $reseller_id);
 $usprache = getlanguagefile('user', $user_language, $reseller_id);
@@ -113,10 +113,11 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $defaultFlexSlotsPercent = $ui->id('defaultFlexSlotsPercent', 3, 'post');
     $tsdnsServerID = $ui->id('tsdnsServerID', 19, 'post');
     $description = $ui->description('description', 'post');
+    $iniConfiguration = $ui->escaped('iniConfiguration', 'post');
 
     $queryport = ($ui->port('queryport', 'post')) ? $ui->port('queryport', 'post') : 10011;
     $filetransferport = ($ui->port('filetransferport', 'post')) ? $ui->port('filetransferport', 'post') : 30033;
-    $defaultname = ($ui->startparameter('defaultname', 'post')) ? $ui->startparameter('defaultname', 'post') : $rSA['brandname'];
+    $defaultname = ($ui->startparameter('defaultname', 'post')) ? $ui->startparameter('defaultname', 'post') : "My Voiceserver " . $rSA['brandname'];
     $active = ($ui->active('active', 'post')) ? $ui->active('active', 'post') : 'Y';
     $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
     $maxserver = ($ui->id('maxserver', 30, 'post')) ? $ui->id('maxserver', 30, 'post') : 10;
@@ -126,6 +127,15 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $managedServer = ($ui->active('managedServer', 'post')) ? $ui->active('managedServer', 'post') : 'N';
     $managedForID = $ui->id('managedForID', 10, 'post');
 
+    if (!$iniConfiguration or strlen($iniConfiguration) < 2 or !@parse_ini_string($iniConfiguration, true)) {
+        $iniConfiguration = '[Channel Max Depth]
+i_channel_max_depth -1 = Unlimited
+i_channel_max_depth 1 = 1
+i_channel_max_depth 2 = 2
+i_channel_max_depth 3 = 3
+i_channel_max_depth 4 = 4
+i_channel_max_depth 5 = 5';
+    }
     // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
     if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
@@ -207,6 +217,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $serverdir = $row['serverdir'];
                 $keyname = $row['keyname'];
                 $bit = $row['bitversion'];
+                $iniConfiguration = $row['iniConfiguration'];
 
                 // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
                 $managedServer = $row['managedServer'];
@@ -385,6 +396,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                         $defaultFlexSlotsFree = $row['defaultFlexSlotsFree'];
                         $defaultFlexSlotsPercent = $row['defaultFlexSlotsPercent'];
                         $description = $row['description'];
+                        $iniConfiguration = $row['iniConfiguration'];
 
                         if ($row['type'] == 'ts3') {
                             $type = $sprache->ts3;
@@ -492,8 +504,8 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
                     if ($ui->st('d', 'get') != 'ri') {
                         // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
-                        $query = $sql->prepare("INSERT INTO `voice_masterserver` (`active`,`connect_ip_only`,`type`,`description`,`defaultname`,`bitversion`,`queryport`,`querypassword`,`filetransferport`,`maxserver`,`maxslots`,`rootid`,`addedby`,`usedns`,`defaultdns`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`defaultFlexSlotsFree`,`defaultFlexSlotsPercent`,`publickey`,`ssh2ip`,`ssh2port`,`ssh2user`,`ssh2password`,`ips`,`serverdir`,`keyname`,`autorestart`,`externalID`,`tsdnsServerID`,`externalDefaultDNS`,`managedServer`,`managedForID`,`resellerid`) VALUES (:active,:connect_ip_only,:type,:description,:defaultname,:bit,:queryport,AES_ENCRYPT(:querypassword,:aeskey),:filetransferport,:maxserver,:maxslots,:rootid,:addedby,:usedns,:defaultdns,:defaultwelcome,:defaulthostbanner_url,:defaulthostbanner_gfx_url,:defaulthostbutton_tooltip,:defaulthostbutton_url,:defaulthostbutton_gfx_url,:defaultFlexSlotsFree,:defaultFlexSlotsPercent,:publickey,:ssh2ip,AES_ENCRYPT(:ssh2port,:aeskey),AES_ENCRYPT(:ssh2user,:aeskey),AES_ENCRYPT(:ssh2password,:aeskey),:ips,:serverdir,:keyname,:autorestart,:externalID,:tsdnsServerID,:externalDefaultDNS,:managedServer,:managedForID,:reseller_id)");
-                        $query->execute(array(':aeskey' => $aeskey, ':active' => $active, ':connect_ip_only' => $connectIpOnly, ':type' => $type, ':description' => $description, ':defaultname' => $defaultname, ':bit' => $bit, ':queryport' => $queryport, ':querypassword' => $querypassword, ':filetransferport' => $filetransferport, ':maxserver' => $maxserver, ':maxslots' => $maxslots, ':rootid' => $rootid, ':addedby' => $addtype, ':usedns' => $usedns, ':defaultdns' => $defaultdns, ':defaultwelcome' => $defaultwelcome, ':defaulthostbanner_url' => $defaulthostbanner_url, ':defaulthostbanner_gfx_url' => $defaulthostbanner_gfx_url, ':defaulthostbutton_tooltip' => $defaulthostbutton_tooltip, ':defaulthostbutton_url' => $defaulthostbutton_url, ':defaulthostbutton_gfx_url' => $defaulthostbutton_gfx_url, ':defaultFlexSlotsFree' => $defaultFlexSlotsFree, ':defaultFlexSlotsPercent' => $defaultFlexSlotsPercent, ':publickey' => $publickey, ':ssh2ip' => $ip, ':ssh2port' => $port, ':ssh2user' => $user, ':ssh2password' => $pass, ':ips' => $ips, ':serverdir' => $serverdir, ':keyname' => $keyname, ':autorestart' => $autorestart, ':externalID' => $externalID, ':tsdnsServerID' => $tsdnsServerID, ':externalDefaultDNS' => $externalDefaultDNS, ':managedServer' => $managedServer , ':managedForID' => $resellerToBeWritten, ':reseller_id' => $reseller_id));
+                        $query = $sql->prepare("INSERT INTO `voice_masterserver` (`active`,`iniConfiguration`,`connect_ip_only`,`type`,`description`,`defaultname`,`bitversion`,`queryport`,`querypassword`,`filetransferport`,`maxserver`,`maxslots`,`rootid`,`addedby`,`usedns`,`defaultdns`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`defaultFlexSlotsFree`,`defaultFlexSlotsPercent`,`publickey`,`ssh2ip`,`ssh2port`,`ssh2user`,`ssh2password`,`ips`,`serverdir`,`keyname`,`autorestart`,`externalID`,`tsdnsServerID`,`externalDefaultDNS`,`managedServer`,`managedForID`,`resellerid`) VALUES (:active,:iniConfiguration,:connect_ip_only,:type,:description,:defaultname,:bit,:queryport,AES_ENCRYPT(:querypassword,:aeskey),:filetransferport,:maxserver,:maxslots,:rootid,:addedby,:usedns,:defaultdns,:defaultwelcome,:defaulthostbanner_url,:defaulthostbanner_gfx_url,:defaulthostbutton_tooltip,:defaulthostbutton_url,:defaulthostbutton_gfx_url,:defaultFlexSlotsFree,:defaultFlexSlotsPercent,:publickey,:ssh2ip,AES_ENCRYPT(:ssh2port,:aeskey),AES_ENCRYPT(:ssh2user,:aeskey),AES_ENCRYPT(:ssh2password,:aeskey),:ips,:serverdir,:keyname,:autorestart,:externalID,:tsdnsServerID,:externalDefaultDNS,:managedServer,:managedForID,:reseller_id)");
+                        $query->execute(array(':aeskey' => $aeskey, ':active' => $active, ':iniConfiguration' => $iniConfiguration, ':connect_ip_only' => $connectIpOnly, ':type' => $type, ':description' => $description, ':defaultname' => $defaultname, ':bit' => $bit, ':queryport' => $queryport, ':querypassword' => $querypassword, ':filetransferport' => $filetransferport, ':maxserver' => $maxserver, ':maxslots' => $maxslots, ':rootid' => $rootid, ':addedby' => $addtype, ':usedns' => $usedns, ':defaultdns' => $defaultdns, ':defaultwelcome' => $defaultwelcome, ':defaulthostbanner_url' => $defaulthostbanner_url, ':defaulthostbanner_gfx_url' => $defaulthostbanner_gfx_url, ':defaulthostbutton_tooltip' => $defaulthostbutton_tooltip, ':defaulthostbutton_url' => $defaulthostbutton_url, ':defaulthostbutton_gfx_url' => $defaulthostbutton_gfx_url, ':defaultFlexSlotsFree' => $defaultFlexSlotsFree, ':defaultFlexSlotsPercent' => $defaultFlexSlotsPercent, ':publickey' => $publickey, ':ssh2ip' => $ip, ':ssh2port' => $port, ':ssh2user' => $user, ':ssh2password' => $pass, ':ips' => $ips, ':serverdir' => $serverdir, ':keyname' => $keyname, ':autorestart' => $autorestart, ':externalID' => $externalID, ':tsdnsServerID' => $tsdnsServerID, ':externalDefaultDNS' => $externalDefaultDNS, ':managedServer' => $managedServer , ':managedForID' => $resellerToBeWritten, ':reseller_id' => $reseller_id));
 
                         $rowCount = $query->rowCount();
 
@@ -549,18 +561,14 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                         $ssh2cmd2 = $commandFolders . ' cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
                     }
 
-                    if ($usedns == 'Y') {
-                        $cmds = array($ssh2cmd, $ssh2cmd2);
-                    } else {
-                        $cmds = array($ssh2cmd);
-                    }
+                    $cmds = ($usedns == 'Y') ? array($ssh2cmd, $ssh2cmd2) : array($ssh2cmd);
 
                     ssh2_execute('vm', $id, $cmds);
                 }
 
                 // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
-                $query = $sql->prepare("UPDATE `voice_masterserver` SET `active`=:active,`connect_ip_only`=:connect_ip_only,`description`=:description,`managedServer`=:managedServer,`managedForID`=:managedForID,`externalID`=:externalID,`defaultname`=:defaultname,`bitversion`=:bit,`queryport`=:queryport,`querypassword`=AES_ENCRYPT(:querypassword,:aeskey),`filetransferport`=:filetransferport,`maxserver`=:maxserver,`maxslots`=:maxslots,`usedns`=:usedns,`defaultdns`=:defaultdns,`defaultwelcome`=:defaultwelcome,`defaulthostbanner_url`=:defaulthostbanner_url,`defaulthostbanner_gfx_url`=:defaulthostbanner_gfx_url,`defaulthostbutton_tooltip`=:defaulthostbutton_tooltip,`defaulthostbutton_url`=:defaulthostbutton_url,`defaulthostbutton_gfx_url`=:defaulthostbutton_gfx_url,`defaultFlexSlotsFree`=:defaultFlexSlotsFree,`defaultFlexSlotsPercent`=:defaultFlexSlotsPercent,`publickey`=:publickey,`ssh2ip`=:ssh2ip,`ssh2port`=AES_ENCRYPT(:ssh2port,:aeskey),`ssh2user`=AES_ENCRYPT(:ssh2user,:aeskey),`ssh2password`=AES_ENCRYPT(:ssh2password,:aeskey),`ips`=:ips,`serverdir`=:serverdir,`keyname`=:keyname,`autorestart`=:autorestart,`tsdnsServerID`=:tsdnsServerID,`externalDefaultDNS`=:externalDefaultDNS WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':aeskey' => $aeskey,':active' => $active, ':connect_ip_only' => $connectIpOnly,':description' => $description,':managedServer' => $managedServer,':managedForID' => $resellerToBeWritten,':externalID' => $externalID,':defaultname' => $defaultname,':bit' => $bit,':queryport' => $queryport,':querypassword' => $querypassword,':filetransferport' => $filetransferport,':maxserver' => $maxserver,':maxslots' => $maxslots,':usedns' => $usedns,':defaultdns' => $defaultdns,':defaultwelcome' => $defaultwelcome,':defaulthostbanner_url' => $defaulthostbanner_url,':defaulthostbanner_gfx_url' => $defaulthostbanner_gfx_url,':defaulthostbutton_tooltip' => $defaulthostbutton_tooltip,':defaulthostbutton_url' => $defaulthostbutton_url,':defaulthostbutton_gfx_url' => $defaulthostbutton_gfx_url,':defaultFlexSlotsFree' => $defaultFlexSlotsFree,':defaultFlexSlotsPercent' => $defaultFlexSlotsPercent,':publickey' => $publickey,':ssh2ip' => $ip,':ssh2port' => $port,':ssh2user' => $user,':ssh2password' => $pass,':ips' => $ips,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':tsdnsServerID' => $tsdnsServerID,':externalDefaultDNS' => $externalDefaultDNS,':id' => $id,':reseller_id' => $reseller_id));
+                $query = $sql->prepare("UPDATE `voice_masterserver` SET `active`=:active,`iniConfiguration`=:iniConfiguration,`connect_ip_only`=:connect_ip_only,`description`=:description,`managedServer`=:managedServer,`managedForID`=:managedForID,`externalID`=:externalID,`defaultname`=:defaultname,`bitversion`=:bit,`queryport`=:queryport,`querypassword`=AES_ENCRYPT(:querypassword,:aeskey),`filetransferport`=:filetransferport,`maxserver`=:maxserver,`maxslots`=:maxslots,`usedns`=:usedns,`defaultdns`=:defaultdns,`defaultwelcome`=:defaultwelcome,`defaulthostbanner_url`=:defaulthostbanner_url,`defaulthostbanner_gfx_url`=:defaulthostbanner_gfx_url,`defaulthostbutton_tooltip`=:defaulthostbutton_tooltip,`defaulthostbutton_url`=:defaulthostbutton_url,`defaulthostbutton_gfx_url`=:defaulthostbutton_gfx_url,`defaultFlexSlotsFree`=:defaultFlexSlotsFree,`defaultFlexSlotsPercent`=:defaultFlexSlotsPercent,`publickey`=:publickey,`ssh2ip`=:ssh2ip,`ssh2port`=AES_ENCRYPT(:ssh2port,:aeskey),`ssh2user`=AES_ENCRYPT(:ssh2user,:aeskey),`ssh2password`=AES_ENCRYPT(:ssh2password,:aeskey),`ips`=:ips,`serverdir`=:serverdir,`keyname`=:keyname,`autorestart`=:autorestart,`tsdnsServerID`=:tsdnsServerID,`externalDefaultDNS`=:externalDefaultDNS WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+                $query->execute(array(':aeskey' => $aeskey,':active' => $active, ':iniConfiguration' => $iniConfiguration,':connect_ip_only' => $connectIpOnly,':description' => $description,':managedServer' => $managedServer,':managedForID' => $resellerToBeWritten,':externalID' => $externalID,':defaultname' => $defaultname,':bit' => $bit,':queryport' => $queryport,':querypassword' => $querypassword,':filetransferport' => $filetransferport,':maxserver' => $maxserver,':maxslots' => $maxslots,':usedns' => $usedns,':defaultdns' => $defaultdns,':defaultwelcome' => $defaultwelcome,':defaulthostbanner_url' => $defaulthostbanner_url,':defaulthostbanner_gfx_url' => $defaulthostbanner_gfx_url,':defaulthostbutton_tooltip' => $defaulthostbutton_tooltip,':defaulthostbutton_url' => $defaulthostbutton_url,':defaulthostbutton_gfx_url' => $defaulthostbutton_gfx_url,':defaultFlexSlotsFree' => $defaultFlexSlotsFree,':defaultFlexSlotsPercent' => $defaultFlexSlotsPercent,':publickey' => $publickey,':ssh2ip' => $ip,':ssh2port' => $port,':ssh2user' => $user,':ssh2password' => $pass,':ips' => $ips,':serverdir' => $serverdir,':keyname' => $keyname,':autorestart' => $autorestart,':tsdnsServerID' => $tsdnsServerID,':externalDefaultDNS' => $externalDefaultDNS,':id' => $id,':reseller_id' => $reseller_id));
 
                 $rowCount = $query->rowCount();
                 $template_file = $spracheResponse->table_add;
