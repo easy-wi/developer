@@ -614,7 +614,7 @@ class AppServer {
             $script = '';
         }
 
-        $script .= 'PATTERN="valve\|overviews/\|scripts/\|media/\|particles/\|gameinfo.txt\|steam.inf\|/sound/\|steam_appid.txt\|/hl2/\|/overviews/\|/resource/\|/sprites/"' . "\n";
+        $script .= "PATTERN='(valve|overviews\/|scripts\/\|media\/\|particles\/\|gameinfo.txt\|steam.inf\/|\/sound\/|steam_appid.txt\/|\/hl2\/\/|\/overviews\/\/|\/resource\/\/|\/sprites\/)'" . "\n";
 
         foreach ($templates as $template) {
 
@@ -629,7 +629,7 @@ class AppServer {
                 $script .= $this->copyStartFile($absoluteSourceTemplatePath, $absoluteTargetTemplatePath);
             }
 
-            $script .= 'FDLFILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v "$PATTERN"`)' . "\n";
+            $script .= 'FDLFILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v -E "$PATTERN"`)' . "\n";
             $script .= 'for FILTEREDFILES in ${FDLFILEFOUND[@]}; do' . "\n";
             $script .= 'FOLDERNAME=`dirname "$FILTEREDFILES"`' . "\n";
             $script .= 'if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "' . $absoluteTargetTemplatePath . '$FOLDERNAME" ]]); then mkdir -p "' . $absoluteTargetTemplatePath . '$FOLDERNAME"; fi' . "\n";
