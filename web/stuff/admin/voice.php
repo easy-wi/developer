@@ -178,6 +178,9 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
     if (count($errors) == 0 and ($ui->st('action', 'post') == 'md' or $ui->st('action', 'post') == 'ad') and isset($masterServerData)) {
 
+        $iniConfigurationMaster = array();
+        $iniConfiguration = array();
+
         if ($ui->st('action', 'post') == 'ad') {
             if (!$userID) {
 
@@ -265,17 +268,39 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
         // Submitted values are OK
         if (count($errors) == 0) {
 
+            $iniConfigurationMaster = array();
+            $iniConfiguration = array();
+            $customConfigurations = array();
+
+            $iniConfigurationMaster = @parse_ini_string($masterServerData['iniConfiguration'], true, INI_SCANNER_RAW);
+
+            foreach ($iniConfigurationMaster as $groupName => $array) {
+
+                $groupNameSelect = $ui->escaped(str_replace(' ', '', $groupName), 'post');
+
+                if ($groupNameSelect and isset($iniConfigurationMaster[$groupName][$groupNameSelect])) {
+                    $iniConfiguration[$groupName] = $groupNameSelect;
+                } else {
+                    reset($iniConfigurationMaster[$groupName]);
+                    $iniConfiguration[$groupName] = key($iniConfigurationMaster[$groupName]);
+                }
+
+                $customConfigurations[] = $iniConfiguration[$groupName];
+            }
+
+            $iniConfiguration = @json_encode($iniConfiguration);
+
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $localServerID = $connection->AddServer($slots, $ip, $port, $initialpassword, $name, array($forcewelcome, $welcome), $max_download_total_bandwidth, $max_upload_total_bandwidth, array($forcebanner, $hostbanner_url), $hostbanner_gfx_url, array($forcebutton, $hostbutton_url), $hostbutton_gfx_url, $hostbutton_tooltip);
+                $localServerID = $connection->AddServer($slots, $ip, $port, $initialpassword, $name, array($forcewelcome, $welcome), $max_download_total_bandwidth, $max_upload_total_bandwidth, array($forcebanner, $hostbanner_url), $hostbanner_gfx_url, array($forcebutton, $hostbutton_url), $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations);
 
                 if (isid($localServerID, 255)) {
 
                     $username = strtolower(getusername($userID));
 
-                    $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
-                    $query->execute(array($active, $backup, $lendserver, $userID, $rootID, $ip, $port, $slots, $initialpassword, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $localServerID, $dns, $maxtraffic, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $autoRestart, $externalID, $resellerLockupID));
+                    $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`iniConfiguration`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
+                    $query->execute(array($active, $iniConfiguration, $backup, $lendserver, $userID, $rootID, $ip, $port, $slots, $initialpassword, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $localServerID, $dns, $maxtraffic, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $autoRestart, $externalID, $resellerLockupID));
                     $rowCount = $query->rowCount();
 
                     $id = $sql->lastInsertId();
@@ -288,11 +313,11 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `voice_server` SET `active`=?,`backup`=?,`lendserver`=?,`ip`=?,`port`=?,`slots`=?,`password`=?,`forcebanner`=?,`forcebutton`=?,`forceservertag`=?,`forcewelcome`=?,`max_download_total_bandwidth`=?,`max_upload_total_bandwidth`=?,`dns`=?,`flexSlots`=?,`flexSlotsFree`=?,`flexSlotsPercent`=?,`maxtraffic`=?,`autoRestart`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $backup, $lendserver, $ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $dns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $maxtraffic, $autoRestart, $externalID, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `voice_server` SET `active`=?,`iniConfiguration`=?,`backup`=?,`lendserver`=?,`ip`=?,`port`=?,`slots`=?,`password`=?,`forcebanner`=?,`forcebutton`=?,`forceservertag`=?,`forcewelcome`=?,`max_download_total_bandwidth`=?,`max_upload_total_bandwidth`=?,`dns`=?,`flexSlots`=?,`flexSlotsFree`=?,`flexSlotsPercent`=?,`maxtraffic`=?,`autoRestart`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active, $iniConfiguration, $backup, $lendserver, $ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $dns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $maxtraffic, $autoRestart, $externalID, $id, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
-                $return = $connection->ModServer($localServerID, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip);
+                $return = $connection->ModServer($localServerID, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations);
 
                 if (isset($return[0]['msg']) and $return[0]['msg'] == 'ok') {
                     $rowCount++;
