@@ -62,6 +62,19 @@
     <div class="controls"><input class="form-control" id="inputHostButtonGFXUrl" type="text" name="hostbutton_gfx_url" value="<?php echo $hostbutton_gfx_url; ?>"></div>
 </div>
 
+<?php foreach($iniConfigurationMaster as $groupName => $array) { ?>
+<div class="form-group">
+    <label for="input<?php echo str_replace(' ', '', $groupName);?>"><?php echo $groupName;?></label>
+    <div class="controls">
+        <select class="form-control" id="input<?php echo str_replace(' ', '', $groupName);?>" name="<?php echo str_replace(' ', '', $groupName);?>">
+            <?php foreach($array as $key => $value) { ?>
+            <?php echo ($iniConfigurationServer->$groupName == $key) ? '<option value="' . $key . '" selected="selected">' . $value . '</option>' : '<option value="' . $key . '">' . $value . '</option>'; ?>
+            <?php } ?>
+        </select>
+    </div>
+</div>
+<?php } ?>
+
 <div class="form-group">
     <label for="inputFlexSlots"><?php echo $sprache->flexSlots;?></label>
     <div class="controls">

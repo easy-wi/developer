@@ -127,6 +127,19 @@
                             <label for="virtualserver_antiflood_points_needed_ip_block"><?php echo $sprache->virtualserver_antiflood_points_needed_ip_block;?></label>
                             <input class="form-control" id="virtualserver_antiflood_points_needed_ip_block" type="text" name="virtualserver_antiflood_points_needed_ip_block" value="<?php echo $virtualserver_antiflood_points_needed_ip_block;?>">
                         </div>
+
+                        <?php foreach($iniConfigurationMaster as $groupName => $array) { ?>
+                        <div class="form-group">
+                            <label for="input<?php echo str_replace(' ', '', $groupName);?>"><?php echo $groupName;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="input<?php echo str_replace(' ', '', $groupName);?>" name="<?php echo str_replace(' ', '', $groupName);?>">
+                                    <?php foreach($array as $key => $value) { ?>
+                                    <?php echo ($iniConfigurationServer->$groupName == $key) ? '<option value="' . $key . '" selected="selected">' . $value . '</option>' : '<option value="' . $key . '">' . $value . '</option>'; ?>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?php } ?>
                     </div>
 
                     <div class="box-footer">
