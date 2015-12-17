@@ -457,12 +457,15 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id', 10, 'get') and (!isset($_SESSION['sID']) or in_array($ui->id('id', 10, 'get'), $substituteAccess['vo']))) {
 
     $id = (int) $ui->id('id', 10, 'get');
+    $iniConfigurationMaster = array();
+    $iniConfigurationServer = new stdClass();
 
     if (!$ui->smallletters('action', 2, 'post')) {
 
         $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $user_id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             $masterserver = $row['masterserver'];
             $ip = $row['ip'];
             $port = $row['port'];
@@ -475,11 +478,14 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $dns = $row['dns'];
             $active = $row['active'];
             $password = $row['password'];
+            $iniConfigurationServer = @json_decode($row['iniConfiguration']);
 
             if ($active == 'Y') {
+
                 $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,?) AS `decryptedquerypassword`  FROM `voice_masterserver` WHERE `id`=? AND (`resellerid`=? OR (`managedServer`='Y' AND `managedForID`=?)) LIMIT 1");
                 $query2->execute(array($aeskey, $row['masterserver'], $reseller_id, $reseller_id));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
                     $resellerToUse = $row2['resellerid'];
                     $masteractive = $row2['active'];
                     $usedns = $row2['usedns'];
@@ -489,6 +495,8 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     $addedby = $row2['addedby'];
                     $externalDefaultDNS = $row2['externalDefaultDNS'];
                     $tsdnsServerID = $row2['tsdnsServerID'];
+                    $iniConfigurationMaster = @parse_ini_string($row2['iniConfiguration'], true, INI_SCANNER_RAW);
+
                     if ($addedby == 2) {
                         $queryip = $row2['ssh2ip'];
                     } else if ($addedby == 1) {
@@ -518,7 +526,9 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $errorcode = $connection->errorcode;
 
             if (strpos($errorcode,'error id=0') === false) {
+
                 $template_file = $spracheResponse->error_ts_query_connect . $errorcode."<br />";
+
             } else {
 
                 $serverdetails = $connection->ServerDetails($localserverid);
@@ -539,7 +549,13 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $virtualserver_needed_identity_security_level = $serverdetails['virtualserver_needed_identity_security_level'];
                 $virtualserver_reserved_slots = $serverdetails['virtualserver_reserved_slots'];
             }
+
             $connection->CloseConnection();
+
+            if ($iniConfigurationMaster === false) {
+                $iniConfigurationMaster = array();
+            }
+
             $template_file = 'userpanel_voiceserver_md.tpl';
 
         } else {
@@ -551,7 +567,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         unset ($active);
         $errors = array();
 
-        $query = $sql->prepare("SELECT `active`,`ip`,`port`,`slots`,`dns`,`masterserver`,`localserverid`,`password`,`forceservertag`,`forcebanner`,`forcebutton`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth` FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `userid`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $user_id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $active = $row['active'];
@@ -569,6 +585,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
             $localserverid = $row['localserverid'];
             $max_download_total_bandwidth = $row['max_download_total_bandwidth'];
             $max_upload_total_bandwidth = $row['max_upload_total_bandwidth'];
+            $iniConfigurationServer = @json_decode($row['iniConfiguration']);
         }
 
         if (isset($active) and $active == 'Y') {
@@ -587,8 +604,10 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $mnotified = $row['notified'];
                 $tsdnsServerID = $row['tsdnsServerID'];
                 $externalDefaultDNS = $row['externalDefaultDNS'];
+                $iniConfigurationMaster = @parse_ini_string($row['iniConfiguration'], true, INI_SCANNER_RAW);
 
                 if ($addedby == 2) {
+
                     $publickey = $row['publickey'];
                     $queryip = $row['ssh2ip'];
                     $ssh2port = $row['decryptedssh2port'];
@@ -596,6 +615,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     $ssh2password = $row['decryptedssh2password'];
                     $keyname = $row['keyname'];
                     $bitversion = $row['bitversion'];
+
                 } else if ($addedby == 1) {
                     $query2 = $sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                     $query2->execute(array($row['rootid'], $resellerToUse));
@@ -643,16 +663,36 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
             if (count($errors) == 0) {
 
+                $customConfigurations = array();
+
                 $initialpassword = $ui->password('initialpassword',50, 'post');
                 $name = $ui->post['name'];
+
+                foreach ($iniConfigurationMaster as $groupName => $array) {
+
+                    $groupNameSelect = $ui->escaped(str_replace(' ', '', $groupName), 'post');
+
+                    if ($groupNameSelect and isset($iniConfigurationMaster[$groupName][$groupNameSelect])) {
+                        $iniConfiguration[$groupName] = $groupNameSelect;
+                    } else {
+                        reset($iniConfigurationMaster[$groupName]);
+                        $iniConfiguration[$groupName] = key($iniConfigurationMaster[$groupName]);
+                    }
+
+                    $customConfigurations[] = $iniConfiguration[$groupName];
+                }
+
+                $iniConfiguration = @json_encode($iniConfiguration);
 
                 $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
                 $errorcode = $connection->errorcode;
 
                 if (strpos($errorcode,'error id=0') === false) {
+
                     $template_file = $spracheResponse->error_ts_query_connect . $errorcode;
 
                 } else {
+
                     $serverdetails = $connection->ServerDetails($localserverid);
 
                     if ($forceservertag == 'Y' and isset($brandname) and $brandname != '' and strpos(strtolower($name), strtolower($brandname)) === false) {
@@ -688,14 +728,14 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                     $virtualserver_needed_identity_security_level = $ui->id('virtualserver_needed_identity_security_level',255, 'post');
                     $virtualserver_reserved_slots = ($ui->id('virtualserver_reserved_slots',4, 'post') and $ui->id('virtualserver_reserved_slots',4, 'post') < $slots) ? $ui->id('virtualserver_reserved_slots',4, 'post') : 0;
 
-                    $mod = $connection->ModServer($localserverid, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $virtualserver_reserved_slots, $virtualserver_needed_identity_security_level, $virtualserver_hostmessage_mode, $virtualserver_hostbanner_gfx_interval, $virtualserver_antiflood_points_tick_reduce, $virtualserver_antiflood_points_needed_command_block, $virtualserver_antiflood_points_needed_ip_block);
+                    $mod = $connection->ModServer($localserverid, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $virtualserver_reserved_slots, $virtualserver_needed_identity_security_level, $virtualserver_hostmessage_mode, $virtualserver_hostbanner_gfx_interval, $virtualserver_antiflood_points_tick_reduce, $virtualserver_antiflood_points_needed_command_block, $virtualserver_antiflood_points_needed_ip_block, $customConfigurations);
                     $template_file = $spracheResponse->table_add . '<br />' . $spracheResponse->ts_query_success . $mod[0]['msg'];
                 }
 
                 $connection->CloseConnection();
 
-                $query = $sql->prepare("UPDATE `voice_server` SET `dns`=?,`initialpassword`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($dns, $initialpassword, $id, $reseller_id));
+                $query = $sql->prepare("UPDATE `voice_server` SET `dns`=?,`initialpassword`=?,`iniConfiguration`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($dns, $initialpassword, $iniConfiguration, $id, $reseller_id));
 
                 $loguseraction = '%mod% %voserver% ' . $ip . ':' . $port;
                 $insertlog->execute();

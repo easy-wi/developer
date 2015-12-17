@@ -43,20 +43,22 @@ if (!defined('AJAXINCLUDED')) {
 
 $sprache = getlanguagefile('voice', $user_language, $reseller_id);
 
-if ($ui->id('id', 10, 'get')) {
+$currentIP = '';
+$dns = '';
+$name = '';
+$welcome = '';
+$hostbanner_url = '';
+$hostbanner_gfx_url = '';
+$hostbutton_tooltip = '';
+$hostbutton_url = '';
+$hostbutton_gfx_url = '';
+$flexSlots = '';
+$flexSlotsFree = '';
+$flexSlotsPercent = '';
+$iniConfigurationMaster = array();
+$iniConfigurationServer = new stdClass();
 
-    $currentIP = '';
-    $dns = '';
-    $name = '';
-    $welcome = '';
-    $hostbanner_url = '';
-    $hostbanner_gfx_url = '';
-    $hostbutton_tooltip = '';
-    $hostbutton_url = '';
-    $hostbutton_gfx_url = '';
-    $flexSlots = '';
-    $flexSlotsFree = '';
-    $flexSlotsPercent = '';
+if ($ui->id('id', 10, 'get')) {
 
     $query = $sql->prepare("SELECT m.*,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`active`='Y' AND (m.`resellerid`=? OR m.`managedForID`=?) GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL)) LIMIT 1");
     $query->execute(array($aeskey, $ui->id('id', 10, 'get'), $resellerLockupID, $admin_id));
@@ -87,11 +89,13 @@ if ($ui->id('id', 10, 'get')) {
         $hostbutton_gfx_url = $row['defaulthostbutton_gfx_url'];
         $flexSlotsFree = $row['defaultFlexSlotsFree'];
         $flexSlotsPercent = $row['defaultFlexSlotsPercent'];
+
+        $iniConfigurationMaster = @parse_ini_string($row['iniConfiguration'], true, INI_SCANNER_RAW);
    }
 
     if ($ui->id('serverID', 10, 'get') and isset($masterServerData)) {
 
-        $query = $sql->prepare("SELECT `localserverid`,`ip`,`dns`,`flexSlots`,`flexSlotsPercent`,`flexSlotsFree` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `localserverid`,`ip`,`dns`,`flexSlots`,`flexSlotsPercent`,`flexSlotsFree`,`iniConfiguration` FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($ui->id('serverID', 10, 'get'), $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $localID = $row['localserverid'];
@@ -100,6 +104,7 @@ if ($ui->id('id', 10, 'get')) {
             $flexSlots = $row['flexSlots'];
             $flexSlotsPercent = $row['flexSlotsPercent'];
             $flexSlotsFree = $row['flexSlotsFree'];
+            $iniConfigurationServer = @json_decode($row['iniConfiguration']);
         }
 
         $connection = new TS3($masterServerData['ssh2ip'], $masterServerData['queryport'], 'serveradmin', $masterServerData['decryptedquerypassword']);

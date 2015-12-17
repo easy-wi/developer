@@ -192,12 +192,16 @@ class TS3 {
         return $this->ReplaceFromTS3($this->SendCommand('use ' . $virtualserver_id));
     }
 
-    public function AddServer ($maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip) {
+    public function AddServer ($maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $customConfigurations = array()) {
 
         #." virtualserver_ip=".$ip
         $addcommand="servercreate virtualserver_maxclients=".$maxclients." virtualserver_port=".$port." virtualserver_password=".$password." virtualserver_name=".$this->ReplaceToTS3($name)." virtualserver_welcomemessage=".$this->ReplaceToTS3($message[1]);
         $addcommand .=" virtualserver_max_download_total_bandwidth=".$download." virtualserver_max_upload_total_bandwidth=".$upload." virtualserver_hostbanner_url=".$banner_url[1]." virtualserver_hostbanner_gfx_url=".$banner_gfx;
         $addcommand .=" virtualserver_hostbutton_url=".$button_url[1]." virtualserver_hostbutton_gfx_url=".$button_gfx." virtualserver_hostbutton_tooltip=".$this->ReplaceToTS3($tooltip);
+
+        foreach ($customConfigurations as $config) {
+            $addcommand .= ' ' . $config;
+        }
 
         @fputs($this->socket, $addcommand . "\n");
 
@@ -300,7 +304,7 @@ class TS3 {
 
     }
 
-    public function ModServer ($virtualserver_id, $maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $virtualserver_reserved_slots = null, $virtualserver_needed_identity_security_level=null, $virtualserver_hostmessage_mode=null, $virtualserver_hostbanner_gfx_interval=null, $virtualserver_antiflood_points_tick_reduce=null, $virtualserver_antiflood_points_needed_command_block=null, $virtualserver_antiflood_points_needed_ip_block=null) {
+    public function ModServer ($virtualserver_id, $maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $virtualserver_reserved_slots = null, $virtualserver_needed_identity_security_level=null, $virtualserver_hostmessage_mode=null, $virtualserver_hostbanner_gfx_interval=null, $virtualserver_antiflood_points_tick_reduce=null, $virtualserver_antiflood_points_needed_command_block=null, $virtualserver_antiflood_points_needed_ip_block=null, $customConfigurations = array()) {
 
         $useserver = $this->UseServer($virtualserver_id);
 
@@ -357,6 +361,10 @@ class TS3 {
 
             if ($virtualserver_antiflood_points_needed_ip_block != '' and $virtualserver_antiflood_points_needed_ip_block != null) {
                 $modcommand .= ' virtualserver_antiflood_points_needed_ip_block=' . $this->ReplaceToTS3($virtualserver_antiflood_points_needed_ip_block);
+            }
+
+            foreach ($customConfigurations as $config) {
+                $modcommand .= ' ' . $config;
             }
 
             $response = $this->SendCommand($modcommand);

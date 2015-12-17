@@ -103,6 +103,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 $extraData = @json_decode($row2['extraData']);
+                $customConfigurations = array();
 
                 $query3 = $sql->prepare("SELECT * FROM `voice_server` WHERE `id`=? AND `resellerid`=? LIMIT 1");
                 $query3->execute(array($row2['affectedID'], $row2['resellerID']));
@@ -128,6 +129,13 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $max_upload_total_bandwidth = $row3['max_upload_total_bandwidth'];
                     $dns = $row3['dns'];
                     $masterserver = $row3['masterserver'];
+                    $iniConfiguration = @json_decode($row['iniConfiguration']);
+
+                    if ($iniConfiguration) {
+                        foreach ($iniConfiguration as $k => $v) {
+                            $customConfigurations[] = $v;
+                        }
+                    }
                 }
 
                 if ($row2['action'] == 'dl' and isid($localserverid, 30)) {
@@ -163,7 +171,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     } else {
 
-                        $virtualserver_id = $connection->AddServer($slots, $ip, $port, $initialpassword, $name, array('Y', $welcome), $max_download_total_bandwidth, $max_upload_total_bandwidth, array('Y', $hostbanner_url), $hostbanner_gfx_url, array('Y', $hostbutton_url), $hostbutton_gfx_url, $hostbutton_tooltip);
+                        $virtualserver_id = $connection->AddServer($slots, $ip, $port, $initialpassword, $name, array('Y', $welcome), $max_download_total_bandwidth, $max_upload_total_bandwidth, array('Y', $hostbanner_url), $hostbanner_gfx_url, array('Y', $hostbutton_url), $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations);
 
                         if (isid($virtualserver_id, 19)) {
 
@@ -225,7 +233,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $hostbutton_url = $serverdetails['virtualserver_hostbutton_url'];
                         $hostbutton_gfx_url = $serverdetails['virtualserver_hostbutton_gfx_url'];
 
-                        $connection->ModServer($localserverid, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip);
+                        $connection->ModServer($localserverid, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations);
 
                         if ($forcebanner== 'Y') {
                             $removelist[] = 'b_virtualserver_modify_hostbanner';

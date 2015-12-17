@@ -146,6 +146,8 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                 $inSQLArray = 'm.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
             }
 
+            $iniConfiguration = array();
+
             $query2 = $sql->prepare("SELECT `defaultdns` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
             $query3 = $sql->prepare("SELECT `ip`,`altips`,`connect_ip_only` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
 
@@ -171,8 +173,15 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                     $usedns = $row['usedns'];
                     $defaultdns = $row['defaultdns'];
 
+                    $iniConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
+
+                    foreach ($iniConfigurationMaster as $groupName => $array) {
+                        reset($iniConfigurationMaster[$groupName]);
+                        $iniConfiguration[$groupName] = key($iniConfigurationMaster[$groupName]);
+                    }
+
                     if ($row['externalDefaultDNS'] == 'Y' and isid($row['tsdnsServerID'], 19)) {
-                        $query2->execute(array($tsdnsServerID,$resellerID));
+                        $query2->execute(array($tsdnsServerID, $resellerID));
                         $defaultdns = $query2->fetchColumn();
                     }
 
@@ -237,8 +246,8 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                 $autoRestart = (isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
                 $initialpassword = passwordgenerate(10);
 
-                $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
-                $query->execute(array($active,$lendserver,$backup,$localUserLookupID,$hostID,$ip,$port,$slots,$initialpassword,$private,$max_download_total_bandwidth,$max_upload_total_bandwidth,$maxtraffic,$forcebanner,$forcebutton,$forceservertag,$forcewelcome,$externalServerID,$flexSlots,$flexSlotsFree,$flexSlotsPercent,$autoRestart,$resellerID));
+                $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`iniConfiguration`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
+                $query->execute(array($active, $iniConfiguration, $lendserver, $backup, $localUserLookupID, $hostID, $ip, $port, $slots, $initialpassword, $private, $max_download_total_bandwidth, $max_upload_total_bandwidth, $maxtraffic, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $externalServerID, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $autoRestart, $resellerID));
 
                 $errorString = implode(', ', $query->errorInfo());
 
@@ -260,13 +269,13 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                         $dns = (isset($data['dns']) and isdomain($data['dns'])) ? $data['dns']: strtolower($localID . '.' . $defaultdns);
 
                         $query = $sql->prepare("UPDATE `voice_server` SET `dns`=? WHERE `id`=? LIMIT 1");
-                        $query->execute(array($dns,$localID));
+                        $query->execute(array($dns, $localID));
                     }
 
                     $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
-                    $query->execute(array($localID,$resellerID));
+                    $query->execute(array($localID, $resellerID));
                     $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'ad',?)");
-                    $query->execute(array($hostID,$resellerID,$localID,$localUserLookupID,$ip . ':' . $port,$resellerID));
+                    $query->execute(array($hostID, $resellerID, $localID, $localUserLookupID, $ip . ':' . $port, $resellerID));
 
                 } else {
                     $success['false'][] = 'Could not write voice server to database: ' . $errorString;
@@ -349,7 +358,7 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
             }
 
             $query = $sql->prepare("SELECT COUNT(`jobID`) AS `amount` FROM `jobs` WHERE `affectedID`=? AND `resellerID`=? AND `action`='dl' AND (`status` IS NULL OR `status`='1') LIMIT 1");
-            $query->execute(array($localID,$resellerID));
+            $query->execute(array($localID, $resellerID));
             if ($query->fetchColumn() > 0) {
                 $success['false'][] = 'Server is marked for deletion';
             }
@@ -363,7 +372,7 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                 $private = $data['private'];
             }
 
-            if (isset($data['port']) and port($data['port']) and !in_array($data['port'],$usedPorts)) {
+            if (isset($data['port']) and port($data['port']) and !in_array($data['port'], $usedPorts)) {
                 $updateArray[] = $data['port'];
                 $eventualUpdate .= ',`port`=?';
                 $port = $data['port'];
@@ -503,7 +512,7 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
         $success['false'][] = 'No data for this method';
     }
 
-} else if (!isset($success['false']) and array_value_exists('action','del',$data) and $data['shorten'] == 'ts3') {
+} else if (!isset($success['false']) and array_value_exists('action','del', $data) and $data['shorten'] == 'ts3') {
 
     $from = array('server_local_id' => 'id', 'server_external_id' => 'externalID');
 
