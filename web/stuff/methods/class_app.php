@@ -607,7 +607,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
 
-        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml');
+        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml');
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
@@ -1683,7 +1683,7 @@ class AppServer {
         $script .= 'cp -sr ' . $masterAddonFolder . '* $GAMEDIR/ > /dev/null 2>&1' . "\n";
 
         if ($type == 'addon') {
-            $script .= 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lua|json|yml)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
+            $script .= 'find -type f | grep -i -E -w \'(xml|cfg|con|conf|config|gam|ini|txt|vdf|smx|sp|ext|sma|amxx|lang|lua|json|yml)$\' | sed \'s/\.\///g\' | while read FILE; do' . "\n";
             $script .= 'FOLDER=`dirname $FILE`' . "\n";
             $script .= 'FILENAME=`basename $FILE`' . "\n";
             $script .= 'if [ ! -d $GAMEDIR/$FOLDER ]; then mkdir -p $GAMEDIR/$FOLDER/; fi' . "\n";
