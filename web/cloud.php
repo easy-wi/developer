@@ -49,7 +49,18 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
 
 set_time_limit($timelimit);
 
-if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
+include(EASYWIDIR . '/stuff/methods/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/class_ts3.php');
+include(EASYWIDIR . '/stuff/settings.php');
+include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
+include(EASYWIDIR . '/stuff/keyphrasefile.php');
+include(EASYWIDIR . '/stuff/methods/class_ftp.php');
+include(EASYWIDIR . '/stuff/methods/functions_gs.php');
+include(EASYWIDIR . '/stuff/methods/class_app.php');
+
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
     function printText ($text) {
         echo $text."\r\n";
@@ -63,17 +74,6 @@ if (!isset($ip) or $_SERVER['SERVER_ADDR'] == $ip or in_array($ip, ipstoarray($r
     }
 
     printText('Cloud jobs started');
-
-    include(EASYWIDIR . '/stuff/methods/vorlage.php');
-    include(EASYWIDIR . '/stuff/methods/functions.php');
-    include(EASYWIDIR . '/stuff/methods/class_validator.php');
-    include(EASYWIDIR . '/stuff/methods/class_ts3.php');
-    include(EASYWIDIR . '/stuff/settings.php');
-    include(EASYWIDIR . '/stuff/methods/functions_ssh_exec.php');
-    include(EASYWIDIR . '/stuff/keyphrasefile.php');
-    include(EASYWIDIR . '/stuff/methods/class_ftp.php');
-    include(EASYWIDIR . '/stuff/methods/functions_gs.php');
-    include(EASYWIDIR . '/stuff/methods/class_app.php');
 
     printText('File include and parameters fetched. Start connecting to external systems.');
 
