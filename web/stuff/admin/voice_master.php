@@ -128,13 +128,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $managedForID = $ui->id('managedForID', 10, 'post');
 
     if (!$iniConfiguration or strlen($iniConfiguration) < 2 or !@parse_ini_string($iniConfiguration, true)) {
-        $iniConfiguration = '[Channel Max Depth]
-i_channel_max_depth -1 = Unlimited
-i_channel_max_depth 1 = 1
-i_channel_max_depth 2 = 2
-i_channel_max_depth 3 = 3
-i_channel_max_depth 4 = 4
-i_channel_max_depth 5 = 5';
+        $iniConfiguration = '[Show at Global List]
+virtualserver_weblist_enabled 1 = On
+virtualserver_weblist_enabled 0 = Off';
     }
     // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
     if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {

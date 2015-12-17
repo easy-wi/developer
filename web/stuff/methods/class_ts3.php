@@ -192,6 +192,10 @@ class TS3 {
         return $this->ReplaceFromTS3($this->SendCommand('use ' . $virtualserver_id));
     }
 
+    private function iniLineToCommand($line) {
+        return ' ' . $this->ReplaceToTS3(preg_replace('/\s{1,}/', "=", $line, 1));
+    }
+
     public function AddServer ($maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $customConfigurations = array()) {
 
         #." virtualserver_ip=".$ip
@@ -200,7 +204,7 @@ class TS3 {
         $addcommand .=" virtualserver_hostbutton_url=".$button_url[1]." virtualserver_hostbutton_gfx_url=".$button_gfx." virtualserver_hostbutton_tooltip=".$this->ReplaceToTS3($tooltip);
 
         foreach ($customConfigurations as $config) {
-            $addcommand .= ' ' . $config;
+            $addcommand .= $this->iniLineToCommand($config);
         }
 
         @fputs($this->socket, $addcommand . "\n");
@@ -364,7 +368,7 @@ class TS3 {
             }
 
             foreach ($customConfigurations as $config) {
-                $modcommand .= ' ' . $config;
+                $modcommand .= $this->iniLineToCommand($config);
             }
 
             $response = $this->SendCommand($modcommand);

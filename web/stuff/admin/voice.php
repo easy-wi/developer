@@ -317,7 +317,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $query->execute(array($active, $iniConfiguration, $backup, $lendserver, $ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $dns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $maxtraffic, $autoRestart, $externalID, $id, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
-                $return = $connection->ModServer($localServerID, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations);
+                $return = $connection->ModServer($localServerID, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip, null, null, null, null, null, null, null, $customConfigurations);
 
                 if (isset($return[0]['msg']) and $return[0]['msg'] == 'ok') {
                     $rowCount++;

@@ -43,6 +43,10 @@ if (!defined('AJAXINCLUDED')) {
 
 $sprache = getlanguagefile('voice', $user_language, $reseller_id);
 
+$installedServer = 0;
+$maxServer = 0;
+$installedSlots = 0;
+$maxSlots = 0;
 $currentIP = '';
 $dns = '';
 $name = '';
@@ -60,7 +64,9 @@ $iniConfigurationServer = new stdClass();
 
 if ($ui->id('id', 10, 'get')) {
 
-    $query = $sql->prepare("SELECT m.*,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`active`='Y' AND (m.`resellerid`=? OR m.`managedForID`=?) GROUP BY m.`id` HAVING (`installedserver`<`maxserver` AND (`installedslots`<`maxslots` OR `installedslots` IS NULL)) LIMIT 1");
+    $addCount = ($ui->id('serverID', 10, 'get')) ? 1 : 0;
+
+    $query = $sql->prepare("SELECT m.*,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword`,COUNT(v.`id`)*(100/m.`maxserver`) AS `serverpercent`,SUM(v.`slots`)*(100/m.`maxslots`) AS `slotpercent`,COUNT(v.`id`) AS `installedserver`,SUM(v.`slots`) AS `installedslots`,SUM(v.`usedslots`) AS `uslots`,r.`ip`  FROM `voice_masterserver` m LEFT JOIN `rserverdata` r ON m.`rootid`=r.`id` LEFT JOIN `voice_server` v ON m.`id`=v.`masterserver` WHERE m.`id`=? AND m.`active`='Y' AND (m.`resellerid`=? OR m.`managedForID`=?) GROUP BY m.`id` HAVING (`installedserver`<(`maxserver` + $addCount) AND (`installedslots`<(`maxslots` + $addCount) OR `installedslots` IS NULL)) LIMIT 1");
     $query->execute(array($aeskey, $ui->id('id', 10, 'get'), $resellerLockupID, $admin_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
