@@ -42,7 +42,7 @@ if (isset($include) and $include == true) {
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('5.10','<div align=\"right\">27.06.2014</div>
+('5.10','<div align=\"right\">27.06.2015</div>
 <b>Änderungen:</b><br/>
 <ul>
 <li>Gameserver:
@@ -89,7 +89,7 @@ if (isset($include) and $include == true) {
 <li>Ajax Suche im Webspace Admin funktioniert nicht</li>
 <li>Userpanel Vertreter Verwaltung im Debug Modus funktioniert nicht</li>
 <li>Registrierung fehlerhaft</li>
-</ul>','<div align=\"right\">06.27.2014</div>
+</ul>','<div align=\"right\">06.27.2015</div>
 <b>Changes:</b><br/>
 <ul>
 <li>Gameserver:
