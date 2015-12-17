@@ -306,14 +306,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if (isset($gsIP)) {
 
             $query = $sql->prepare("SELECT 1 FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? AND (t.`mapGroup` IS NOT NULL OR t.`mapGroup`!='') LIMIT 1");
-            $query->execute(array($id,$resellerLockupID));
+            $query->execute(array($id, $resellerLockupID));
 
             if ($query->rowCount() > 0) {
                 $ftp = new EasyWiFTP($gsIP, $ftpPort, $ftpUser, $ftpPWD);
             }
 
-            $query = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,?) AS `dwebapiAuthkey`,t.`modfolder`,t.`description`,t.`gamebinary`,t.`shorten`,t.`modcmds`,t.`ftpAccess`,t.`appID`,t.`workShop` AS `workShopAllowed`,t.`map` AS `defaultmap`,t.`mapGroup` AS `defaultMapGroup` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
-            $query->execute(array($aeskey,$aeskey,$id,$resellerLockupID));
+            $query = $sql->prepare("SELECT s.*,AES_DECRYPT(s.`uploaddir`,?) AS `decypteduploaddir`,AES_DECRYPT(s.`webapiAuthkey`,?) AS `dwebapiAuthkey`,AES_DECRYPT(s.`steamServerToken`,?) AS `dsteamServerToken`,t.`modfolder`,t.`description`,t.`gamebinary`,t.`shorten`,t.`modcmds`,t.`ftpAccess`,t.`appID`,t.`workShop` AS `workShopAllowed`,t.`map` AS `defaultmap`,t.`mapGroup` AS `defaultMapGroup`,t.`steamGameserverToken` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
+            $query->execute(array($aeskey, $aeskey, $aeskey, $id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $eac = array();
                 $mods = array();
@@ -422,7 +422,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $map = (!in_array($row['defaultmap'], array('', null))) ? $row['map'] : null;
 
-                $table[] = array('id' => $row['id'], 'cmd' => $row['cmd'], 'fps' =>$row['fps'], 'tic' => $row['tic'], 'map' => $map, 'workShop' => $row['workShop'], 'workshopCollection' => $workshopCollection, 'webapiAuthkey' => $row['dwebapiAuthkey'], 'mapGroup' => $row['mapGroup'], 'defaultMapGroup' => $row['defaultMapGroup'], 'mapGroupsAvailable' => $mapGroupsAvailable, 'servertemplate' => $row['servertemplate'], 'userfps' => $row['userfps'], 'usertick' => $row['usertick'], 'usermap' => $row['usermap'], 'description' => $row['description'], 'option' => $option, 'gamebinary' => $row['gamebinary'], 'upload' => $upload,'uploaddir' => $uploaddir, 'anticheat' => $anticheat, 'anticheatsoft' => $anticheatsoft, 'eac' => $eac, 'shorten' => $gshorten, 'mod' => $mod, 'mods' => $mods, 'displayNone' => $displayNone, 'displayNoneBoot' => $displayNoneBoot);
+                $table[] = array('id' => $row['id'], 'cmd' => $row['cmd'], 'fps' =>$row['fps'], 'tic' => $row['tic'], 'map' => $map, 'workShop' => $row['workShop'], 'workshopCollection' => $workshopCollection, 'webapiAuthkey' => $row['dwebapiAuthkey'], 'steamGameserverToken' => $row['steamGameserverToken'], 'steamServerToken' => $row['dsteamServerToken'], 'mapGroup' => $row['mapGroup'], 'defaultMapGroup' => $row['defaultMapGroup'], 'mapGroupsAvailable' => $mapGroupsAvailable, 'servertemplate' => $row['servertemplate'], 'userfps' => $row['userfps'], 'usertick' => $row['usertick'], 'usermap' => $row['usermap'], 'description' => $row['description'], 'option' => $option, 'gamebinary' => $row['gamebinary'], 'upload' => $upload,'uploaddir' => $uploaddir, 'anticheat' => $anticheat, 'anticheatsoft' => $anticheatsoft, 'eac' => $eac, 'shorten' => $gshorten, 'mod' => $mod, 'mods' => $mods, 'displayNone' => $displayNone, 'displayNoneBoot' => $displayNoneBoot);
                 $i++;
             }
 
@@ -479,6 +479,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $workShop = ($ui->active("workShop_${switchID}", 'post')) ? $ui->active("workShop_${switchID}", 'post') : 'Y';
             $workshopCollection = $ui->id("workshopCollection_${switchID}", 10, 'post');
             $webapiAuthkey = $ui->w("webapiAuthkey_${switchID}", 32, 'post');
+            $steamServerToken = $ui->w("steamServerToken_${switchID}", 32, 'post');
 
             if ($ui->id("anticheat_${switchID}", 1, 'post')) {
 
@@ -536,8 +537,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         if (isset($anticheat)) {
-            $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`fps`=?,`tic`=?,`map`=?,`workShop`=?,`workshopCollection`=?,`mapGroup`=?,`modcmd`=?,`servertemplate`=?,`uploaddir`=AES_ENCRYPT(?,?),`webapiAuthkey`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($anticheat, $fps, $tic, $map, $workShop, $workshopCollection, $mapGroup, $modcmd, $serverTemplate, $uploaddir, $aeskey, $webapiAuthkey, $aeskey, $switchID, $resellerLockupID));
+            $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`fps`=?,`tic`=?,`map`=?,`workShop`=?,`workshopCollection`=?,`mapGroup`=?,`modcmd`=?,`servertemplate`=?,`uploaddir`=AES_ENCRYPT(?,?),`webapiAuthkey`=AES_ENCRYPT(?,?),`steamServerToken`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($anticheat, $fps, $tic, $map, $workShop, $workshopCollection, $mapGroup, $modcmd, $serverTemplate, $uploaddir, $aeskey, $webapiAuthkey, $aeskey, $steamServerToken, $aeskey, $switchID, $resellerLockupID));
 
             $updated = ($query->rowCount() > 0) ? true : false;
 

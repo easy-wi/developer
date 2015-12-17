@@ -63,6 +63,7 @@
     <startmap>Start map</startmap>
     <startmapgroup>Start map group</startmapgroup>
     <steam>Steam game</steam>
+    <steamGameserverToken>Steam Server Token</steamGameserverToken>
     <sure2>Attention! If a user has installed this addon, it will be removed from the user's account, too!</sure2>
     <sure3>Attention! The user's server with this game will also be deleted!</sure3>
     <tick>Tickrate</tick>

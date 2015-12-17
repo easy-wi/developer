@@ -231,6 +231,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="control-label" for="inputSteamGameserverToken"><?php echo $sprache->steamGameserverToken;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputSteamGameserverToken" name="steamGameserverToken">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($steamGameserverToken=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="control-label" for="inputModfolder"><?php echo $sprache->mod;?></label>
                             <div class="controls"><input class="form-control" id="inputModfolder" type="text" name="modfolder" value="<?php echo $modfolder;?>"></div>
                         </div>

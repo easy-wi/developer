@@ -83,6 +83,13 @@
                             </div>
                             <?php } ?>
 
+                            <?php if($table_row['steamGameserverToken']=='Y'){ ?>
+                            <div class="form-group">
+                                <label for="steamServerToken_<?php echo $table_row['id'];?>">Steam Server Token</label>
+                                <input class="form-control" id="steamServerToken_<?php echo $table_row['id'];?>" type="text" name="steamServerToken_<?php echo $table_row['id'];?>" value="<?php echo $table_row['steamServerToken'];?>">
+                            </div>
+                            <?php } ?>
+
                             <?php if ($table_row['upload']==true) { ?>
                             <div class="form-group">
                                 <label for="uploaddir_<?php echo $table_row['id'];?>">SourceTV Demo FTP</label>

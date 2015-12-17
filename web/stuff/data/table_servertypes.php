@@ -82,5 +82,6 @@ $defined['servertypes'] = array(
     'os' => array("Type"=>"enum('B','L','W')","Null"=>"YES","Key"=>"","Default"=>"L","Extra"=>""),
     'downloadPath' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'liveConsole' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
+    'steamGameserverToken' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"N","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );

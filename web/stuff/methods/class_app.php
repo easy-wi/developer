@@ -214,7 +214,7 @@ class AppServer {
 
         global $sql, $aeskey;
 
-        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
+        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,t.`steamGameserverToken`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey`,AES_DECRYPT(s.`steamServerToken`,:aeskey) AS `d_steamServerToken` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':appServerID' => $appServerID));
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -229,6 +229,7 @@ class AppServer {
             $this->appServerDetails['template']['binarydir'] = (string) $row['binarydir'];
             $this->appServerDetails['template']['modfolder'] = (string) $row['modfolder'];
             $this->appServerDetails['template']['modcmds'] = (string) $row['template_modcmds'];
+            $this->appServerDetails['template']['steamGameserverToken'] = (string) $row['steamGameserverToken'];
             $this->appServerDetails['template']['configedit'] = $row['configedit'];
             $this->appServerDetails['template']['copyStartBinary'] = $row['copyStartBinary'];
 
@@ -240,6 +241,7 @@ class AppServer {
             $this->appServerDetails['app']['map'] = (string) $row['map'];
             $this->appServerDetails['app']['workShop'] = (string) $row['workShop'];
             $this->appServerDetails['app']['mapGroup'] = (string) $row['mapGroup'];
+            $this->appServerDetails['app']['steamServerToken'] = (string) $row['d_steamServerToken'];
             $this->appServerDetails['app']['workshopCollection'] = (int) $row['workshopCollection'];
             $this->appServerDetails['app']['webApiAuthKey'] = (string) $row['d_webapiauthkey'];
 
@@ -257,7 +259,7 @@ class AppServer {
         return ($query->rowCount() > 0) ? true : false;
     }
 
-    private function getReplacements () {
+    private function getReplacements() {
 
         if ($this->appServerDetails['lendServer'] == 'Y') {
             $lendDetails = $this->getLendDetails();
@@ -1317,6 +1319,11 @@ class AppServer {
                 $startCommand .= ' -nodefaultmap +host_workshop_collection ' . $this->appServerDetails['app']['workshopCollection'] . ' +workshop_start_map ' . $this->appServerDetails['app']['map'] . ' -authkey ' . $this->appServerDetails['app']['webApiAuthKey'];
                 $startCommand = preg_replace('/[\s\s+]{1,}\+map[\s\s+]{1,}[\w-_!%]{1,}/', '', $startCommand);
             }
+        }
+
+        // Steam Server Token Support
+        if ($this->appServerDetails['template']['steamGameserverToken'] == 'Y' and strlen($this->appServerDetails['app']['steamServerToken']) > 0) {
+            $startCommand .= ' +sv_setsteamaccount ' . $this->appServerDetails['app']['steamServerToken'];
         }
 
         if ($this->appServerDetails['lendServer'] == 'Y') {

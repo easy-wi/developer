@@ -62,6 +62,7 @@
 	<startmap>Startmap</startmap>
     <startmapgroup>Startmapgroup</startmapgroup>
 	<steam>Steam Spil</steam>
+    <steamGameserverToken></steamGameserverToken>
 	<sure2>OBS! Hvis en bruger har installeret denne tilføjelse på det vil blive fjernet fra deres konti for!</sure2>
 	<sure3>OBS! Brugeren server med dette spil vil blive slettet for</sure3>
 	<tick>Tickrate</tick>
