@@ -651,7 +651,13 @@ class AppServer {
             $fileChmod = 640;
         }
         $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
-        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+
+        if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
+            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+        } else {
+            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+        }
+
         $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . '/ -type l -delete' . "\n";
 
         if ($standalone and isset($scriptName)) {

@@ -293,7 +293,7 @@ if (isset($include) and $include == true) {
         $response->add($error->errorInfo);
     }
 
-    require_once(EASYWIDIR . '/data/addonslist.php');
+    require_once(EASYWIDIR . '/stuff/data/addonslist.php');
 
     try {
 
