@@ -178,11 +178,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             if ($ui->id('import', 1, 'post') == 1 and $_FILES['file']['error'] == 0 and $_FILES['file']['type'] == 'text/xml') {
 
                 try {
+
                     $xml = new DOMDocument();
 
                     if (@$xml->load($_FILES['file']['tmp_name']) !== false) {
+
                         $childNodes = $xml->documentElement;
+
                         foreach ($childNodes->childNodes AS $node) {
+
                             if ($node->nodeName == 'shorten') {
                                 $shorten = $node->nodeValue;
                             }
@@ -298,7 +302,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                                 $steamGameserverToken = $node->nodeValue;
                             }
                         }
+                    } else {
+                        $errors['tmpError'] = 'PHP cannot read or parse file ' . $_FILES['file']['tmp_name'] . ' Please check your open base dir configuration regarding the temporary folder.';
                     }
+
+                    $active = '';
+
                 } catch(Exception $error) {
                     $active = '';
                 }
