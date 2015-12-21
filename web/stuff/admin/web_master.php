@@ -74,7 +74,7 @@ if ($serverType == 'N') {
 
 } else if ($serverType == 'A') {
 
-    $defaultRestartCMD = 'sudo /etc/init.d/apache reload';
+    $defaultRestartCMD = 'sudo /etc/init.d/apache2 reload';
 
 } else if ($serverType == 'L') {
 
@@ -235,7 +235,7 @@ allow_url_include=Off
        AssignUserId %user% %group%
        MaxClientsVHost 50
        NiceValue 10
-       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%/%path%"
+       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%/%path%:%vhostpath%/%user%/tmp"
        php_admin_value session.save_path "%vhostpath%/%user%/sessions"
        php_admin_value upload_tmp_dir "%vhostpath%/%user%/tmp"
        php_admin_flag allow_url_fopen Off

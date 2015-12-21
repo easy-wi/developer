@@ -70,7 +70,7 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '      fastcgi_pass unix:/var/run/php5-fpm.sock;\r\n';
             defaultVhostTemplate += '      fastcgi_index index.php;\r\n';
             defaultVhostTemplate += '      include fastcgi_params;\r\n';
-            defaultVhostTemplate += '      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%/%path%\nsession.save_path=%vhostpath%/%user%/sessions\nupload_tmp_dir=%vhostpath%/%user%/tmp\nallow_url_fopen=Off\nallow_url_include=Off\n%phpConfiguration%";\r\n';
+            defaultVhostTemplate += '      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%/%path%:%vhostpath%/%user%/tmp\nsession.save_path=%vhostpath%/%user%/sessions\nupload_tmp_dir=%vhostpath%/%user%/tmp\nallow_url_fopen=Off\nallow_url_include=Off\n%phpConfiguration%";\r\n';
             defaultVhostTemplate += '   }\r\n';
 
         } else {
@@ -85,7 +85,7 @@ function loadServerSettings (serverType, usageType) {
 
     } else if (serverType == 'A') {
 
-        defaultRestartCMD = 'sudo /etc/init.d/apache reload';
+        defaultRestartCMD = 'sudo /etc/init.d/apache2 reload';
 
         defaultVhostTemplate = '<VirtualHost *:80>\r\n';
         defaultVhostTemplate += '    ServerAdmin %email%\r\n';
@@ -101,7 +101,7 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '       AssignUserId %user% %group%\r\n';
             defaultVhostTemplate += '       MaxClientsVHost 50\r\n';
             defaultVhostTemplate += '       NiceValue 10\r\n';
-            defaultVhostTemplate += '       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%/%path%"\r\n';
+            defaultVhostTemplate += '       php_admin_value open_basedir "%vhostpath%/%user%/%htdocs%/%path%:%vhostpath%/%user%/tmp"\r\n';
             defaultVhostTemplate += '       php_admin_value session.save_path "%vhostpath%/%user%/sessions"\r\n';
             defaultVhostTemplate += '       php_admin_value upload_tmp_dir "%vhostpath%/%user%/tmp"\r\n';
             defaultVhostTemplate += '       php_admin_flag allow_url_fopen Off\r\n';

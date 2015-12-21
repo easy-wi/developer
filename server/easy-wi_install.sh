@@ -1422,7 +1422,7 @@ if [ "$INSTALL" == "EW" ]; then
         echo '       php_admin_flag display_errors off' >> $FILE_NAME_VHOST
         echo '       php_admin_flag log_errors on' >> $FILE_NAME_VHOST
         echo '       php_admin_flag mod_rewrite on' >> $FILE_NAME_VHOST
-        echo '       php_admin_value open_basedir "/home/easywi_web/htdocs/"' >> $FILE_NAME_VHOST
+        echo '       php_admin_value open_basedir "/home/easywi_web/htdocs/:/home/easywi_web/tmp"' >> $FILE_NAME_VHOST
         echo '       php_admin_value session.save_path "/home/easywi_web/session"' >> $FILE_NAME_VHOST
         echo '       php_admin_value upload_tmp_dir "/home/easywi_web/tmp"' >> $FILE_NAME_VHOST
         echo '       php_admin_value upload_max_size 32M' >> $FILE_NAME_VHOST
