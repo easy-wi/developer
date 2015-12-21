@@ -1422,11 +1422,25 @@ class AppServer {
         $script .= '${IONICE}find -L ' . $serverDir . ' -type l -delete' . "\n";
 
         if ($this->appServerDetails['protectionModeStarted'] == 'Y') {
+
             $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod 750' . "\n";
-            $script .= '${IONICE}nice -n +19 ' . $serverDir . ' -type f -print0 | xargs -0 chmod 640' . "\n";
+
+            if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod 750' . "\n";
+            } else {
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 640' . "\n";
+            }
+
         } else {
+
             $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod 700' . "\n";
-            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
+
+            if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod 700' . "\n";
+            } else {
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
+            }
+
             $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete' . "\n";
             $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name \"*.bz2\" -delete' . "\n";
         }
