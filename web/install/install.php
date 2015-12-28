@@ -76,7 +76,7 @@ if ($currentStep == 0) {
     $licencecode = cleanFsockOpenRequest($licencecode, '{', '}');
     $json = @json_decode($licencecode);
 
-    if (!$json or !property_exists($json, 'v') or '5.10' == $json->v) {
+    if (!$json or !property_exists($json, 'v') or '5.20' == $json->v) {
         $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
     } else {
         $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://easy-wi.com/uk/downloads/' target='_blank'>{$json->v}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
@@ -759,7 +759,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `traffic_settings` (`id`,`type`) VALUES (1,'mysql') ON DUPLICATE KEY UPDATE `type`=`type`");
             $query->execute();
 
-            $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'5.10','','') ON DUPLICATE KEY UPDATE `id`=`id`");
+            $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'5.20','','') ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
 
             $query = $sql->prepare("INSERT INTO `page_pages` (`id`,`authorid`,`type`) VALUES (1,0,'about') ON DUPLICATE KEY UPDATE `id`=`id`");

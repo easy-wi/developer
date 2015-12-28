@@ -98,7 +98,7 @@ function checkInstall {
     fi
 }
 
-INSTALLER_VERSION="1.1"
+INSTALLER_VERSION="1.2"
 OS=""
 USERADD=`which useradd`
 USERMOD=`which usermod`
@@ -136,7 +136,7 @@ fi
 if [ -f /etc/debian_version ]; then
 
     cyanMessage " "
-    okAndSleep "Update the system packages to the latest version?"
+    okAndSleep "Update the system packages to the latest version? Required, as otherwise dependencies might brake!"
 
     OPTIONS=("Yes" "Quit")
     select UPDATE_UPGRADE_SYSTEM in "${OPTIONS[@]}"; do

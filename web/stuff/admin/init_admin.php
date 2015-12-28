@@ -51,7 +51,7 @@ if (!isanyadmin($admin_id) and count($pa) == 0) {
     redirect('login.php');
 }
 
-$ewVersions['files'] = '5.10';
+$ewVersions['files'] = '5.20';
 
 $vcsprache = getlanguagefile('versioncheck', $user_language, $reseller_id);
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");

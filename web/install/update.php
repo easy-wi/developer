@@ -254,6 +254,9 @@ if (versioncheck($version, '5.00', 'update_440-500.php', $response)) {
 if (versioncheck($version, '5.10', 'update_500-510.php', $response)) {
     $version = '5.10';
 }
+if (versioncheck($version, '5.20', 'update_510-520.php', $response)) {
+    $version = '5.20';
+}
 
 $response->add('Repairing tables if needed.');
 $tables->correctExistingTables();
