@@ -41,6 +41,20 @@ if (isset($include) and $include == true) {
 
     include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
+    if (!isset($tables)) {
+
+        require_once(EASYWIDIR . '/stuff/methods/class_tables.php');
+
+        if (!isset($dbConnect['db'])) {
+
+            include(EASYWIDIR . '/stuff/config.php');
+
+            $dbConnect['db'] = $db;
+        }
+
+        $tables = new Tables($dbConnect['db']);
+    }
+
     // Execute correct, so we can update game templates
     $tables->correctExistingTables();
 

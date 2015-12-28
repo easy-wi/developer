@@ -55,6 +55,8 @@ class Tables {
         $this->dbName = $dbName;
         $this->sql = $sql;
 
+        $this->sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
         $this->getTableDefinitions();
         $this->getTablesColumnConfigurations();
     }
@@ -124,8 +126,10 @@ class Tables {
         $this->executedSql[] = $sqlStatement;
 
         try {
+
             $query = $this->sql->prepare($sqlStatement);
             $query->execute();
+
         } catch(PDOException $error) {
             $this->errors[] = 'Error Message: ' . $error->getMessage() . ' Executed SQL was: ' . $sqlStatement;
         }
