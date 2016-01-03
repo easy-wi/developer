@@ -47,9 +47,12 @@ class EasyWiFTP {
         $this->ftpConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 5) :  @ftp_ssl_connect($ip, $port, 5);
 
         if ($this->ftpConnection) {
+
             $ftpLogin = @ftp_login($this->ftpConnection, $user, $pwd);
 
             if ($ftpLogin) {
+
+                @ftp_pasv($this->ftpConnection, true);
 
                 $this->loggedIn = true;
 

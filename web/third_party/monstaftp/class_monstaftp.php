@@ -144,6 +144,8 @@ class Monsta {
 
             if (@ftp_login ($this->ftpConnection, $this->ftpUser, $this->ftpPass)) {
 
+                @ftp_pasv($this->ftpConnection, true);
+
                 $this->loggedIn = true;
 
                 return true;
@@ -152,7 +154,6 @@ class Monsta {
 
                 global $lang_cant_authenticate;
                 return $lang_cant_authenticate;
-
             }
         }
 
