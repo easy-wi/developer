@@ -687,7 +687,7 @@ $gameImages = array(
         ':gameq' => 'csgo',
         ':gamemod' => 'N',
         ':gamemod2' => null,
-        ':configs' => "cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes_server.txt\r\ncfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ncfg/gamemode_armsrace.cfg\r\ncfg/gamemode_casual.cfg\r\ncfg/gamemode_competitive.cfg\r\ncfg/gamemode_custom.cfg\r\ncfg/gamemode_deathmatch.cfg\r\ncfg/gamemode_demolition.cfg\r\ncfg/gamemode_training.cfg",
+        ':configs' => "cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes_server.txt\r\ncfg/gamemode_armsrace.cfg\r\ncfg/gamemode_casual.cfg\r\ncfg/gamemode_competitive.cfg\r\ncfg/gamemode_custom.cfg\r\ncfg/gamemode_deathmatch.cfg\r\ncfg/gamemode_demolition.cfg\r\ncfg/gamemode_training.cfg",
         ':configedit' => null,
         ':portStep' => 10,
         ':portMax' => 3,
@@ -724,7 +724,7 @@ $gameImages = array(
         ':gameq' => 'nmrih',
         ':gamemod' => 'N',
         ':gamemod2' => null,
-        ':configs' => "cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes_server.txt\r\ncfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ncfg/gamemode_armsrace.cfg\r\ncfg/gamemode_casual.cfg\r\ncfg/gamemode_competitive.cfg\r\ncfg/gamemode_custom.cfg\r\ncfg/gamemode_deathmatch.cfg\r\ncfg/gamemode_demolition.cfg\r\ncfg/gamemode_training.cfg",
+        ':configs' => "cfg/server.cfg both\r\ncfg/autoexec.cfg both\r\ngamemodes_server.txt\r\ncfg/gamemode_armsrace.cfg\r\ncfg/gamemode_casual.cfg\r\ncfg/gamemode_competitive.cfg\r\ncfg/gamemode_custom.cfg\r\ncfg/gamemode_deathmatch.cfg\r\ncfg/gamemode_demolition.cfg\r\ncfg/gamemode_training.cfg",
         ':configedit' => null,
         ':portStep' => 10,
         ':portMax' => 4,
@@ -1405,7 +1405,8 @@ $gameImages = array(
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
         ':os' => 'L',
-        ':copyStartBinary' => 'N'
+        ':copyStartBinary' => 'N',
+        ':steamGameserverToken' => 'N'
     ),
     array(
         ':steamgame' => 'S',
@@ -1441,7 +1442,8 @@ $gameImages = array(
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'N',
         ':os' => 'L',
-        ':copyStartBinary' => 'Y'
+        ':copyStartBinary' => 'Y',
+        ':steamGameserverToken' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1477,7 +1479,8 @@ $gameImages = array(
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
         ':os' => 'L',
-        ':copyStartBinary' => 'N'
+        ':copyStartBinary' => 'N',
+        ':steamGameserverToken' => 'N'
     ),
     array(
         ':steamgame' => 'N',
@@ -1513,6 +1516,7 @@ $gameImages = array(
         ':protectedSaveCFGs' => null,
         ':ramLimited' => 'Y',
         ':os' => 'L',
-        ':copyStartBinary' => 'N'
+        ':copyStartBinary' => 'N',
+        ':steamGameserverToken' => 'N'
     )
 );
