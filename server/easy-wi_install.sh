@@ -294,7 +294,7 @@ fi
 # If we need to install and configure a webspace than we need to identify the groupID
 if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
 
-    WEBGROUPID=`id -g www-data 2> /dev/null`
+    WEBGROUPID=`getent group www-data | awk -F ':' '{print $3}'`
 
     if [ "$INSTALL" == "EW" ]; then
         OPTION="Yes"
@@ -317,11 +317,11 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         cyanMessage "Please name the group you want to use as webservergroup"
         read WEBGROUP
 
-        WEBGROUPID=`id -g $WEBGROUP 2> /dev/null`
+        WEBGROUPID=`getent group $WEBGROUP | awk -F ':' '{print $3}'`
 
         if [ "$WEBGROUPID" == "" ]; then
             $GROUPADD $WEBGROUP
-            WEBGROUPID=`id -g $WEBGROUP 2> /dev/null`
+            WEBGROUPID=`getent group $WEBGROUP | awk -F ':' '{print $3}'`
         fi
     fi
 
@@ -362,7 +362,7 @@ if [ "$INSTALL" != "MY" ]; then
             $USERMOD -g $WEBGROUPID $MASTERUSER
         else
 
-            if [ "`id -g $MASTERUSER 2> /dev/null`" == "" ]; then
+            if [ "`getent group $MASTERUSER`" == "" ]; then
                 $GROUPADD $MASTERUSER
             fi
 
