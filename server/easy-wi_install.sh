@@ -1073,34 +1073,49 @@ if [ "$INSTALL" == "GS" -o  "$INSTALL" == "WR" ]; then
 
     checkInstall sudo
 
-    if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers`" == "" ]; then
-
+    if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers | grep $USERADD`" == "" ]; then
         echo "$MASTERUSER ALL = NOPASSWD: $USERADD" >> /etc/sudoers
-        echo "$MASTERUSER ALL = NOPASSWD: $USERMOD" >> /etc/sudoers
-        echo "$MASTERUSER ALL = NOPASSWD: $USERDEL" >> /etc/sudoers
+    fi
 
-        if [ "$QUOTAINSTALL" == "Yes" ]; then
+    if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers | grep $USERMOD`" == "" ]; then
+        echo "$MASTERUSER ALL = NOPASSWD: $USERMOD" >> /etc/sudoers
+    fi
+
+    if [ -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers | grep $USERDEL`" == "" ]; then
+        echo "$MASTERUSER ALL = NOPASSWD: $USERDEL" >> /etc/sudoers
+    fi
+
+    if [ "$QUOTAINSTALL" == "Yes" -a -f /etc/sudoers ]; then
+        if [ "`grep $MASTERUSER /etc/sudoers | grep setquota`" == "" ]; then
             echo "$MASTERUSER ALL = NOPASSWD: `which setquota`" >> /etc/sudoers
+        fi
+
+        if [ "`grep $MASTERUSER /etc/sudoers | grep repquota`" == "" ]; then
             echo "$MASTERUSER ALL = NOPASSWD: `which repquota`" >> /etc/sudoers
         fi
+    fi
 
-        if [ "$INSTALL" == "GS" ]; then
-            echo "$MASTERUSER ALL = (ALL, !root:easywi) NOPASSWD: /home/$MASTERUSER/temp/*.sh" >> /etc/sudoers
-        fi
+    if [ "$INSTALL" == "GS" -a -f /etc/sudoers -a "`grep $MASTERUSER /etc/sudoers | grep temp`" == "" ]; then
+        echo "$MASTERUSER ALL = (ALL, !root:easywi) NOPASSWD: /home/$MASTERUSER/temp/*.sh" >> /etc/sudoers
+    fi
 
-        if [ "$WEBSERVER" == "Nginx" ]; then
-            HTTPDBIN=`which nginx`
-            HTTPDSCRIPT="/etc/init.d/nginx"
-        elif [ "$WEBSERVER" == "Lighttpd" ]; then
-            HTTPDBIN=`which lighttpd`
-            HTTPDSCRIPT="/etc/init.d/lighttpd"
-        elif [ "$WEBSERVER" == "Apache" ]; then
-            HTTPDBIN=`which apache2`
-            HTTPDSCRIPT="/etc/init.d/apache2"
-        fi
+    if [ "$WEBSERVER" == "Nginx" ]; then
+        HTTPDBIN=`which nginx`
+        HTTPDSCRIPT="/etc/init.d/nginx"
+    elif [ "$WEBSERVER" == "Lighttpd" ]; then
+        HTTPDBIN=`which lighttpd`
+        HTTPDSCRIPT="/etc/init.d/lighttpd"
+    elif [ "$WEBSERVER" == "Apache" ]; then
+        HTTPDBIN=`which apache2`
+        HTTPDSCRIPT="/etc/init.d/apache2"
+    fi
 
-        if [ "$HTTPDBIN" != "" ]; then
+    if [ "$HTTPDBIN" != "" -a -f /etc/sudoers ]; then
+        if [ "`grep $MASTERUSER /etc/sudoers | grep $HTTPDBIN`" == "" ]; then
             echo "$MASTERUSER ALL = NOPASSWD: $HTTPDBIN" >> /etc/sudoers
+        fi
+
+        if [ "`grep $MASTERUSER /etc/sudoers | grep $HTTPDSCRIPT`" == "" ]; then
             echo "$MASTERUSER ALL = NOPASSWD: $HTTPDSCRIPT" >> /etc/sudoers
         fi
     fi
