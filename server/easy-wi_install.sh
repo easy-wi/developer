@@ -845,7 +845,31 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
     <Limit RNFR RNTO STOR DELE MKD RMD>
         AllowAll
     </Limit>
-</Directory> 
+</Directory>
+<Directory ~/server/*/arma3*/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
+</Directory>
+<Directory ~/server/*/rust*/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
+</Directory>
+<Directory ~/server/*/spigot*/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
+</Directory>
+<Directory ~/server/*/hexxit*/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
+</Directory>
 <Directory ~/*/*/>
     HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
     PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
