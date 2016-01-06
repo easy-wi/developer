@@ -1088,7 +1088,7 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
 
         okAndSleep "Activating Apache mod_rewrite module."
         a2enmod rewrite
-        a2enmod version
+        a2enmod version 2> /dev/null
     fi
 
     #TODO: Logrotate
