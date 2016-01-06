@@ -600,6 +600,8 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
             else
                 echo "bind-address = $LOCAL_IP" >> /etc/mysql/my.cnf
             fi
+
+            /etc/init.d/mysql restart
         fi
     fi
 
