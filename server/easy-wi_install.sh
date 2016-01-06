@@ -172,14 +172,11 @@ fi
 cyanMessage " "
 cyanMessage "What shall be installed/prepared?"
 
-OPTIONS=("Gameserver Root" "Voicemaster" "Easy-WI Webpanel" "Webspace Root" "Quit")
+OPTIONS=("Gameserver Root" "Voicemaster" "Easy-WI Webpanel" "Webspace Root" "MySQL" "Quit")
 select OPTION in "${OPTIONS[@]}"; do
     case "$REPLY" in
-        1 ) break;;
-        2 ) break;;
-        3 ) break;;
-        4 ) break;;
-        5 ) errorAndQuit;;
+        1|2|3|4|5 ) break;;
+        6 ) errorAndQuit;;
         *) errorAndContinue;;
     esac
 done
@@ -192,6 +189,8 @@ elif [ "$OPTION" == "Voicemaster" ]; then
     INSTALL="VS"
 elif [ "$OPTION" == "Webspace Root" ]; then
     INSTALL="WR"
+elif [ "$OPTION" == "MySQL" ]; then
+    INSTALL="MY"
 fi
 
 OTHER_PANEL=""
@@ -242,9 +241,7 @@ if [ "$INSTALL" == "EW" ]; then
     OPTIONS=("$HOST_NAME" "$LOCAL_IP" "Other" "Quit")
     select OPTION in "${OPTIONS[@]}"; do
         case "$REPLY" in
-            1 ) break;;
-            2 ) break;;
-            3 ) break;;
+            1|2|3 ) break;;
             4 ) errorAndQuit;;
             *) errorAndContinue;;
         esac
@@ -308,8 +305,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         OPTIONS=("Yes" "No" "Quit")
         select OPTION in "${OPTIONS[@]}"; do
             case "$REPLY" in
-                1 ) break;;
-                2 ) break;;
+                1|2 ) break;;
                 3 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
@@ -334,81 +330,88 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
     fi
 fi
 
-cyanMessage "Please enter the name of the masteruser. If it does not exists, the installer will create it."
-read MASTERUSER
+if [ "$INSTALL" != "MY" ]; then
 
-if [ "$MASTERUSER" == "" ]; then
-    errorAndExit "Fatal Error: No masteruser specified"
-fi
+    cyanMessage "Please enter the name of the masteruser. If it does not exists, the installer will create it."
+    read MASTERUSER
 
-if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
+    if [ "$MASTERUSER" == "" ]; then
+        errorAndExit "Fatal Error: No masteruser specified"
+    fi
 
-    if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
-        $USERADD -m -b /home -s /bin/bash -g $WEBGROUPID $MASTERUSER
-    else
-        if [ -d /home/$MASTERUSER ]; then
-            $GROUPADD $MASTERUSER
-            $USERADD -d /home/$MASTERUSER -s /bin/bash -g $MASTERUSER $MASTERUSER
+    if [ "`id $MASTERUSER 2> /dev/null`" == "" ]; then
+
+        if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
+            $USERADD -m -b /home -s /bin/bash -g $WEBGROUPID $MASTERUSER
         else
-            $GROUPADD $MASTERUSER
-            $USERADD -m -b /home -s /bin/bash -g $MASTERUSER $MASTERUSER
+
+            if [ -d /home/$MASTERUSER ]; then
+                $GROUPADD $MASTERUSER
+                $USERADD -d /home/$MASTERUSER -s /bin/bash -g $MASTERUSER $MASTERUSER
+            else
+                $GROUPADD $MASTERUSER
+                $USERADD -m -b /home -s /bin/bash -g $MASTERUSER $MASTERUSER
+            fi
         fi
-    fi
 
-elif [ "$INSTALL" != "VS" ]; then
+    elif [ "$INSTALL" != "VS" -a "$INSTALL" != "MY" ]; then
 
-    okAndSleep "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
+        okAndSleep "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
 
-    if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
-        usermod -g $WEBGROUPID $MASTERUSER
+        if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
+            $USERMOD -g $WEBGROUPID $MASTERUSER
+        else
+
+            if [ "`id -g $MASTERUSER 2> /dev/null`" == "" ]; then
+                $GROUPADD $MASTERUSER
+            fi
+
+            $USERMOD -g $MASTERUSER $MASTERUSER
+        fi
     else
-        usermod -g $MASTERUSER $MASTERUSER
-    fi
-else
-    okAndSleep "User \"$MASTERUSER\" already exists."
-fi
-
-cyanMessage " "
-cyanMessage "Create key or set password for login?"
-cyanMessage "Safest way of login is a password protected key."
-
-if [ "$INSTALL" == "EW" ]; then
-    cyanMessage "Neither is not required, when installing Easy-WI Webpanel."
-fi
-
-OPTIONS=("Create key" "Set password" "Skip" "Quit")
-select OPTION in "${OPTIONS[@]}"; do
-    case "$REPLY" in
-        1 ) break;;
-        2 ) break;;
-        3 ) break;;
-        4 ) errorAndQuit;;
-        *) errorAndContinue;;
-    esac
-done
-
-if [ "$OPTION" == "Create key" ]; then
-
-    if [ -d /home/$MASTERUSER/.ssh ]; then
-        rm -rf /home/$MASTERUSER/.ssh
+        okAndSleep "User \"$MASTERUSER\" already exists."
     fi
 
     cyanMessage " "
-    cyanMessage "It is recommended but not required to set a password"
-    su -c "ssh-keygen -t rsa" $MASTERUSER
+    cyanMessage "Create key or set password for login?"
+    cyanMessage "Safest way of login is a password protected key."
 
-    cd /home/$MASTERUSER/.ssh
-
-    KEYNAME=`find -maxdepth 1 -name "*.pub" | head -n 1`
-
-    if [ "$KEYNAME" != "" ]; then
-        su -c "cat $KEYNAME >> authorized_keys" $MASTERUSER
-    else
-        redMessage "Error: could not find a key. You might need to create one manually at a later point."
+    if [ "$INSTALL" == "EW" ]; then
+        cyanMessage "Neither is not required, when installing Easy-WI Webpanel."
     fi
 
-elif [ "$OPTION" == "Set password" ]; then
-    passwd $MASTERUSER
+    OPTIONS=("Create key" "Set password" "Skip" "Quit")
+    select OPTION in "${OPTIONS[@]}"; do
+        case "$REPLY" in
+            1|2|3 ) break;;
+            4 ) errorAndQuit;;
+            *) errorAndContinue;;
+        esac
+    done
+
+    if [ "$OPTION" == "Create key" ]; then
+
+        if [ -d /home/$MASTERUSER/.ssh ]; then
+            rm -rf /home/$MASTERUSER/.ssh
+        fi
+
+        cyanMessage " "
+        cyanMessage "It is recommended but not required to set a password"
+        su -c "ssh-keygen -t rsa" $MASTERUSER
+
+        cd /home/$MASTERUSER/.ssh
+
+        KEYNAME=`find -maxdepth 1 -name "*.pub" | head -n 1`
+
+        if [ "$KEYNAME" != "" ]; then
+            su -c "cat $KEYNAME >> authorized_keys" $MASTERUSER
+        else
+            redMessage "Error: could not find a key. You might need to create one manually at a later point."
+        fi
+
+    elif [ "$OPTION" == "Set password" ]; then
+        passwd $MASTERUSER
+    fi
 fi
 
 # only in case we want to manage webspace we need the additional skel dir
@@ -420,38 +423,39 @@ if [ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ]; then
     makeDir /home/$MASTERUSER/skel/tmp
 fi
 
-if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
+if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
-    if [ "$OS" == "debian" ]; then
+    if [ "$OS" == "debian" -a "$INSTALL" != "MY" ]; then
 
-            cyanMessage " "
-            cyanMessage "Use dotdeb.org repository for more up to date server and PHP versions?"
+        cyanMessage " "
+        cyanMessage "Use dotdeb.org repository for more up to date server and PHP versions?"
 
-            OPTIONS=("Yes" "No" "Quit")
-            select DOTDEB in "${OPTIONS[@]}"; do
-                    case "$REPLY" in
-                            1 ) break;;
-                            2 ) break;;
-                            3 ) errorAndQuit;;
-                            *) errorAndContinue;;
-                    esac
-            done
+        OPTIONS=("Yes" "No" "Quit")
+        select DOTDEB in "${OPTIONS[@]}"; do
+            case "$REPLY" in
+                1|2 ) break;;
+                3 ) errorAndQuit;;
+                 *) errorAndContinue;;
+            esac
+        done
 
-            if [ "$DOTDEB" == "Yes" ]; then
-                    if [ "`grep 'packages.dotdeb.org' /etc/apt/sources.list`" == "" ]; then
-                            okAndSleep "Adding entries to /etc/apt/sources.list"
-                            add-apt-repository "deb http://packages.dotdeb.org $OSBRANCH all"
-                            add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
-                            wget http://www.dotdeb.org/dotdeb.gpg
-                            apt-key add dotdeb.gpg
-                            rm -f dotdeb.gpg
-                            apt-get update
-                    fi
-            fi
+        if [ "$DOTDEB" == "Yes" ]; then
+            if [ "`grep 'packages.dotdeb.org' /etc/apt/sources.list`" == "" ]; then
+                okAndSleep "Adding entries to /etc/apt/sources.list"
+                add-apt-repository "deb http://packages.dotdeb.org $OSBRANCH all"
+                add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
+                wget http://www.dotdeb.org/dotdeb.gpg
+                apt-key add dotdeb.gpg
+                rm -f dotdeb.gpg
+                apt-get update
+             fi
+        fi
     fi
 
-    cyanMessage " "
-    cyanMessage "Please select the webserver you would like to use"
+    if [ "$INSTALL" != "MY" ]; then
+        cyanMessage " "
+        cyanMessage "Please select the webserver you would like to use"
+    fi
 
     if [ "$INSTALL" == "EW" ]; then
 
@@ -461,14 +465,13 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         OPTIONS=("Nginx" "Apache" "Quit")
         select WEBSERVER in "${OPTIONS[@]}"; do
             case "$REPLY" in
-                1 ) break;;
-                2 ) break;;
+                1|2 ) break;;
                 3 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
         done
 
-    else
+    elif [ "$INSTALL" != "MY" ]; then
 
         cyanMessage "Nginx is recommended for FastDL and few but high efficient vhosts"
         cyanMessage "Apache is recommended in case you want to run many PHP supporting Vhosts aka mass web hosting"
@@ -476,21 +479,18 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         OPTIONS=("Nginx" "Apache" "Lighttpd" "None" "Quit")
         select WEBSERVER in "${OPTIONS[@]}"; do
             case "$REPLY" in
-                1 ) break;;
-                2 ) break;;
-                3 ) break;;
-                4 ) break;;
+                1|2|3|4 ) break;;
                 5 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
         done
     fi
 
-    if [ "$WEBSERVER" == "Nginx" ]; then
+    if [ "$WEBSERVER" == "Nginx" -a "$INSTALL" != "MY" ]; then
         checkInstall nginx-full
-    elif [ "$WEBSERVER" == "Lighttpd" ]; then
+    elif [ "$WEBSERVER" == "Lighttpd" -a "$INSTALL" != "MY" ]; then
         checkInstall lighttpd
-    elif [ "$WEBSERVER" == "Apache" ]; then
+    elif [ "$WEBSERVER" == "Apache" -a "$INSTALL" != "MY" ]; then
         checkInstall apache2
     fi
 
@@ -513,10 +513,8 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         OPTIONS=("MySQL" "MariaDB" "None" "Quit")
         select SQL in "${OPTIONS[@]}"; do
             case "$REPLY" in
-                1 ) break;;
-                2 ) break;;
-                4 ) break;;
-                5 ) errorAndQuit;;
+                1|2|3 ) break;;
+                4 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
         done
@@ -525,10 +523,6 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
     if [ "$SQL" == "MySQL" ]; then
 
         apt-get install mysql-server mysql-client mysql-common -y
-
-        cyanMessage " "
-        okAndSleep "Securing MySQL by running \"mysql_secure\"."
-        mysql_secure_installation
 
     elif [ "$SQL" == "MariaDB" ]; then
 
@@ -566,8 +560,47 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         else
             apt-get install mariadb-server mariadb-client mariadb-common -y
         fi
+    fi
+
+    if [ "$SQL" == "MySQL" -o "$SQL" == "MariaDB" ]; then
+
+        cyanMessage " "
+        okAndSleep "Securing MySQL by running \"mysql_secure\"."
 
         mysql_secure_installation
+
+        if [ "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
+
+            cyanMessage " "
+            cyanMessage "Is Easy-WI installed on a different server."
+
+            OPTIONS=("Yes" "No" "Quit")
+            select EXTERNAL_INSTALL in "${OPTIONS[@]}"; do
+                case "$REPLY" in
+                    1|2 ) break;;
+                    3 ) errorAndQuit;;
+                    *) errorAndContinue;;
+                esac
+            done
+        fi
+    fi
+
+    if [ "$EXTERNAL_INSTALL" == "Yes" ]; then
+
+        if [ "$LOCAL_IP" == "" ]; then
+
+            cyanMessage " "
+            cyanMessage "Could not detect lokal IP. Please specify which to use."
+            read LOCAL_IP
+        fi
+
+        if [ "$LOCAL_IP" != "" -a -f /etc/mysql/my.cnf ]; then
+            if [ "`grep 'bind-address' /etc/mysql/my.cnf`" ]; then
+                sed -i "s/bind-address.*/bind-address = $LOCAL_IP/g" /etc/mysql/my.cnf
+            else
+                echo "bind-address = $LOCAL_IP" >> /etc/mysql/my.cnf
+            fi
+        fi
     fi
 
     if [ "$INSTALL" == "EW" -a "`ps ax | grep mysql | grep -v grep`" == "" ]; then
@@ -580,7 +613,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         okAndSleep "Please note that Easy-Wi will install required PHP packages."
         PHPINSTALL="Yes"
 
-    else
+    elif [ "$INSTALL" != "MY" ]; then
 
         cyanMessage " "
         cyanMessage "Install/Update PHP?"
@@ -589,9 +622,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
         OPTIONS=("Yes" "No" "None" "Quit")
         select PHPINSTALL in "${OPTIONS[@]}"; do
             case "$REPLY" in
-                1 ) break;;
-                2 ) break;;
-                3 ) break;;
+                1|2|3 ) break;;
                 4 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
@@ -611,10 +642,7 @@ if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
                 OPTIONS=("5.4" "5.5", "5.6", "5.6 Zend thread safety" "Quit")
                 select DOTDEBPHPUPGRADE in "${OPTIONS[@]}"; do
                     case "$REPLY" in
-                        1 ) break;;
-                        2 ) break;;
-                        3 ) break;;
-                        4 ) break;;
+                        1|2|3|4 ) break;;
                         5 ) errorAndQuit;;
                         *) errorAndContinue;;
                     esac
@@ -667,7 +695,7 @@ if ([ "$INSTALL" == "WR" -o "$INSTALL" == "EW" ] && [ "`grep '/bin/false' /etc/s
     echo "/bin/false" >> /etc/shells
 fi
 
-if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
+if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" -a "$INSTALL" != "MY" ]; then
 
     cyanMessage " "
     cyanMessage "Install/Update ProFTPD?"
@@ -675,8 +703,7 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
     OPTIONS=("Yes" "No" "Quit")
     select OPTION in "${OPTIONS[@]}"; do
         case "$REPLY" in
-            1 ) break;;
-            2 ) break;;
+            1|2 ) break;;
             3 ) errorAndQuit;;
             *) errorAndContinue;;
         esac
@@ -714,8 +741,7 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" ]; then
             OPTIONS=("Yes" "No" "Quit")
             select OPTION in "${OPTIONS[@]}"; do
                 case "$REPLY" in
-                    1 ) break;;
-                    2 ) break;;
+                    1|2 ) break;;
                     3 ) errorAndQuit;;
                     *) errorAndContinue;;
                 esac
@@ -947,8 +973,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
     OPTIONS=("Yes" "No" "Quit")
     select QUOTAINSTALL in "${OPTIONS[@]}"; do
         case "$REPLY" in
-            1 ) break;;
-            2 ) break;;
+            1|2 ) break;;
             3 ) errorAndQuit;;
             *) errorAndContinue;;
         esac
@@ -986,8 +1011,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
         OPTIONS=("Yes" "No" "Quit")
         select QUOTAFSTAB in "${OPTIONS[@]}"; do
             case "$REPLY" in
-                1 ) break;;
-                2 ) break;;
+                1|2 ) break;;
                 3 ) errorAndQuit;;
                 *) errorAndContinue;;
             esac
@@ -1157,8 +1181,7 @@ if [ "$INSTALL" == "GS" ]; then
     OPTIONS=("Yes" "No" "Quit")
     select OPTION in "${OPTIONS[@]}"; do
         case "$REPLY" in
-            1 ) break;;
-            2 ) break;;
+            1|2 ) break;;
             3 ) errorAndQuit;;
             *) errorAndContinue;;
         esac
@@ -1311,8 +1334,7 @@ if [ "$INSTALL" == "EW" ]; then
     OPTIONS=("Yes" "No" "Quit")
     select SSL in "${OPTIONS[@]}"; do
         case "$REPLY" in
-            1 ) break;;
-            2 ) break;;
+            1|2 ) break;;
             3 ) errorAndQuit;;
             *) errorAndContinue;;
         esac
@@ -1590,6 +1612,8 @@ elif [ "$INSTALL" == "VS" ]; then
     greenMessage "Teamspeak 3 setup is done. TS3 Query password is $QUERY_PASSWORD. Please enter the data at the webpanel at \"Voiceserver > Master > Add\"."
 elif [ "$INSTALL" == "WR" ]; then
     greenMessage "Webspace Root setup is done. Please enter the above data at the webpanel at \"Webspace > Master > Add\"."
+elif [ "$INSTALL" == "MY" ]; then
+    greenMessage "MySQL Root setup is done. Please enter the server at the webpanel at \"MySQL > Master > Add\"."
 fi
 
 exit 0
