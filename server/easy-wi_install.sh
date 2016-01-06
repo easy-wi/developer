@@ -359,14 +359,14 @@ if [ "$INSTALL" != "MY" ]; then
         okAndSleep "User \"$MASTERUSER\" found setting group \"$MASTERUSER\" as mastegroup"
 
         if [ "$INSTALL" == "EW" -o  "$INSTALL" == "WR" ]; then
-            $USERMOD -g $WEBGROUPID $MASTERUSER
+            $USERMOD -G $WEBGROUPID $MASTERUSER
         else
 
             if [ "`getent group $MASTERUSER`" == "" ]; then
                 $GROUPADD $MASTERUSER
             fi
 
-            $USERMOD -g $MASTERUSER $MASTERUSER
+            $USERMOD -G $MASTERUSER $MASTERUSER
         fi
     else
         okAndSleep "User \"$MASTERUSER\" already exists."
