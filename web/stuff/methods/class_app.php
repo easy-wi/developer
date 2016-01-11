@@ -631,7 +631,6 @@ class AppServer {
                 $script .= $this->copyStartFile($absoluteSourceTemplatePath, $absoluteTargetTemplatePath);
             }
 
-            $script .= 'find ' . $absoluteSourceTemplatePath . ' -type f | grep -E "(/valve|/overviews/|/scripts/|/media/|/particles/|/sound/|/hl2/|/overviews/|/resource/|/sprites/|gameinfo.txt|steam.inf|steam_appid.txt)" | while read FILE; do rm -f $FILE; done' . "\n";
             $script .= 'FILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v -E "$PATTERN"`)' . "\n";
             $script .= 'for FILTEREDFILES in ${FILEFOUND[@]}; do' . "\n";
             $script .= 'FOLDERNAME=`dirname "$FILTEREDFILES"`' . "\n";
