@@ -1441,8 +1441,8 @@ class AppServer {
                 $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
             }
 
-            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name \"*.bz2\" -delete' . "\n";
-            $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name \"*.bz2\" -delete' . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name "*.tar.bz2" ! -path "' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . '/backup/*" -delete' . "\n";
+            $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name "*.bz2" -delete' . "\n";
         }
 
         if (count($this->appMasterServerDetails['configBinaries']) > 0 or count($this->appMasterServerDetails['configFiles']) > 0 ) {
