@@ -19,12 +19,11 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Rust
+ * Unreal Tournament Protocol Class
  *
- * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Rust extends Source
+class Ut extends Gamespy
 {
 
     /**
@@ -32,12 +31,43 @@ class Rust extends Source
      *
      * @type string
      */
-    protected $name = 'rust';
+    protected $name = 'ut';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Rust";
+    protected $name_long = "Unreal Tournament";
+
+    /**
+     * query_port = client_port + 1
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
+
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'dedicated',
+            'gametype'   => 'gametype',
+            'hostname'   => 'hostname',
+            'mapname'    => 'mapname',
+            'maxplayers' => 'maxplayers',
+            'numplayers' => 'numplayers',
+            'password'   => 'password',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+            'score' => 'frags',
+        ],
+    ];
 }

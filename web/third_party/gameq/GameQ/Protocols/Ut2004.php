@@ -19,12 +19,11 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Rust
+ * Unreal Tournament 2004 Protocol Class
  *
- * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Rust extends Source
+class Ut2004 extends Unreal2
 {
 
     /**
@@ -32,12 +31,12 @@ class Rust extends Source
      *
      * @type string
      */
-    protected $name = 'rust';
+    protected $name = 'ut2004';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Rust";
+    protected $name_long = "Unreal Tournament 2004";
 }
