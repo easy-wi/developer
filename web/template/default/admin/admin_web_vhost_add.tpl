@@ -114,7 +114,7 @@
 
 <script type="text/javascript">
 
-    $("#inputUser,#inputRoot").chosen({
+    $("#inputUser,#webMasterID").chosen({
         disable_search_threshold: 3,
         inherit_select_classes: true,
         no_results_text: '<?php echo $gsprache->chosenNoResult;?>',
@@ -129,7 +129,7 @@
         });
     }
 
-    $('#inputRoot').on('change', function() {
+    $('#webMasterID').on('change', function() {
         loadRootDetails();
     });
 
