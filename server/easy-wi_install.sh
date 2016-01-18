@@ -1236,9 +1236,7 @@ if [ "$INSTALL" == "EW" ]; then
 
         cyanMessage " "
         okAndSleep "Creating a self-signed SSL certificate."
-        cyanMessage "Please enter your domain \"$IP_DOMAIN\" at \"Common Name (e.g. server FQDN or YOUR name)\""
-        openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt
-
+        openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt -subj "/C=/ST=/L=/O=/OU=/CN=$IP_DOMAIN"
     fi
 
     if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
