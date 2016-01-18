@@ -1146,6 +1146,8 @@ fi
 
 if [ "$INSTALL" == "EW" ]; then
 
+    makeDir /home/$MASTERUSER/fpm-pool.d/
+
     if [ -f /home/easywi_web/htdocs/serverallocation.php ]; then
 
         cyanMessage " "
@@ -1162,22 +1164,27 @@ if [ "$INSTALL" == "EW" ]; then
         rm -rf /home/easywi_web/htdocs/*
     fi
 
-    if [ "`id easywi_web 2> /dev/null`" == "" ]; then
+    if [ "`id easywi_web 2> /dev/null`" == "" -a ! -d /home/easywi_web ]; then
         $USERADD -md /home/easywi_web -g www-data -s /bin/bash -k /home/$MASTERUSER/skel/ easywi_web
+    elif [ "`id easywi_web 2> /dev/null`" == "" -a -d /home/easywi_web ]; then
+        $USERADD -d /home/easywi_web -g www-data -s /bin/bash easywi_web
     fi
+
+    makeDir /home/easywi_web/htdocs/
+    makeDir /home/easywi_web/logs/
+    makeDir /home/easywi_web/tmp/
+    makeDir /home/easywi_web/session/
+    chown -R easywi_web:$WEBGROUPID /home/easywi_web/htdocs/ /home/easywi_web/logs/ /home/easywi_web/tmp/ /home/easywi_web/session/
 
     if [ "`id easywi_web 2> /dev/null`" == "" ]; then
         errorAndExit "Web user easywi_web does not exists! Exiting now!"
     fi
 
-    if [ ! -d /home/easywi_web ]; then
-        errorAndExit "No home dir created! Exiting now!"
+    if [ ! -d /home/easywi_web/htdocs ]; then
+        errorAndExit "No home/htdocs dir created! Exiting now!"
     fi
 
     checkInstall unzip
-
-    makeDir /home/easywi_web/htdocs/
-    makeDir /home/$MASTERUSER/fpm-pool.d/
 
     cd /home/easywi_web/htdocs/
 
