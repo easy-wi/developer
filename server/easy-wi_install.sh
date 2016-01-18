@@ -671,7 +671,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
                 apt-get upgrade -y && apt-get dist-upgrade -y
             fi
         fi
-        
+
         apt-get install php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli -y
 
         if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
@@ -731,7 +731,7 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" -a "$INSTALL" != "MY" ]; then
 
         if [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" != "GS" ]; then
 
-            sed -i 's/Umask.*/Umask 037 027/g' /etc/proftpd/proftpd.conf 
+            sed -i 's/Umask.*/Umask 037 027/g' /etc/proftpd/proftpd.conf
 
         elif [ -f /etc/proftpd/proftpd.conf -a "$INSTALL" == "GS" ]; then
 
@@ -753,15 +753,15 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" -a "$INSTALL" != "MY" ]; then
 
                 makeDir /etc/proftpd/conf.d/
                 chmod 755 /etc/proftpd/conf.d/
-                
+
                 echo "
 <Directory ~>
-        HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
-        PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
-        HideNoAccess on
-        <Limit RNTO RNFR STOR DELE CHMOD SITE_CHMOD MKD RMD>
-                DenyAll
-        </Limit>
+    HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+    PathDenyFilter (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
+    HideNoAccess on
+    <Limit RNTO RNFR STOR DELE CHMOD SITE_CHMOD MKD RMD>
+        DenyAll
+    </Limit>
 </Directory>" > /etc/proftpd/conf.d/easy-wi.conf
                 echo "<Directory /home/$MASTERUSER>" >> /etc/proftpd/conf.d/easy-wi.conf
                 echo "    HideFiles (^\..+|\.ssh|\.bash_history|\.bash_logout|\.bashrc|\.profile)$
@@ -773,128 +773,14 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" -a "$INSTALL" != "MY" ]; then
     </Limit>
 </Directory>
 <Directory /home/*/pserver/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
 </Directory>
 <Directory ~/backup>
-        Umask 177 077
-        <Limit RNTO RNFR STOR DELE>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/projectcars*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/mc*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/bukkit*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/tekkit*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/tekkit-classic*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/samp*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/mtasa*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/teeworlds*/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/*/orangebox/*/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/*/csgo/*>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/server/*/*/cstrike/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/*/czero/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/*/dod/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/*/garrysmod/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/ark*/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/arma3*/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/rust*/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/spigot*/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/server/*/hexxit*/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE MKD RMD>
+    Umask 177 077
+    <Limit RNTO RNFR STOR DELE>
         AllowAll
     </Limit>
 </Directory>
@@ -902,62 +788,47 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" -a "$INSTALL" != "MY" ]; then
     HideFiles (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
     PathDenyFilter (^\..+|srcds_run|srcds_linux|hlds_run|hlds_amd|hlds_i686|\.rc|\.sh|\.zip|\.rar|\.7z|\.dll)$
     HideNoAccess on
-</Directory>
-<Directory ~/*/*/*/*/addons>
+</Directory>" >> /etc/proftpd/conf.d/easy-wi.conf
+
+
+                GAMES=("ark" "arma3" "bukkit" "hexxit" "mc" "mtasa" "projectcars" "rust" "samp" "spigot" "teeworlds" "tekkit" "tekkit-classic")
+
+                for GAME in ${GAMES[@]}; do
+                    echo "<Directory ~/server/*/$GAME*/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
+</Directory>" >> /etc/proftpd/conf.d/easy-wi.conf
+                done
+
+                GAME_MODS=("csgo" "cstrike" "czero" "orangebox" "dod" "garrysmod")
+
+                for GAME_MOD in ${GAME_MODS[@]}; do
+                    echo "<Directory ~/server/*/*/${GAME_MOD}/*>
+    Umask 077 077
+    <Limit RNFR RNTO STOR DELE MKD RMD>
+        AllowAll
+    </Limit>
+</Directory>" >> /etc/proftpd/conf.d/easy-wi.conf
+                done
+
+                FOLDERS=("addons" "cfg" "maps")
+
+                for FOLDER in ${FOLDERS[@]}; do
+                    echo "<Directory ~/*/*/*/*/${FOLDERS}>
     Umask 077 077
     <Limit RNFR RNTO STOR DELE>
         AllowAll
     </Limit>
 </Directory>
-<Directory ~/*/*/*/*/cfg>
+<Directory ~/*/*/*/${FOLDERS}>
     Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
+    <Limit RNFR RNTO STOR DELE MKD RMD>
         AllowAll
     </Limit>
-</Directory>
-<Directory ~/*/*/*/*/maps>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/*/*/*/addons>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/*/*/*/cfg>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/*/*/*/maps>
-        Umask 077 077
-        <Limit RNFR RNTO STOR DELE MKD RMD>
-                AllowAll
-        </Limit>
-</Directory>
-<Directory ~/*/*/cstrike/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/*/*/czero/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
-        AllowAll
-    </Limit>
-</Directory>
-<Directory ~/*/*/dod/*>
-    Umask 077 077
-    <Limit RNFR RNTO STOR DELE>
-        AllowAll
-    </Limit>
-</Directory>
-" >> /etc/proftpd/conf.d/easy-wi.conf
+</Directory>" >> /etc/proftpd/conf.d/easy-wi.conf
+                done
             fi
         fi
 
@@ -1029,7 +900,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
         fi
 
         if [ -f /root/tempmountpoints ]; then
-        
+
             cat /root/tempmountpoints | while read LINE; do
 
                 quotaoff -ugv $LINE
@@ -1276,7 +1147,7 @@ fi
 if [ "$INSTALL" == "EW" ]; then
 
     if [ -f /home/easywi_web/htdocs/serverallocation.php ]; then
-    
+
         cyanMessage " "
         cyanMessage "There is already an existing installation. Should it be removed?"
         OPTIONS=("Yes" "Quit")
@@ -1471,8 +1342,8 @@ if [ "$INSTALL" == "EW" ]; then
             echo "    SSLCertificateKeyFile /etc/apache2/ssl/$FILE_NAME.key" >> $FILE_NAME_VHOST
 
         fi
-        
-        
+
+
         echo '    DocumentRoot "/home/easywi_web/htdocs/"' >> $FILE_NAME_VHOST
         echo '    ErrorLog "/home/easywi_web/logs/error.log"' >> $FILE_NAME_VHOST
         echo '    CustomLog "/home/easywi_web/logs/access.log" common' >> $FILE_NAME_VHOST
@@ -1517,7 +1388,7 @@ if [ "$INSTALL" == "EW" ]; then
         okAndSleep "Restarting Apache2."
         service apache2 restart
     fi
-    
+
     chown $MASTERUSER:www-data $FILE_NAME_VHOST
 
     if [ "`grep reboot.php /etc/crontab`" == "" ]; then
