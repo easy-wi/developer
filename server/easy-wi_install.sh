@@ -1284,13 +1284,21 @@ if [ "$INSTALL" == "EW" ]; then
 
             backUpFile /etc/nginx/nginx.conf
 
-            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ecdh_curve secp384r1;' /etc/nginx/nginx.conf
-            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_cache shared:SSL:10m;' /etc/nginx/nginx.conf
-            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_timeout 10m;' /etc/nginx/nginx.conf
-            sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ciphers EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!NULL;' /etc/nginx/nginx.conf
+            if [ "`grep 'ssl_ecdh_curve secp384r1;' /etc/nginx/nginx.conf`" == "" ]; then
+                sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ecdh_curve secp384r1;' /etc/nginx/nginx.conf
+            fi
+            if [ "`grep 'ssl_session_cache' /etc/nginx/nginx.conf`" == "" ]; then
+                sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_cache shared:SSL:10m;' /etc/nginx/nginx.conf
+            fi
+            if [ "`grep 'ssl_session_timeout' /etc/nginx/nginx.conf`" == "" ]; then
+                sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_session_timeout 10m;' /etc/nginx/nginx.conf
+            fi
+            if [ "`grep 'ssl_ciphers' /etc/nginx/nginx.conf`" == "" ]; then
+                sed -i '/ssl_prefer_server_ciphers on;/a \\tssl_ciphers EECDH+AESGCM:EDH+AESGCM:EECDH:EDH:!MD5:!RC4:!LOW:!MEDIUM:!CAMELLIA:!ECDSA:!DES:!DSS:!3DES:!NULL;' /etc/nginx/nginx.conf
+            fi
 
             echo 'server {' >> $FILE_NAME_VHOST
-            echo '    listen 443 ssl default_server;' >> $FILE_NAME_VHOST
+            echo '    listen 443 ssl;' >> $FILE_NAME_VHOST
             echo "    ssl_certificate /etc/nginx/ssl/$FILE_NAME.crt;" >> $FILE_NAME_VHOST
             echo "    ssl_certificate_key /etc/nginx/ssl/$FILE_NAME.key;" >> $FILE_NAME_VHOST
         fi
