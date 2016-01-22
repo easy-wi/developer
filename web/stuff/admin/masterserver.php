@@ -222,11 +222,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $query = $sql->prepare("SELECT s.`id` FROM `rservermasterg` r INNER JOIN `servertypes` s ON r.`servertypeid`=s.`id` WHERE s.`id`=? AND r.`serverid`=? AND r.`installing`='N' AND r.`resellerid`=?");
 
-        foreach($ui->id('serverID', 10, 'post') as $id) {
+        $serverIdArray = (array) $ui->id('serverID', 10, 'post');
+
+        foreach($serverIdArray as $id) {
 
             $ajaxStringIDs = array();
 
-            foreach($ui->id('masterID', 10, 'post') as $masterID) {
+            $masterIdArray = (array) $ui->id('masterID', 10, 'post');
+
+            foreach($masterIdArray as $masterID) {
+
                 $query->execute(array($masterID, $id, $resellerLockupID));
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $ajaxStringIDs[] = $row['id'];
