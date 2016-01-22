@@ -1480,6 +1480,7 @@ if (!function_exists('passwordgenerate')) {
 
             return ($ftpLogin === true) ? true : 'login';
         }
+
         return 'ipport';
     }
 

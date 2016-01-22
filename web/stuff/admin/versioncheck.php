@@ -55,38 +55,51 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
         $updateinclude = true;
 
         class UpdateResponse {
-            public $response=array(),$errors = array();
+
+            public $response = array(), $errors = array();
+
             function __construct() {
                 $this->response = array();
             }
+
             function add ($newtext) {
                 $this->response[] = $newtext;
             }
+
             function addError ($newtext) {
                 $this->errors[] = $newtext;
             }
+
             function printresponse () {
                 return $this->response;
             }
+
             function printErrors () {
                 return $this->errors;
             }
+
             function __destruct() {
                 unset($this->response, $this->errors);
             }
         }
 
         function rmr($dir) {
+
             if (is_dir($dir)) {
+
                 $dircontent = scandir($dir);
+
                 foreach ($dircontent as $c) {
+
                     if ($c != '.' and $c != '..' and is_dir($dir . '/' . $c)) {
                         rmr($dir . '/' . $c);
                     } else if ($c != '.' and $c != '..') {
                         unlink($dir . '/' . $c);
                     }
                 }
+
                 rmdir($dir);
+
             } else {
                 @unlink($dir);
             }
@@ -99,6 +112,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
         }
 
         if (is_dir(EASYWIDIR . '/tmp')) {
+
             $response->add('Creating tempfolder <b>tmp/</b>');
 
             $opts = stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
@@ -156,7 +170,6 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                                 } else {
                                     $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $checkfolder . '</b>');
                                 }
-
                             }
 
                         } else if (!is_dir(EASYWIDIR . '/' . $name) and !is_file(EASYWIDIR . '/' . $name)) {
@@ -168,13 +181,14 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                             } else {
                                 $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $name . '</b>');
                             }
-
                         }
 
                         if (preg_match('/^(.*)\.[\w]{1,}$/', $name) and $zeo) {
 
-                            $nf = @fopen($name,'w');
+                            $nf = @fopen($name, 'w');
+
                             if ($nf) {
+
                                 $fz = zip_entry_filesize($ze);
 
                                 if ($fz > 0) {
@@ -188,9 +202,11 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                                 }
 
                                 zip_entry_close($ze);
+
                                 if (is_resource($nf)) {
                                     fclose($nf);
                                 }
+
                             } else {
                                 $response->addError('Unpacking: '. $name);
                             }
@@ -212,11 +228,13 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                 }
 
             }
+
             if ($fp != true) {
-                $response->add('Error: could not retrieve the update');
+                $response->addError('Error: could not retrieve the update');
             }
+
             if ($zip != true) {
-                $response->add('Error: could not create the temporary zip file');
+                $response->addError('Error: could not create the temporary zip file');
             }
 
             foreach (scandir(EASYWIDIR . '/tmp/') as $c) {
@@ -237,7 +255,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
             $response->addError('Cannot create the tempfolder <b>tmp/</b>');
         }
 
-        if (count($response->errors)>0) {
+        if (count($response->errors) > 0) {
             $template_file = 'Errors: '.implode('<br />',$response->errors);
         }
 
