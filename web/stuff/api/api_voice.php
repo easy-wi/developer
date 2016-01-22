@@ -245,6 +245,7 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
                 $flexSlotsPercent = (isset($data['flexSlotsPercent']) and isid($data['flexSlotsPercent'], 3)) ? $data['flexSlotsPercent'] : $defaultFlexSlotsPercent;
                 $autoRestart = (isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
                 $initialpassword = passwordgenerate(10);
+                $iniConfiguration = (isset($iniConfiguration)) ? @json_encode($iniConfiguration) : '';
 
                 $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`iniConfiguration`,`lendserver`,`backup`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`maxtraffic`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`externalID`,`jobPending`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?,?,'Y',NOW(),?,?,?,?,?)");
                 $query->execute(array($active, $iniConfiguration, $lendserver, $backup, $localUserLookupID, $hostID, $ip, $port, $slots, $initialpassword, $private, $max_download_total_bandwidth, $max_upload_total_bandwidth, $maxtraffic, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $externalServerID, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $autoRestart, $resellerID));
