@@ -1146,7 +1146,7 @@ class AppServer {
 
                                 $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
 
-                            } else if ($values['type'] == 'xml' and preg_match("/^(.*)\<" . strtolower($cvar) . "\>(.*)\<\/" . strtolower($cvar) . "\>(.*)$/", $loweredSingleLine)) {
+                            } else if ($values['type'] == 'xml' and @preg_match("/^(.*)\<" . strtolower($cvar) . "\>(.*)\<\/" . strtolower($cvar) . "\>(.*)$/", $loweredSingleLine)) {
 
                                 $edited = true;
 
