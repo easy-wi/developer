@@ -816,13 +816,13 @@ if [ "$INSTALL" != "VS" -a "$INSTALL" != "EW" -a "$INSTALL" != "MY" ]; then
                 FOLDERS=("addons" "cfg" "maps")
 
                 for FOLDER in ${FOLDERS[@]}; do
-                    echo "<Directory ~/*/*/*/*/${FOLDERS}>
+                    echo "<Directory ~/*/*/*/*/${FOLDER}>
     Umask 077 077
     <Limit RNFR RNTO STOR DELE>
         AllowAll
     </Limit>
 </Directory>
-<Directory ~/*/*/*/${FOLDERS}>
+<Directory ~/*/*/*/${FOLDER}>
     Umask 077 077
     <Limit RNFR RNTO STOR DELE MKD RMD>
         AllowAll
