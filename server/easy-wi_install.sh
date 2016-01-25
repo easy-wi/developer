@@ -1444,27 +1444,34 @@ if [ "$INSTALL" == "VS" ]; then
 
     rm -f teamspeak3-server.tar.gz
 
-    if [ ! -f query_ip_whitelist.txt ]; then
-        touch query_ip_whitelist.txt
-        chown $MASTERUSER.$MASTERUSER query_ip_whitelist.txt
+    QUERY_WHITLIST_TXT=/home/$MASTERUSER/query_ip_whitelist.txt
+
+    if [ ! -f $QUERY_WHITLIST_TXT ]; then
+        touch $QUERY_WHITLIST_TXT
+        chown $MASTERUSER:$MASTERUSER $QUERY_WHITLIST_TXT
     fi
 
-    if [ "`grep '127.0.0.1' query_ip_whitelist.txt`" == "" ]; then
-        echo "127.0.0.1" >> query_ip_whitelist.txt
-    fi
-
-    if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $LOCAL_IP`" != "" -a "`grep $LOCAL_IP query_ip_whitelist.txt`" == "" ]; then
-        echo $LOCAL_IP >> query_ip_whitelist.txt
-    fi
-
-    cyanMessage " "
-    cyanMessage "Please secify the IPv4 address of the Easy-WI web panel."
-    read IP_ADDRESS
-
-    if [ "$IP_ADDRESS" != "" ]; then
-        if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $IP_ADDRESS`" != "" -a "`grep $IP_ADDRESS query_ip_whitelist.txt`" == "" ]; then
-            echo $IP_ADDRESS >> query_ip_whitelist.txt
+    if [ -f $QUERY_WHITLIST_TXT ]; then
+    
+        if [ "`grep '127.0.0.1' $QUERY_WHITLIST_TXT`" == "" ]; then
+            echo "127.0.0.1" >> $QUERY_WHITLIST_TXT
         fi
+
+        if [ "$LOCAL_IP" != "" -a "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $LOCAL_IP`" != "" -a "`grep $LOCAL_IP $QUERY_WHITLIST_TXT`" == "" ]; then
+            echo $LOCAL_IP >> $QUERY_WHITLIST_TXT
+        fi
+
+        cyanMessage " "
+        cyanMessage "Please secify the IPv4 address of the Easy-WI web panel."
+        read IP_ADDRESS
+
+        if [ "$IP_ADDRESS" != "" ]; then
+            if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $IP_ADDRESS`" != "" -a "`grep $IP_ADDRESS $QUERY_WHITLIST_TXT`" == "" ]; then
+                echo $IP_ADDRESS >> $QUERY_WHITLIST_TXT
+            fi
+        fi
+    else
+        redMessage "Cannot edit the file $QUERY_WHITLIST_TXT, please maintain it manually."
     fi
 
     QUERY_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c12`
