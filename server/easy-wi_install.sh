@@ -1457,8 +1457,10 @@ if [ "$INSTALL" == "VS" ]; then
             echo "127.0.0.1" >> $QUERY_WHITLIST_TXT
         fi
 
-        if [ "$LOCAL_IP" != "" -a "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $LOCAL_IP`" != "" -a "`grep $LOCAL_IP $QUERY_WHITLIST_TXT`" == "" ]; then
-            echo $LOCAL_IP >> $QUERY_WHITLIST_TXT
+        if [ "$LOCAL_IP" != "" ]; then
+            if [ "`grep -E '\b((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4}\b' <<< $LOCAL_IP`" != "" -a "`grep $LOCAL_IP $QUERY_WHITLIST_TXT`" == "" ]; then
+                echo $LOCAL_IP >> $QUERY_WHITLIST_TXT
+            fi
         fi
 
         cyanMessage " "
