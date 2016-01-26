@@ -384,7 +384,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             }
 
-            $query = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? AND `count`>0 LIMIT 1");
             foreach ($countreduce as $keyword) {
                 $query->execute(array($keyword, $resellerLockupID));
                 $rowCount += (int) $query->rowCount();
@@ -451,7 +451,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $removedCount = 0;
 
         $query = $sql->prepare("SELECT t.`name` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE u.`page_id`=? AND u.`resellerid`=?");
-        $query2 = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? LIMIT 1");
+        $query2 = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? AND `count`>0 LIMIT 1");
         $query->execute(array($id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $query2->execute(array($row['name'], $resellerLockupID));
