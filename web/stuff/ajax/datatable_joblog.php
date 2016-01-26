@@ -89,18 +89,18 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 
 if ($sSearch) {
     if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT * FROM `jobs` WHERE `date` LIKE :search OR `action` LIKE :search OR `name` LIKE :search OR `type` LIKE :search ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+        $query = $sql->prepare("SELECT *,CASE WHEN `status`=3 THEN 4 ELSE `status` END AS `status` FROM `jobs` WHERE `date` LIKE :search OR `action` LIKE :search OR `name` LIKE :search OR `type` LIKE :search ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
         $query->execute(array(':search' => '%' . $sSearch . '%'));
     } else {
-        $query = $sql->prepare("SELECT * FROM `jobs` WHERE `resellerID`=:resellerid AND (`date` LIKE :search OR `action` LIKE :search OR `name` LIKE :search OR `type` LIKE :search) ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+        $query = $sql->prepare("SELECT *,CASE WHEN `status`=3 THEN 4 ELSE `status` END AS `status` FROM `jobs` WHERE `resellerID`=:resellerid AND (`date` LIKE :search OR `action` LIKE :search OR `name` LIKE :search OR `type` LIKE :search) ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
         $query->execute(array(':search' => '%' . $sSearch . '%', ':resellerid' => $resellerLockupID));
     }
 } else {
     if ($reseller_id == 0) {
-        $query = $sql->prepare("SELECT * FROM `jobs` ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+        $query = $sql->prepare("SELECT *,CASE WHEN `status`=3 THEN 4 ELSE `status` END AS `status` FROM `jobs` ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
         $query->execute();
     } else {
-        $query = $sql->prepare("SELECT * FROM `jobs` WHERE `resellerID`=? ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
+        $query = $sql->prepare("SELECT *,CASE WHEN `status`=3 THEN 4 ELSE `status` END AS `status` FROM `jobs` WHERE `resellerID`=? ORDER BY {$orderBy} LIMIT {$iDisplayStart},{$iDisplayLength}");
         $query->execute(array($resellerLockupID));
     }
 }
