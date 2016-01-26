@@ -105,7 +105,7 @@ USERMOD=`which usermod`
 USERDEL=`which userdel`
 GROUPADD=`which groupadd`
 MACHINE=`uname -m`
-LOCAL_IP=`ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -n 1`
+LOCAL_IP=`ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n 1 | tr -d '[:alpha:][:blank:]' | awk -F ':' '{print $2}'`
 
 if [ "$LOCAL_IP" == "" ]; then
     HOST_NAME=`hostname -f | awk '{print tolower($0)}'`
@@ -520,6 +520,37 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
         done
     fi
 
+    if [ "$SQL" == "MySQL" -o "$SQL" == "MariaDB" ]; then
+        if [ "`ps fax | grep 'mysqld' | grep -v 'grep'`" ]; then
+
+            cyanMessage " "
+            cyanMessage "Please provide the root password for the MySQL Database."
+            read MYSQL_ROOT_PASSWORD
+
+            mysql -uroot -p$MYSQL_ROOT_PASSWORD -e exit 2> /dev/null
+            ERROR_CODE=$?
+
+            until [ $ERROR_CODE == 0 ]; do
+
+                cyanMessage "Password incorrect, please provide the root password for the MySQL Database."
+                read MYSQL_ROOT_PASSWORD
+
+                mysql -uroot -p$MYSQL_ROOT_PASSWORD -e exit 2> /dev/null
+                ERROR_CODE=$?
+            done
+
+        else
+            until [ "$MYSQL_ROOT_PASSWORD" != "" ]; do
+                cyanMessage "Please provide the root password for the MySQL Database."
+                read MYSQL_ROOT_PASSWORD
+            done
+        fi
+
+        export DEBIAN_FRONTEND="noninteractive"
+        echo "mysql-server mysql-server/root_password password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
+        echo "mysql-server mysql-server/root_password_again password $MYSQL_ROOT_PASSWORD" | debconf-set-selections
+    fi
+
     if [ "$SQL" == "MySQL" ]; then
 
         apt-get install mysql-server mysql-client mysql-common -y
@@ -565,9 +596,12 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
     if [ "$SQL" == "MySQL" -o "$SQL" == "MariaDB" ]; then
 
         cyanMessage " "
-        okAndSleep "Securing MySQL by running \"mysql_secure\"."
-
-        mysql_secure_installation
+        okAndSleep "Securing MySQL by running \"mysql_secure_installation\" commands."
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "UPDATE mysql.user SET Password=PASSWORD('$MYSQL_ROOT_PASSWORD') WHERE User='root'" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.user WHERE User=''" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "FLUSH PRIVILEGES" 2> /dev/null
 
         if [ "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
@@ -1207,7 +1241,7 @@ if [ "$INSTALL" == "EW" ]; then
     DB_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c18`
 
     cyanMessage "The MySQL Root password is required."
-    mysql -u root -p -Bse "CREATE DATABASE IF NOT EXISTS easy_wi; GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD -Bse "CREATE DATABASE IF NOT EXISTS easy_wi; GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
 
     cyanMessage " "
     cyanMessage "Secure Vhost with SSL? (recommended!)"
