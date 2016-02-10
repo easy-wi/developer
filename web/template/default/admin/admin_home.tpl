@@ -224,7 +224,7 @@
                         <div class="progress-bar" style="width: <?php echo $statsArray['gameserverActivePercent'];?>%"></div>
                     </div>
                     <span class="progress-description">
-                        <?php echo $statsArray['gameserverActivePercent'].'% '.$gsprache->active;?>
+                        <?php echo $statsArray['voiceserverActivePercent'].'% '.$gsprache->active;?>
                     </span>
                 </div>
             </div>
