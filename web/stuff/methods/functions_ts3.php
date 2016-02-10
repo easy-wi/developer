@@ -554,8 +554,8 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
 
             if ($os == 'linux' and $type == 'server') {
 
-                $bitAndOS = ($bit == 64) ? 'linux\-amd64' : 'linux\-x86';
-                $extension = 'tar\.gz';
+                $bitAndOS = ($bit == 64) ? 'linux(\-|\_)amd64' : 'linux(\-|\_)x86';
+                $extension = 'tar\.(gz|bz2)';
 
             } else if ($os == 'linux' and $type == 'client') {
 
