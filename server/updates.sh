@@ -81,7 +81,12 @@ function downloadExtractFile {
 
     if [ -f "$2" ]; then
 
-        tar xfv "$2"
+        if [[ `echo $2 | egrep -o 'samp[[:digit:]]{1,}svr.+'` ]]; then
+            tar xfv "$2" --strip-components=1
+        else
+            tar xfv "$2"
+        fi
+
         rm -f "$2"
 
         moveFilesFolders "$2" "$4" "$1"
@@ -125,9 +130,9 @@ function update {
 
     checkCreateVersionFile "$1"
 
-    FILE_NAME=`echo $2 | egrep -o '(sourcemod|mmsource|multitheftauto_linux|baseconfig)-[[:digit:]].*$' | tail -1`
+    FILE_NAME=`echo $2 | egrep -o '((sourcemod|mmsource|multitheftauto_linux|baseconfig)-[[:digit:]]|samp[[:digit:]]{1,}svr.+).*$' | tail -1`
     LOCAL_VERSION=`cat $HOME/versions/$1 | tail -1`
-    CURRENT_VERSION=`echo $2 | egrep -o '(mmsource|sourcemod|multitheftauto_linux|baseconfig)-[0-9a-z.-]{1,}[0-9]' | tail -1`
+    CURRENT_VERSION=`echo $2 | egrep -o '((mmsource|sourcemod|multitheftauto_linux|baseconfig)-[0-9a-z.-]{1,}[0-9]|samp[[:digit:]]{1,}svr.+)' | tail -1`
 
     if ([ "$CURRENT_VERSION" != "$LOCAL_VERSION" -o "$LOCAL_VERSION" == "" ] && [ "$CURRENT_VERSION" != "" ]); then
 
@@ -212,10 +217,19 @@ function updateMTA {
     fi
 }
 
+function updateSAMP {
+
+    cyanMessage "Searching update for San Andreas Multi Player"
+
+    DOWNLOAD_URL=`lynx -dump "http://files.sa-mp.com/" | egrep -o "http:.*samp.*tar\.gz" | tail -n 1`
+    update server_samp.txt "$DOWNLOAD_URL" "samp" "masterserver"
+}
+
 checkCreateFolder $HOME/versions
 
 case $1 in
     "mta") updateMTA;;
+    "samp") updateSAMP;;
     "mms") updatesAddonSnapshots "metamod" "1.10" "";;
     "mms_snapshot") updatesAddonSnapshots "metamod" "1.10" "dev";;
     "mms_dev") updatesAddonSnapshots "metamod" "1.11" "dev";;
