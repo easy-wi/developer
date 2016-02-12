@@ -2133,12 +2133,12 @@ class AppServer {
         if (strlen($ftpDownloadString) > 0) {
             $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
             $script .= 'cd ' . $backupDir . "\n";
-            $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
+            $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
             $script .= 'wget -q --timeout=10 --no-check-certificate ' . $ftpDownloadString . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2' . "\n";
-            $script .= 'if [ -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . '" ]; then' . "\n";
+            $script .= 'if [ -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2') . '" ]; then' . "\n";
             $script .= 'rm -f "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . "\n";
             $script .= 'else' . "\n";
-            $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2"') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
+            $script .= 'mv "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '_old.tar.bz2') . '" "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
             $script .= 'fi' . "\n";
         }
 
