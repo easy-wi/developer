@@ -142,6 +142,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                 $autoRestart = $row['autoRestart'];
                 $max_download_total_bandwidth = $row['max_download_total_bandwidth'];
                 $max_upload_total_bandwidth = $row['max_upload_total_bandwidth'];
+                $maxtraffic = $row['maxtraffic'];
             }
 
             $localServerID = $row['localserverid'];
@@ -149,7 +150,6 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
             $userName = trim($row['user_name']);
 
-            $maxtraffic = ($row['maxtraffic'] >= 0) ? round($row['maxtraffic']) : $row['maxtraffic'];
             $filetraffic = round(( $row['filetraffic'] / 1024 ), 2);
 
             $oldActive = $row['active'];
