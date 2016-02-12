@@ -55,6 +55,7 @@ if (isset($page_id) and is_numeric($page_id)) {
         return str_replace($m[1], htmlentities($m[1]), $m[0]);
     }
 
+    // Get the current pages data
 	$query = $sql->prepare("SELECT t.`title`,t.`text`,t.`id`,p.`subpage` FROM `page_pages` p INNER JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND `type`='page' AND t.`language`=? AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
 	$query->execute(array($page_id ,$user_language));
 	while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -64,6 +65,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 
         $page_data->title = $row['title'];
 		$page_title = $row['title'];
+        $subPageId = $row['subpage'];
         $breadcrumbID = $row['subpage'];
         $breadcrumbPageID = $page_id;
 
@@ -79,6 +81,7 @@ if (isset($page_id) and is_numeric($page_id)) {
 		}
 	}
 
+    // Get the breadcrumps that lead to this page
     $breadcrumbs = array();
 
     $query = $sql->prepare("SELECT p.`id`,p.`subpage`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`id`=? AND t.`language`=? AND `type`='page' AND p.`released`='1' AND p.`resellerid`='0' LIMIT 1");
@@ -100,6 +103,22 @@ if (isset($page_id) and is_numeric($page_id)) {
     }
 
     $breadcrumbs = array_reverse($breadcrumbs);
+
+    if (!isset($subPageId)) {
+        $subPageId = $page_id;
+    }
+
+    $relatedPages = array();
+
+    // Get the IDs and titles of related (sub) pages. So we can automatically build a menu
+    $query = $sql->prepare("SELECT p.`id`,t.`title`,CASE WHEN p.`id`=p.`subpage` THEN 0 WHEN `sort` IS NULL THEN 9999 ELSE `sort` END AS `order` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` WHERE p.`subpage`=? AND t.`language`=? AND `type`='page' AND p.`released`='1' AND p.`resellerid`='0' ORDER BY `order`,p.`id`");
+    $query->execute(array($subPageId, $user_language));
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+        $link = (isset($seo) and $seo == 'Y') ? $page_data->pageurl . '/' . $user_language . '/' . szrp($row['title']) . '/' : $page_data->pageurl . '?s=page&amp;l=' . $user_language . '&amp;id=' . $row['id'];
+
+        $relatedPages[$row['id']] = array('href' => '<a href="' . $link . '">' . $row['title'] . '</a>', 'link' => $link, 'title' => $row['title']);
+    }
 
     if (isset($page_title)) {
 
