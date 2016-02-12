@@ -734,17 +734,17 @@ if (!function_exists('passwordgenerate')) {
 
                 $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
                 $query->execute(array($userLanguage, $template, $lookupID));
-                $sprache = @simplexml_load_string(utf8_encode(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)))));
+                $sprache = @simplexml_load_string(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES))));
 
                 if (!$sprache) {
                     $query->execute(array($resellerLanguage, $template, $lookupID));
-                    $sprache = @simplexml_load_string(utf8_encode(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)))));
+                    $sprache = @simplexml_load_string(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES))));
                 }
 
                 if (!$sprache) {
                     $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=? LIMIT 1");
                     $query->execute(array($template, $lookupID));
-                    $sprache = @simplexml_load_string(utf8_encode(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)))));
+                    $sprache = @simplexml_load_string(strtr($query->fetchColumn(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES))));
                 }
 
                 $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
@@ -786,7 +786,7 @@ if (!function_exists('passwordgenerate')) {
                     $replacements[] = implode(', ', $ports);
 
                 } else {
-                    for ($i = 0; $i < 8; $i++) {
+                    for ($i = 0; $i < 7; $i++) {
                         $replacements[] = '';
                     }
                 }
@@ -822,6 +822,7 @@ if (!function_exists('passwordgenerate')) {
             if (isset($startMail) and isset($topic)) {
 
                 $mail = new PHPMailer();
+                $mail->CharSet = 'UTF-8';
 
                 $mail->setFrom($resellermail);
 
