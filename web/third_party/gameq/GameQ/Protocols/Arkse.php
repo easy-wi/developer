@@ -32,7 +32,7 @@ class Arkse extends Source
      *
      * @type string
      */
-    protected $name = 'arkse';
+    protected $name = 'ark';
 
     /**
      * Longer string name of this protocol class
