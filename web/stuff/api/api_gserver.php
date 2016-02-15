@@ -129,6 +129,17 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $localServerID = isid($data['server_local_id'], 19);
             $externalServerID = isExternalID($data['server_external_id']);
 
+            $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50) and strlen($data['initialpassword']) > 1) ? $data['initialpassword'] : passwordgenerate(10);
+            $taskset = (isset($data['taskset']) and active_check($data['taskset'])) ? $data['taskset'] : 'N';
+            $eacallowed = (isset($data['eacallowed']) and active_check($data['eacallowed'])) ? $data['eacallowed'] : 'N';
+            $brandname = (isset($data['brandname']) and active_check($data['brandname'])) ? $data['brandname'] : 'N';
+            $tvenable = (isset($data['tvenable']) and active_check($data['tvenable'])) ? $data['tvenable'] : 'N';
+            $pallowed = (isset($data['pallowed']) and active_check($data['pallowed'])) ? $data['pallowed'] : 'N';
+            $autoRestart = (isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
+            $minram = (isset($data['minram']) and isid($data['minram'], 10)) ? $data['minram'] : 256;
+            $maxram = (isset($data['maxram']) and isid($data['maxram'], 10)) ? $data['maxram'] : 512;
+            $hdd = (isset($quotaActive) and $quotaActive == 'Y' and isset($data['hdd']) and isid($data['hdd'], 10)) ? $data['maxram'] : 0;
+
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_user_by']], $resellerID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -210,8 +221,8 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                     $inSQLArray = 'r.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
                 }
 
-                $query = $sql->prepare("SELECT r.`id`,r.`quota_active`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(SELECT COUNT(m.`id`) FROM `rservermasterg` AS m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` AS r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
-                $query->execute(array($resellerID, $slots, $masterServerCount));
+                $query = $sql->prepare("SELECT r.`id`,r.`quota_active`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(r.`ram`-(SELECT SUM(g.`maxram`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `free_ram`,(SELECT COUNT(m.`id`) FROM `rservermasterg` AS m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` AS r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND (`free_ram`>? OR `free_ram` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
+                $query->execute(array($resellerID, $slots, $maxram, $masterServerCount));
 
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -351,17 +362,6 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                         $port5 += $portStep;
                     }
                 }
-
-                $initialpassword = (isset($data['initialpassword']) and wpreg_check($data['initialpassword'], 50) and strlen($data['initialpassword']) > 1) ? $data['initialpassword'] : passwordgenerate(10);
-                $taskset = (isset($data['taskset']) and active_check($data['taskset'])) ? $data['taskset'] : 'N';
-                $eacallowed = (isset($data['eacallowed']) and active_check($data['eacallowed'])) ? $data['eacallowed'] : 'N';
-                $brandname = (isset($data['brandname']) and active_check($data['brandname'])) ? $data['brandname'] : 'N';
-                $tvenable = (isset($data['tvenable']) and active_check($data['tvenable'])) ? $data['tvenable'] : 'N';
-                $pallowed = (isset($data['pallowed']) and active_check($data['pallowed'])) ? $data['pallowed'] : 'N';
-                $autoRestart = (isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
-                $minram = (isset($data['minram']) and isid($data['minram'], 10)) ? $data['minram'] : '';
-                $maxram = (isset($data['maxram']) and isid($data['maxram'], 10)) ? $data['maxram'] : '';
-                $hdd = (isset($quotaActive) and $quotaActive == 'Y' and isset($data['hdd']) and isid($data['hdd'], 10)) ? $data['maxram'] : 0;
 
                 if (isset($data['coreCount']) and $data['coreCount'] > 0 and isset($calculatedCores)) {
                     $cores = $calculatedCores;
