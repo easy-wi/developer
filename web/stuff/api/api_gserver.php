@@ -138,7 +138,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
             $autoRestart = (isset($data['autoRestart']) and active_check($data['autoRestart'])) ? $data['autoRestart'] : 'Y';
             $minram = (isset($data['minram']) and isid($data['minram'], 10)) ? $data['minram'] : 256;
             $maxram = (isset($data['maxram']) and isid($data['maxram'], 10)) ? $data['maxram'] : 512;
-            $hdd = (isset($quotaActive) and $quotaActive == 'Y' and isset($data['hdd']) and isid($data['hdd'], 10)) ? $data['maxram'] : 0;
+            $hdd = (isset($data['hdd']) and isid($data['hdd'], 10)) ? $data['hdd'] : 0;
 
             $query = $sql->prepare("SELECT `id`,`cname` FROM `userdata` WHERE `" . $from[$data['identify_user_by']] . "`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($data[$data['identify_user_by']], $resellerID));
