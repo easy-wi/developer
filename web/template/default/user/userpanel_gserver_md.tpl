@@ -48,6 +48,26 @@
                             </select>
                         </div>
 
+                        <div class="form-group">
+                            <label for="inputAutorestart">Auto Restart</label>
+                            <div class="controls">
+                                <select class="form-control" id="inputAutorestart" name="autoRestart">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($autoRestart=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputUpdateRestart">Update Restart</label>
+                            <div class="controls">
+                                <select class="form-control" id="inputUpdateRestart" name="updateRestart">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($updateRestart=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
                         <?php foreach ($table as $table_row) { ?>
                         <div class="<?php echo $table_row['id'].' '.$table_row['displayNone'];?> switch">
 

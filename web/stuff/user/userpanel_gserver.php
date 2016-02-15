@@ -278,9 +278,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $hlds_6 = $row['hlds_6'];
         }
 
-        $query = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`eacallowed`,g.`serverid`,g.`newlayout`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,u.`cname`,r.`ftpport` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT g.`autoRestart`,g.`updateRestart`,g.`id`,g.`serverip`,g.`port`,g.`eacallowed`,g.`serverid`,g.`newlayout`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,u.`cname`,r.`ftpport` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $id, $user_id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $autoRestart = $row['autoRestart'];
+            $updateRestart = $row['updateRestart'];
             $gsIP = $row['serverip'];
             $gsPort = $row['port'];
             $ftppass = $row['cftppass'];
@@ -537,6 +540,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         if (isset($anticheat)) {
+
             $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`=?,`fps`=?,`tic`=?,`map`=?,`workShop`=?,`workshopCollection`=?,`mapGroup`=?,`modcmd`=?,`servertemplate`=?,`uploaddir`=AES_ENCRYPT(?,?),`webapiAuthkey`=AES_ENCRYPT(?,?),`steamServerToken`=AES_ENCRYPT(?,?) WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($anticheat, $fps, $tic, $map, $workShop, $workshopCollection, $mapGroup, $modcmd, $serverTemplate, $uploaddir, $aeskey, $webapiAuthkey, $aeskey, $steamServerToken, $aeskey, $switchID, $resellerLockupID));
 
@@ -546,6 +550,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $updated = false;
         }
 
+        $query = $sql->prepare("UPDATE `gsswitch` SET `autoRestart`=?,`updateRestart`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($ui->active('autoRestart', 'post'), $ui->active('updateRestart', 'post'), $id, $resellerLockupID));
+
+        $updated = ($query->rowCount() > 0) ? true : $updated;
+
         $ftppass = $ui->password('ftppass', 100, 'post');
 
         if ($ftpAccess == 'Y') {
@@ -554,14 +563,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query->execute(array($switchID, $ftppass, $aeskey, $id, $resellerLockupID));
 
             $updated = ($query->rowCount() > 0) ? true : $updated;
+        }
 
-            if (isset($oldID, $switchID, $oldProtected) and $oldID != $switchID and $oldProtected == 'Y') {
+        if (isset($oldID, $switchID, $oldProtected) and $oldID != $switchID and $oldProtected == 'Y') {
 
-                $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($id, $resellerLockupID));
+            $query = $sql->prepare("UPDATE `gsswitch` SET `protected`='N' WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($id, $resellerLockupID));
 
-                $updated = ($query->rowCount() > 0) ? true : $updated;
-            }
+            $updated = ($query->rowCount() > 0) ? true : $updated;
         }
 
         if ($updated) {
