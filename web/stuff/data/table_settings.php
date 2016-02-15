@@ -64,7 +64,7 @@ $defined['settings'] = array(
     'nopassword' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
     'tohighslots' => array("Type"=>"smallint(1) unsigned","Null"=>"NO","Key"=>"","Default"=>"1","Extra"=>""),
     'paneldomain' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'down_checks' => array("Type"=>"smallint(1) unsigned","Null"=>"YES","Key"=>"","Default"=>"2","Extra"=>""),
+    'down_checks' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"2","Extra"=>""),
     'lastUpdateRun' => array("Type"=>"smallint(2) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lastCronStatus' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lastCronWarnStatus' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),

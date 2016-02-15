@@ -69,6 +69,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     
     // Checks are against select fields. We likely have some kind of attack in case on of the values are not as expected
 	$fail = 0;
+
 	if (!$ui->active('prefix1', 'post')) $fail = 1;
 	if (!$ui->active('voice_autobackup', 'post')) $fail = 1;
 	if (!$ui->timezone('timezone', 'post')) $fail = 1;
@@ -76,9 +77,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 	if (!$ui->id('noservertag', 1, 'post')) $fail = 1;
 	if (!$ui->id('nopassword', 1, 'post')) $fail = 1;
 	if (!$ui->id('tohighslots', 1, 'post')) $fail = 1;
-	if (!$ui->id('voice_maxbackup', 1, 'post')) $fail = 1;
-    if (!$ui->id('down_checks', 2, 'post')) $fail = 1;
-	if (!$ui->id('voice_autobackup_intervall', 1, 'post')) $fail = 1;
+	if (!$ui->id('voice_maxbackup', 5, 'post')) $fail = 1;
+    if (!$ui->id('down_checks', 5, 'post')) $fail = 1;
+	if (!$ui->id('voice_autobackup_intervall', 5, 'post')) $fail = 1;
 	if (!$ui->smallletters('language', 2, 'post')) $fail = 1;
 
 	if ($fail != 1) {
@@ -87,14 +88,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $master = 'N';
 
 		$voice_autobackup = $ui->active('voice_autobackup', 'post');
-		$voice_autobackup_intervall = $ui->id('voice_autobackup_intervall', 1, 'post');
-		$voice_maxbackup = $ui->id('voice_maxbackup', 1, 'post');
+		$voice_autobackup_intervall = $ui->id('voice_autobackup_intervall', 5, 'post');
+		$voice_maxbackup = $ui->id('voice_maxbackup', 5, 'post');
 		$prefix1 = $ui->active('prefix1', 'post');
 		$prefix2 = $ui->w('prefix2', 20, 'post');
 		$brandname = $ui->description('brandname', 'post');
 		$licence = $ui->smallletters('licence', 20, 'post');
         $timezone = $ui->timezone('timezone', 'post');
-        $down_checks = $ui->id('down_checks', 2, 'post');
+        $down_checks = $ui->id('down_checks', 5, 'post');
         $language = $ui->smallletters('language', 2, 'post');
         $faillogins = $ui->id('faillogins', 2, 'post');
         $supportnumber = $ui->description('supportnumber', 'post');
