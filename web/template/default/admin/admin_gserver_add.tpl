@@ -84,6 +84,16 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="inputUpdateRestart">Update Restart</label>
+                            <div class="controls">
+                                <select class="form-control" id="inputUpdateRestart" name="updateRestart">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="inputLend"><?php echo $sprache->lendserver;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputLend" name="lendserver">

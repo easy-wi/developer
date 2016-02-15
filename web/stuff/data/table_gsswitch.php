@@ -42,6 +42,7 @@ $defined['gsswitch'] = array(
     'active' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'type' => array("Type"=>"enum('A','G')","Null"=>"NO","Key"=>"","Default"=>"G","Extra"=>""),
     'autoRestart' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
+    'updateRestart' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'userid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'rootID' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'homeLabel' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"home","Extra"=>""),

@@ -96,7 +96,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
 
-            $query = $sql->prepare("SELECT `serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`rootID`,`externalID`,`active`,`autoRestart`,`lendserver`,`eacallowed`,`slots`,`pallowed`,`pallowed`,`pallowed`,`brandname`,`war`,`tvenable`,`minram`,`maxram`,AES_DECRYPT(`ftppassword`,?) AS `ftpPassword`,(SELECT `servertype` FROM `serverlist` WHERE `id`=g.`serverid` LIMIT 1) AS `gameID`  FROM `gsswitch` AS g WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`rootID`,`externalID`,`active`,`autoRestart`,`updateRestart`,`lendserver`,`eacallowed`,`slots`,`pallowed`,`pallowed`,`pallowed`,`brandname`,`war`,`tvenable`,`minram`,`maxram`,AES_DECRYPT(`ftppassword`,?) AS `ftpPassword`,(SELECT `servertype` FROM `serverlist` WHERE `id`=g.`serverid` LIMIT 1) AS `gameID`  FROM `gsswitch` AS g WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $ip = $row['serverip'];
@@ -110,6 +110,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $externalID = $row['externalID'];
                 $active = $row['active'];
                 $autoRestart = $row['autoRestart'];
+                $updateRestart = $row['updateRestart'];
                 $lendServer = $row['lendserver'];
                 $ftpPassword = $row['ftpPassword'];
                 $eacAllowed = $row['eacallowed'];
@@ -156,6 +157,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $rootID = $ui->id('rootID', 10, 'post');
         $active = $ui->active('active', 'post');
         $autoRestart = $ui->active('autoRestart', 'post');
+        $updateRestart = $ui->active('updateRestart', 'post');
         $lendServer = $ui->active('lendserver', 'post');
         $ftpPassword = $ui->password('ftpPassword', 50, 'post');
         $eacAllowed = $ui->active('eacAllowed', 'post');
@@ -361,8 +363,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`ftppassword`,`ppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,1,'Y',?)");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, passwordgenerate(10), $aeskey, $resellerLockupID, $ui->externalID('externalID', 'post')));
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`updateRestart`,`ftppassword`,`ppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,1,'Y',?)");
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, passwordgenerate(10), $aeskey, $resellerLockupID, $ui->externalID('externalID', 'post')));
 
                 $id = $sql->lastInsertId();
 
@@ -434,8 +436,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     }
                 }
 
-                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->externalID('externalID', 'post'), $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`updateRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, $currentActiveGame, $ui->externalID('externalID', 'post'), $id, $resellerLockupID));
 
                 $rowCount += $query->rowCount();
 

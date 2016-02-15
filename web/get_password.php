@@ -67,7 +67,7 @@ if ($ui->st('w', 'get') == 'ms' and $ui->username('shorten', 50, 'get')) {
 
             if ($query2->rowCount() > 0) {
 
-                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `active`='Y' AND `stopped`='N'");
+                $query2 = $sql->prepare("SELECT `id`,`userid`,CONCAT(`serverip`,':',`port`) AS `name` FROM `gsswitch` WHERE `rootID`=? AND `active`='Y' AND `stopped`='N' AND `updateRestart`='Y'");
                 $query2->execute(array($row['serverid']));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
