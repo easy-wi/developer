@@ -41,14 +41,14 @@
                         <div class="form-group">
                             <label for="inputUsageType"><?php echo $sprache->usageType;?></label>
                             <div class="controls">
-                                <select class="form-control" id="inputUsageType" name="usageType" onchange="loadServerSettings($('#inputServerType').val(), this.value);textdrop('inputPhpConfiguration');">
+                                <select class="form-control" id="inputUsageType" name="usageType" onchange="loadServerSettings($('#inputServerType').val(), this.value);textdrop('inputPhpConfigurationShow');">
                                     <option value="F"><?php echo $gsprache->fastdownload;?></option>
                                     <option value="W"><?php echo $gsprache->webspace;?></option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group<?php if($usageType!='W') echo ' display_none';?>">
+                        <div class="form-group<?php if($usageType!='W') echo ' display_none';?>" id="inputPhpConfigurationShow">
                             <label for="inputPhpConfiguration"><?php echo $sprache->phpConfiguration;?></label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputPhpConfiguration" name="phpConfiguration" rows="10"><?php echo $phpConfiguration;?></textarea>

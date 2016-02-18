@@ -42,14 +42,14 @@
                         <div class="form-group">
                             <label for="inputUsageType"><?php echo $sprache->usageType;?></label>
                             <div class="controls">
-                                <select class="form-control" id="inputUsageType" class="span11" name="usageType" onchange="loadServerSettings($('#inputServerType').val(), this.value);textdrop('inputPhpConfiguration');">
+                                <select class="form-control" id="inputUsageType" class="span11" name="usageType" onchange="loadServerSettings($('#inputServerType').val(), this.value);textdrop('inputPhpConfigurationShow');">
                                     <option value="F"><?php echo $gsprache->fastdownload;?></option>
                                     <option value="W" <?php if ($usageType=='W') echo 'selected="selected";'?>><?php echo $gsprache->webspace;?></option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group<?php if($usageType=='F') echo ' display_none';?>" id="inputPhpConfiguration">
+                        <div class="form-group<?php if($usageType=='F') echo ' display_none';?>" id="inputPhpConfigurationShow">
                             <label for="inputPhpConfiguration"><?php echo $sprache->phpConfiguration;?></label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputPhpConfiguration" class="span11" name="phpConfiguration" rows="10"><?php echo $phpConfiguration;?></textarea>
