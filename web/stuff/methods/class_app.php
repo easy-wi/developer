@@ -833,7 +833,12 @@ class AppServer {
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
 
-        $script .= 'ps x | grep -v ' . $scriptName . ' | grep ' . $screenName . ' | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+        $script .= 'ps x | grep -v ' . $scriptName . ' | grep ' . $screenName . ' | grep Ssl | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+        $script .= 'kill $PID > /dev/null 2>&1' . "\n";
+        $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
+        $script .= 'done' . "\n";        
+	
+	$script .= 'ps x | grep -v ' . $scriptName . ' | grep ' . $screenName . ' | grep Ssl+ | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
         $script .= 'kill $PID > /dev/null 2>&1' . "\n";
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
