@@ -798,7 +798,7 @@ class AppServer {
 
         $screenName = $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'];
 
-        if ($standalone === true) {
+        if ($standalone === true or $scriptName == '') {
 
             $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/stop-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
@@ -828,17 +828,17 @@ class AppServer {
 
         $script .= 'fi' . "\n";
 
-        $script .= 'ps x | grep -v ' . $scriptName . ' | grep ' . $screenName . ' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+        $script .= 'ps x | grep ' . $screenName . ' | grep -v ' . $scriptName . ' | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
         $script .= 'kill $PID > /dev/null 2>&1' . "\n";
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
 
-        $script .= 'ps x | grep -v ' . $scriptName . ' | grep ' . $screenName . ' | grep Ssl | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+        $script .= 'ps x | grep -v ' . $scriptName . ' | grep Ssl | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
         $script .= 'kill $PID > /dev/null 2>&1' . "\n";
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
-        $script .= 'done' . "\n";        
-	
-	$script .= 'ps x | grep -v ' . $scriptName . ' | grep ' . $screenName . ' | grep Ssl+ | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
+        $script .= 'done' . "\n";
+
+        $script .= 'ps x | grep -v ' . $scriptName . ' | grep Ssl+ | grep java | grep -v grep | awk \'{print $1}\' | while read PID; do' . "\n";
         $script .= 'kill $PID > /dev/null 2>&1' . "\n";
         $script .= 'kill -9 $PID > /dev/null 2>&1' . "\n";
         $script .= 'done' . "\n";
