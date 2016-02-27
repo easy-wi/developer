@@ -187,6 +187,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                         $password = passwordgenerate(10);
                     }
 
+                    $dbReturn = '';
+
                     if ($ui->st('action', 'post') == 'ad') {
 
                         $mailData = array(
@@ -198,16 +200,24 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                             )
                         );
 
-                        $remotesql->AddDB($mailData, $dbName, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+                        $dbReturn = $remotesql->AddDB($mailData, $dbName, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
                     }
 
                     if ($ui->st('action', 'post') == 'md') {
-                        $remotesql->ModDB($dbName, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+                        $dbReturn = $remotesql->ModDB($dbName, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
                     }
+
+                    if ($dbReturn == 'ok') {
+                        $insertlog->execute();
+                        $template_file = $spracheResponse->table_add;
+                    } else {
+                        $template_file = $spracheResponse->error_table . "<br>" . $dbReturn;
+                    }
+
+                } else {
+                    $template_file = $spracheResponse->error_table . "<br>" . $remotesql->error;
                 }
 
-                $insertlog->execute();
-                $template_file = $spracheResponse->table_add;
 
                 // No update or insert failed
             } else {
