@@ -117,7 +117,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
             $opts = stream_context_create(array('http' => array('method' => 'GET','header' => "Accept-language: en\r\nUser-Agent: ".$ui->server['HTTP_HOST']."\r\n")));
 
-            $response->add('Downloading: '. $licenceDetails['v'] . '.zip');
+            $response->add('Downloading: ' . $licenceDetails['v'] . '.zip');
 
             $fp = @fopen('http://update.easy-wi.com/ew/' . $licenceDetails['v'] . '.zip', 'rb', false, $opts);
             $zip = @fopen(EASYWIDIR . '/tmp/' . $licenceDetails['v'] . '.zip', 'wb');
@@ -136,6 +136,8 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                 $zo = @zip_open(EASYWIDIR . '/tmp/'. $licenceDetails['v'] . '.zip');
 
                 if (is_resource($zo)) {
+
+                    $i = 0;
 
                     while ($ze = zip_read($zo)) {
 
@@ -211,9 +213,15 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                                 $response->addError('Unpacking: '. $name);
                             }
                         }
+
+                        $i++;
                     }
 
                     zip_close($zo);
+
+                    if ($i == 0) {
+                        $response->addError('Cannot find files in the downloaded archive');
+                    }
 
                 } else {
                     $response->addError('Cannot open the update archive <b>' . $licenceDetails['v'] . '.zip</b>');
@@ -226,15 +234,14 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
                 } else {
                     $response->addError('Can not open: '. EASYWIDIR . '/install/update.php');
                 }
-
             }
 
             if ($fp != true) {
-                $response->addError('Error: could not retrieve the update');
+                $response->addError('Could not download the update');
             }
 
             if ($zip != true) {
-                $response->addError('Error: could not create the temporary zip file');
+                $response->addError('Could not create the temporary zip file');
             }
 
             foreach (scandir(EASYWIDIR . '/tmp/') as $c) {
@@ -254,9 +261,12 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
         } else {
             $response->addError('Cannot create the tempfolder <b>tmp/</b>');
         }
+/*
+ *
 
+ */
         if (count($response->errors) > 0) {
-            $template_file = 'Errors: '.implode('<br />',$response->errors);
+            $template_file = '<div class="alert alert-danger"><h4><i class="icon fa fa-ban"></i> Errors!</h4>' . implode('<br />',$response->errors) . '</div>';
         }
 
         if (isset($template_file)) {

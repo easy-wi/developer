@@ -39,7 +39,7 @@
 
 $defined['easywi_version'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'version' => array("Type"=>"decimal(4,2)","Null"=>"NO","Key"=>"","Default"=>"3.30","Extra"=>""),
+    'version' => array("Type"=>"decimal(4,2)","Null"=>"NO","Key"=>"","Default"=>"5.21","Extra"=>""),
     'de' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'en' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>"")
 );
