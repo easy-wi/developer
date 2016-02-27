@@ -61,16 +61,16 @@ $id = $ui->id('id', 10, 'get');
 $externalID = $ui->externalID('externalID', 'post');
 $active = $ui->active('active', 'post');
 $ip = $ui->ip4('ip', 'post');
-$port = $ui->port('port', 'post');
 $user = $ui->username('user', 255, 'post');
 $password = $ui->password('password', 255, 'post');
 $interface = $ui->url('interface', 'post');
+$port = ($ui->port('port', 'post')) ? $ui->port('port', 'post') : 3306;
 $max_databases = ($ui->id('max_databases', 255, 'post')) ? $ui->id('max_databases', 255, 'post'): 100;
 $max_queries_per_hour = ($ui->id('max_queries_per_hour', 255, 'post')) ? $ui->id('max_queries_per_hour', 255, 'post') : 0;
 $max_updates_per_hour = ($ui->id('max_updates_per_hour', 255, 'post')) ? $ui->id('max_updates_per_hour', 255, 'post') : 0;
 $max_connections_per_hour = ($ui->id('max_connections_per_hour', 255, 'post')) ? $ui->id('max_connections_per_hour', 255, 'post') : 0;
 $max_userconnections_per_hour = ($ui->id('max_userconnections_per_hour', 255, 'post')) ? $ui->id('max_userconnections_per_hour', 255, 'post') : 0;
-$connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'Y';
+$connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'N';
 $externalAddress = ($ui->ip('externalAddress', 'post')) ? $ui->ip('externalAddress', 'post') : $ui->domain('externalAddress', 'post');
 
 // At this point all variables are defined that can come from the user
