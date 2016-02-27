@@ -90,7 +90,7 @@
                         <div class="form-group">
                             <label for="inputPassword"><?php echo $sprache->password;?></label>
                             <div class="controls">
-                                <input class="form-control" id=inputPassword type="text" name="password" value="<?php echo $password;?>" required>
+                                <input class="form-control" id=inputPassword type="password" name="password" value="<?php echo $password;?>" required>
                             </div>
                         </div>
 
