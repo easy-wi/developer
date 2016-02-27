@@ -63,7 +63,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
     $errors = array($spracheResponse->token);
 
-    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
+    $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_page_pages_add.tpl' : 'admin_page_pages_md.tpl';
 
 // Add and modify entries. Same validation can be used.
 } else if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
@@ -135,7 +135,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $keywords_used[$lg] = array();
             }
 
-            $query = $sql->prepare("SELECT `released`,`subpage`,`comments` FROM `page_pages` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT `released`,`subpage`,`comments`,`naviDisplay` FROM `page_pages` WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query2 = $sql->prepare("SELECT `id`,`language`,`title`,`text` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
             $query3 = $sql->prepare("SELECT t.`name`,t.`type` FROM `page_terms_used` u LEFT JOIN `page_terms` t ON u.`term_id`=t.`id` WHERE t.`type`='tag' AND u.`page_id`=? AND u.`language_id`=? AND u.`resellerid`=? ORDER BY t.`name` DESC");
             $query->execute(array($id, $resellerLockupID));
@@ -144,6 +144,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $released = $row['released'];
                 $subpage = $row['subpage'];
                 $comments = $row['comments'];
+                $naviDisplay = $row['naviDisplay'];
 
                 $query2->execute(array($id, $resellerLockupID));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -241,19 +242,18 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
-                $query = $sql->prepare("INSERT INTO `page_pages` (`released`,`authorid`,`authorname`,`date`,`type`,`comments`,`resellerid`) VALUES (?,?,?,NOW(),'page',?,?)");
-                $query->execute(array($ui->id('released', 1, 'post'), $admin_id, $author, $ui->active('comments', 'post'), $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `page_pages` (`released`,`authorid`,`authorname`,`date`,`type`,`comments`,`naviDisplay`,`resellerid`) VALUES (?,?,?,NOW(),'page',?,?,?)");
+                $query->execute(array($ui->id('released', 1, 'post'), $admin_id, $author, $ui->active('naviDisplay', 'post'), $ui->active('comments', 'post'), $resellerLockupID));
 
                 $rowCount = $query->rowCount();
 
                 $id = $sql->lastInsertId();
-
             }
 
             $subpageID = (!$ui->id('subpage', 30, 'post') or $ui->id('subpage', 30, 'post') == 0) ? $id : $ui->id('subpage', 30, 'post');
 
-            $query = $sql->prepare("UPDATE `page_pages` SET `released`=?,`comments`=?,`subpage`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-            $query->execute(array($ui->id('released', 1, 'post'), $ui->active('comments', 'post'), $subpageID, $id, $resellerLockupID));
+            $query = $sql->prepare("UPDATE `page_pages` SET `released`=?,`comments`=?,`subpage`=?,`naviDisplay`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query->execute(array($ui->id('released', 1, 'post'), $ui->active('comments', 'post'), $ui->active('naviDisplay', 'post'), $subpageID, $id, $resellerLockupID));
 
             if (count($posted_languages) > 0) {
 
@@ -403,7 +403,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // An error occurred during validation unset the redirect information and display the form again
         } else {
             unset($header, $text);
-            $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
+            $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_page_pages_add.tpl' : 'admin_page_pages_md.tpl';
         }
     }
 
