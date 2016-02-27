@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <error_server_exists>Error: One or more root/vserver existing with IP(s) located in this subnet!</error_server_exists>
+    <help_vlan>Easy-WI configures DHCP only. Switches and routers need to be configured manually regarding VLANs.</help_vlan>
+    <netmask>Maschera di rete</netmask>
+    <subnet>Sottorete</subnet>
+    <subnetOptions>Options della sottorete</subnetOptions>
+    <subnetStart>Avvia la sottorete</subnetStart>
+    <subnetStop>Termina la sottorete</subnetStop>
+    <vlan>Vlan</vlan>
+    <vlanName>Nome vlan</vlanName>
+</sprache>

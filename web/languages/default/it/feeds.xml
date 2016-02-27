@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Attiva le notizie</active>
+    <displayContent>Mostra tutto l'articolo</displayContent>
+    <limitDisplay>Limite dei caratteri</limitDisplay>
+    <maxChars>Numero massimo di caratteri</maxChars>
+    <maxKeep>Numero massimo di aggiornamenti immagazzinati</maxKeep>
+    <merge>Unisci notizie</merge>
+    <newsAmount>Totale delle notizie visualizzate </newsAmount>
+    <pubDate>Rilasciato</pubDate>
+    <orderBy>Ordina per</orderBy>
+    <status>Stato</status>
+    <title>Titolo</title>
+    <updateMinutes>Controlla ogni X minuti per nuovi aggiornmenti</updateMinutes>
+    <useLocal>Mostra notizie locali</useLocal>
+</sprache>

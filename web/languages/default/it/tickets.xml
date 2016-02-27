@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <all>Tutti</all>
+    <answer>Risposta</answer>
+    <answered>Risposte</answered>
+    <close_heading>Ticket chiuso</close_heading>
+    <comment>Commento</comment>
+    <date>Data</date>
+    <default>Predefinita</default>
+    <edit2>Modificato da</edit2>
+    <edit>Modificato</edit>
+    <error_topic>Errore: Nessun sottoargomento selezionato!</error_topic>
+    <heading>Tipologia di supporto</heading>
+    <name>Nome</name>
+    <new>Aggiungi categoria</new>
+    <none>Nessuno</none>
+    <open>Aperto</open>
+    <priority>Priorità</priority>
+    <priority_critical>critica</priority_critical>
+    <priority_high>alta</priority_high>
+    <priority_low>bassa</priority_low>
+    <priority_medium>media</priority_medium>
+    <priority_very_high>molto alta</priority_very_high>
+    <problem>Sintomi / problemi</problem>
+    <rating>Valutazione del supporto</rating>
+    <reopen>Riapri</reopen>
+    <shown>Risultati per pagina</shown>
+    <status>tato del ticket</status>
+    <status_author>Azioni dell'autore</status_author>
+    <status_confirmed>Confermati</status_confirmed>
+    <status_done>Completato</status_done>
+    <status_new>Nuovo</status_new>
+    <status_process>In corso</status_process>
+    <status_reopen>Per revisione</status_reopen>
+    <subject>Argomento</subject>
+    <topic>Sottoargomento di</topic>
+    <topic_name>Categoria</topic_name>
+    <topic_name_sub>Sottoargomento</topic_name_sub>
+    <username>Username</username>
+    <writer>Scrittore</writer>
+</sprache>

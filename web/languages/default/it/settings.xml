@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <brandname>Tag del server:</brandname>
+    <confirm_change>Salvare le modifiche?</confirm_change>
+    <eachday>Ogni X giorni:</eachday>
+    <email2>Questo indirizzo e-mail verrà utilizzato per l'invio di dati agli utenti.</email2>
+    <email>E-mail:</email>
+    <emaildown>Impossibile raggiungere il server.</emaildown>
+    <emaildownrestart>Server non è raggiungibile e non può essere riavviato.</emaildownrestart>
+    <emailfooter2>Questo testo viene inserito nel piè di pagina di un e-mail inviata dalla centrale, per esempio, è possibile aggiungere le informazioni legali qui.</emailfooter2>
+    <emailfooter>Piè di pagina della mail:</emailfooter>
+    <emailnewticket>Tiket di supporto ricevuto.</emailnewticket>
+    <emailpasswordrecovery>Recupera password</emailpasswordrecovery>
+    <emailregards2>Questo testo viene inserito alla fine di una e-mail inviata dalla centrale, per esempio: "Cordiali saluti",</emailregards2>
+    <emailregards>E-mail di saluto:</emailregards>
+    <emailsecuritybreach>È stata rilevata una manipolazione del Server</emailsecuritybreach>
+    <emailvrescue>Sistema di ripristino inizializzato</emailvrescue>
+    <faillogins>Possibili accessi non riusciti in serie</faillogins>
+    <header>Impostazioni</header>
+    <image_server2>Se un'installazione master non è impostato, i dati verranno scaricati dal server.</image_server2>
+    <image_server3>Usa un server di immagini:</image_server3>
+    <image_server>Server Immagine:</image_server>
+    <language>Lingua predefinita:</language>
+    <lastCronWarnStatus>Avviso statuscheck.php</lastCronWarnStatus>
+    <lastCronWarnReboot>Avviso reboot.php</lastCronWarnReboot>
+    <lastCronWarnUpdates>Avviso startupdates.php</lastCronWarnUpdates>
+    <lastCronWarnJobs>Avviso jobs.php</lastCronWarnJobs>
+    <lastCronWarnCloud>Avviso cloud.php</lastCronWarnCloud>
+    <maxbackups>Quantità di backup massima:</maxbackups>
+    <nopassword>Password rimossa</nopassword>
+    <noservertag>Tag del server rimossa</noservertag>
+    <password>Password</password>
+    <prefix1>Definisci nome utente:</prefix1>
+    <prefix2>ID utente univoci verranno aggiunti ai loro nomi utente associati. Se si definiscono i nomi utente, solo piccole lettere e numeri sono ammessi. Esempio: Il cliente sarà Customer2 e il conteggio</prefix2>
+    <prefix3>DNome utente predefinito:</prefix3>
+    <protocol>Protocollo</protocol>
+    <shutdown>Arrestare server</shutdown>
+    <supportnumber>Numero di telefono di supporto:</supportnumber>
+    <timezone>Fuso orario:</timezone>
+    <tohighslots>Slot manipolati</tohighslots>
+    <warn>Avvisare l'utente</warn>
+    <down_checks>Controlli offline</down_checks>
+</sprache>
