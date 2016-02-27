@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <notFound>404: Nessun dato trovato per questo ID o accesso negato!</notFound>
+    <error_name>Errore: Il nome non è tollerato o già esistente.</error_name>
+    <error_server>Errore: Impossibile stabilire una connessione con il server!</error_server>
+    <error_table2>Errore: Aggiungendo i dati al database fallito!</error_table2>
+    <error_table>Errore: L'aggiornamento del database non è riuscita, o non nuovi dati sono stati inseriti!</error_table>
+    <error_ts_query>Errore: L'invio del comando al server TS 3 non è riuscita. Il messaggio di errore è: </error_ts_query>
+    <error_ts_query_connect>Errore: Impossibile connettersi al server di query di TS3. Il messaggio di errore è: </error_ts_query_connect>
+    <error_username>Errore: Nome utente non tollerato o già esistente.</error_username>
+    <reinstall_success>Reinstallazione avviata con successo</reinstall_success>
+    <table_add>Dati aggiunti con successo al database.</table_add>
+    <table_del>Dati rimossi con successo dal database.</table_del>
+    <token>Errore: il token di protezione CSFR è scaduto o non corrisponde a quello del server.</token>
+    <ts_query_success>Richiesta al server TS3 completata con successo. La risposta del server è: </ts_query_success>
+</sprache>

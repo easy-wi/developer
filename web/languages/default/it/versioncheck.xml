@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<changelog>Changelog</changelog>
+	<filesoutdated>Stai eseguendo una versione con dei file obsoleti.</filesoutdated>
+	<latestversion>L'utima versione è la </latestversion>
+	<newversion>Una nuova versione è disponibile: </newversion>
+	<ok>Stai eseguendo l'ultima versione disponibile.</ok>
+	<outdated>Stai eseguendo una versione obsoleta: </outdated>
+    <prepare1>Durante l'esecuzione di aggiornamenti vi è sempre la possibilità che qualcosa vada storto. Preparati per evitare la perdita di dati o un database danneggiato in modo permanente.</prepare1>
+    <prepare2>Per essere sicuri, si prega di salvare tutti i dati e creare una copia di backup del database.</prepare2>
+    <prepare3>Si prega di procedere solo dopo aver creato il backup.</prepare3>
+    <releaseNotes>Note di rilascio</releaseNotes>
+	<start>Avvia l'agiornamento</start>
+</sprache>

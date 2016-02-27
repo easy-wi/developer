@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Attiva</active>
+    <description>Descrizione</description>
+    <error_core>Errore: Il modulo non può essere eliminato poiché è parte integrante del pannello</error_core>
+    <file>File</file>
+    <get>Otteni il valore</get>
+    <name>Nome</name>
+    <sub>Menu</sub>
+    <type>Tipo di modulo</type>
+    <type_admin>Pannello amministratore</type_admin>
+    <type_cms>CMS</type_cms>
+    <type_core>Easy-Wi core</type_core>
+    <type_user>Pannello utente</type_user>
+</sprache>

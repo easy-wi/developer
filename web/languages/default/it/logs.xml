@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<account>Account</account>
+	<action>Azione</action>
+	<admin>Admin</admin>
+	<all>All</all>
+	<banned_till>Banned fino al</banned_till>
+    <date>Data</date>
+    <help_logs>Tutte le azioni di interfaccia importanti stanno per essere registrati. In questo modo, si avrà il quadro completo. Le azioni verranno registrati anche con nome.</help_logs>
+    <hostname>Host name</hostname>
+	<ip>IP</ip>
+	<shown>Amount</shown>
+	<subuser>Sottoutente</subuser>
+	<topic>Argomento</topic>
+	<user>Utente</user>
+    <failcount>Tentativi falliti</failcount>
+    <reason>Motivazione</reason>
+</sprache>
