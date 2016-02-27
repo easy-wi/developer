@@ -1,7 +1,5 @@
 Easy-WI.com
 =========
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif "Easy-Wi")](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=SEBWZPZBJHPQ8 "Donate")
-------------------------
 
 Reaching [Milestone 4.00](https://github.com/easy-wi/developer/issues?milestone=1&page=1&state=closed) Easy-WI becomes free Software with the terms of GNU GPL v3.
 
