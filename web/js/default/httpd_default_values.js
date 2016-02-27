@@ -78,7 +78,6 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '   location / {\r\n';
             defaultVhostTemplate += '      index index.html index.htm;\r\n';
             defaultVhostTemplate += '   }\r\n';
-
         }
 
         defaultVhostTemplate += '}';
@@ -108,7 +107,6 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '       php_admin_flag allow_url_include Off\r\n';
             defaultVhostTemplate += '       %phpConfiguration%\r\n';
             defaultVhostTemplate += '    </IfModule>\r\n';
-
         }
 
         defaultVhostTemplate += '    <Directory %vhostpath%/%user%/%htdocs%/%path%>\r\n';
@@ -152,11 +150,8 @@ function loadServerSettings (serverType, usageType) {
         defaultRestartCMD = 'sudo /etc/init.d/toBeReplaced reload';
 
         defaultVhostTemplate = '';
-
     }
 
     document.getElementById("inputHttpdCmd").value = defaultRestartCMD;
-
     document.getElementById("inputVhostTemplate").value = defaultVhostTemplate;
-
 }

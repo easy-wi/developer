@@ -584,7 +584,7 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
     return false;
 }
 
-function getVoiceMasterList ($resellerID, $adminID) {
+function getVoiceMasterList($resellerID, $adminID) {
 
     $table = array();
 
