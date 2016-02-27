@@ -94,7 +94,9 @@ function versioncheck ($current, $new ,$file ,$response) {
     $include = true;
 
     if ($current < $new) {
+
         $response->add("Upgrading Database from $current to $new<br />");
+
         if (is_file(EASYWIDIR . '/' . $file)) {
             $response->add('Found updaterfile ' . $file . '. Executing it now<br>');
             include(EASYWIDIR . '/' . $file);
@@ -116,7 +118,11 @@ function versioncheck ($current, $new ,$file ,$response) {
         }
 
         return true;
+
     } else {
+
+        $response->add("Skipping database update $new as current version $current is newer<br />");
+
         return false;
     }
 }
@@ -124,10 +130,12 @@ function versioncheck ($current, $new ,$file ,$response) {
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
 $version = $query->fetchColumn();
+
 $admin_id = 1;
 $main = 1;
 $reseller_id = 0;
 $error = $query->errorinfo();
+
 if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) {
     $response->add("Current database version: 1.9<br />");
     $version = '1.9';
@@ -256,6 +264,9 @@ if (versioncheck($version, '5.10', 'update_500-510.php', $response)) {
 }
 if (versioncheck($version, '5.20', 'update_510-520.php', $response)) {
     $version = '5.20';
+}
+if (versioncheck($version, '5.21', 'update_520-521.php', $response)) {
+    $version = '5.21';
 }
 
 $response->add('Repairing tables if needed.');
