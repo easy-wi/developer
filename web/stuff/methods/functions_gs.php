@@ -184,14 +184,20 @@ if (!function_exists('eacchange')) {
 
     }
 
-    function getAppMasterList ($resellerID) {
+    function getAppMasterList($resellerID, $modifyGS = false) {
 
         $table = array();
 
         global $sql;
 
-        $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,(r.`maxserver` - COUNT(DISTINCT s.`id`)) AS `freeserver` , (r.`ram` - SUM( s.`maxram` )) AS `free_ram`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID` = r.`id` WHERE r.`active`='Y' AND r.`resellerid`=? GROUP BY r.`id` HAVING ((`freeserver`>0 OR `freeserver` IS NULL) AND (`free_ram`>0 OR `free_ram` IS NULL)) ORDER BY `freeserver` DESC, `free_ram` DESC");
-        $query->execute(array($resellerID));
+        if (is_numeric($modifyGS)) {
+            $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,(r.`maxserver` - COUNT(DISTINCT s.`id`)) AS `freeserver` , (r.`ram` - SUM( s.`maxram` )) AS `free_ram`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID` = r.`id` WHERE r.`active`='Y' AND r.`resellerid`=? GROUP BY r.`id` HAVING (r.`id`=? OR ((`freeserver`>0 OR `freeserver` IS NULL) AND (`free_ram`>0 OR `free_ram` IS NULL))) ORDER BY `freeserver` DESC, `free_ram` DESC");
+            $query->execute(array($resellerID, $modifyGS));
+        } else {
+            $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,(r.`maxserver` - COUNT(DISTINCT s.`id`)) AS `freeserver` , (r.`ram` - SUM( s.`maxram` )) AS `free_ram`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid` FROM `rserverdata` r LEFT JOIN `gsswitch` s ON s.`rootID` = r.`id` WHERE r.`active`='Y' AND r.`resellerid`=? GROUP BY r.`id` HAVING ((`freeserver`>0 OR `freeserver` IS NULL) AND (`free_ram`>0 OR `free_ram` IS NULL)) ORDER BY `freeserver` DESC, `free_ram` DESC");
+            $query->execute(array($resellerID));
+        }
+
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $table[$row['id']] = ($row['description'] != null and $row['description'] != '') ? $row['ip'] . ' ' . $row['description'] : $row['ip'];
         }

@@ -59,9 +59,7 @@ $table2 = array();
 $usedPorts = array();
 $usedSpace = array();
 
-$query = $sql->prepare("SELECT r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`ram`,r.`cores`,r.`hyperthreading`,r.`install_paths`,r.`quota_active`,COUNT(g.`id`) AS `installedServer`,SUM(g.`slots`) AS `installedSlots`,SUM(g.`maxram`) AS `installedRam` FROM `rserverdata` AS r LEFT JOIN `gsswitch` AS g ON g.`rootID`=r.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
-$query2 = $sql->prepare("SELECT SUM(`hdd`) AS `hdd_used` FROM `gsswitch` WHERE `rootID`=? AND `homeLabel`=?");
-
+$query = $sql->prepare("SELECT r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`ram`,r.`cores`,r.`hyperthreading`,r.`install_paths`,r.`quota_active`,COUNT(g.`id`) AS `installedServer`,SUM(g.`slots`) AS `installedSlots`,SUM(g.`maxram`) AS `installedRam`,SUM(g.`hdd`) AS `hdd_used` FROM `rserverdata` AS r LEFT JOIN `gsswitch` AS g ON g.`rootID`=r.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
 $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -101,8 +99,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             }
 
             if (isset($values['size'])) {
-                $query2->execute(array($ui->id('id', 10, 'get'), $key));
-                $usedSpace[$key] = array('installed' => ((int) $query2->fetchColumn()/1000), 'available' => $values['size']);
+                $usedSpace[$key] = array('installed' => ((int) $row['hdd_used']/1000), 'available' => $values['size']);
             }
         }
     }
