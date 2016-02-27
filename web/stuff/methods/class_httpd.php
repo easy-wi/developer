@@ -391,7 +391,7 @@ class HttpdManagement {
 
         if ($this->ssh2Object != false and isset($this->hostData['repquotaCmd']) and strlen($this->hostData['repquotaCmd']) > 0) {
 
-            $cmd = 'for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . '-u -v -s / | grep \'web\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; echo "$USERS;"';
+            $cmd = 'grep -E \'usrjquota=|usrquota\' /etc/fstab | awk \'{print $2}\' | while read DIR; for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . ' -u -v -s $DIR 2>/dev/null | grep \'web\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; done; echo "$USERS;"';
 
             $return = $this->ssh2Object->exec($cmd);
 
@@ -434,6 +434,7 @@ class HttpdManagement {
                     }
                 }
             }
+
         } else {
             print "No SSH Connection or quota not allowed\r\n";
         }
