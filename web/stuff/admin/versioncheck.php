@@ -261,18 +261,15 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
         } else {
             $response->addError('Cannot create the tempfolder <b>tmp/</b>');
         }
-/*
- *
 
- */
         if (count($response->errors) > 0) {
             $template_file = '<div class="alert alert-danger"><h4><i class="icon fa fa-ban"></i> Errors!</h4>' . implode('<br />',$response->errors) . '</div>';
         }
 
         if (isset($template_file)) {
-            $template_file .= ' <br/>'.implode('<br />',$response->printresponse());
+            $template_file .= ' <br/>' . implode('<br />',$response->printresponse());
         } else {
-            $template_file = $response->printresponse();
+            $template_file = implode('<br />',$response->printresponse());
         }
 
     } else if (isset($ewVersions)) {
