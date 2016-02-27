@@ -89,7 +89,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $autorestart = $ui->active('autorestart', 'post');
     $externalDefaultDNS = $ui->active('externalDefaultDNS', 'post');
     $ip = $ui->ip('ip', 'post');
-    $connectIpOnly = $ui->active('connectIpOnly', 'post');
     $user = $ui->username('user', 50, 'post');
     $externalID = $ui->escaped('externalID', 'post');
     $ips = $ui->ips('ips', 'post');
@@ -126,6 +125,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $bit = ($ui->id('bit', 2, 'post')) ? $ui->id('bit', 2, 'post') : 64;
     $managedServer = ($ui->active('managedServer', 'post')) ? $ui->active('managedServer', 'post') : 'N';
     $managedForID = $ui->id('managedForID', 10, 'post');
+    $connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'N';
 
     if (!$iniConfiguration or strlen($iniConfiguration) < 2 or !@parse_ini_string($iniConfiguration, true)) {
         $iniConfiguration = '[Show at Global List]
