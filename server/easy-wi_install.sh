@@ -62,6 +62,12 @@ function errorAndContinue {
     continue
 }
 
+function removeIfExists {
+    if [ "$1" != "" -a -f "$1" ]; then
+        rm -f $1
+    fi
+}
+
 function runSpinner {
 
     SPINNER=("-" "\\" "|" "/")
@@ -446,7 +452,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
                 add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
                 wget http://www.dotdeb.org/dotdeb.gpg
                 apt-key add dotdeb.gpg
-                rm -f dotdeb.gpg
+                removeIfExists dotdeb.gpg
                 apt-get update
              fi
         fi
@@ -595,15 +601,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
     if [ "$SQL" == "MySQL" -o "$SQL" == "MariaDB" ]; then
 
-        cyanMessage " "
-        okAndSleep "Securing MySQL by running \"mysql_secure_installation\" commands."
-        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "UPDATE mysql.user SET Password=PASSWORD('$MYSQL_ROOT_PASSWORD') WHERE User='root'" 2> /dev/null
-        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 2> /dev/null
-        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.user WHERE User=''" 2> /dev/null
-        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'" 2> /dev/null
-        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "FLUSH PRIVILEGES" 2> /dev/null
-
-        if [ "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
+    if [ "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
             cyanMessage " "
             cyanMessage "Is Easy-WI installed on a different server."
@@ -617,9 +615,19 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
                 esac
             done
         fi
+
+        cyanMessage " "
+        okAndSleep "Securing MySQL by running \"mysql_secure_installation\" commands."
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.user WHERE User=''" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "FLUSH PRIVILEGES" 2> /dev/null
     fi
 
     if [ "$EXTERNAL_INSTALL" == "Yes" ]; then
+
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "GRANT USAGE ON *.* TO 'root'@'' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD' WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0" 2> /dev/null
+        mysql -u root -p"$MYSQL_ROOT_PASSWORD" -e "UPDATE mysql.user SET Select_priv='Y',Insert_priv='Y',Update_priv='Y',Delete_priv='Y',Create_priv='Y',Drop_priv='Y',Reload_priv='Y',Shutdown_priv='Y',Process_priv='Y',File_priv='Y',Grant_priv='Y',References_priv='Y',Index_priv='Y',Alter_priv='Y',Show_db_priv='Y',Super_priv='Y',Create_tmp_table_priv='Y',Lock_tables_priv='Y',Execute_priv='Y',Repl_slave_priv='Y',Repl_client_priv='Y',Create_view_priv='Y',Show_view_priv='Y',Create_routine_priv='Y',Alter_routine_priv='Y',Create_user_priv='Y',Event_priv='Y',Trigger_priv='Y',Create_tablespace_priv='Y' WHERE User='root' AND Host=''" 2> /dev/null
 
         if [ "$LOCAL_IP" == "" ]; then
 
@@ -630,9 +638,9 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
         if [ "$LOCAL_IP" != "" -a -f /etc/mysql/my.cnf ]; then
             if [ "`grep 'bind-address' /etc/mysql/my.cnf`" ]; then
-                sed -i "s/bind-address.*/bind-address = $LOCAL_IP/g" /etc/mysql/my.cnf
+                sed -i "s/bind-address.*/bind-address = 0.0.0.0/g" /etc/mysql/my.cnf
             else
-                echo "bind-address = $LOCAL_IP" >> /etc/mysql/my.cnf
+                echo "bind-address = 0.0.0.0" >> /etc/mysql/my.cnf
             fi
 
             /etc/init.d/mysql restart
@@ -892,17 +900,13 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
 
         cyanMessage " "
         cyanMessage " "
-        if [ -f /root/tempfstab ]; then
-            rm -f /root/tempfstab
-        fi
-        if [ -f /root/tempmountpoints ]; then
-            rm -f /root/tempmountpoints
-        fi
+        removeIfExists /root/tempfstab
+        removeIfExists /root/tempmountpoints
 
         cat /etc/fstab | while read LINE; do
-            if [[ `echo $LINE | grep '/' | egrep -v '#|boot|proc|swap|floppy|cdrom|usrquota|/sys|/shm|/pts'` ]]; then
+            if [[ `echo $LINE | grep '/' | egrep -v '#|boot|proc|swap|floppy|cdrom|usrquota|usrjquota|/sys|/shm|/pts'` ]]; then
                 CURRENTOPTIONS=`echo $LINE | awk '{print $4}'`
-                echo $LINE | sed "s/$CURRENTOPTIONS/$CURRENTOPTIONS,usrquota/g" >> /root/tempfstab
+                echo $LINE | sed "s/$CURRENTOPTIONS/$CURRENTOPTIONS,usrjquota=aquota.user,jqfmt=vfsv0/g" >> /root/tempfstab
                 echo $LINE | awk '{print $2}' >> /root/tempmountpoints
             else
                 echo $LINE >> /root/tempfstab
@@ -929,9 +933,10 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
             mv /root/tempfstab /etc/fstab
         fi
 
-        if [ -f /root/tempfstab ]; then
-            rm -f /root/tempfstab
-        fi
+        removeIfExists /root/tempfstab
+        removeIfExists /aquota.user
+        touch /aquota.user
+        chmod 600 /aquota.user
 
         if [ -f /root/tempmountpoints ]; then
 
@@ -939,9 +944,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
 
                 quotaoff -ugv $LINE
 
-                if [ -f $LINE/aquota.user ]; then
-                    rm -f $LINE/aquota.user
-                fi
+                removeIfExists $LINE/aquota.user
 
                 okAndSleep "Remounting $LINE"
                 mount -o remount $LINE
@@ -950,7 +953,7 @@ if [ "$INSTALL" == "GS" -o "$INSTALL" == "WR" ]; then
                 quotaon -uv $LINE
             done
 
-            rm -f /root/tempmountpoints
+            removeIfExists /root/tempmountpoints
         fi
     fi
 fi
@@ -1154,7 +1157,7 @@ if [ "$INSTALL" == "GS" ]; then
 
     if [ -f steamcmd_linux.tar.gz ]; then
         tar xfvz steamcmd_linux.tar.gz
-        rm -f steamcmd_linux.tar.gz
+        removeIfExists steamcmd_linux.tar.gz
         chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER/masterserver/steamCMD
         su -c "./steamcmd.sh +login anonymous +quit" $MASTERUSER
     fi
@@ -1231,7 +1234,7 @@ if [ "$INSTALL" == "EW" ]; then
 
     okAndSleep "Unpack zipped Easy-WI archive."
     unzip -u web.zip >/dev/null 2>&1
-    rm -f web.zip
+    removeIfExists web.zip
 
     find /home/easywi_web/ -type f -print0 | xargs -0 chmod 640
     find /home/easywi_web/ -mindepth 1 -type d -print0 | xargs -0 chmod 750
@@ -1476,7 +1479,7 @@ if [ "$INSTALL" == "VS" ]; then
     okAndSleep "Extracting TS3 server files."
     su -c "tar -xf teamspeak3-server.tar.gz --strip-components=1" $MASTERUSER
 
-    rm -f teamspeak3-server.tar.gz
+    removeIfExists teamspeak3-server.tar.gz
 
     QUERY_WHITLIST_TXT=/home/$MASTERUSER/query_ip_whitelist.txt
 
@@ -1535,13 +1538,15 @@ if [ "$INSTALL" == "EW" ]; then
     greenMessage "Easy-WI Webpanel setup is done regarding architecture. Please open $PROTOCOL://$IP_DOMAIN/install/install.php and complete the installation dialog."
     greenMessage "DB user and table name are \"easy_wi\". The password is \"$DB_PASSWORD\"."
 
-    elif [ "$INSTALL" == "GS" ]; then
+elif [ "$INSTALL" == "GS" ]; then
     greenMessage "Gameserver Root setup is done. Please enter the above data at the webpanel at \"App/Game Master > Overview > Add\"."
 elif [ "$INSTALL" == "VS" ]; then
     greenMessage "Teamspeak 3 setup is done. TS3 Query password is $QUERY_PASSWORD. Please enter the data at the webpanel at \"Voiceserver > Master > Add\"."
 elif [ "$INSTALL" == "WR" ]; then
     greenMessage "Webspace Root setup is done. Please enter the above data at the webpanel at \"Webspace > Master > Add\"."
-elif [ "$INSTALL" == "MY" ]; then
+fi
+
+if ([ "$INSTALL" == "MY" ] || [ "$INSTALL" == "WR" -a "$SQL" != "None" ]); then
     greenMessage "MySQL Root setup is done. Please enter the server at the webpanel at \"MySQL > Master > Add\"."
 fi
 
