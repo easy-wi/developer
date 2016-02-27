@@ -75,7 +75,7 @@
 </div>
 <?php } ?>
 
-<div class="form-group">
+<div class="form-group" style="display: none;">
     <label for="inputFlexSlots"><?php echo $sprache->flexSlots;?></label>
     <div class="controls">
         <select class="form-control" id="inputFlexSlots" name="flexSlots" onchange="toggleID('#flexSlotsBox', this.value)">
