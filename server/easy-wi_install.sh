@@ -153,8 +153,9 @@ if [ -f /etc/debian_version ]; then
         esac
     done
 
-    apt-get update && apt-get upgrade -y && apt-get dist-upgrade && apt-get install curl -y
+    apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
 
+    checkInstall curl
     checkInstall debconf-utils
     checkInstall lsb-release
 
