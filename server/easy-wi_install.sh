@@ -111,7 +111,7 @@ USERMOD=`which usermod`
 USERDEL=`which userdel`
 GROUPADD=`which groupadd`
 MACHINE=`uname -m`
-LOCAL_IP=`$(ip route get 8.8.8.8 | awk '{print $NF; exit}')`
+LOCAL_IP=`ip route get 8.8.8.8 | awk '{print $NF; exit}'`
 
 if [ "$LOCAL_IP" == "" ]; then
     HOST_NAME=`hostname -f | awk '{print tolower($0)}'`
@@ -120,7 +120,7 @@ else
 fi
 
 cyanMessage "Checking for the latest latest installer"
-LATEST_VERSION=`curl -s http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
+LATEST_VERSION=`wget -q --timeout=60 -O - http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
 
 if [ "`printf "${LATEST_VERSION}\n${INSTALLER_VERSION}" | sort -V | tail -n 1`" != "$INSTALLER_VERSION" ]; then
     errorAndExit "You are using the old version ${INSTALLER_VERSION}. Please upgrade to version ${LATEST_VERSION} and retry."
@@ -1226,7 +1226,7 @@ if [ "$INSTALL" == "EW" ]; then
     cd /home/easywi_web/htdocs/
 
     okAndSleep "Downloading latest Easy-WI stable."
-    curl https://easy-wi.com/uk/downloads/get/3/ -O web.zip
+    curl https://easy-wi.com/uk/downloads/get/3/ -o web.zip
 
     if [ ! -f web.zip ]; then
         errorAndExit "Can not download Easy-WI. Aborting!"
@@ -1243,7 +1243,7 @@ if [ "$INSTALL" == "EW" ]; then
 
     DB_PASSWORD=`< /dev/urandom tr -dc A-Za-z0-9 | head -c18`
 
-    cyanMessage "The MySQL Root password is required."
+    okAndSleep "Creating database easy_wi and connected user easy_wi"
     mysql -uroot -p$MYSQL_ROOT_PASSWORD -Bse "CREATE DATABASE IF NOT EXISTS easy_wi; GRANT ALL ON easy_wi.* TO 'easy_wi'@'localhost' IDENTIFIED BY '$DB_PASSWORD'; FLUSH PRIVILEGES;"
 
     cyanMessage " "
