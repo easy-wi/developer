@@ -51,17 +51,17 @@ $logusername = getusername($admin_id);
 $logusertype = 'admin';
 
 if ($reseller_id == 0) {
-	$logreseller = 0;
-	$logsubuser = 0;
+    $logreseller = 0;
+    $logsubuser = 0;
 
 } else {
     $logsubuser = (isset($_SESSION['oldid'])) ? $_SESSION['oldid'] : 0;
-	$logreseller = 0;
+    $logreseller = 0;
 }
 
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
-	unset($header, $text);
+    unset($header, $text);
 
     $errors = array($spracheResponse->token);
 
@@ -87,7 +87,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $os = $ui->w('os', 1, 'post');
     $bit = $ui->id('bit', 2, 'post');
     $desc = $ui->description('desc', 'post');
-    $ram = $ui->id('ram', 5, 'post');
+    $ram = $ui->id('ram', 7, 'post');
     $updates = $ui->id('updates', 1, 'post');
 
     $ownerID = ($ui->active('assignToReseller', 'post') == 'Y' and $ui->id('ownerID', 10, 'post')) ? $ui->id('ownerID', 10, 'post') : 0;
