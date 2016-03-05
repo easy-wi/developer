@@ -391,7 +391,7 @@ class HttpdManagement {
 
         if ($this->ssh2Object != false and isset($this->hostData['repquotaCmd']) and strlen($this->hostData['repquotaCmd']) > 0) {
 
-            $cmd = 'grep -E \'usrjquota=|usrquota\' /etc/fstab | awk \'{print $2}\' | while read DIR; for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . ' -u -v -s $DIR 2>/dev/null | grep \'web\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; done; echo "$USERS;"';
+            $cmd = 'for DIR in `grep -E \'usrjquota=|usrquota\' /etc/fstab | awk \'{print $2}\'`; do for USER in `' . str_replace('%cmd%', '' ,$this->hostData['repquotaCmd']) . ' -u -v -s $DIR 2>/dev/null | grep \'web-\' | awk \'{print $1":"$3}\'`; do USERS="$USERS;$USER"; done; done; echo "$USERS;"';
 
             $return = $this->ssh2Object->exec($cmd);
 
@@ -403,6 +403,10 @@ class HttpdManagement {
             $splitIntoHosts = preg_split('/;/', trim(preg_replace('/\s+/', '', $return)), -1, PREG_SPLIT_NO_EMPTY);
 
             $query = $this->sql->prepare("UPDATE `webVhost` SET `hddUsage`=? WHERE `webVhostID`=? LIMIT 1");
+
+            if (count($splitIntoHosts) == 0) {
+                print "No web user found in server return: {$return}\r\n";
+            }
 
             foreach ($splitIntoHosts as $ftpUser) {
 
@@ -432,6 +436,8 @@ class HttpdManagement {
                     } else {
                         print "Cannot find or no update for webhost with FTP user {$user}, webVhostID {$webVhostID} which has a usage of {$usage} MB\r\n";
                     }
+                } else {
+                    print "Cannot parse server return {$ftpUser}\r\n";
                 }
             }
 
