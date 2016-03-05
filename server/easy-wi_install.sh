@@ -111,7 +111,7 @@ USERMOD=`which usermod`
 USERDEL=`which userdel`
 GROUPADD=`which groupadd`
 MACHINE=`uname -m`
-LOCAL_IP=`ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n 1 | tr -d '[:alpha:][:blank:]' | awk -F ':' '{print $2}'`
+LOCAL_IP=`$(ip route get 8.8.8.8 | awk '{print $NF; exit}')`
 
 if [ "$LOCAL_IP" == "" ]; then
     HOST_NAME=`hostname -f | awk '{print tolower($0)}'`
@@ -120,7 +120,7 @@ else
 fi
 
 cyanMessage "Checking for the latest latest installer"
-LATEST_VERSION=`wget -q --timeout=30 -O - http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
+LATEST_VERSION=`curl -s http://l.easy-wi.com/installer_version.php | sed 's/^\xef\xbb\xbf//g'`
 
 if [ "`printf "${LATEST_VERSION}\n${INSTALLER_VERSION}" | sort -V | tail -n 1`" != "$INSTALLER_VERSION" ]; then
     errorAndExit "You are using the old version ${INSTALLER_VERSION}. Please upgrade to version ${LATEST_VERSION} and retry."
@@ -153,7 +153,7 @@ if [ -f /etc/debian_version ]; then
         esac
     done
 
-    apt-get update && apt-get upgrade -y && apt-get dist-upgrade -y
+    apt-get update && apt-get upgrade -y && apt-get dist-upgrade && apt-get install curl -y
 
     checkInstall debconf-utils
     checkInstall lsb-release
@@ -279,10 +279,10 @@ if [ "$INSTALL" == "VS" ]; then
 
     okAndSleep "Searching latest build for hardware type $MACHINE with arch $ARCH."
 
-    for VERSION in ` wget "http://dl.4players.de/ts/releases/?C=M;O=D" -q -O -| grep -i dir | egrep -o '<a href=\".*\/\">.*\/<\/a>' | egrep -o '[0-9\.?]+'| uniq | sort -r -g -t "." -k 1,1 -k 2,2 -k 3,3 -k 4,4`; do
+    for VERSION in ` curl -s "http://dl.4players.de/ts/releases/?C=M;O=D" | grep -Po '(?<=href=")[0-9]+(\.[0-9]+){2,3}(?=/")' | sort -Vr | head -1`; do
 
         DOWNLOAD_URL_VERSION="http://dl.4players.de/ts/releases/$VERSION/teamspeak3-server_linux-$ARCH-$VERSION.tar.gz"
-        STATUS=`wget -S --spider --tries 1 -q $DOWNLOAD_URL_VERSION 2>&1 | grep "HTTP/" | awk '{print $2}'`
+        STATUS=`curl -I $DOWNLOAD_URL_VERSION 2>&1 | grep "HTTP/" | awk '{print $2}'`
 
         if [ "$STATUS" == "200" ]; then
             DOWNLOAD_URL=$DOWNLOAD_URL_VERSION
@@ -450,7 +450,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
                 okAndSleep "Adding entries to /etc/apt/sources.list"
                 add-apt-repository "deb http://packages.dotdeb.org $OSBRANCH all"
                 add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
-                wget http://www.dotdeb.org/dotdeb.gpg
+                curl -s http://www.dotdeb.org/dotdeb.gpg
                 apt-key add dotdeb.gpg
                 removeIfExists dotdeb.gpg
                 apt-get update
@@ -1124,8 +1124,8 @@ if [ "$INSTALL" == "GS" ]; then
 
     if [ "$OS" == "debian" -o  "$OS" == "ubuntu" ]; then
 
-        okAndSleep "Installing required packages wget wput screen bzip2 sudo rsync zip unzip"
-        apt-get install wget wput screen bzip2 sudo rsync zip unzip -y
+        okAndSleep "Installing required packages wput screen bzip2 sudo rsync zip unzip"
+        apt-get install wput screen bzip2 sudo rsync zip unzip -y
 
         if [ "`uname -m`" == "x86_64" ]; then
 
@@ -1153,7 +1153,7 @@ if [ "$INSTALL" == "GS" ]; then
     cd /home/$MASTERUSER/masterserver
     makeDir /home/$MASTERUSER/masterserver/steamCMD/
     cd /home/$MASTERUSER/masterserver/steamCMD/
-    wget -q --timeout=30 http://media.steampowered.com/client/steamcmd_linux.tar.gz
+    curl -s http://media.steampowered.com/client/steamcmd_linux.tar.gz
 
     if [ -f steamcmd_linux.tar.gz ]; then
         tar xfvz steamcmd_linux.tar.gz
@@ -1226,7 +1226,7 @@ if [ "$INSTALL" == "EW" ]; then
     cd /home/easywi_web/htdocs/
 
     okAndSleep "Downloading latest Easy-WI stable."
-    wget https://easy-wi.com/uk/downloads/get/3/ -O web.zip
+    curl https://easy-wi.com/uk/downloads/get/3/ -O web.zip
 
     if [ ! -f web.zip ]; then
         errorAndExit "Can not download Easy-WI. Aborting!"
@@ -1470,7 +1470,7 @@ if [ "$INSTALL" == "VS" ]; then
     cd /home/$MASTERUSER/
 
     okAndSleep "Downloading TS3 server files."
-    su -c "wget $DOWNLOAD_URL -O teamspeak3-server.tar.gz" $MASTERUSER
+    su -c "curl $DOWNLOAD_URL -o teamspeak3-server.tar.gz" $MASTERUSER
 
     if [ ! -f teamspeak3-server.tar.gz ]; then
         errorAndExit "Download failed! Exiting now!"
