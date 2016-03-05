@@ -41,7 +41,7 @@
 
                         <div class="form-group">
                             <label for="inputExternalID">External ID</label>
-                            <div class="controls"><input class="form-control" id="inputExternalID" type="text" name="externalID" value=""></div>
+                            <div class="controls"><input class="form-control" id="inputExternalID" type="text" name="externalID" value="<?php echo $externalID;?>"></div>
                         </div>
 
                         <div class="form-group<?php if(isset($errors['rootID'])) echo ' has-error';?>">
