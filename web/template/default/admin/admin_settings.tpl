@@ -32,13 +32,26 @@
                         <div class="form-group">
                             <label for="inputTemplate">Template</label>
                             <div class="controls">
-                                <select class="form-control" id="inputTemplate" name="template">
-                                    <?php foreach ($templates as $tp) { ?>
+                                <select class="form-control" id="inputTemplate" name="template" onchange="SwitchShowHideRows(this.value);">
+                                    <?php foreach ($templates as $tp => $templateDetails) { ?>
                                     <option value="<?php echo $tp;?>" <?php if ($tp==$template_choosen) echo 'selected="selected"'; ?>><?php echo $tp;?></option>
                                     <?php } ?>
                                 </select>
                             </div>
                         </div>
+
+                        <?php foreach ($templates as $tp => $templateDetails) { if (is_array($templateDetails)) {  ?>
+                        <div class="<?php echo $tp;?> form-group <?php echo (($tp!=$template_choosen)) ? 'display_none' : ''; ?> switch">
+                            <label for="inputTemplateSkin-<?php echo $tp;?>">Skin <?php echo $tp;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputTemplateSkin-<?php echo $tp;?>" name="templateColor[<?php echo $tp;?>]">
+                                    <?php foreach ($templateDetails['colors'] as $color) { ?>
+                                    <option <?php if ($color==$templateColor) echo 'selected="selected"'; ?>><?php echo $color;?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <?php }} ?>
 
                         <div class="form-group">
                             <label for="inputTime"><?php echo $sprache->timezone;?></label>

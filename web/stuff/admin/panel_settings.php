@@ -62,6 +62,32 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 	$reseller_id = $admin_id;
 }
 
+$templates = array();
+$dir = EASYWIDIR . '/template/';
+
+if (is_dir($dir)){
+
+    $dirs = scandir($dir);
+
+    foreach ($dirs as $row) {
+        if (is_dir('template/' . $row) and !preg_match('/^\.(.*)$/', $row)) {
+
+            $templates[$row] = false;
+
+            if (is_file('template/' . $row . '/config.php')) {
+
+                unset($templateColors);
+
+                require_once('template/' . $row . '/config.php');
+
+                if (isset($templateColors)) {
+                    $templates[$row] = $templateColors;
+                }
+            }
+        }
+    }
+}
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 
@@ -107,7 +133,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $headerText = $ui->escaped('headerText', 'post');
         $headerHref = $ui->url('headerHref', 'post');
 
-        $template = ($ui->folder('template', 'post')) ? $ui->folder('template', 'post') : 'default';
+        $template = ($ui->folder('template', 'post') and isset($templates[$ui->folder('template', 'post')])) ? $ui->folder('template', 'post') : 'default';
+        $templateColorDefault = (is_array($templates[$ui->folder('template', 'post')]) and $templates[$ui->folder('template', 'post')]['default']) ? $templates[$ui->folder('template', 'post')]['default'] : '';
+        $templateColor = (is_array($templates[$ui->folder('template', 'post')]) and in_array($ui->folder('templateColor', 'post', $template), $templates[$ui->folder('template', 'post')]['colors'])) ? $ui->folder('templateColor', 'post', $template) : $templateColorDefault;
         $lastCronWarnStatus = ($ui->active('lastCronWarnStatus', 'post')) ? $ui->active('lastCronWarnStatus', 'post') : 'Y';
         $lastCronWarnReboot = ($ui->active('lastCronWarnReboot', 'post')) ? $ui->active('lastCronWarnReboot', 'post') : 'Y';
         $lastCronWarnUpdates = ($ui->active('lastCronWarnUpdates', 'post')) ? $ui->active('lastCronWarnUpdates', 'post') : 'Y';
@@ -120,8 +148,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			}
 		}
 
-		$query = $sql->prepare("UPDATE `settings` SET `header_icon`=?,`header_text`=?,`header_href`=?,`cronjob_ips`=?,`template`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
-        $query->execute(array($headerIcon, $headerText, $headerHref, $cronjobIPs, $template, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
+		$query = $sql->prepare("UPDATE `settings` SET `header_icon`=?,`header_text`=?,`header_href`=?,`cronjob_ips`=?,`template`=?,`templateColor`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
+        $query->execute(array($headerIcon, $headerText, $headerHref, $cronjobIPs, $template, $templateColor, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
 
 		if ($query->rowCount() > 0) {
             $loguseraction = "%mod% %settings%";
@@ -138,17 +166,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else {
 
     $servertime = date('Y-m-d H:i:s');
-    $templates = array();
-    $dir = EASYWIDIR . '/template/';
-
-    if (is_dir($dir)){
-        $dirs = scandir($dir);
-        foreach ($dirs as $row) {
-            if (is_dir('template/' . $row) and !preg_match('/^\.(.*)$/', $row)) {
-                $templates[] = $row;
-            }
-        }
-    }
 
 	$query = $sql->prepare("SELECT * FROM `settings`  WHERE `resellerid`=? LIMIT 1");
 	$query->execute(array($reseller_id));
@@ -158,6 +175,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $headerHref = $row['header_href'];
 		$language_choosen = $row['language'];
 		$template_choosen = $row['template'];
+        $templateColor = $row['templateColor'];
         $selectlanguages = getlanguages($template_choosen);
 		$imageserver = $row['imageserver'];
 		$master = $row['master'];

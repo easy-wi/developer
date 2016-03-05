@@ -47,6 +47,7 @@ $defined['settings'] = array(
     'header_href' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"https://easy-wi.com","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'template' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"default","Extra"=>""),
+    'templateColor' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"default","Extra"=>""),
     'imageserver' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'cronjob_ips' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'licence' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),

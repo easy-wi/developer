@@ -71,7 +71,6 @@
                         <?php foreach ($table as $table_row) { ?>
                         <div class="<?php echo $table_row['id'].' '.$table_row['displayNone'];?> switch">
 
-
                             <?php if(count($table_row['mods'])>0){ ?>
                             <div class="form-group">
                                 <label for="mod_<?php echo $table_row['id'];?>">Mods</label>
