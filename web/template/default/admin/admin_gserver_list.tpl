@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <?php echo $gsprache->gameserver;?> <a href="admin.php?w=gs&amp;d=ad"<span class="btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
+            <?php echo $gsprache->gameserver;?> <a href="admin.php?w=gs&amp;d=ad"><span class="btn-success btn-sm"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
         </div>
     </div>
     <hr>

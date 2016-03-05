@@ -23,7 +23,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"<span class="btn btn-success"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
+            <?php echo $gsprache->substitutes;?> <a href="userpanel.php?w=su&amp;d=ad"><span class="btn btn-success"><i class="fa fa-plus-circle"></i> <?php echo $gsprache->add;?></span></a>
         </div>
     </div>
 
