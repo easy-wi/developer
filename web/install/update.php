@@ -136,48 +136,8 @@ $main = 1;
 $reseller_id = 0;
 $error = $query->errorinfo();
 
-if (isset($error[2]) and $error[2] != '' and $error[2] != null and !isinteger($error[2])) {
-    $response->add("Current database version: 1.9<br />");
-    $version = '1.9';
-} else {
-    $response->add("Current database version: $version<br />");
-}
-
+$response->add("Current database version: $version<br />");
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-
-if (versioncheck($version, '2.00', 'update_1x-20.php', $response)) {
-    $version = '2.00';
-}
-if (versioncheck($version, '2.01', 'update_200-201.php', $response)) {
-    $version = '2.01';
-}
-if (versioncheck($version, '2.02', 'update_201-202.php', $response)) {
-    $version = '2.02';
-}
-if (versioncheck($version, '2.03', 'update_202-203.php', $response)) {
-    $version = '2.03';
-}
-if (versioncheck($version, '2.04', 'update_203-204.php', $response)) {
-    $version = '2.04';
-}
-if (versioncheck($version, '2.05', 'update_204-205.php', $response)) {
-    $version = '2.05';
-}
-if (versioncheck($version, '2.06', 'update_205-206.php', $response)) {
-    $version = '2.06';
-}
-if (versioncheck($version, '2.07', 'update_206-207.php', $response)) {
-    $version = '2.07';
-}
-if (versioncheck($version, '2.08', 'update_207-208.php', $response)) {
-    $version = '2.08';
-}
-if (versioncheck($version, '2.09', 'update_208-209.php', $response)) {
-    $version = '2.09';
-}
-if (versioncheck($version, '2.10', 'update_209-210.php', $response)) {
-    $version = '2.10';
-}
 
 $response->add('Adding tables if needed.');
 
@@ -187,57 +147,6 @@ $tables = new Tables($dbConnect['db']);
 $tables->createMissingTables();
 $tables->correctTablesStatus();
 
-if (versioncheck($version, '2.11', 'update_210-211.php', $response)) {
-    $version = '2.11';
-}
-if (versioncheck($version, '3.00', 'update_211-300.php', $response)) {
-    $version = '3.00';
-}
-if (versioncheck($version, '3.01', 'update_300-301.php', $response)) {
-    $version = '3.01';
-}
-if (versioncheck($version, '3.02', 'update_301-302.php', $response)) {
-    $version = '3.02';
-}
-if (versioncheck($version, '3.03', 'update_302-303.php', $response)) {
-    $version = '3.03';
-}
-if (versioncheck($version, '3.04', 'update_303-304.php', $response)) {
-    $version = '3.04';
-}
-if (versioncheck($version, '3.05', 'update_304-305.php', $response)) {
-    $version = '3.05';
-}
-if (versioncheck($version, '3.06', 'update_305-306.php', $response)) {
-    $version = '3.06';
-}
-if (versioncheck($version, '3.07', 'update_306-307.php', $response)) {
-    $version = '3.07';
-}
-if (versioncheck($version, '3.08', 'update_307-308.php', $response)) {
-    $version = '3.08';
-}
-if (versioncheck($version, '3.09', 'update_308-309.php', $response)) {
-    $version = '3.09';
-}
-if (versioncheck($version, '3.10', 'update_309-310.php', $response)) {
-    $version = '3.10';
-}
-if (versioncheck($version, '3.20', 'update_310-320.php', $response)) {
-    $version = '3.20';
-}
-if (versioncheck($version, '3.30', 'update_320-330.php', $response)) {
-    $version = '3.30';
-}
-if (versioncheck($version, '3.40', 'update_330-340.php', $response)) {
-    $version = '3.40';
-}
-if (versioncheck($version, '3.60', 'update_340-360.php', $response)) {
-    $version = '3.60';
-}
-if (versioncheck($version, '3.70', 'update_360-370.php', $response)) {
-    $version = '3.70';
-}
 if (versioncheck($version, '4.00', 'update_370-400.php', $response)) {
     $version = '4.00';
 }
