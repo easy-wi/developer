@@ -601,7 +601,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
     if [ "$SQL" == "MySQL" -o "$SQL" == "MariaDB" ]; then
 
-    if [ "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
+        if [ "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
             cyanMessage " "
             cyanMessage "Is Easy-WI installed on a different server."
@@ -642,10 +642,16 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
             else
                 echo "bind-address = 0.0.0.0" >> /etc/mysql/my.cnf
             fi
-
-            /etc/init.d/mysql restart
         fi
     fi
+
+    MYSQL_VERSION=`mysql -V | awk {'print $5'} | tr -d ,`
+
+    if [ "`grep -E 'key_buffer[[:space:]]*=' /etc/mysql/my.cnf`" != "" -a "printf "${MYSQL_VERSION}\n5.5" | sort -V | tail -n 1" != 5.5 ]; then
+        sed -i "s/key_buffer[[:space:]]*=/key_buffer_size = /g" /etc/mysql/my.cnf
+    fi
+
+    /etc/init.d/mysql restart
 
     if [ "$INSTALL" == "EW" -a "`ps ax | grep mysql | grep -v grep`" == "" ]; then
         cyanMessage " "
