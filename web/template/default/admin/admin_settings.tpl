@@ -118,6 +118,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="inputFavicon">Favicon</label>
+                            <div class="controls">
+                                <input class="form-control" id="inputFavicon" type="text" name="favicon" value="<?php echo $favicon;?>">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="inputHeaderIcon">Header Icon</label>
                             <div class="controls">
                                 <input class="form-control" id="inputHeaderIcon" type="text" name="headerIcon" value="<?php echo $headerIcon;?>">

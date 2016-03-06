@@ -48,6 +48,7 @@ include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/stuff/admin/init_admin.php');
 include(EASYWIDIR . '/stuff/admin/adminhome.php');
 
+// Modul is loaded. Controller is set
 if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file((EASYWIDIR . '/stuff/admin/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]))) {
     include(EASYWIDIR . '/stuff/admin/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]);
 } else if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui->smallletters('w', 255, 'get')]) and is_file((EASYWIDIR . '/stuff/' . $what_to_be_included_array[$ui->smallletters('w', 255, 'get')]))) {
@@ -59,20 +60,22 @@ if ($ui->smallletters('w', 255, 'get') and isset($what_to_be_included_array[$ui-
     $template_file = 'admin_home.tpl';
 }
 
+// Existing DB connection is closed
 unset($dbConnect);
 
+// No template defined, use default
 if (!isset($template_to_use) or !isset($template_to_use) ) {
     $template_to_use = 'default';
 }
 
+// No template file specified, or specified as a string
 if (!isset($template_file) or is_array($template_file)) {
     $template_file = '';
 } else if (is_object($template_file)) {
     $template_file = (string) $template_file;
 }
 
+// Load header, body and footer
 include(IncludeTemplate($template_to_use, 'admin_header.tpl'));
 include(IncludeTemplate($template_to_use, (preg_match('/^(.*)\.tpl$/', $template_file)) ? $template_file : 'general.tpl', (isset($customModule)) ? 'custom_modules' : 'admin'));
 include(IncludeTemplate($template_to_use, 'admin_footer.tpl'));
-
-$sql = null;

@@ -42,6 +42,7 @@ $defined['settings'] = array(
     'version' => array("Type"=>"decimal(4,2)","Null"=>"YES","Key"=>"","Default"=>"5.21","Extra"=>""),
     'releasenotesDE' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'releasenotesEN' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'favicon' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"images/favicon.ico","Extra"=>""),
     'header_icon' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"logo_180px.png","Extra"=>""),
     'header_text' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"Easy-Wi","Extra"=>""),
     'header_href' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"https://easy-wi.com","Extra"=>""),

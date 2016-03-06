@@ -10,6 +10,7 @@
 
     <link rel="shortcut icon" href="images/favicon.png" type="image/png">
     <meta name="robots" content="noindex">
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo (isset($rSA['favicon'])) ? $rSA['favicon'] : 'images/favicon.ico';?>" />
 
     <!-- bootstrap -->
     <link href="css/default/bootstrap.min.css" rel="stylesheet">

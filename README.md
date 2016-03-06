@@ -10,7 +10,7 @@ The development goal is always to automate as far as possible. The daily work wh
 
 Requirements
 ------------------------
-* Web installation requires PHP 5.3.7 or later where the extensions openssl, json, hash, ftp, SimpleXML, curl, gd, PDO, pdo_mysql and fopen are installed
+* Web installation requires PHP 5.4 or later where the extensions openssl, json, hash, ftp, SimpleXML, curl, gd, PDO, pdo_mysql and fopen are installed
 * The gameserver module requires sudo, cron, proftpd and the bash shell at the game root
 * The Voicemodule works best with a linux based TS3 server
 
@@ -23,7 +23,7 @@ Which functions and modules are available?
 ------------------------
 What drives the development is the goal to automate all processes. Listing all available functions would result in an exploding thread. So here is the summary with the main features:
 * Mobile ready. The default template has been made with Twitter Bootstrap and is responsive. That way Easy-WI becomes a Web App which can be easily used with a mobile or tablet.
-* Multilingual. Currently supported are English, Danish and German. The text is maintained with XML files.
+* Multilingual. Currently supported are English, Danish, Italian and German. The text is maintained with XML files.
 * We have a strict separation between PHP modules and HTML views. In case a view is missing at your custom templates the default will be used as fall-back.
 * Gameserver management is nearly fully automated. All you need to do is updating add-ons at your central image server from time to time. After that the deployment to the individual servers is automated.
 * The same applies to TS3 voiceserver.
