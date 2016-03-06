@@ -1232,6 +1232,7 @@ if (!function_exists('passwordgenerate')) {
         global $ui, $_SESSION;
 
         if ($check == false) {
+
             $token = md5(mt_rand());
             $tokenLifeTime = '+40 minutes';
 
@@ -1253,29 +1254,26 @@ if (!function_exists('passwordgenerate')) {
         } else {
 
             if (isset($_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')][$ui->id('id', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')][$ui->id('id', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')][$ui->id('id', 10, 'get')]['d'] >= strtotime('now')) {
-                deleteOldToken($ui->smallletters('w', 10, 'get'), $ui->smallletters('d', 10, 'get'), $ui->id('id', 10, 'get'));
-                return true;
-
-            } else if (isset($_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]['d'] >= strtotime('now')) {
-                deleteOldToken($ui->smallletters('w', 10, 'get'), $ui->smallletters('d', 10, 'get'));
-                return true;
-
-            } else if (isset($_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]['d'] >= strtotime('now')) {
-                deleteOldToken($ui->smallletters('w', 10, 'get'),'', $ui->id('id', 10, 'get'));
-                return true;
-
-            } else if (isset($_SESSION[$ui->smallletters('w', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')]['d'] >= strtotime('now')) {
-                deleteOldToken($ui->smallletters('w', 10, 'get'));
-                return true;
+                return deleteOldToken(true, $ui->smallletters('w', 10, 'get'), $ui->smallletters('d', 10, 'get'), $ui->id('id', 10, 'get'));
             }
 
-            deleteOldToken();
+            if (isset($_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->smallletters('d', 10, 'get')]['d'] >= strtotime('now')) {
+                return deleteOldToken(true, $ui->smallletters('w', 10, 'get'), $ui->smallletters('d', 10, 'get'));
+            }
+
+            if (isset($_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')][$ui->id('id', 10, 'get')]['d'] >= strtotime('now')) {
+                return deleteOldToken(true, $ui->smallletters('w', 10, 'get'),'', $ui->id('id', 10, 'get'));
+            }
+
+            if (isset($_SESSION[$ui->smallletters('w', 10, 'get')]['t']) and $_SESSION[$ui->smallletters('w', 10, 'get')]['t'] == $ui->w('token', 32, 'post') and $_SESSION[$ui->smallletters('w', 10, 'get')]['d'] >= strtotime('now')) {
+                return deleteOldToken(true, $ui->smallletters('w', 10, 'get'));
+            }
 
             return false;
         }
     }
 
-    function deleteOldToken ($w = '', $d = '', $id = '') {
+    function deleteOldToken ($returnCode, $w = '', $d = '', $id = '') {
 
         global $_SESSION;
 
@@ -1316,6 +1314,8 @@ if (!function_exists('passwordgenerate')) {
                 }
             }
         }
+
+        return $returnCode;
     }
 
     function customColumns($item, $id = 0, $action = false, $api = false) {
