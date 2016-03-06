@@ -30,7 +30,7 @@
 <body class="login-page" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
 <div class="login-box">
-    <!--
+    <!-- 
         <div class="login-logo">
             <a href="../../index2.html"><b>Admin</b>LTE</a>
         </div> /.login-logo
@@ -79,8 +79,11 @@
                 </div><!-- /.col -->
             </div>
         </form>
+		</br>
+		<a href="login.php?w=pr"><button class="btn btn-primary btn-block btn-flat">I forgot my password</button></a>
 
         <?php if(count($serviceProviders)>0){ ?>
+		<br>
         <div class="social-auth-links text-center">
             <p>- OR Sign in using social networks -</p>
             <?php foreach($serviceProviders as $k=>$css){ ?>
@@ -89,12 +92,19 @@
         </div><!-- /.social-auth-links -->
         <?php } ?>
 
-        <a href="login.php?w=pr">I forgot my password</a><br>
         <?php }?>
 
     </div><!-- /.login-box-body -->
-
-    <div>
+	
+	<!-- Copyright -->
+	
+    <div class="copyright" style="position: fixed; bottom: 5px; right: 5px; padding: 10px;
+	border: 1px rgb(89,89,89) solid; background: rgb(255,255,255);
+	text-align: center; -webkit-border-radius: 6px; -moz-border-radius: 6px;
+	border-radius: 6px; -moz-box-shadow:  -6px 7px 36px 2px rgb(128,128,128);
+	-webkit-box-shadow:  -6px 7px 36px 2px rgb(128,128,128);
+	box-shadow:  -6px 7px 36px 2px rgb(128,128,128);">
+	
         &copy; <a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">Easy-WI.com</a> 2011 - <?php echo date('Y'); ?>
     </div>
 </div>
