@@ -35,12 +35,6 @@
 
 <div class="login-box">
 
-    <!--
-        <div class="login-logo">
-            <a href="../../index2.html"><b>Admin</b>LTE</a>
-        </div> /.login-logo
-    -->
-
     <div class="login-box-body">
 
         <div class="callout callout-info">
@@ -64,10 +58,11 @@
     </div>
 </div>
 
-<!-- jQuery 2.0.2 -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js" type="text/javascript"></script>
+<!-- jQuery -->
+<script src="js/default/jquery.min.js" type="text/javascript"></script>
+
+<!-- Bootstrap JS -->
+<script src="js/default/bootstrap.min.js" type="text/javascript"></script>
 
 </body>
 </html>

@@ -30,14 +30,8 @@
 <body class="login-page" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
 <div class="login-box">
-    <!--
-        <div class="login-logo">
-            <a href="../../index2.html"><b>Admin</b>LTE</a>
-        </div> /.login-logo
-    -->
 
     <div class="login-box-body">
-
 
         <?php if (isset($sus)) { ?>
         <div class="alert alert-danger alert-dismissable">
@@ -61,11 +55,11 @@
 
             <div class="form-group has-feedback">
                 <input type="text" name="username" class="form-control" placeholder="<?php echo $sprache->user;?>" required>
-                <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                <span class="fa fa-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
                 <input type="password" id="inputPassword" name="password" class="form-control" placeholder="<?php echo $sprache->password;?>" required>
-                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                <span class="fa fa-lock form-control-feedback"></span>
             </div>
             <?php if ($ewCfg['captcha']==1) { ?>
             <div class="form-group input-group has-feedback">
@@ -100,9 +94,10 @@
 </div>
 
 <!-- jQuery -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/default/jquery.min.js" type="text/javascript"></script>
+
+<!-- Bootstrap JS -->
+<script src="js/default/bootstrap.min.js" type="text/javascript"></script>
 
 </body>
 </html>
