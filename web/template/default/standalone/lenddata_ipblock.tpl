@@ -35,12 +35,10 @@
 
         <p class="login-box-msg"><?php echo $gsprache->lendserver;?> <?php echo ($servertype=='g') ? $gsprache->gameserver : $gsprache->voiceserver;?></p>
 
-        <div class="box box-error">
-            <div class="info alert-error">
-                <p>
-                    <?php echo $sprache->ipblock;?>
-                </p>
-            </div>
+        <div class="alert alert-danger alert-dismissable">
+            <i class="fa fa-warning"></i>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <?php echo $sprache->ipblock;?>
         </div>
 
         <div>
