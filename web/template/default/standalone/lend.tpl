@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <form action="login.php" method="post">
+            <form action="lend.php?w=<?php echo ($servertype=='g') ? 'gs' : 'vo';?>" method="post">
 
                 <?php if ($servertype=='g' and $gslallowed==true) { ?>
                 <div class="form-group">
