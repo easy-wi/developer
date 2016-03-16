@@ -448,10 +448,18 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
         if [ "$DOTDEB" == "Yes" ]; then
             if [ "`grep 'packages.dotdeb.org' /etc/apt/sources.list`" == "" ]; then
+
                 okAndSleep "Adding entries to /etc/apt/sources.list"
+
+                if [ "$OSBRANCH" == "squeeze" -o "$OSBRANCH" == "wheezy" ]; then
+                    checkInstall python-software-properties
+                elif [ "$OSBRANCH" == "jessie" ]; then
+                    checkInstall software-properties-common
+                fi
+
                 add-apt-repository "deb http://packages.dotdeb.org $OSBRANCH all"
                 add-apt-repository "deb-src http://packages.dotdeb.org $OSBRANCH all"
-                curl -s http://www.dotdeb.org/dotdeb.gpg
+                curl --remote-name http://www.dotdeb.org/dotdeb.gpg
                 apt-key add dotdeb.gpg
                 removeIfExists dotdeb.gpg
                 apt-get update
@@ -1160,7 +1168,7 @@ if [ "$INSTALL" == "GS" ]; then
     cd /home/$MASTERUSER/masterserver
     makeDir /home/$MASTERUSER/masterserver/steamCMD/
     cd /home/$MASTERUSER/masterserver/steamCMD/
-    curl -s http://media.steampowered.com/client/steamcmd_linux.tar.gz
+    curl --remote-name http://media.steampowered.com/client/steamcmd_linux.tar.gz
 
     if [ -f steamcmd_linux.tar.gz ]; then
         tar xfvz steamcmd_linux.tar.gz
