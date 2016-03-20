@@ -73,6 +73,7 @@ if ($ui->ip4('REMOTE_ADDR', 'server') and $ui->names('user', 255, 'post') and !i
     $query = $sql->prepare("SELECT `active`,`pwd`,`salt`,`user`,i.`resellerID` FROM `api_ips` i LEFT JOIN `api_settings` s ON i.`resellerID`=s.`resellerID` WHERE `ip`=?");
     $query->execute(array($ui->ip4('REMOTE_ADDR', 'server')));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         $pwd = $row['pwd'];
         $salt = $row['salt'];
 
@@ -97,10 +98,13 @@ if ($validacces == false) {
 }
 
 if ($ui->escaped('email', 'post') != '') {
-    $fullday=date('Y-m-d H:i:s', strtotime("+1 day"));
+
+    $fullday = date('Y-m-d H:i:s', strtotime("+1 day"));
+
     $query = $sql->prepare("SELECT `id` FROM `badips` WHERE `badip`=? LIMIT 1");
     $query->execute(array($loguserip));
-    $query=($query->rowCount()==0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=failcount+1, `reason`='bot' WHERE `badip`=? LIMIT 1");
+
+    $query = ($query->rowCount() == 0) ? $sql->prepare("INSERT INTO `badips` (`bantime`,`failcount`,`reason`,`badip`) VALUES (?,'1','bot',?)") : $sql->prepare("UPDATE `badips` SET `bantime`=?, `failcount`=failcount+1, `reason`='bot' WHERE `badip`=? LIMIT 1");
     $query->execute(array($fullday, $loguserip));
 }
 
@@ -109,7 +113,7 @@ $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $vosprache = getlanguagefile('voice', $user_language, $reseller_id);
 $licenceDetails = serverAmount($reseller_id);
 
-if (is_numeric($licenceDetails['left']) and (0>$licenceDetails['left'] or 0>$licenceDetails['lG'] or 0>$licenceDetails['lVo'] or $licenceDetails['t'] == 'l')) {
+if (is_numeric($licenceDetails['left']) and (0 > $licenceDetails['left'] or 0 > $licenceDetails['lG'] or 0 > $licenceDetails['lVo'] or $licenceDetails['t'] == 1)) {
     header('HTTP/1.1 403 Forbidden');
     die('403 Forbidden: ' . $gsprache->licence);
 }
@@ -118,7 +122,6 @@ $timeselect = array();
 $slotselect = array();
 $votimeselect = array();
 $voslotselect = array();
-
 
 $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=5 LIMIT 1");
 $query->execute();
@@ -290,10 +293,10 @@ if (!isset($servertype) and !isset($page_include) and (!$ui->username('shorten',
 if (isset($servertype)) {
 
     $query = $sql->prepare("SELECT `id`,`serverid`,`rcon`,`password`,`slots`,`started`,`lendtime` FROM `lendedserver` WHERE `lenderip`=? AND `servertype`=? AND `resellerid`=? LIMIT 1");
-    $query1 = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
-    $query2 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query3 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
-    $query4 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+    $query1 = $sql->prepare("SELECT s.`switchID`,g.`rootID` FROM `serverlist` s INNER JOIN `gsswitch` g ON s.`switchID`=g.`id` WHERE s.`id`=? LIMIT 1");
+    $query2 = $sql->prepare("DELETE FROM `lendedserver` WHERE `id`=? LIMIT 1");
+    $query3 = $sql->prepare("SELECT v.`localserverid`,m.`ssh2ip`,m.`rootid`,m.`addedby`,m.`queryport`,AES_DECRYPT(m.`querypassword`,?) AS `decryptedquerypassword` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? LIMIT 1");
+    $query4 = $sql->prepare("SELECT `ip`,`altips` FROM `rserverdata` WHERE `id`=? LIMIT 1");
 
     $query->execute(array($loguserip, $servertype, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -304,13 +307,15 @@ if (isset($servertype)) {
         $timeleft = round($lendtime - (strtotime('now') - strtotime($row['started'])) / 60);
 
         if ($timeleft <= 0) {
-            $query2->execute(array($row['id'], $reseller_id));
+
+            $query2->execute(array($row['id']));
 
             if ($servertype == 'g') {
 
                 unset($_SESSION['lend']['gs']);
 
-                $query1->execute(array($serverid, $reseller_id));
+                $query1->execute(array($serverid));
+
                 foreach($query1->fetchAll(PDO::FETCH_ASSOC) as $row1) {
                     $appServer = new AppServer($row1['rootID']);
                     $appServer->getAppServerDetails($row1['switchID']);
@@ -322,7 +327,7 @@ if (isset($servertype)) {
 
                 unset($_SESSION['lend']['vs']);
 
-                $query3->execute(array($aeskey, $serverid, $reseller_id));
+                $query3->execute(array($aeskey, $serverid));
                 while ($row2 = $query3->fetch(PDO::FETCH_ASSOC)) {
                     $queryport = $row2['queryport'];
                     $querypassword = $row2['decryptedquerypassword'];
@@ -333,7 +338,7 @@ if (isset($servertype)) {
                         $queryip = $row2['ssh2ip'];
 
                     } else if ($addedby == 1) {
-                        $query4->execute(array($row2['rootid'], $reseller_id));
+                        $query4->execute(array($row2['rootid']));
                         $queryip = $query4->fetchColumn();
                     }
                 }
@@ -363,8 +368,8 @@ if (isset($servertype)) {
                 $description = '';
                 $serverip = '';
                 $port = '';
-                $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`description` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE s.`resellerid`=? AND t.`description` IS NOT NULL LIMIT 1");
-                $query2->execute(array($serverid, $reseller_id));
+                $query2 = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`description` FROM `gsswitch` g LEFT JOIN `serverlist` s ON g.`serverid`=s.`id` LEFT JOIN `servertypes` t ON s.`id`=? AND s.`servertype`=t.`id` WHERE t.`description` IS NOT NULL LIMIT 1");
+                $query2->execute(array($serverid));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $description = $row2['description'];
                     $serverip = $row2['serverip'];
@@ -398,8 +403,8 @@ if (isset($servertype)) {
                 }
 
                 $vostillrunning = true;
-                $query2 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? AND v.`resellerid`=? LIMIT 1");
-                $query2->execute(array($serverid, $reseller_id));
+                $query2 = $sql->prepare("SELECT v.`ip`,v.`port`,v.`dns`,m.`type`,m.`usedns` FROM `voice_server` v LEFT JOIN `voice_masterserver` m ON v.`masterserver`=m.`id` WHERE v.`id`=? LIMIT 1");
+                $query2->execute(array($serverid));
                 while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                     $server = ($row2['usedns'] == 'N' or $row2['dns'] == null or $row2['dns'] == '') ? $row2['ip'] . ':' . $row2['port'] : $row2['dns'];
                     $serverip = $row2['ip'];
@@ -478,9 +483,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $lendGameServers = array();
     $lendVoiceServers = array();
 
-    $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=0");
-    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=0");
+    $query = $sql->prepare("SELECT `id`,`queryMap`,`queryNumplayers`,`queryName`,`serverip`,`port`,`slots`,`serverid` FROM `gsswitch` WHERE `lendserver`='Y' AND `active`='Y' AND `resellerid`=?");
+    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten`,t.`description` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=?");
     $query3 = $sql->prepare("SELECT `slots`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='g' LIMIT 1");
+
     $query->execute(array($reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -513,7 +519,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $lendGameServers[] = array('ip' => $row['serverip'], 'port' => (int) $row['port'], 'queryName' => htmlentities($row['queryName'], ENT_QUOTES, 'UTF-8'), 'queryMap' => htmlentities($row['queryMap'], ENT_QUOTES, 'UTF-8'), 'runningGame' => $runningGame, 'games' => $installedShorten, 'slots' => (int) $slots,'usedslots' => (int) $row['queryNumplayers'], 'timeleft' => (int) $timeleft, 'free' => $free);
     }
 
-    $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=0");
+    $query = $sql->prepare("SELECT v.`ip`,v.`port`,v.`queryName`,v.`dns`,v.`usedslots`,v.`slots` AS `availableSlots`,l.`slots`,l.`started`,l.`lendtime` FROM `voice_server` v LEFT JOIN `lendedserver` l ON v.`id`=l.`serverid` AND l.`servertype`='v' WHERE v.`lendserver`='Y' AND v.`active`='Y' AND v.`resellerid`=?");
     $query->execute(array($reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $timeleft = 0;
@@ -622,18 +628,19 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 } else if (!isset($template_file) and $gsstillrunning == false and isset($active) and $active == 'Y' and $servertype == 'g' and !$ui->escaped('ipblocked', 'post')) {
 
     $switchcount = array();
-
-    $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
-    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
-    $query->execute(array($reseller_id));
     $gscounts = array();
     $gsused = array();
 
+    $query = $sql->prepare("SELECT `id` FROM `gsswitch` WHERE `lendserver`='Y' AND `resellerid`=?");
+    $query2 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? ORDER BY t.`shorten`");
+
+    $query->execute(array($reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         $shortens = array();
         $serverids = array();
 
-        $query2->execute(array($row['id'], $reseller_id));
+        $query2->execute(array($row['id']));
         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
             $shorten = $row2['shorten'];
             $serverids[$shorten][] = $row2['id'];
@@ -667,11 +674,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     }
 
     $query = $sql->prepare("SELECT `serverid`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip` FROM `lendedserver` WHERE `servertype`='g' AND `resellerid`=?");
-    $query2 = $sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-    $query3 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? ORDER BY t.`shorten`");
-    $query->execute(array($reseller_id));
+    $query2 = $sql->prepare("SELECT `switchID` FROM `serverlist` WHERE `id`=? LIMIT 1");
+    $query3 = $sql->prepare("SELECT s.`id`,t.`shorten` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? ORDER BY t.`shorten`");
 
+    $query->execute(array($reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         $lendtime = $row['lendtime'];
         $timeleft = round($lendtime-(strtotime('now')-strtotime($row['started']))/60);
 
@@ -687,12 +695,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
         $slots = $row['slots'];
         $lenderip = $row['lenderip'];
 
-        $query2->execute(array($row['serverid'], $reseller_id));
+        $query2->execute(array($row['serverid']));
         $switchID = $query2->fetchColumn();
 
         if (isid($switchID, 10)) {
 
-            $query3->execute(array($switchID, $reseller_id));
+            $query3->execute(array($switchID));
             while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                 $shorten = $row3['shorten'];
                 $shortens[] = $shorten;
@@ -719,6 +727,7 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
     $gameselect = array();
 
     foreach ($gscounts as $key => $value) {
+
         $query = $sql->prepare("SELECT `description` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($key, $reseller_id));
         $description = $query->fetchColumn();
@@ -871,9 +880,11 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                 $query = $sql->prepare("INSERT INTO `lendedserver` (`serverid`,`servertype`,`rcon`,`password`,`slots`,`started`,`lendtime`,`lenderip`,`ftpuploadpath`,`resellerid`) VALUES (?,?,?,?,?,NOW(),?,?,AES_ENCRYPT(?,?),?)");
                 $query->execute(array($serverid,'g', $rcon, $password, $slots, $lendtime, $loguserip, $ftpuploadpath, $aeskey, $reseller_id));
+
                 $query = $sql->prepare("INSERT INTO `lendstats` (`lendDate`,`serverID`,`serverType`,`lendtime`,`slots`,`resellerID`) VALUES (NOW(),?,?,?,?,?) ON DUPLICATE KEY UPDATE `resellerID`=`resellerID`");
                 $query->execute(array($serverid,'g', $lendtime, $slots, $reseller_id));
-                $query = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`rootID`,t.`description` FROM `gsswitch` g  LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND s.`resellerid`=? LIMIT 1");
+
+                $query = $sql->prepare("SELECT g.`id`,g.`serverip`,g.`port`,g.`rootID`,t.`description` FROM `gsswitch` g LEFT JOIN `serverlist` s ON s.`switchID`=g.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`id`=? AND g.`resellerid`=? LIMIT 1");
                 $query->execute(array($serverid, $reseller_id));
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $serverip = $row['serverip'];
@@ -1082,10 +1093,10 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
         $masterservers = array();
         $mastervoiceids = array();
-        $query = $sql->prepare("SELECT `id`,`maxserver`,`maxslots` FROM `voice_masterserver` WHERE `active`='Y' AND `resellerid`=?");
-        $query2 = $sql->prepare("SELECT `id`,`slots` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `masterserver`=? AND `resellerid`=?");
-        $query3 = $sql->prepare("SELECT `id`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='v' AND `resellerid`=? LIMIT 1");
-        $query->execute(array($reseller_id));
+        $query = $sql->prepare("SELECT `id`,`maxserver`,`maxslots` FROM `voice_masterserver` WHERE `active`='Y' AND (`resellerid`=:reseller_id OR (`resellerid`=:reseller_id AND `managedForID`=:reseller_id))");
+        $query2 = $sql->prepare("SELECT `id`,`slots` FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `masterserver`=?");
+        $query3 = $sql->prepare("SELECT `id`,`started`,`lendtime` FROM `lendedserver` WHERE `serverid`=? AND `servertype`='v' LIMIT 1");
+        $query->execute(array(':reseller_id' => $reseller_id));
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -1093,13 +1104,13 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             $slots = 0;
             $usedvoice = 0;
 
-            $query2->execute(array($row['id'], $reseller_id));
+            $query2->execute(array($row['id']));
 
             while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
                 $lendable = true;
 
-                $query3->execute(array($row2['id'], $reseller_id));
+                $query3->execute(array($row2['id']));
 
                 while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
 
@@ -1176,9 +1187,12 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
             }
 
             if ($fail == 0 and $freevoice > 0) {
+
                 $timeleft = $lendtime;
-                $query = $sql->prepare("SELECT `bitversion`,`type`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`usedns` FROM `voice_masterserver` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
-                $query->execute(array(':aeskey' => $aeskey,':id' => $bestmaster,':reseller_id' => $reseller_id));
+
+                $query = $sql->prepare("SELECT `bitversion`,`type`,`queryport`,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,`rootid`,`addedby`,`publickey`,`ssh2ip`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password`,`serverdir`,`keyname`,`notified`,`defaultname`,`defaultwelcome`,`defaulthostbanner_url`,`defaulthostbanner_gfx_url`,`defaulthostbutton_tooltip`,`defaulthostbutton_url`,`defaulthostbutton_gfx_url`,`usedns` FROM `voice_masterserver` WHERE `active`='Y' AND `id`=:id LIMIT 1");
+                $query->execute(array(':aeskey' => $aeskey,':id' => $bestmaster));
+
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $addedby = $row['addedby'];
                     $queryport = $row['queryport'];
@@ -1204,8 +1218,8 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
                         $bitversion = $row['bitversion'];
 
                     } else if ($addedby == 1) {
-                        $query2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                        $query2->execute(array($row['rootid'], $reseller_id));
+                        $query2 = $sql->prepare("SELECT `ip` FROM `rserverdata` WHERE `id`=? LIMIT 1");
+                        $query2->execute(array($row['rootid']));
                         $queryip = $query2->fetchColumn();
                     }
 
@@ -1217,8 +1231,8 @@ if (!isset($template_file) and ((!isset($servertype) and isset($page_include) an
 
                     } else {
 
-                        $query2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? AND `resellerid`=? LIMIT 1");
-                        $query2->execute(array($tousevoiceid, $reseller_id));
+                        $query2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `lendserver`='Y' AND `active`='Y' AND `id`=? LIMIT 1");
+                        $query2->execute(array($tousevoiceid));
                         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
                             $voip = $row2['ip'];
                             $voport = $row2['port'];
