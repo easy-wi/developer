@@ -687,7 +687,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $folders = (substr($row['serverdir'], 0, 1) == '/') ? 'cd  /' : 'cd ';
 
                 while ($i <= $folderfilecount) {
-                    $folders = $folders.$split_config[$i] . '/';
+                    $folders = $folders . $split_config[$i] . '/';
                     $lastFolder = $split_config[$i];
                     $i++;
                 }
@@ -700,7 +700,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $folders = $folders  . ' && ';
                 }
 
-                $ssh2cmd = $folders . 'function r () { if [ "`ps fx | grep ' . $tsdnsbin . ' | grep -v grep`" == "" ]; then ./' . $tsdnsbin . ' > /dev/null & else ./' . $tsdnsbin . ' --update > /dev/null & fi }; r& ';
+                $ssh2cmd = $folders . ' if [ -f "tsdnsserver" ]; then TSDNSBIN="tsdnsserver"; else TSDNSBIN="' . $tsdnsbin . '"; fi; function r () { if [ "`ps fx | grep $TSDNSBIN | grep -v grep`" == "" ]; then ./$TSDNSBIN > /dev/null & else ./$TSDNSBIN --update > /dev/null & fi }; r& ';
 
                 if ((isset($args['tsDebug']) and $args['tsDebug'] == 1)) {
                     print "$ssh2cmd\r\n";
@@ -867,11 +867,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         }
 
                         if ($tsdown == true) {
-                            $cmds[] = $folders . 'function r () { if [ "`ps fx | grep ' . $tsbin . ' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
+                            $cmds[] = $folders . 'if [ -f "ts3server" ]; then TSBIN="ts3server"; else TSBIN="' . $tsdnsbin . '"; fi; function r () { if [ "`ps fx | grep $TSBIN | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
                         }
 
                         if ($vrow['usedns'] == 'Y' and $tsdnsdown == true) {
-                            $cmds[] = $tsdnsFolders . 'function r () { if [ "`ps fx | grep ' . $tsdnsbin . ' | grep -v grep`" == "" ]; then ./' . $tsdnsbin . ' > /dev/null & else ./' . $tsdnsbin . ' --update > /dev/null & fi }; r& ';
+                            $cmds[] = $tsdnsFolders . 'if [ -f "tsdnsserver" ]; then TSDNSBIN="tsdnsserver"; else TSDNSBIN="' . $tsdnsbin . '"; fi; function r () { if [ "`ps fx | grep ' . $tsdnsbin . ' | grep -v grep`" == "" ]; then ./' . $tsdnsbin . ' > /dev/null & else ./' . $tsdnsbin . ' --update > /dev/null & fi }; r& ';
                         }
 
                         if (count($cmds) > 0) {
@@ -882,7 +882,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 print "Failed restarting: $restartreturn $queryip\r\n";
                             }
 
-                            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+                            if ((isset($dbConnect['debug']) and $dbConnect['debug'] == 1) or (isset($args['tsDebug']) and $args['tsDebug'] == 1)) {
                                 print_r($cmds);
                             }
                         }

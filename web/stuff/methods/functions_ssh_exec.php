@@ -140,8 +140,11 @@ if (!function_exists('ssh2_execute')) {
                 }
                 $query->execute(array($notified, $serverID));
 
-                return ($notified == 0) ? $return : false;
+                if (strlen($return) == 0) {
+                    $return = true;
+                }
 
+                return ($notified == 0) ? $return : false;
             }
         }
 
