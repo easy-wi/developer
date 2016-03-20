@@ -72,29 +72,48 @@ if ($ui->escaped('email', 'post') != '') {
     die('IP banned');
 }
 
+$logs = array();
+$xmllogs = array();
+
+$gsprache = getlanguagefile('general', $user_language, 0);
 $sprache = getlanguagefile('gserver', $user_language, 0);
 $ipvalue = '111.111.111.111:27015';
 
 if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port('po', 'get'))) {
+
     if ($ui->ipport('serveraddress', 'post')) {
+
         $serveraddress = $ui->ipport('serveraddress', 'post');
         $adresse_awk = explode(':', $serveraddress);
+
         $ip = $adresse_awk[0];
         $port = $adresse_awk[1];
+
     } else if ($ui->ip('ip', 'get') and $ui->port('po', 'get')) {
+
         $ip = $ui->ip('ip', 'get');
         $port = $ui->port('po', 'get');
+
         $serveraddress = $ip . ':' . $port;
     }
+
     if (isset($serveraddress)) {
         $ipvalue = $serveraddress;
     }
+
     if (isset($ip) and isset($port)) {
+
+        $placeholders = array('%%', '%ad%', '%add%', '%dl%', '%del%', '%md%', '%mod%', '%ri%', '%start%', '%restart%', '%stop%', '%upd%', '%fail%', '%ok%', '%psw%', '%cfg%', '%import%', '%reinstall%', '%backup%', '%use%');
+        $replace = array('', $gsprache->add, $gsprache->add, $gsprache->del, $gsprache->del, $gsprache->mod, $gsprache->mod, $gsprache->reinstall, $gsprache->start, $gsprache->start, $gsprache->stop, $gsprache->update,'','', $sprache->password, $sprache->config, $gsprache->import, $sprache->reinstall, $gsprache->backup, $gsprache->use);
+        $placeholders2 = array('%modules%', '%voserver%', '%gserver%', '%user%', '%fastdl%', '%master%', '%user%', '%root%', '%addon%', '%settings%', '%vserver%', '%ticket_subject%', '%reseller%', '%virtual%', '%eac%', '%resync%', '%virtualimage%', '%template%', '%voserver%', '%emailsettings%', '%dns%', '%tsdns%', '%pmode%', '%file%', '%webmaster%', '%webvhost%');
+        $replace2 = array($gsprache->modules, $gsprache->voiceserver, $gsprache->gameserver, $gsprache->user, $gsprache->fastdownload, $gsprache->master, $gsprache->user, $gsprache->root, $gsprache->addon2, $gsprache->settings, $gsprache->virtual, $gsprache->support, $gsprache->reseller, $gsprache->hostsystem,'Easy Anti Cheat', $sprache->resync, $gsprache->virtual . ' ' . $gsprache->template, $gsprache->template, $gsprache->voiceserver,'E-Mail '.$gsprache->settings, 'TSDNS', 'TSDNS', $sprache->protect, $gsprache->file, $gsprache->webspace . ' ' . $gsprache->master, $gsprache->webspace);
+
+
         $query = $sql->prepare("SELECT g.`protected`,g.`psince`,g.`queryName`,g.`queryNumplayers`,g.`queryMaxplayers`,g.`queryMap`,u.`cname`,t.`description` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`serverip`=? AND g.`port`=? LIMIT 1");
         $query->execute(array($ip, $port));
-        $logs = array();
-        $xmllogs = array();
+
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             $protected = $row['protected'];
             $customer = $row['cname'];
             $psince = $row['psince'];
@@ -103,45 +122,38 @@ if ($ui->ipport('serveraddress', 'post') or ($ui->ip('ip', 'get') and $ui->port(
             $maxplayers = $row['queryMaxplayers'];
             $map = $row['queryMap'];
             $type = $row['description'];
-            $query = $sql->prepare("SELECT `useraction`,`logdate` FROM `userlog` WHERE `logdate`>? AND `username`=? AND `useraction` LIKE ?");
-            $query->execute(array($psince, $customer,'%'.$serveraddress.'%'));
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $logentry = explode(" ", $row['useraction']);
-                if (($logentry[1] == '%gserver%' or $logentry[1] == '%addon%') and ($logentry[0] != '%resync%' and $logentry[0] != '%mod%')) {
-                    if ($default_language == 'de') {
-                        $time=explode(' ', $row['logdate']);
-                        $time2=explode('-', $time[0]);
-                        $time3 = $time2[2] . '.' . $time2[1] . '.' . $time2[0] . '  ' . $time[1];
-                    } else {
-                        $time3 = $row['logdate'];
+
+            $since = (isset($default_language) and $default_language == 'de') ? date('d.m.Y H:i:s', strtotime($psince)) : $psince;
+
+            if ($protected == 'Y') {
+
+                $query2 = $sql->prepare("SELECT `useraction`,`logdate` FROM `userlog` WHERE `logdate` > ? AND `useraction` LIKE ? ORDER BY `logdate`");
+                $query2->execute(array($row['psince'], '%' . $ipvalue . '%'));
+                while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
+
+                    $iconName = 'refresh';
+
+                    if (strpos($row2['useraction'], '%stop%') !== false) {
+                        $iconName = 'stop';
+                    } else if (strpos($row2['useraction'], '%add%') !== false or strpos($row2['useraction'], '%ad%') !== false) {
+                        $iconName = 'plus-circle';
+                    } else if (strpos($row2['useraction'], '%del%') !== false or strpos($row2['useraction'], '%dl%') !== false) {
+                        $iconName = 'trash';
+                    } else if (strpos($row2['useraction'], '%start%') !== false or strpos($row2['useraction'], '%restart%') !== false) {
+                        $iconName = 'play-circle';
                     }
-                    $placeholders1 = array('%start%', '%stop%', ' ' . $serveraddress, ' %gserver%');
-                    $placeholders2 = array('%start%', '%stop%', '%addon%', '%del%', '%add%', ' %ok%', ' ' . $serveraddress,' %gserver%');
-                    $replace2 = array('(Re)Start', 'Stop', 'Addon', 'Delete', 'Add', '', '', '');
-                    $replacedpics=str_replace($placeholders1, '', $row['useraction']);
-                    $replacedwords=str_replace($placeholders2, $replace2, $row['useraction']);
-                    if (!empty($replacedpics)) {
-                        if ($logentry[1] == '%gserver%') {
-                            $logs[] = $replacedpics . ': ' . $time3;
-                        }
-                        $xmllogs[$time3] = $replacedwords;
-                    }
+
+                    $replacedUserAction = str_replace($placeholders2, $replace2, str_replace($placeholders, $replace, $row2['useraction']));
+
+                    $logs[date('Y-m-d', strtotime($row2['logdate']))][date('H:i:s', strtotime($row2['logdate']))][$iconName] = $replacedUserAction;
+
+                    $xmllogs[$row2['logdate']] = $replacedUserAction;
                 }
             }
-            $since = ($default_language == 'de') ? date('d.m.Y H:i:s',strtotime($psince)) : $psince;
         }
     }
 }
-if (!isset($protected)) {
-    $imgName = '64_protected_unknown';
-    $imgAlt = 'unknown';
-} else if ($protected == 'N') {
-    $imgName = '64_unprotected';
-    $imgAlt = 'unprotected';
-} else if ($protected == 'Y') {
-    $imgName = '64_protected';
-    $imgAlt = 'protected';
-}
+
 if ($ui->ipport('serveraddress', 'post')) {
 
     if (isset($page_include)) {
