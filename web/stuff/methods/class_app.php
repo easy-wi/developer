@@ -38,16 +38,8 @@
  */
 
 // Include PHPSeclib if not already included
-if (!class_exists('Net_SSH2')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
-}
-
-if (!class_exists('Crypt_RSA')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
-}
-
-if (!class_exists('Net_SFTP')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+if (!class_exists('SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
 }
 
 // Include EasyWi FTP if not already included
@@ -2200,7 +2192,7 @@ class AppServer {
 
         if ($this->appMasterServerDetails['ssh2Publickey'] != 'N' and file_exists($this->appMasterServerDetails['privateKey'])) {
 
-            $ssh2Pass = new Crypt_RSA();
+            $ssh2Pass = new phpseclib\Crypt\RSA();
 
             if ($this->appMasterServerDetails['ssh2Publickey'] == 'B') {
                 $ssh2Pass->setPassword($this->appMasterServerDetails['ssh2DecryptedPass']);
@@ -2238,7 +2230,7 @@ class AppServer {
 
         if (strlen($this->shellScripts['user']) > 0 or count($this->shellScripts['server']) > 0) {
 
-            $sftpObject = new Net_SFTP($this->appMasterServerDetails['ssh2IP'], $this->appMasterServerDetails['ssh2Port']);
+            $sftpObject = new phpseclib\Net\SFTP($this->appMasterServerDetails['ssh2IP'], $this->appMasterServerDetails['ssh2Port']);
 
             $ssh2Pass = $this->getKeyAndOrPassword();
 
@@ -2255,7 +2247,7 @@ class AppServer {
                 }
 
                 // Files have been created, now login with SSH2 and execute the gobal script
-                $sshObject = new Net_SSH2($this->appMasterServerDetails['ssh2IP'], $this->appMasterServerDetails['ssh2Port']);
+                $sshObject = new phpseclib\Net\SSH2($this->appMasterServerDetails['ssh2IP'], $this->appMasterServerDetails['ssh2Port']);
 
                 if ($sshObject->login($this->appMasterServerDetails['ssh2User'], $ssh2Pass)) {
                     $this->commandReturns[] = $sshObject->exec('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/userCud-' . $this->uniqueHex . '.sh & ');

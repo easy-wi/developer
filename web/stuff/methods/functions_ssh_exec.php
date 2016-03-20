@@ -36,15 +36,12 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+// Include PHPSeclib if not already included
+if (!class_exists('SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
+}
+
 if (!function_exists('ssh2_execute')) {
-
-    if (!class_exists('Net_SSH2')) {
-        include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
-    }
-
-    if (!class_exists('Crypt_RSA')) {
-        include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
-    }
 
     function ssh2_execute($type, $id, $cmds) {
 
@@ -86,40 +83,34 @@ if (!function_exists('ssh2_execute')) {
                 # https://github.com/easy-wi/developer/issues/70
                 $privateKey = EASYWIDIR . '/keys/' . removePub($ssh2KeyName);
 
-                $sshObject = new Net_SSH2($ssh2IP, $ssh2Port);
+                $sshObject = new phpseclib\Net\SSH2($ssh2IP, $ssh2Port);
 
-                if ($sshObject->error === false) {
+                if ($ssh2Publickey != 'N') {
 
-                    if ($ssh2Publickey != 'N') {
+                    $ssh2Pass = new phpseclib\Crypt\RSA();
 
-                        $ssh2Pass = new Crypt_RSA();
-
-                        if ($ssh2Publickey == 'B') {
-                            $ssh2Pass->setPassword($ssh2DecryptedPass);
-                        }
-
-                        $ssh2Pass->loadKey(file_get_contents($privateKey));
-
-                    } else {
-                        $ssh2Pass = $ssh2DecryptedPass;
+                    if ($ssh2Publickey == 'B') {
+                        $ssh2Pass->setPassword($ssh2DecryptedPass);
                     }
 
-                    if ($sshObject->login($ssh2User, $ssh2Pass)) {
+                    $ssh2Pass->loadKey(file_get_contents($privateKey));
 
-                        $notified = 0;
+                } else {
+                    $ssh2Pass = $ssh2DecryptedPass;
+                }
 
-                        if (!is_array($cmds)) {
-                            $cmds = array($cmds);
+                if ($sshObject->login($ssh2User, $ssh2Pass)) {
+
+                    $notified = 0;
+
+                    if (!is_array($cmds)) {
+                        $cmds = array($cmds);
+                    }
+
+                    foreach ($cmds as $c) {
+                        if (is_string($c) and $c != '') {
+                            $return .= $sshObject->exec($c);
                         }
-
-                        foreach ($cmds as $c) {
-                            if (is_string($c) and $c != '') {
-                                $return .= $sshObject->exec($c);
-                            }
-                        }
-
-                    } else {
-                        $notified++;
                     }
 
                 } else {
@@ -129,7 +120,7 @@ if (!function_exists('ssh2_execute')) {
                 if ($notified == $rSA['down_checks']) {
                     $query = ($resellerID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${resellerID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
                     $query->execute();
-                    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                    while ($row2 = $query->fetch(PDO::FETCH_ASSOC)) {
                         if ($row2['mail_serverdown'] == 'Y') {
                             sendmail('emaildown', $row2['id'], $ssh2IP, '');
                         }
@@ -149,7 +140,7 @@ if (!function_exists('ssh2_execute')) {
                 }
                 $query->execute(array($notified, $serverID));
 
-                return ($notified == 0 or $sshObject->error === false) ? $return : false;
+                return ($notified == 0) ? $return : false;
 
             }
         }
@@ -161,30 +152,21 @@ if (!function_exists('ssh2_execute')) {
 
         $privateKey = EASYWIDIR . '/keys/' . removePub($sshKey);
 
-        $sshObject = new Net_SSH2($ssh2IP, $ssh2Port);
+        $sshObject = new phpseclib\Net\SSH2($ssh2IP, $ssh2Port);
 
-        if ($sshObject->error === false) {
+        if ($sshPublickey != 'N') {
 
-            if ($sshPublickey != 'N') {
+            $key = new phpseclib\Crypt\RSA();
 
-
-                $key = new Crypt_RSA();
-
-                if ($sshPublickey == 'B') {
-                    $key->setPassword($ssh2Pass);
-                }
-
-                $key->loadKey(file_get_contents($privateKey));
-
-                $ssh2Pass = $key;
-
+            if ($sshPublickey == 'B') {
+                $key->setPassword($ssh2Pass);
             }
 
-            return ($sshObject->login($ssh2User, $ssh2Pass)) ?  true : 'login';
+            $key->loadKey(file_get_contents($privateKey));
 
+            $ssh2Pass = $key;
         }
 
-        return 'ipport';
-
+        return ($sshObject->login($ssh2User, $ssh2Pass)) ?  true : 'login';
     }
 }

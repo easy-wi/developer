@@ -37,16 +37,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('Net_SSH2')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
-}
-
-if (!class_exists('Crypt_RSA')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
-}
-
-if (!class_exists('Net_SFTP')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+// Include PHPSeclib if not already included
+if (!class_exists('SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
 }
 
 class HttpdManagement {
@@ -112,7 +105,7 @@ class HttpdManagement {
                     return false;
                 }
 
-                $this->ssh2Pass = new Crypt_RSA();
+                $this->ssh2Pass = new phpseclib\Crypt\RSA();
 
                 if ($row['publickey'] == 'B') {
                     $this->ssh2Pass->setPassword($row['pass']);
@@ -310,7 +303,7 @@ class HttpdManagement {
             return false;
         }
 
-        $this->sftpObject = new Net_SFTP($this->hostData['ip'], $this->hostData['port']);
+        $this->sftpObject = new phpseclib\Net\SFTP($this->hostData['ip'], $this->hostData['port']);
 
         if ($this->sftpObject->login($this->hostData['user'], $this->ssh2Pass)) {
             return true;
@@ -326,7 +319,7 @@ class HttpdManagement {
             return false;
         }
 
-        $this->ssh2Object = new Net_SSH2($this->hostData['ip'], $this->hostData['port']);
+        $this->ssh2Object = new phpseclib\Net\SSH2($this->hostData['ip'], $this->hostData['port']);
 
         if ($this->ssh2Object->login($this->hostData['user'], $this->ssh2Pass)) {
             return true;

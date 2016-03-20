@@ -37,16 +37,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('Net_SSH2')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
-}
-
-if (!class_exists('Crypt_RSA')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
-}
-
-if (!class_exists('Net_SFTP')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+// Include PHPSeclib if not already included
+if (!class_exists('SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
 }
 
 class rootServer {
@@ -331,13 +324,13 @@ class rootServer {
                 # https://github.com/easy-wi/developer/issues/70
                 $privateKey = EASYWIDIR . '/keys/' . removePub($v['keyname']);
 
-                $sftpObject = new Net_SFTP($v['ip'], $v['port']);
+                $sftpObject = new phpseclib\Net\SFTP($v['ip'], $v['port']);
 
-                if (file_exists($privateKey) and $sftpObject->error === false) {
+                if (file_exists($privateKey)) {
 
                     if ($v['publickey'] != 'N') {
 
-                        $ssh2Pass = new Crypt_RSA();
+                        $ssh2Pass = new phpseclib\Crypt\RSA();
 
                         if ($v['publickey'] == 'B') {
                             $ssh2Pass->setPassword($v['pass']);
@@ -454,31 +447,26 @@ class rootServer {
 
                                 $sftpObject->put($file, $this->assembleDhcpConfig($config, $k));
 
-                                $sshObject = new Net_SSH2($v['ip'], $v['port']);
+                                $sshObject = new phpseclib\Net\SSH2($v['ip'], $v['port']);
 
-                                if ($sshObject->error === false) {
+                                if ($v['publickey'] != 'N') {
 
-                                    if ($v['publickey'] != 'N') {
+                                    $ssh2Pass = new phpseclib\Crypt\RSA();
 
-                                        $ssh2Pass = new Crypt_RSA();
-
-                                        if ($v['publickey'] == 'B') {
-                                            $ssh2Pass->setPassword($v['pass']);
-                                        }
-
-                                        $ssh2Pass->loadKey(file_get_contents($privateKey));
-
-                                    } else {
-                                        $ssh2Pass = $v['pass'];
+                                    if ($v['publickey'] == 'B') {
+                                        $ssh2Pass->setPassword($v['pass']);
                                     }
 
-                                    if ($sshObject->login($v['user'], $ssh2Pass)) {
-                                        $sshObject->exec($v['startCmd'] . ' &');
-                                    } else {
-                                        $tempBad[] = 'Could login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
-                                    }
+                                    $ssh2Pass->loadKey(file_get_contents($privateKey));
+
                                 } else {
-                                    $tempBad[] = 'Could not connect to DHCP server: ' . $v['ip'] . ':' . $v['port'];
+                                    $ssh2Pass = $v['pass'];
+                                }
+
+                                if ($sshObject->login($v['user'], $ssh2Pass)) {
+                                    $sshObject->exec($v['startCmd'] . ' &');
+                                } else {
+                                    $tempBad[] = 'Could login to DHCP server: ' . $v['ip'] . ':' . $v['port'];
                                 }
                             }
 
@@ -517,72 +505,67 @@ class rootServer {
 
             $privateKey = EASYWIDIR . '/keys/' . removePub($v['keyname']);
 
-            $sftpObject = new Net_SFTP($v['ip'], $v['port']);
+            $sftpObject = new phpseclib\Net\SFTP($v['ip'], $v['port']);
 
-            if ($sftpObject->error === false) {
 
-                if ($v['publickey'] == 'Y' and file_exists($privateKey)) {
+            if ($v['publickey'] == 'Y' and file_exists($privateKey)) {
 
-                    $ssh2Pass = new Crypt_RSA();
+                $ssh2Pass = new phpseclib\Crypt\RSA();
 
-                    if ($v['publickey'] == 'B') {
-                        $ssh2Pass->setPassword($v['pass']);
-                    }
-
-                    $ssh2Pass->loadKey(file_get_contents($privateKey));
-
-                } else {
-                    $ssh2Pass = $v['pass'];
+                if ($v['publickey'] == 'B') {
+                    $ssh2Pass->setPassword($v['pass']);
                 }
 
+                $ssh2Pass->loadKey(file_get_contents($privateKey));
 
-                if ($sftpObject->login($v['user'], $ssh2Pass)) {
-                    foreach($v['actions'] as $a) {
+            } else {
+                $ssh2Pass = $v['pass'];
+            }
 
-                        $extraSlash = (substr($v['PXEFolder'], -1) != '/' and strlen($v['PXEFolder']) > 0) ? '/' : '';
-                        $pathWithPXEMac = $v['PXEFolder'] . $extraSlash . '01-' . str_replace(':', '-', $this->ID[$a['type']][$a['id']]['mac']);
+            if ($sftpObject->login($v['user'], $ssh2Pass)) {
+                foreach($v['actions'] as $a) {
 
-                        $fileWithPath = (substr($v['PXEFolder'], 0, 1) == '/') ? $pathWithPXEMac : '/home/' . $v['user'] . '/' . $pathWithPXEMac;
+                    $extraSlash = (substr($v['PXEFolder'], -1) != '/' and strlen($v['PXEFolder']) > 0) ? '/' : '';
+                    $pathWithPXEMac = $v['PXEFolder'] . $extraSlash . '01-' . str_replace(':', '-', $this->ID[$a['type']][$a['id']]['mac']);
 
-                        if (in_array($a['action'], array('dl', 'md', 'rp', 'rt'))) {
+                    $fileWithPath = (substr($v['PXEFolder'], 0, 1) == '/') ? $pathWithPXEMac : '/home/' . $v['user'] . '/' . $pathWithPXEMac;
 
-                            $sftpObject->delete($pathWithPXEMac);
+                    if (in_array($a['action'], array('dl', 'md', 'rp', 'rt'))) {
 
-                        } else if (in_array($a['action'], array('ad', 'ri', 'rc'))) {
+                        $sftpObject->delete($pathWithPXEMac);
 
-                            $removeArray[] = array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs', 'affectedID' => $a['id'], 'name' => $this->ID[$a['type']][$a['id']]['ip'], 'imageID' => $a['imageID'], 'hostID' => $a['hostID'], 'userID' => $a['userID'], 'resellerID' => $a['resellerID'], 'extraData' => array('runAt' => strtotime("+5 minutes")));
+                    } else if (in_array($a['action'], array('ad', 'ri', 'rc'))) {
 
-                            $query = $this->sql->prepare("SELECT `pxelinux` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
-                            $query->execute(array($a['imageID']));
-                            $pxeconfig = $query->fetchColumn();
+                        $removeArray[] = array('type' => ($a['type'] == 'dedicated') ? 'de' : 'vs', 'affectedID' => $a['id'], 'name' => $this->ID[$a['type']][$a['id']]['ip'], 'imageID' => $a['imageID'], 'hostID' => $a['hostID'], 'userID' => $a['userID'], 'resellerID' => $a['resellerID'], 'extraData' => array('runAt' => strtotime("+5 minutes")));
+
+                        $query = $this->sql->prepare("SELECT `pxelinux` FROM `resellerimages` WHERE `id`=? AND `active`='Y' LIMIT 1");
+                        $query->execute(array($a['imageID']));
+                        $pxeconfig = $query->fetchColumn();
 
 
-                            if (strlen($pxeconfig) > 0) {
+                        if (strlen($pxeconfig) > 0) {
 
-                                $newPass = passwordgenerate(12);
+                            $newPass = passwordgenerate(12);
 
-                                $pxeconfig = str_replace('%rescuepass%', $newPass, $pxeconfig);
+                            $pxeconfig = str_replace('%rescuepass%', $newPass, $pxeconfig);
 
-                                if ($a['type'] == 'dedicated') {
-                                    $query = $this->sql->prepare("UPDATE `rootsDedicated` SET `initialPass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `dedicatedID`=? LIMIT 1");
-                                    $query->execute(array($newPass, $this->aeskey, $k, $a['id']));
-                                } else {
-                                    $query = $this->sql->prepare("UPDATE `virtualcontainer` SET `pass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
-                                    $query->execute(array($newPass, $this->aeskey, $k, $a['id']));
-                                }
-
-                                $sftpObject->put($fileWithPath, $pxeconfig);
-
+                            if ($a['type'] == 'dedicated') {
+                                $query = $this->sql->prepare("UPDATE `rootsDedicated` SET `initialPass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `dedicatedID`=? LIMIT 1");
+                                $query->execute(array($newPass, $this->aeskey, $k, $a['id']));
                             } else {
-                                $tempBad[] = 'pxefile template empty for imageID: '.$a['imageID'];
+                                $query = $this->sql->prepare("UPDATE `virtualcontainer` SET `pass`=AES_ENCRYPT(?,?),`pxeID`=? WHERE `id`=? LIMIT 1");
+                                $query->execute(array($newPass, $this->aeskey, $k, $a['id']));
                             }
+
+                            $sftpObject->put($fileWithPath, $pxeconfig);
+
+                        } else {
+                            $tempBad[] = 'pxefile template empty for imageID: '.$a['imageID'];
                         }
                     }
-                } else {
-                    $tempBad[] = 'Could login to PXE server: ' . $v['ip'] . ':' . $v['port'];
                 }
             } else {
-                $tempBad[] = 'Could not connect to PXE server: ' . $v['ip'] . ':' . $v['port'];
+                $tempBad[] = 'Could login to PXE server: ' . $v['ip'] . ':' . $v['port'];
             }
 
             if (isset($tempBad) and isset($bad)) {
@@ -840,13 +823,13 @@ class rootServer {
 
             $privateKey = EASYWIDIR . '/keys/' .  removePub($this->vmwareHosts[$hID['hostID']]['vmIDs']['keyname']);
 
-            $sftpObject = new Net_SFTP($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
+            $sftpObject = new phpseclib\Net\SFTP($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
 
-            if (file_exists($privateKey) and $sftpObject->error === false) {
+            if (file_exists($privateKey)) {
 
                 if ($this->vmwareHosts[$hID]['vmIDs']['publickey'] != 'N') {
 
-                    $ssh2Pass = new Crypt_RSA();
+                    $ssh2Pass = new phpseclib\Crypt\RSA();
 
                     if ($this->vmwareHosts[$hID]['vmIDs']['publickey'] == 'B') {
                         $ssh2Pass->setPassword($this->vmwareHosts[$hID]['vmIDs']['dpass']);
@@ -860,9 +843,9 @@ class rootServer {
 
                 if ($sftpObject->login($this->vmwareHosts[$hID]['vmIDs']['duser'], $ssh2Pass)) {
 
-                    $sshObject = new Net_SSH2($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
+                    $sshObject = new phpseclib\Net\SSH2($this->vmwareHosts[$hID]['vmIDs']['ip'], $this->vmwareHosts[$hID]['vmIDs']['dport']);
 
-                    if (file_exists($privateKey) and $sshObject->error === false) {
+                    if (file_exists($privateKey)) {
 
                         if ($sshObject->login($this->vmwareHosts[$hID]['vmIDs']['duser'], $ssh2Pass)) {
 

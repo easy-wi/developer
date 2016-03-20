@@ -37,16 +37,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!class_exists('Net_SSH2')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SSH2.php');
-}
-
-if (!class_exists('Crypt_RSA')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Crypt/RSA.php');
-}
-
-if (!class_exists('Net_SFTP')) {
-    include(EASYWIDIR . '/third_party/phpseclib/Net/SFTP.php');
+// Include PHPSeclib if not already included
+if (!class_exists('SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
 }
 
 if (!function_exists('ssh2_execute')) {
@@ -120,13 +113,13 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
 
     global $sql;
 
-    $sshSftpObject = new Net_SFTP($sship, $sshport);
+    $sshSftpObject = new phpseclib\Net\SFTP($sship, $sshport);
 
     if ($keyuse != 'N') {
 
         $privateKey = EASYWIDIR . '/keys/' . removePub($sshkey);
 
-        $sshpw = new Crypt_RSA();
+        $sshpw = new phpseclib\Crypt\RSA();
 
         if ($keyuse == 'B') {
             $sshpw->setPassword($sshpw);
@@ -292,30 +285,23 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
 
         if (!isset($bad) and $action != 'li') {
 
+            $sshObject = new phpseclib\Net\SSH2($sship, $sshport);
 
-            $sshObject = new Net_SSH2($sship, $sshport);
+            if ($sshObject->login($sshuser, $sshpw)) {
 
-            if ($sshObject->error === false) {
-                if ($sshObject->login($sshuser, $sshpw)) {
+                $bin = ($bitversion == 32) ? 'tsdnsserver_linux_x86' : 'tsdnsserver_linux_amd64';
 
-                    $bin = ($bitversion == 32) ? 'tsdnsserver_linux_x86' : 'tsdnsserver_linux_amd64';
+                $ssh2cmd = 'cd ' . $folders . ' && function restart () { if [ "`ps fx | grep ' . $bin . ' | grep -v grep`" == "" ]; then ./' . $bin . ' > /dev/null & else ./' . $bin . ' --update > /dev/null & fi }; restart& ';
 
-                    $ssh2cmd = 'cd ' . $folders . ' && function restart () { if [ "`ps fx | grep ' . $bin . ' | grep -v grep`" == "" ]; then ./' . $bin . ' > /dev/null & else ./' . $bin . ' --update > /dev/null & fi }; restart& ';
+                $sshObject->exec($ssh2cmd);
 
-                    $sshObject->exec($ssh2cmd);
-
-                    if ($notified > 0) {
-                        $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
-                        $query->execute(array($sship, $reseller_id));
-                    }
-
-                } else {
-                    $bad = 'The login data does not work';
-                    $notified++;
+                if ($notified > 0) {
+                    $query = $sql->prepare("UPDATE `voice_masterserver` SET `notified`=0 WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
+                    $query->execute(array($sship, $reseller_id));
                 }
 
             } else {
-                $bad = 'Could not connect to Server';
+                $bad = 'The login data does not work';
                 $notified++;
             }
         }
