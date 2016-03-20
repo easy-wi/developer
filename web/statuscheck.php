@@ -45,23 +45,42 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     $timelimit = 600;
 }
 
+$checkTypesOfServer = array('gs', 'vs', 'vh', 'my', 'st');
+
 if (isset($argv)) {
 
     $args = array();
 
     foreach ($argv as $a) {
-        if ($a == 'gs' or $a == 'vs' or $a == 'vh' or $a == 'my' or $a == 'st') {
+        if (in_array($a, $checkTypesOfServer)) {
             $checkTypeOfServer = $a;
         } else if (is_numeric($a)) {
             $sleep = $a;
         } else {
 
             $e = explode(':', $a);
+
             if (isset($e[1])) {
                 $args[$e[0]] = $e[1];
             }
         }
     }
+}
+
+if (isset($_GET['checkTypeOfServer']) and in_array($_GET['checkTypeOfServer'], $checkTypesOfServer)) {
+    $checkTypeOfServer = $_GET['checkTypeOfServer'];
+}
+
+if (isset($_GET['sleep']) and is_numeric($_GET['sleep'])) {
+    $sleep = intval($_GET['sleep']);
+}
+
+if (isset($_GET['tsDebug']) and ($_GET['tsDebug'] == 1 or $_GET['tsDebug'] == 0)) {
+    $args['tsDebug'] = intval($_GET['tsDebug']);
+}
+
+if (isset($_GET['coolDown']) and is_numeric($_GET['coolDown'])) {
+    $args['coolDown'] = intval($_GET['coolDown']);
 }
 
 define('EASYWIDIR', dirname(__FILE__));
@@ -203,7 +222,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $serverBatchV3Array = array();
         $allServersV3Array = array();
 
-        $query2 = $sql->prepare("SELECT g.`id`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE g.`rootID`=? AND g.`stopped`='N' AND g.`active`='Y'");
+        $query2 = $sql->prepare("SELECT g.`id`,g.`serverid`,g.`serverip`,g.`port`,g.`port2`,g.`port3`,g.`port4`,g.`port5`,t.`gameq`,t.`shorten`,t.`useQueryPort` FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` INNER JOIN `userdata` u ON u.`id`=g.`userid` WHERE g.`rootID`=? AND g.`stopped`='N' AND g.`active`='Y' AND u.`active`='Y'");
         $query = $sql->prepare("SELECT DISTINCT(`rootID`) AS `root_id` FROM `gsswitch` WHERE `active`='Y'");
         $query->execute();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -901,7 +920,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             $vs = $server['virtualserver_status'];
                             $uptime = (isset($server['virtualserver_uptime'])) ? $server['virtualserver_uptime'] : 0;
 
-                            $vselect2 = $sql->prepare("SELECT * FROM `voice_server` WHERE `localserverid`=? AND `masterserver`=? AND `resellerid`=? LIMIT 1");
+                            $vselect2 = $sql->prepare("SELECT v.*,u.`active` AS `user_active` FROM `voice_server` AS v INNER JOIN `userdata` u ON u.`id`=v.`userid` WHERE v.`localserverid`=? AND v.`masterserver`=? AND v.`resellerid`=? LIMIT 1");
                             $vselect2->execute(array($virtualserver_id, $vrow['id'], $resellerid));
                             foreach ($vselect2->fetchall(PDO::FETCH_ASSOC) as $vrow2) {
                                 $autoRestart = $vrow2['autoRestart'];
@@ -923,6 +942,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $max_upload_total_bandwidth = $vrow2['max_upload_total_bandwidth'];
                                 $address = $vrow2['ip'] . ':' . $vrow2['port'];
                                 $active = $vrow2['active'];
+                                $userActive = $vrow2['user_active'];
                                 $notified = $vrow2['notified'];
                                 $olduptime = $vrow2['uptime'];
                                 $initialpassword = $vrow2['initialpassword'];
@@ -934,7 +954,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 $newtraffic = $filetraffic;
                             }
 
-                            if (isset($ts3id) and $vs == 'online' and $active == 'N') {
+                            if (isset($ts3id) and $vs == 'online' and ($active == 'N' or $userActive == 'N')) {
 
                                 print "Inactive TS3 server $address running. Stopping it.\r\n";
                                 $connection->StopServer($virtualserver_id);

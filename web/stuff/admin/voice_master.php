@@ -157,7 +157,6 @@ virtualserver_weblist_enabled 0 = Off';
         }
 
         $resellerToBeWritten = ($query->rowCount() > 0) ? $ui->id('managedForID', 10, 'post') : null;
-
     }
 
     $query = $sql->prepare("SELECT `id`,`ssh2ip`,`description` FROM `voice_tsdns` WHERE `active`='Y' AND `resellerid`=?");
