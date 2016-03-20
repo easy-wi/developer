@@ -184,7 +184,7 @@ if ($ui->st('w', 'get') == 'lo') {
             $text = $sprache->pwnomatch;
         }
 
-    } else if ($ui->w('gamestring',32, 'get')) {
+    } else if ($ui->w('gamestring', 32, 'get')) {
 
         $token = '&amp;token=' . $ui->w('gamestring',32, 'get');
         $recover = false;

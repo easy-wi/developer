@@ -64,7 +64,7 @@
     <menu_finish>Finish</menu_finish>
 	<no>No</no>
     <ok_admin_user>The initial admin account has been successfully created.</ok_admin_user>
-    <ok_configuration>DThe configuration has been written.</ok_configuration>
+    <ok_configuration>The configuration has been written.</ok_configuration>
     <ok_db_connect>Database connection could be established.</ok_db_connect>
     <ok_db_tables_check>Database tables successfully checked.</ok_db_tables_check>
     <ok_db_tables_check_repair>Database tables successfully corrected.</ok_db_tables_check_repair>
