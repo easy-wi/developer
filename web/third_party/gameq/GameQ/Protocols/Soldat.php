@@ -19,12 +19,14 @@
 namespace GameQ\Protocols;
 
 /**
- * Class ARK: Survival Evolved
+ * Class Soldat
  *
  * @package GameQ\Protocols
+ *
+ * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Arkse extends Source
+class Soldat extends Ase
 {
 
     /**
@@ -32,20 +34,26 @@ class Arkse extends Source
      *
      * @type string
      */
-    protected $name = 'arkse';
+    protected $name = 'soldat';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "ARK: Survival Evolved";
+    protected $name_long = "Soldat";
 
     /**
-     * query_port = client_port + 19238
-     * 27015 = 7777 + 19238
+     * query_port = client_port + 123
      *
      * @type int
      */
-    protected $port_diff = 19238;
+    protected $port_diff = 123;
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "soldat://%s:%d/";
 }

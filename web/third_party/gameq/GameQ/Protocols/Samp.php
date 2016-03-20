@@ -70,7 +70,7 @@ class Samp extends Protocol
      *
      * @type string
      */
-    protected $name = 'san andreas multiplayer';
+    protected $name = 'samp';
 
     /**
      * Longer string name of this protocol class
@@ -198,7 +198,7 @@ class Samp extends Protocol
         $result = new Result();
 
         // Always dedicated
-        $result->add('dedicated', true);
+        $result->add('dedicated', 1);
 
         // Pull out the server information
         $result->add('password', (bool) $buffer->readInt8());

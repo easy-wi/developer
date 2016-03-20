@@ -19,33 +19,24 @@
 namespace GameQ\Protocols;
 
 /**
- * Class ARK: Survival Evolved
+ * Call of Duty 4 Protocol Class
  *
  * @package GameQ\Protocols
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Arkse extends Source
+class Cod4 extends Quake3
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'arkse';
+    protected $name = 'cod4';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "ARK: Survival Evolved";
-
-    /**
-     * query_port = client_port + 19238
-     * 27015 = 7777 + 19238
-     *
-     * @type int
-     */
-    protected $port_diff = 19238;
+    protected $name_long = "Call of Duty 4";
 }
