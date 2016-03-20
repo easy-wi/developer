@@ -161,6 +161,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $loguseraction = "%resync% %gserver% {$appServer->appServerDetails['serverIP']}:{$appServer->appServerDetails['port']}";
         }
 
+        $insertlog->execute();
+
         $appServer->addApp($templates);
 
         $appServer->execute();
