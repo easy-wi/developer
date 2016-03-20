@@ -45,11 +45,10 @@ if (isset($_SERVER['REMOTE_ADDR'])) {
     $timelimit = 600;
 }
 
+$args = array();
 $checkTypesOfServer = array('gs', 'vs', 'vh', 'my', 'st');
 
 if (isset($argv)) {
-
-    $args = array();
 
     foreach ($argv as $a) {
         if (in_array($a, $checkTypesOfServer)) {
@@ -112,6 +111,10 @@ $query = $sql->prepare("UPDATE `settings` SET `lastCronStatus`=UNIX_TIMESTAMP()"
 $query->execute();
 
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
+
+    if (isset($ip)) {
+        echo '<pre>';
+    }
 
     if (isset($checkTypeOfServer)) {
         if ($checkTypeOfServer == 'gs') {
@@ -698,6 +701,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 $ssh2cmd = $folders . 'function r () { if [ "`ps fx | grep ' . $tsdnsbin . ' | grep -v grep`" == "" ]; then ./' . $tsdnsbin . ' > /dev/null & else ./' . $tsdnsbin . ' --update > /dev/null & fi }; r& ';
+
+                if ((isset($args['tsDebug']) and $args['tsDebug'] == 1)) {
+                    print "$ssh2cmd\r\n";
+                }
 
                 if (ssh2_execute('vd', $row['id'], $ssh2cmd)) {
                     print "Restarting TSDNS: {$row['ssh2ip']}\r\n";
