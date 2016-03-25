@@ -46,11 +46,83 @@ if (isset($include) and $include == true) {
     $query->execute();
     $query->closecursor();
 
-    $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES ('5.22','','')");
+    $query = $sql->prepare("UPDATE `servertypes` SET `shorten`='arkse' WHERE `shorten`='ark'");
     $query->execute();
     $query->closecursor();
 
-    $response->add('Action: insert_easywi_version done.');
+    $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
+('5.22','<div align=\"right\">25.03.2016</div>
+<b>&Auml;nderungen:</b><br/>
+<ul>
+<li>Gameserver:
+<ul>
+<li>Mehr als 1TB Ram beim Masterserver einstellbar</li>
+</ul></li>
+<li>Panel Einstellungen:
+<ul>
+<li>Favicon Einstellungen</li>
+<li>Coloring Optionen für templates</li>
+</ul></li>
+<li>Diverses:
+<ul>
+<li>3rd Party Libraries aktualisiert</li>
+<li>Unterstützung von Sonderzeichen in Passw&ouml;rtern</li>
+<li>Pretty Output bei der statuscheck.php via GET</li>
+<li>Unterst&uuml;tzung von optionaler Argumente via GET bei der statuscheck.php</li>
+<li>Alte Update Scripts entfernt</li>
+<li>Italian &Uuml;bersetzung hinzugef&uuml;gt</li>
+<li>Reseller k&ouml;nnen Leihserver Modul nutzen</li>
+<li>Standalone CMS Seiten in Admin LTE umgesetzt</li>
+<li></li>
+</ul></li>
+</ul>
+<b>Bugfixes:</b>
+<ul>
+<li>TSDNS und TS3 werden auf Grund neuer Naming Patterns nicht neu gestartet</li>
+<li>Game und Voice Server werden neu gestartet, wenn der Besitzer inactive ist</li>
+<li>GS Reinstall im User Panel with nicht gelogt</li>
+<li>Typo Im Installer</li>
+<li>CDN auf der der Login Seite benutzt</li>
+<li>ExternalID beim Voice Server nicht einstellbar</li>
+<li>Repquota Bug in der statuscheck.php</li>
+</ul>','<div align=\"right\">03.25.2015</div>
+<b>Changes:</b><br/>
+<ul>
+<li>Gameserver:
+<ul>
+<li>More than 1TB Ram can be managed at the masterserver</li>
+</ul></li>
+<li>Panel Settings:
+<ul>
+<li>Add favicon configuration</li>
+<li>Coloring option for templates</li>
+</ul></li>
+<li>Miscellaneous:
+<ul>
+<li>3rd party libaries updated</li>
+<li>Support of special characters at passwords</li>
+<li>Pretty output at statuscheck.php via GET</li>
+<li>Support optional args as GET at statuscheck.php</li>
+<li>Remove old update scripts</li>
+<li>Italian translation added</li>
+<li>Reseller can make use of the lend server modul</li>
+<li>Align standalone cms pages with Admin LTE</li>
+<li></li>
+</ul></li>
+</ul>
+<b>Bugfixes:</b>
+<ul>
+<li>TSDNS and TS3 not restarted due to new binary names</li>
+<li>Server restart when user is inactive</li>
+<li>GS reinstall not logged at user panel</li>
+<li>Typo error installer</li>
+<li>CDN used at login pages</li>
+<li>No external ID shown on voice edit</li>
+<li>Repquota bug in statuscheck.php</li>
+</ul>')");
+    $query->execute();
+    $response->add('Action: insert_easywi_version done: ');
+    $query->closecursor();
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";

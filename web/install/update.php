@@ -177,6 +177,9 @@ if (versioncheck($version, '5.20', 'update_510-520.php', $response)) {
 if (versioncheck($version, '5.21', 'update_520-521.php', $response)) {
     $version = '5.21';
 }
+if (versioncheck($version, '5.22', 'update_521-522.php', $response)) {
+    $version = '5.22';
+}
 
 $response->add('Repairing tables if needed.');
 $tables->correctExistingTables();
