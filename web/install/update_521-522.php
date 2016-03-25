@@ -50,6 +50,10 @@ if (isset($include) and $include == true) {
     $query->execute();
     $query->closecursor();
 
+    $query = $sql->prepare("UPDATE `settings` SET `templateColor`='blue' WHERE `templateColor`='default'");
+    $query->execute();
+    $query->closecursor();
+
     $query = $sql->prepare("UPDATE `servertypes` SET `shorten`='arkse' WHERE `shorten`='ark'");
     $query->execute();
     $query->closecursor();
