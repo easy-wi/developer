@@ -104,7 +104,7 @@ function checkInstall {
     fi
 }
 
-INSTALLER_VERSION="1.3"
+INSTALLER_VERSION="1.4"
 OS=""
 USERADD=`which useradd`
 USERMOD=`which usermod`
@@ -280,9 +280,9 @@ if [ "$INSTALL" == "VS" ]; then
 
     okAndSleep "Searching latest build for hardware type $MACHINE with arch $ARCH."
 
-    for VERSION in ` curl -s "http://dl.4players.de/ts/releases/?C=M;O=D" | grep -Po '(?<=href=")[0-9]+(\.[0-9]+){2,3}(?=/")' | sort -Vr | head -1`; do
+    for VERSION in `curl -s "http://dl.4players.de/ts/releases/?C=M;O=D" | grep -Po '(?<=href=")[0-9]+(\.[0-9]+){2,3}(?=/")' | sort -Vr`; do
 
-        DOWNLOAD_URL_VERSION="http://dl.4players.de/ts/releases/$VERSION/teamspeak3-server_linux-$ARCH-$VERSION.tar.gz"
+        DOWNLOAD_URL_VERSION="http://dl.4players.de/ts/releases/$VERSION/teamspeak3-server_linux_$ARCH-$VERSION.tar.bz2"
         STATUS=`curl -I $DOWNLOAD_URL_VERSION 2>&1 | grep "HTTP/" | awk '{print $2}'`
 
         if [ "$STATUS" == "200" ]; then
@@ -400,6 +400,8 @@ if [ "$INSTALL" != "MY" ]; then
 
         if [ -d /home/$MASTERUSER/.ssh ]; then
             rm -rf /home/$MASTERUSER/.ssh
+            mkdir -p /home/$MASTERUSER/.ssh
+            chown $MASTERUSER:$MASTERUSER /home/$MASTERUSER/.ssh
         fi
 
         cyanMessage " "
@@ -1485,16 +1487,16 @@ if [ "$INSTALL" == "VS" ]; then
     cd /home/$MASTERUSER/
 
     okAndSleep "Downloading TS3 server files."
-    su -c "curl $DOWNLOAD_URL -o teamspeak3-server.tar.gz" $MASTERUSER
+    su -c "curl $DOWNLOAD_URL -o teamspeak3-server.tar.bz2" $MASTERUSER
 
-    if [ ! -f teamspeak3-server.tar.gz ]; then
+    if [ ! -f teamspeak3-server.tar.bz2 ]; then
         errorAndExit "Download failed! Exiting now!"
     fi
 
     okAndSleep "Extracting TS3 server files."
-    su -c "tar -xf teamspeak3-server.tar.gz --strip-components=1" $MASTERUSER
+    su -c "tar -xf teamspeak3-server.tar.bz2 --strip-components=1" $MASTERUSER
 
-    removeIfExists teamspeak3-server.tar.gz
+    removeIfExists teamspeak3-server.tar.bz2
 
     QUERY_WHITLIST_TXT=/home/$MASTERUSER/query_ip_whitelist.txt
 
