@@ -42,6 +42,10 @@ if (isset($include) and $include == true) {
 
     $response->add('Action: Update to new skin color template system');
 
+    $query = $sql->prepare("ALTER TABLE `settings` ADD `templateColor` VARCHAR(50)");
+    $query->execute();
+    $query->closecursor();
+
     $query = $sql->prepare("UPDATE `settings` SET `template`='default',`templateColor`=`template` WHERE `template` IN ('black','black-light','blue','blue-light','green','green-light','purple','purple-light','red','red-light','yellow','yellow-light')");
     $query->execute();
     $query->closecursor();
