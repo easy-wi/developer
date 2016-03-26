@@ -8,7 +8,6 @@
 
     <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
 
-    <link rel="shortcut icon" href="images/favicon.png" type="image/png">
     <meta name="robots" content="noindex">
     <link rel="shortcut icon" type="image/x-icon" href="<?php echo (isset($rSA['favicon'])) ? $rSA['favicon'] : 'images/favicon.ico';?>" />
 
@@ -51,7 +50,7 @@
             <?php } else if (isset($recover) and $recover==true) { ?>
 
             <div class="form-group has-feedback">
-                <input type="password1" id="inputPass" name="password" class="form-control" placeholder="<?php echo $sprache->password;?>" required>
+                <input type="password" id="inputPass" name="password1" class="form-control" placeholder="<?php echo $sprache->password;?>" required>
                 <span class="fa fa-lock form-control-feedback"></span>
             </div>
 
