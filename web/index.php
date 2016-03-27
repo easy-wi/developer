@@ -40,6 +40,11 @@
 
 define('EASYWIDIR', dirname(__FILE__));
 
+//Automatic redirection to the install folder
+if (is_dir(EASYWIDIR . '/install')) {
+ echo '<meta http-equiv="refresh" content="0; URL=/install/">';
+}
+
 $main = 1;
 $page_include = 1;
 
