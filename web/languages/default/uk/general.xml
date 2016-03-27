@@ -50,6 +50,7 @@
     <game>Game</game>
     <gameserver>Game server</gameserver>
     <gameroot>Game root server</gameroot>
+    <generalsettings>General settings</generalsettings>
     <greating_home>Welcome to the %name% web interface!</greating_home>
     <groups>Groups</groups>
     <help_home>

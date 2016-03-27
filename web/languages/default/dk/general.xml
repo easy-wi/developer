@@ -35,6 +35,7 @@
 	<game></game>
 	<gameserver>Spilserver</gameserver>
     <gameroot>Spil Rodenserver</gameroot>
+    <generalsettings>Generelle indstillinger</generalsettings>    
 	<groups>Grupper</groups>
 	<hostsystem>Værtssystem</hostsystem>
 	<hotline>Hotline</hotline>

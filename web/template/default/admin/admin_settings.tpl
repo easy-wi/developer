@@ -5,19 +5,20 @@
         <li class="active"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></li>
     </ol>
 </section>
-
+<form role="form" action="admin.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+<input type="hidden" name="token" value="<?php echo token();?>">
+<input type="hidden" name="action" value="md">
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="box box-primary">
-
-                <form role="form" action="admin.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
-
-                    <input type="hidden" name="token" value="<?php echo token();?>">
-                    <input type="hidden" name="action" value="md">
-
+                <div class="box-header with-border">
+   	                <h3 class="box-title"><?php echo $gsprache->generalsettings;?></h3>
+                    <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    </div><!-- /.box-header -->
                     <div class="box-body">
-
                         <div class="form-group">
                             <label for="inputLanguage"><?php echo $sprache->language;?></label>
                             <div class="controls">
@@ -28,7 +29,6 @@
                                 </select>
                             </div>
                         </div>
-
                         <div class="form-group">
                             <label for="inputTemplate">Template</label>
                             <div class="controls">
@@ -144,11 +144,84 @@
                                 <input class="form-control" id="inputHeaderHref" type="text" name="headerHref" value="<?php echo $headerHref;?>">
                             </div>
                         </div>
+                    </div>
+            </div>
+            <div class="box box-primary">
+                    <div class="box-header with-border">
+                    <h3 class="box-title">Cronjobs</h3>
+                    <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="form-group">
+                            <label for="inputlastCronWarnStatus"><?php echo $sprache->lastCronWarnStatus;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputlastCronWarnStatus" name="lastCronWarnStatus">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($lastCronWarnStatus=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
 
-                        <hr>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnReboot"><?php echo $sprache->lastCronWarnReboot;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputlastCronWarnReboot" name="lastCronWarnReboot">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($lastCronWarnReboot=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
 
-                        <h4><?php echo $gsprache->user;?></h4>
+                        <div class="form-group">
+                            <label for="inputlastCronWarnUpdates"><?php echo $sprache->lastCronWarnUpdates;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputlastCronWarnUpdates" name="lastCronWarnUpdates">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($lastCronWarnUpdates=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
 
+                        <div class="form-group">
+                            <label for="inputlastCronWarnJobs"><?php echo $sprache->lastCronWarnJobs;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputlastCronWarnJobs" name="lastCronWarnJobs">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($lastCronWarnJobs=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputlastCronWarnCloud"><?php echo $sprache->lastCronWarnCloud;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputlastCronWarnCloud" name="lastCronWarnCloud">
+                                    <option value="Y"><?php echo $gsprache->yes;?></option>
+                                    <option value="N" <?php if($lastCronWarnCloud=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputCronjobIPs">Cronjob IPs</label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputCronjobIPs" name="cronjobIPs" rows="8"><?php echo $cronjobIPs;?></textarea>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="box box-primary">
+                    <div class="box-header with-border">
+                    <h3 class="box-title"><?php echo $gsprache->user;?></h3>
+                    <div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputLogins"><?php echo $sprache->faillogins;?></label>
                             <div class="controls">
@@ -172,11 +245,16 @@
                                 <input class="form-control" id="inputPrefix2" type="text" name="prefix2" value="<?php echo $prefix2;?>">
                             </div>
                         </div>
-
-                        <hr>
-
-                        <h4><?php echo $gsprache->gameserver.' + '.$gsprache->voiceserver;?></h4>
-
+                    </div>
+            </div>       
+            <div class="box box-primary">
+                    <div class="box-header with-border">
+                    <h3 class="box-title"><?php echo $gsprache->gameserver.' + '.$gsprache->voiceserver;?></h3>
+                    <div class="box-tools pull-right">
+                       <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                    </div><!-- /.box-header -->
+                    <div class="box-body">
                         <div class="form-group">
                             <label for="inputDown"><?php echo $sprache->down_checks;?></label>
                             <div class="controls">
@@ -259,74 +337,18 @@
                                 <input class="form-control" id="inputAutoBackup2" type="number" name="voice_autobackup_intervall" value="<?php echo $voice_autobackup_intervall;?>">
                             </div>
                         </div>
-
-                        <hr>
-
-                        <h4>Cronjobs</h4>
-
-                        <div class="form-group">
-                            <label for="inputlastCronWarnStatus"><?php echo $sprache->lastCronWarnStatus;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputlastCronWarnStatus" name="lastCronWarnStatus">
-                                    <option value="Y"><?php echo $gsprache->yes;?></option>
-                                    <option value="N" <?php if($lastCronWarnStatus=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputlastCronWarnReboot"><?php echo $sprache->lastCronWarnReboot;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputlastCronWarnReboot" name="lastCronWarnReboot">
-                                    <option value="Y"><?php echo $gsprache->yes;?></option>
-                                    <option value="N" <?php if($lastCronWarnReboot=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputlastCronWarnUpdates"><?php echo $sprache->lastCronWarnUpdates;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputlastCronWarnUpdates" name="lastCronWarnUpdates">
-                                    <option value="Y"><?php echo $gsprache->yes;?></option>
-                                    <option value="N" <?php if($lastCronWarnUpdates=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputlastCronWarnJobs"><?php echo $sprache->lastCronWarnJobs;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputlastCronWarnJobs" name="lastCronWarnJobs">
-                                    <option value="Y"><?php echo $gsprache->yes;?></option>
-                                    <option value="N" <?php if($lastCronWarnJobs=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputlastCronWarnCloud"><?php echo $sprache->lastCronWarnCloud;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputlastCronWarnCloud" name="lastCronWarnCloud">
-                                    <option value="Y"><?php echo $gsprache->yes;?></option>
-                                    <option value="N" <?php if($lastCronWarnCloud=='N') echo 'selected="selected"';?>><?php echo $gsprache->no;?></option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="inputCronjobIPs">Cronjob IPs</label>
-                            <div class="controls">
-                                <textarea class="form-control" id="inputCronjobIPs" name="cronjobIPs" rows="8"><?php echo $cronjobIPs;?></textarea>
-                            </div>
-                        </div>
                     </div>
-
-                    <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
+    <div class="row">
+     <div class="col-md-12">
+      <div class="box box-primary">
+       <div class="box-footer">
+        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+       </div>
+      </div>
+     </div>
+    </div>
 </section>
+</form>

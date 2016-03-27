@@ -65,13 +65,7 @@
             </a>
 
             <div class="navbar-custom-menu">
-
-                <div class="nav navbar-btn pull-right" style="padding-right: 10px;">
-                    <a href="login.php?w=lo"><span class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> Logout</span></a>
-                </div>
-
                 <ul class="nav navbar-nav">
-
                     <?php if($statsArray['ticketsTotal']>0){ ?>
                     <!-- Messages: style can be found in dropdown.less-->
                     <li class="dropdown messages-menu hidden-xs">
@@ -108,16 +102,26 @@
                     <?php } ?>
 
                     <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-user"></i>
-                            <span><?php echo $great_user;?> <i class="caret"></i></span>
-                        </a>
-                        <ul class="dropdown-menu">
+                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                             <img src="images/Places-user-identity-icon.png" class="user-image" alt="User Image">
+                             <span><?php echo $great_user;?> <i class="caret"></i></span>
+                         </a>
+                          <ul class="dropdown-menu">
+                            <!-- User image -->
+                              <li class="user-header">
+                             <img src="images/Places-user-identity-icon.png" class="img-circle" alt="User Image">
+                             <p>
+                               <?php echo $great_user;?> <br/>
+                               <small></small>
+                             </p>
+                              </li>
+                            <!-- Main Area -->
                             <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                             <li class="divider"></li>
                             <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
                             <li><a href="admin.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                             <li><a href="admin.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
+                            
                             <li class="divider"></li>
                             <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
                             <li><a href="https://easy-wi.com/forum/" target="_blank"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
@@ -126,6 +130,15 @@
                             <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
                             <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Github</a></li>
                             <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
+                            <!-- Menu Footer-->
+                            <li class="user-footer">
+                            <div class="pull-left">
+                            <a href="admin.php?w=su" class="btn btn-default btn-flat">Profile</a>
+                            </div>
+                            <div class="pull-right">
+                            <a href="login.php?w=lo" class="btn btn-default btn-danger" style="color:white;"><i class="fa fa-power-off"></i> Logout</a>
+                            </div>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -494,9 +507,8 @@
 
         <!-- Right side column. Contains the navbar and content of the page -->
         <aside class="content-wrapper">
-
-            <?php if(isset($header)){ ?><div class="row"><div class="col-md-12"><div class="callout callout-warning"><p><?php echo $text;?></p></div></div></div><?php } ?>
-            <?php if(isset($toooldversion)){ ?><div class="row"><div class="col-md-12"><div class="callout callout-warning"><p><?php echo $toooldversion;?></p></div></div></div><?php } ?>
+            <?php if(isset($header)){ ?><section class="content" style="min-height: 0px;"><div class="row"><div class="col-md-12"><div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button><h4><i class="icon fa fa-info"></i> Info!</h4><p><?php echo $text;?></p></div></div></div></section><?php } ?>
+            <?php if(isset($toooldversion)){ ?><section class="content" style="min-height: 0px;"> <div class="row"><div class="col-md-12"><div class="alert alert-info alert-dismissable"><h4><i class="icon fa fa-info"></i> Info!</h4><p><?php echo $toooldversion;?><br/><br/><a href="admin.php?w=vc" class="btn btn-success btn-sm"><i class="glyphicon glyphicon-cloud-download"></i> Update</a></p></div></div></div></section><?php } ?>
             <?php if($rSA['lastCronWarnStatus']=='Y' and (time()-$rSA['lastCronStatus'])>600 and $reseller_id==0){ ?><div class="row"><div class="col-md-12"><div class="callout callout-danger"><p>Cronjob: statuscheck.php</div></div></div><?php }?>
             <?php if($rSA['lastCronWarnReboot']=='Y' and (time()-$rSA['lastCronReboot'])>5400 and $reseller_id==0){ ?><div class="row"><div class="col-md-12"><div class="callout callout-danger"><p>Cronjob: reboot.php</div></div></div><?php }?>
             <?php if($rSA['lastCronWarnUpdates']=='Y' and (time()-$rSA['lastCronUpdates'])>300 and $reseller_id==0){ ?><div class="row"><div class="col-md-12"><div class="callout callout-danger"><p>Cronjob: startupdates.php</div></div></div><?php }?>
