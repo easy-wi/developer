@@ -78,5 +78,6 @@ $defined['settings'] = array(
     'lastCronWarnJobs' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
     'lastCronCloud' => array("Type"=>"int(11) unsigned","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'lastCronWarnCloud' => array("Type"=>"enum('Y','N')","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
-    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
+    'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>""),
+    'login_header_text' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"Easy-Wi","Extra"=>"")
 );

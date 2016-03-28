@@ -16,6 +16,7 @@
     <multipleHelperEndpoint>Im Regelfall muss eine App bei dem jeweiligen Service Provider angelegt werden. Beim Erstellen der App erhält man einen Key und Zugangstoken, die beide in Easy-WI hinterlegt werden müssen. In der App muss meistens der Endpunkt des SocialAuth definiert werden. Dieser ist bei Easy-Wi %url%</multipleHelperEndpoint>
 	<nouser>Ein Benutzer mit diesem Namen, oder Email existiert nicht.</nouser>
 	<password>Passwort</password>
+    <passwdlost>Ich habe mein Passwort vergessen</passwdlost>
 	<passwordr>Passwort vergessen?</passwordr>
 	<passwordrepeat>Passwort wiederholen</passwordrepeat>
 	<passwordreset>Passwort zurücksetzen</passwordreset>

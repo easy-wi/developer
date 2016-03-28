@@ -135,7 +135,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $headerIcon = $ui->config('headerIcon', 'post');
         $headerText = $ui->escaped('headerText', 'post');
         $headerHref = $ui->url('headerHref', 'post');
-
+        
+        //Login Page Header
+        $loginHeaderText = $ui->escaped('loginheadertext', 'post');
+        
         $template = ($ui->folder('template', 'post') and isset($templates[$ui->folder('template', 'post')])) ? $ui->folder('template', 'post') : 'default';
         $templateColorDefault = (is_array($templates[$ui->folder('template', 'post')]) and $templates[$ui->folder('template', 'post')]['default']) ? $templates[$ui->folder('template', 'post')]['default'] : '';
         $templateColor = (is_array($templates[$ui->folder('template', 'post')]) and in_array($ui->folder('templateColor', 'post', $template), $templates[$ui->folder('template', 'post')]['colors'])) ? $ui->folder('templateColor', 'post', $template) : $templateColorDefault;
@@ -151,8 +154,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 			}
 		}
 
-		$query = $sql->prepare("UPDATE `settings` SET `favicon`=?,`header_icon`=?,`header_text`=?,`header_href`=?,`cronjob_ips`=?,`template`=?,`templateColor`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=? WHERE `resellerid`=? LIMIT 1");
-        $query->execute(array($favicon, $headerIcon, $headerText, $headerHref, $cronjobIPs, $template, $templateColor, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $reseller_id));
+		$query = $sql->prepare("UPDATE `settings` SET `favicon`=?,`header_icon`=?,`header_text`=?,`header_href`=?,`cronjob_ips`=?,`template`=?,`templateColor`=?,`voice_autobackup`=?,`voice_autobackup_intervall`=?,`voice_maxbackup`=?,`language`=?,`imageserver`=?,`master`=?,`prefix1`=?,`prefix2`=?,`faillogins`=?,`brandname`=?,`timezone`=?,`supportnumber`=?,`noservertag`=?,`nopassword`=?,`tohighslots`=?,`down_checks`=?,`lastCronWarnStatus`=?,`lastCronWarnReboot`=?,`lastCronWarnUpdates`=?,`lastCronWarnJobs`=?,`lastCronWarnCloud`=?,`login_header_text`=? WHERE `resellerid`=? LIMIT 1");
+        $query->execute(array($favicon, $headerIcon, $headerText, $headerHref, $cronjobIPs, $template, $templateColor, $voice_autobackup, $voice_autobackup_intervall, $voice_maxbackup, $language, $imageserver, $master, $prefix1, $prefix2, $faillogins, $brandname, $timezone, $supportnumber, $noservertag, $nopassword, $tohighslots, $down_checks, $lastCronWarnStatus, $lastCronWarnReboot, $lastCronWarnUpdates, $lastCronWarnJobs, $lastCronWarnCloud, $loginHeaderText, $reseller_id));
 
 		if ($query->rowCount() > 0) {
             $loguseraction = "%mod% %settings%";
@@ -202,6 +205,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $lastCronWarnUpdates = $row['lastCronWarnUpdates'];
         $lastCronWarnJobs = $row['lastCronWarnJobs'];
         $lastCronWarnCloud = $row['lastCronWarnCloud'];
+        $loginHeaderText = $row['login_header_text'];
 	}
 
     $template_file = ($query->rowCount() > 0) ? 'admin_settings.tpl' : 'admin_404.tpl';

@@ -30,7 +30,9 @@
 <body class="login-page" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
 <div class="login-box">
-
+    <div class="login-logo">
+      <a href="login.php"><?php echo (empty($rSA['login_header_text'])) ? '' : getLoginHeader($rSA['login_header_text']); ?></a>
+    </div>
     <div class="login-box-body">
 
         <?php if (isset($sus)) { ?>
@@ -82,8 +84,8 @@
             <?php } ?>
         </div><!-- /.social-auth-links -->
         <?php } ?>
-
-        <a href="login.php?w=pr">I forgot my password</a><br>
+        <br/>
+        <a href="login.php?w=pr"><?php echo $sprache->passwdlost;?></a><br/>
         <?php }?>
 
     </div><!-- /.login-box-body -->

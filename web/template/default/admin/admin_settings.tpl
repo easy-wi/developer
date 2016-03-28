@@ -144,6 +144,13 @@
                                 <input class="form-control" id="inputHeaderHref" type="text" name="headerHref" value="<?php echo $headerHref;?>">
                             </div>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="inputLoginText">Login Head Text</label>
+                            <div class="controls">
+                                <input class="form-control" id="inputLoginText" type="text" name="loginheadertext" value="<?php echo $loginHeaderText;?>">
+                            </div>
+                        </div>
                     </div>
             </div>
             <div class="box box-primary">

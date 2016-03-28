@@ -1596,4 +1596,13 @@ $(function() {
 
         return $table;
     }
+    /**
+     * Get the Slogan from DB
+     * @param unknown $valueoftitle
+     * @return string
+     */
+    function getLoginHeader($valueoftitle){
+      $valueoftitle = explode(" ",$valueoftitle);
+      return "<b>".$valueoftitle[0]."</b> ".$valueoftitle[1];
+    }
 }

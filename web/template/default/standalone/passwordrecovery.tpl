@@ -29,7 +29,9 @@
 <body class="login-page" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
 <div class="login-box">
-
+    <div class="login-logo">
+      <a href="login.php"><?php echo (empty($rSA['login_header_text'])) ? '' : getLoginHeader($rSA['login_header_text']); ?></a>
+    </div>
     <div class="login-box-body">
 
         <p class="login-box-msg"><?php echo $sprache->passwordr;?></p>

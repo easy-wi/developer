@@ -16,6 +16,7 @@
     <multipleHelperEndpoint>Usually you will have to register an app at the service provider. During creating you will be provided with a key and access token. Both need to be entered at Easy-Wi. At the app you need to configure an endpoint. The endpoint for Easy-Wi is %url%</multipleHelperEndpoint>
 	<nouser>En bruger med det indtastede navn eller email eksisterer ikke.</nouser>
 	<password>Adgangskode</password>
+    <passwdlost>jeg har glemt mit kodeord</passwdlost>
 	<passwordr>Adgangskode genopretning</passwordr>
 	<passwordrepeat>Adgangskode gentag</passwordrepeat>
 	<passwordreset>Nulstille adgangskode</passwordreset>
