@@ -6,17 +6,13 @@
         <li class="active"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></li>
     </ol>
 </section>
-
+<form role="form" action="admin.php?w=fe&amp;d=se&r=fe" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
+<input type="hidden" name="token" value="<?php echo token();?>">
+<input type="hidden" name="action" value="md">
 <section class="content">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="box box-primary">
-
-                <form role="form" action="admin.php?w=fe&amp;d=se" onsubmit="return confirm('<?php echo $gsprache->sure; ?>');" method="post">
-
-                    <input type="hidden" name="token" value="<?php echo token();?>">
-                    <input type="hidden" name="action" value="md">
-
                     <div class="box-body">
                         <div class="form-group">
                             <label for="inputActive"><?php echo $sprache->active;?></label>
@@ -81,12 +77,47 @@
                             <input class="form-control" id="inputNewsAmount" type="number" name="newsAmount" maxlength="6" value="<?php echo $newsAmount;?>">
                         </div>
                     </div>
-
-                    <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                    </div>
-                </form>
             </div>
         </div>
+        <div class="col-md-6">
+             <div class="box box-primary">
+                    <div class="box-body">
+                    <div class="form-group">
+                       <label for="inputBrandname"><?php echo $sprache->oauth_access_token; ?></label>
+                        <div class="controls">
+                           <input class="form-control" id="inputBrandname" type="text" name="oauth_access_token" value="<?php echo $oauth_access_token;?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="inputBrandname"><?php echo $sprache->oauth_access_token_secret; ?></label>
+                        <div class="controls">
+                           <input class="form-control" id="inputBrandname" type="password" name="oauth_access_token_secret" value="<?php echo $oauth_access_token_secret;?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="inputBrandname"><?php echo $sprache->consumer_key; ?></label>
+                        <div class="controls">
+                           <input class="form-control" id="inputBrandname" type="text" name="consumer_key" value="<?php echo $consumer_key;?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <label for="inputBrandname"><?php echo $sprache->consumer_secret; ?></label>
+                        <div class="controls">
+                           <input class="form-control" id="inputBrandname" type="password" name="consumer_secret" value="<?php echo $consumer_secret;?>">
+                        </div>
+                    </div>
+                    </div>
+             </div>       
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-primary">
+          <div class="box-footer">
+            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+          </div>
+         </div>
+      </div>
     </div>
 </section>
+</form>

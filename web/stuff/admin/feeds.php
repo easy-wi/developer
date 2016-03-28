@@ -60,7 +60,7 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
 } else {
     $lookUpID = $reseller_id;
 }
-if ($ui->w('action', 4, 'post') and !token(true)) {
+if ($ui->smallletters('action', 2, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->st('d', 'get') == 'se') {
     if ($ui->smallletters('action',2, 'post') == 'md'){
@@ -119,16 +119,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
             $maxKeep=200;
         }
+        
+        //Twitter
+        $oauth_access_token=$ui->escaped('oauth_access_token','post');
+        $oauth_access_token_secret=$ui->escaped('oauth_access_token_secret','post');
+        $consumer_key=$ui->escaped('consumer_key','post');
+        $consumer_secret=$ui->escaped('consumer_secret','post');
+
         $query = $sql->prepare("SELECT COUNT(`settingsID`) AS `amount` FROM `feeds_settings` WHERE `resellerID`=? LIMIT 1");
         $query->execute(array($lookUpID));
         if ($query->fetchColumn()>0) {
-            $query = $sql->prepare("UPDATE `feeds_settings` SET `active`=?,`displayContent`=?,`limitDisplay`=?,`maxChars`=?,`merge`=?,`newsAmount`=?,`orderBy`=?,`updateMinutes`=?,`useLocal`=?,`maxKeep`=?,`steamFeeds`=? WHERE `resellerID`=? LIMIT 1");
+         $query = $sql->prepare("UPDATE `feeds_settings` SET `active`=?,`displayContent`=?,`limitDisplay`=?,`maxChars`=?,`merge`=?,`newsAmount`=?,`orderBy`=?,`updateMinutes`=?,`useLocal`=?,`maxKeep`=?,`steamFeeds`=?,`oauth_access_token`=?,`oauth_access_token_secret`=?,`consumer_key`=?,`consumer_secret`=? WHERE `resellerID`=? LIMIT 1");
         } else {
-            $query = $sql->prepare("INSERT INTO `feeds_settings` (`active`,`displayContent`,`limitDisplay`,`maxChars`,`merge`,`newsAmount`,`orderBy`,`updateMinutes`,`useLocal`,`maxKeep`,`steamFeeds`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+         $query = $sql->prepare("INSERT INTO `feeds_settings` (`active`,`displayContent`,`limitDisplay`,`maxChars`,`merge`,`newsAmount`,`orderBy`,`updateMinutes`,`useLocal`,`maxKeep`,`steamFeeds`,`oauth_access_token`,`oauth_access_token_secret`,`consumer_key`,`consumer_secret`,`resellerID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
         }
-        $query->execute(array($active,$displayContent,$limitDisplay,$maxChars,$merge,$newsAmount,$orderBy,$updateMinutes,$useLocal,$maxKeep,$steamFeeds,$lookUpID));
+        $query->execute(array($active,$displayContent,$limitDisplay,$maxChars,$merge,$newsAmount,$orderBy,$updateMinutes,$useLocal,$maxKeep,$steamFeeds,$oauth_access_token,$oauth_access_token_secret,$consumer_key,$consumer_secret,$lookUpID));
         $loguseraction="%mod% Feed Settings";
         $insertlog->execute();
+        $template_file = $spracheResponse->table_add;
     } else {
         $active = '';
         $displayContent = '';
@@ -154,9 +162,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $useLocal = $row['useLocal'];
             $maxKeep = $row['maxKeep'];
             $steamFeeds = $row['steamFeeds'];
+            $oauth_access_token = $row['oauth_access_token'];
+            $oauth_access_token_secret = $row['oauth_access_token_secret'];
+            $consumer_key = $row['consumer_key'];
+            $consumer_secret = $row['consumer_secret'];
         }
+     $template_file = 'admin_feeds_settings.tpl';
     }
-    $template_file = 'admin_feeds_settings.tpl';
 } else if ($ui->st('d', 'get') == 'ad') {
     if ($ui->smallletters('action',2, 'post') == 'ad'){
         $active = $ui->active('active', 'post');

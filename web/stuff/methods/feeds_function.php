@@ -2,7 +2,7 @@
 
 /**
  * File: feeds_function.php.
- * Author: Ulrich Block
+ * Author: Ulrich Block and Daniel Rodriguez Baumann
  * Date: 17.06.12
  * Time: 14:35
  * Contact: <ulrich.block@easy-wi.com>
@@ -37,7 +37,8 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
-
+//Load Twitter API 1.1
+require_once('TwitterAPIExchange.php');
 if (isset($newsInclude) and $newsInclude == true) {
 
     $update = $sql->prepare("UPDATE `feeds_settings` SET `lastUpdate`=NOW() WHERE `resellerID`=? LIMIT 1");
@@ -200,11 +201,23 @@ if (isset($newsInclude) and $newsInclude == true) {
                     if (isset($printToConsole)) {
                         print "Getting Updates for Twitter Feed ${row2['loginName']}\r\n";
                     }
-
-                    $json = webhostRequest('api.twitter.com', 'easy-wi.com', '/1/statuses/user_timeline.json?include_rts=false&exclude_replies=true&screen_name=' . $row2['loginName'] . '&count=' . $newsAmount, 443);
-                    $json = cleanFsockOpenRequest($json, '[', ']');
-
-                    foreach (json_decode($json) as $tweet) {
+                    /**
+                     * Twitter API 1.1
+                     * @var array $settings
+                     */
+                    $settings = array(
+                      'oauth_access_token' => $row['oauth_access_token'],
+                      'oauth_access_token_secret' => $row['oauth_access_token_secret'],
+                      'consumer_key' => $row['consumer_key'],
+                      'consumer_secret' => $row['consumer_secret']
+                    );
+ 
+                    $url = 'https://api.twitter.com/1.1/statuses/user_timeline.json';
+                    $getfield = '?screen_name='.$row2['loginName'].'&count='.$newsAmount;
+                    $requestMethod = 'GET';
+                    $twitter = new TwitterAPIExchange($settings);
+                    
+                    foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $tweet) {
 
                         if (isset($tweet->text)) {
                             $feedTitle = substr($tweet->text, 0, 50) . '...';
@@ -214,6 +227,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                             $content = '';
                             $author = $tweet->user->name;
                             $creator = $tweet->user->name;
+                            //For DB
                             $feedsArray[$feedID][] = array(
                                 'title' => $feedTitle,
                                 'description' => $description,
@@ -225,6 +239,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                             );
                         }
                     }
+                    $twitter=null;
 
                 } else {
 
