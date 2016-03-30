@@ -72,7 +72,7 @@ function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $b
     }
 
     $filefolder = $folders . 'files/virtualserver_' . $virtualserver_id . '/';
-    var_dump($filefolder);
+
     $backupfolder = $folders . 'backups/virtualserver_' . $virtualserver_id . '/';
 
     if ($action == 'create') {
