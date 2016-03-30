@@ -1,5 +1,4 @@
 <?php
-
 /**
  * File: reboot.php.
  * Author: Ulrich Block
@@ -397,18 +396,19 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             }
 
                             $rawsnapshot = $connection->Snapshotcreate($localserverid);
+                            $channelSnapshot = $connection->channelList($localserverid);
                             $snapshot = gzcompress($rawsnapshot, 9);
-
-                            $query4 = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`date`,`resellerid`) VALUES(?,?,?,?,NOW(),?)");
-                            $query4->execute(array($ts3id, $ts3userid, $name, $snapshot, $resellerid));
-
+                            
+                            $query4 = $sql->prepare("INSERT INTO `voice_server_backup` (`sid`,`uid`,`name`,`snapshot`,`channels`,`date`,`resellerid`) VALUES(?,?,?,?,?,NOW(),?)");
+                            $query4->execute(array($ts3id, $ts3userid, $name, $snapshot, $channelSnapshot, $resellerid));
+                            
                             $query4 = $sql->prepare("SELECT `id` FROM `voice_server_backup` WHERE `sid`=? AND `uid`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
                             $query4->execute(array($ts3id, $ts3userid, $resellerid));
                             while ($row4 = $query4->fetch(PDO::FETCH_ASSOC)) {
                                 $filefolder = 'files/virtualserver_' . $localserverid . '/';
                                 $backupfolder = 'backups/virtualserver_' . $localserverid . '/';
 
-                                $cmds[] ='cd '.$folders.' && function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfj ' . $backupfolder . $row4['id'] . '.tar.bz2 ' . $filefolder . '; }; backup& ';
+                                $cmds[] ='cd '.$folders.' && function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfPj ' . $backupfolder . $row4['id'] . '.tar.bz2 ' . $filefolder . '; }; backup& ';
 
                                 print "Creating backup for ts3 server: " . $row3['ip'] . ':' . $row3['port'] . "\r\n";
                             }
