@@ -1,5 +1,4 @@
 <?php
-
 /**
  * File: functions_ts3.php.
  * Author: Ulrich Block
@@ -51,8 +50,13 @@ function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $b
     $split_config = preg_split('/\//', $path, -1, PREG_SPLIT_NO_EMPTY);
     $folderfilecount = count($split_config) - 1;
     $i = 0;
-
-    $folders = (substr($path, 0, 1) == '/') ? '/' : '/home/'.$sshuser . '/';
+    
+    if(!isset($path) || empty($path)){
+     $folders = '/home/'.$sshuser . '/';
+    }else{
+     $folders = (substr($path, 0, 1) == '/') ? '/' : '/home/'.$sshuser . '/';
+    }
+    
 
     while ($i <= $folderfilecount) {
         $folders .= $split_config[$i] . '/';
@@ -73,7 +77,7 @@ function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $b
 
     if ($action == 'create') {
 
-        $function = 'function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfj ' . $backupfolder . $backupid . '.tar.bz2 ' . $filefolder . '; }';
+        $function = 'function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfPj ' . $backupfolder . $backupid . '.tar.bz2 ' . $filefolder . '; }';
 
     } else if ($action == 'delete') {
 
@@ -81,7 +85,7 @@ function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $b
 
     } else if ($action == 'deploy') {
 
-        $function = 'function backup () { nice -n +19 rm -rf ' . $filefolder . '* && nice -n +19 tar xfj ' . $backupfolder . $backupid . '.tar.bz2 -C /';
+        $function = 'function backup () { nice -n +19 rm -rf ' . $filefolder . '* && nice -n +19 tar xfPj ' . $backupfolder . $backupid . '.tar.bz2 -C /';
 
         if (count($move) > 0) {
             foreach ($move as $o => $n) {
@@ -96,7 +100,6 @@ function tsbackup ($action, $sshuser, $path, $ts3MasterID, $virtualserver_id, $b
     if (isset($function)) {
 
         $ssh2cmd = 'cd ' . $folders . ' && ' . $function . '; backup& ';
-
         if (ssh2_execute('vm', $ts3MasterID, $ssh2cmd) !== false) {
             return 'ok';
         } else {
