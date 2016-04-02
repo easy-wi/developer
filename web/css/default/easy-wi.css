@@ -69,3 +69,24 @@ table form {
         overflow-x: hidden;
     }
 }
+
+.formmail{
+	background-color:#fff;
+	border: 2px solid #E2E7E9;
+	margin:10px;
+	width:99%;
+	border-radius: 5px;
+	border-spacing: 2px;
+}
+.formmail_left{
+	text-align:right;
+	padding:5px;
+}
+.formmail_right{
+	background-color: #D0E1F7;
+    text-align: left;
+    padding:1px 2px;
+}
+.formmailfield{
+	width:50%;
+}
