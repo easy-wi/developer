@@ -48,7 +48,7 @@
            <br>
            <?php foreach ($emaillanguage_xml as $array){ ?>
              <label class="checkbox-inline">
-               <input id="inputCheckboxEmail<?php echo $array['lang'];?>" name="languages-emailvinstall[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-emailvinstall');" type="checkbox" <?php if($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/>
+               <input id="inputCheckboxEmail<?php echo $array['lang'];?>" name="languages-emailvinstall[]" value="<?php echo $array['lang'];?>" onclick="textdrop('<?php echo $array['lang'];?>-template');" type="checkbox" <?php if($array['style']==1) echo 'checked';?>> <img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/>
              </label>
            <?php } ?>
            </div>
