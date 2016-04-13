@@ -101,14 +101,6 @@ function checkall(checked,check) {
     }
 }
 
-function textdrop(id) {
-    if (document.getElementById(id).style.display == "") {
-        document.getElementById(id).style.display = "none";
-    } else {
-        document.getElementById(id).style.display = "";
-    }
-}
-
 function toggleID (id, value) {
     if (value == 'Y') {
         $(id).show();
@@ -139,7 +131,17 @@ window.onDomReady(onReady); function onReady() {
     SwitchShowHideRows('init_ready');
 }
 $(function(){
-	   $('#submitTest').on('click',function (event){ 
+	
+	  $("#addattachments").click(function () {
+	      $("#attachment").append("<input type=\"file\" name=\"attachments[]\" class=\"form-control\" />");
+	  });
+	  
+	  $('.languagechoose').on('click',function(event){
+	   var language = $(this).attr('value');
+	   $('.email_body_'+language).toggle( "slow" );
+	  });
+	  
+	  $('#submitTest').on('click',function (event){ 
 		      $('#smtptestresult').find('div').remove();
 		      $('.smtpresult').find('i').remove();
 		      event.preventDefault(); // Totally stop stuff happening
@@ -172,7 +174,7 @@ $(function(){
 		      console.log(data);
 		      
 		      $.ajax({
-		                url: 'ajaxfunctions.php?testsmtp',
+		                url: 'ajaxfunctions.php?d=smttest',
 		                type: 'POST',
 		                data: data,
 		                cache: false,

@@ -85,35 +85,21 @@
               </div>
        </div>
        <div class="col-md-6">
-              <div class="box box-primary">
-                    <div class="box-header with-border">
-                       <h3 class="box-title">E-Mail Settings</h3>
-                       <div class="box-tools pull-right">
-                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                       </div><!-- /.box-tools -->
-                      </div>
-                      <div class="box-body">
-                      <p>Hier können Sie alle E-Mail Template und Einstellungen ändern. Um ein Template zu ändern, klicken Sie das gewünschte Template aus der Kategorie und Verändern diese. Bei einer Änderung der SMTP Verbindung ist es ratsam, diese mit dem <a class="btn btn-success btn-sm"><i class="fa fa-retweet"></i> Testing</a>-Button zu testen.</p>                       
-                      </div>
-              </div>
        </div>
     </div>
-
-   <h3>E-Mail Templates</h3>
-   <hr/>
+   <div class="form-group">
+    <label class="control-label" for="email_language">E-Mail Templates Language:   
+    <?php foreach ($emaillanguage_templates as $array){ ?>
+        <a class="emnaillanguagechoose" href="admin.php?w=sm&tl=<?php echo $array['lang'];?>"><img src="images/flags/<?php echo $array['lang'];?>.png" alt="Flag: 16_<?php echo $array['lang'];?>'.png"/> </a>
+    <?php } ?>
+    </label>
+    <hr/>
+    </div>
+    <div class="form-group">    
+      <label class="control-label" for="email_template">E-Mail Templates (<img src="images/flags/<?php echo $templateLanguage;?>.png" alt="Flag: 16_<?php echo $templateLanguage;?>'.png"/>)
+    </div> 
 <!-- Categories -->
 <?php echo $resultHtmlCategories; ?>
 <!-- ./Categories -->
 </section>
 </form>
-<!-- CK Editor -->
-<script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
-<script>
-  $(function () {
- CKEDITOR.replace('inputEmailRegards');
- CKEDITOR.replace('inputEmailFooter');
- CKEDITOR.config.extraAllowedContent = '*{*}';
- CKEDITOR.config.allowedContent = true;
- 
-  });
-</script>

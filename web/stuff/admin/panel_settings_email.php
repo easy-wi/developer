@@ -2,8 +2,9 @@
 /**
  * File: panel_settings_email.php.
  * Author: Ulrich Block
- * Date: 05.01.13
- * Time: 10:29
+ * Author: Daniel Rodriguez Baumann
+ * Date: 05.01.13 v0.1
+ * Date: 10.04.16 v0.2
  * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
@@ -40,9 +41,7 @@
 if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['settings'])) {
     redirect('login.php');
 }
-
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
-
 $sprache = getlanguagefile('settings', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $usprache = getlanguagefile('user', $user_language, $reseller_id);
@@ -69,7 +68,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('action', 'post') == 'md') {
 
-
+    //Save E-Mail settings View:MD
     $changeCount = 0;
 
     $query = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (?,?,?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
@@ -101,21 +100,33 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else {
  
+ //New Teamplete Skin - Data Model
  if($ui->w('d', 2, 'get')=='md' && is_numeric($ui->w('id', 2, 'get'))){
-  
-    function getMailXML($what, $language) {
-
-        global $sql, $reseller_id;
-
-        $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='em' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
-        $query->execute(array($language, $what, $reseller_id));
-        $xml = $query->fetchColumn();
-
-        $style = ($query->rowCount() == 1) ? 1 : 0;
-
-        return array('style' => $style, 'lang' => $language, 'xml' => $xml);
-    }
+   if($ui->id('id', 2, 'get') == 00){
     
+    
+    $tablename=$ui->w('tablename', 255, 'get');
+    $language=$ui->w('lt', 2, 'get');
+    $catid=$ui->id('cat', 2, 'get');
+    $reseller_id=$ui->id('rid', 2, 'get');
+    
+    $getquerysettingemailis = $sql->prepare("SELECT MAX(id) as `ID` FROM `setting_email_template`");
+    $getquerysettingemailis->execute();
+    $resultid=$getquerysettingemailis->fetchColumn();
+    $resultid++;
+    
+    $email_id = $resultid;
+    $email_setting_name = $tablename;
+    $email_body = '';
+    $email_subject = $tablename;
+    $email_ccmailing = '';
+    $email_bccmailing ='';
+    $email_language = $language;
+    $email_catid = $catid;
+    
+   }else{
+    
+    //Load Data from DB - View:Edit
     $querysettingemail = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `id`=? LIMIT 1");
     $querysettingemail->execute(array($ui->w('id', 2, 'get')));
     $emaillanguage_xml = array();
@@ -125,90 +136,60 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
      $email_setting_name = $row['email_setting_name'];
      $email_body = $row['email_body'];
      $email_subject = $row['subject'];
-     if (isset($template_to_use)) {
-      foreach (getlanguages($template_to_use) as $language) {
-       $emaillanguage_xml[] = getMailXML($row['email_setting_name'], $language);
-      }
-     }
-     
+     $email_ccmailing = $row['ccmailing'];
+     $email_bccmailing = $row['bccmailing'];
+     $email_language = $row['language'];
+     $email_catid = $row['category'];
     }
-    
-    $template_file = 'admin_settings_email_md.tpl';
-    
-}else{
- 
-  if($ui->w('d', 3, 'get')=='add' && is_numeric($ui->id('id',2,'post'))){
-   
-   function updateMailXML($what, $postarray) {
-   
-    global $sql, $reseller_id;
-   
-    $changeCount = 0;
-   
-    if (isset($postarray["languages-$what"])) {
-   
-     $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('em',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
-     foreach($postarray["languages-$what"] as $language) {
-      if (small_letters_check($language, 2)) {
-   
-       $xml = $postarray[$what . '_xml_' . $language];
-   
-       $query->execute(array($what, $language, $xml, $reseller_id));
-       $changeCount += $query->rowCount();
-      }
-     }
-   
-     $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='em' AND `transID`=? AND `resellerID`=?");
-     $query2 = $sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
-   
-     $query->execute(array($what, $reseller_id));
-     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-      if (!in_array($row['lang'],(array) $postarray["languages-$what"])) {
-       $query2->execute(array($row['lang'], $what, $reseller_id));
-       $changeCount += $query2->rowCount();
-      }
-     }
-   
-    } else {
-     $query = $sql->prepare("DELETE FROM `translations` WHERE `lang`=? AND `resellerID`=?");
-     $query->execute(array($what, $reseller_id));
-     $changeCount += $query->rowCount();
-    }
-   
-    return $changeCount;
    }
    
+   //Load Teamplate Skin MD
+   $template_file = 'admin_settings_email_md.tpl';
+    
+}else{
+  
+  //Save Data 
+  if($ui->w('d', 3, 'get')=='add' && is_numeric($ui->id('id',2,'post'))){
    $changeCount = 0;
-   
-   $queryupdateemailsetting = $sql->prepare("UPDATE `setting_email_template` SET `subject`= ?, `email_body`= ? WHERE `id`=?");   
-   
-   $queryupdateemailsetting->execute(array($ui->escaped('email_subject','post'), $ui->escaped('email_body','post'), $ui->id('id',2,'post')));
-   
+   $queryupdateemailsetting = $sql->prepare("INSERT INTO `setting_email_template` (`id`,`reseller_id`,`language`,`active`,`category`,`email_setting_name`,`subject`,`ccmailing`,`bccmailing`,`email_body`) VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`active`=VALUES(`active`),`category`=VALUES(`category`),`email_setting_name`=VALUES(`email_setting_name`),`reseller_id`=VALUES(`reseller_id`),`subject`=VALUES(`subject`),`ccmailing`=VALUES(`ccmailing`),`bccmailing`= VALUES(`bccmailing`),`email_body`= VALUES(`email_body`)"); 
+   $queryupdateemailsetting->execute(array($ui->id('id',2,'post'),$reseller_id,$ui->escaped('email_setting_language','post'),1,$ui->escaped('email_setting_category','post'),$ui->escaped('email_setting_name','post'),$ui->escaped('email_subject','post'), $ui->escaped('ccmailing','post'),$ui->escaped('bccmailing','post'),$ui->escaped('email_body','post')));
    $changeCount += $queryupdateemailsetting->rowCount();
-   
-   $changeCount += updateMailXML($ui->escaped('email_setting_name','post'), $ui->post);
-   
    if ($changeCount == 0) {
     $template_file = $spracheResponse->error_table;
    } else {
-   
     $loguseraction = '%mod% %emailsettings%';
     $insertlog->execute();
-   
     $template_file = $spracheResponse->table_add;
    }
    
   }else{
- 
+   
+    //Load Teamplate with language ID
+    $templateLanguage = $ui->w('tl', 2, 'get');
+    if(empty($templateLanguage)){
+     $templateLanguage=$user_language;
+    }
+   
+    //Categorie Array
+    $arrayofelements = array('vServer' => array('emailvrescue','emailvinstall'),
+      'Server' => array('emailbackup','emailbackuprestore','emailserverinstall','emailsecuritybreach','emaildown','emaildownrestart'),
+      'Ticket' => array('emailnewticket'),
+      'General' => array('emailfooter','emailregards','emailuseradd','emailpwrecovery','emailregister'),
+      'VoiceServer' => array('emailvoicemasterold'),
+      'GameServer' => array('emailgserverupdate'));
+    $arraycategory=array(1 => 'vServer', 2 => 'Server' , 3 => 'Ticket', 4 => 'General', 5 => 'VoiceServer', 6 => 'GameServer');
+
+    //Load E-Mail Setting from DB View:List
     $query = $sql->prepare("SELECT `email_setting_name`,`email_setting_value` FROM `settings_email` WHERE `reseller_id`=?");
     $query->execute(array($reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
      $email_settings[$row['email_setting_name']] = $row['email_setting_value'];
     }
  
-    //New
     $querycategory = $sql->prepare("SELECT * FROM `setting_email_category` WHERE `reseller_id`=?");
-    $querysettingemail = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `reseller_id`=? AND `category`=?");
+    $querysettingemail = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=?");
+    $querysettingemail2 = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=? AND `email_setting_name` =? LIMIT 1");
+    
     $querycategory->execute(array($reseller_id));
     
     while ($row = $querycategory->fetch(PDO::FETCH_ASSOC)) {
@@ -243,20 +224,50 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
      <th>Edit</th>
      </tr>';
      
-     $querysettingemail->execute(array($reseller_id,$catid));
-     while ($row = $querysettingemail->fetch(PDO::FETCH_ASSOC)) {
-      
-      $resultHtmlCategories.='
-        <tr>
-        <td>';
-      $resultHtmlCategories.=($row['active'] == 1)?'<span class="label label-success">OK</span>':'<span class="label label-danger">No</span>';
-      $resultHtmlCategories.='</td>
-        <td><a href="admin.php?w=sm&d=md&id='.$row['id'].'"><b>'.$row['email_setting_name'].'</b></a></td>
-        <td><a href="admin.php?w=sm&d=md&id='.$row['id'].'"><b>'.$row['subject'].'</b></a></td>
-        <td><a href="admin.php?w=sm&d=md&id='.$row['id'].'"><span style="font-size:1.2em;" class="fa fa-edit"></span></a></td>
-        </tr>
-        ';
-     } 
+     $querysettingemail->execute(array($reseller_id,$catid,$templateLanguage));
+     if($querysettingemail->rowCount() > 0){
+      foreach($arrayofelements[$nameofcategory] as $tablename){
+       $querysettingemail2->execute(array($reseller_id,$catid,$templateLanguage,$tablename));
+       if($querysettingemail2->rowCount() > 0){
+        while ($row = $querysettingemail->fetch(PDO::FETCH_ASSOC)) {
+         $resultHtmlCategories.='
+          <tr>
+          <td>';
+         $resultHtmlCategories.=($row['active'] == 1)?'<span class="label label-success">OK</span>':'<span class="label label-danger">No</span>';
+         $resultHtmlCategories.='</td>
+          <td><a href="admin.php?w=sm&d=md&id='.$row['id'].'"><b>'.$row['email_setting_name'].'</b></a></td>
+          <td><a href="admin.php?w=sm&d=md&id='.$row['id'].'"><b>'.$row['subject'].'</b></a></td>
+          <td><a href="admin.php?w=sm&d=md&id='.$row['id'].'"><span style="font-size:1.2em;" class="fa fa-edit"></span></a> <a href="admin.php?w=sm&d=dell&id='.$row['id'].'&r=sm"><span style="font-size:1.2em;color:red;" class="fa fa-trash-o"></span></a></td>
+          </tr>
+          ';
+         
+        }
+       }else{
+        $resultHtmlCategories.='
+          <tr>
+          <td><span class="label label-warning">Create</span>
+          </td>
+          <td><a href="admin.php?w=sm&d=md&id=00&tablename='.$tablename.'&lt='.$templateLanguage.'&cat='.$catid.'&rid='.$reseller_id.'"><b>'.$tablename.'</b></a></td>
+          <td><a href="admin.php?w=sm&d=md&id=00&tablename='.$tablename.'&lt='.$templateLanguage.'&cat='.$catid.'&rid='.$reseller_id.'"><b>'.$tablename.'</b></a></td>
+          <td><a href="admin.php?w=sm&d=md&id=00&tablename='.$tablename.'&lt='.$templateLanguage.'&cat='.$catid.'&rid='.$reseller_id.'"><span style="font-size:1.2em;" class="fa fa-edit"></span></a></td>
+          </tr>
+          ';
+       }
+      }
+     }else{
+        foreach($arrayofelements[$nameofcategory] as $tablename){
+         $resultHtmlCategories.='
+          <tr>
+          <td><span class="label label-warning">Create</span>
+          </td>
+          <td><a href="admin.php?w=sm&d=md&id=00&tablename='.$tablename.'&lt='.$templateLanguage.'&cat='.$catid.'&rid='.$reseller_id.'"><b>'.$tablename.'</b></a></td>
+          <td><a href="admin.php?w=sm&d=md&id=00&tablename='.$tablename.'&lt='.$templateLanguage.'&cat='.$catid.'&rid='.$reseller_id.'"><b>'.$tablename.'</b></a></td>
+          <td><a href="admin.php?w=sm&d=md&id=00&tablename='.$tablename.'&lt='.$templateLanguage.'&cat='.$catid.'&rid='.$reseller_id.'"><span style="font-size:1.2em;" class="fa fa-edit"></span></a></td>
+          </tr>
+          ';    
+        }
+     }
+     
      $resultHtmlCategories.='
      </tbody>
      </table>
@@ -271,8 +282,30 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
      
      $i++;
     }
+
+    if (isset($template_to_use)) {
+     foreach (getlanguages($template_to_use) as $language) {
+      $emaillanguage_templates[] = array('lang' => $language);
+     }
+    }
     
     $template_file = 'admin_settings_email.tpl';
+    
+    //Delete Template
+    if($ui->w('d', 4, 'get')=='dell' && is_numeric($ui->w('id', 2, 'get'))){
+     $deletequerysettingemail = $sql->prepare("DELETE FROM `setting_email_template` WHERE `id` = ?");
+    
+     if($deletequerysettingemail->execute(array($ui->id('id', 2, 'get')))){
+      $template_file = $spracheResponse->table_del;
+      $loguseraction = '%del% %emailsettings%';
+      $insertlog->execute();
+     }else{
+      $template_file = $spracheResponse->error_table;
+      $loguseraction = 'ERROR: %del% %emailsettings%';
+      $insertlog->execute();
+     }
+    }
+ 
  }
 }
 }

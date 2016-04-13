@@ -36,12 +36,10 @@
  */
 
 define('EASYWIDIR', dirname(__FILE__));
-
-include(EASYWIDIR . '/stuff/config.php');
-include(EASYWIDIR . '/stuff/keyphrasefile.php');
-include(EASYWIDIR . '/stuff/methods/functions.php');
-include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
+include(EASYWIDIR . '/stuff/methods/class_validator.php');
+include(EASYWIDIR . '/stuff/methods/functions.php');
+include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/third_party/phpmailer/class.phpmailer.php');
 if (!class_exists('SSH2')) {
     include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
@@ -50,29 +48,29 @@ $data = array();
 $errors = array();
 
 //Mail Test
-if(isset($_GET['testsmtp']))
+if($ui->w('d', 7, 'get')=='smttest')
 {
 
  try{ 
   $mail = new PHPMailer();
   $mail->CharSet = 'UTF-8';
   $mail->isSMTP();
-  $mail->SMTPAuth = true;       // Set mailer to use SMTP
-  $mail->Host = $_POST['email_settings_host'];  // Specify main and backup SMTP servers
-  $mail->Username = $_POST['email_settings_user'];                 // SMTP username
-  $mail->Password = $_POST['email_settings_password'];                           // SMTP password
+  $mail->SMTPAuth = true;                                 
+  $mail->Host = $ui->escaped('email_settings_host','post'); 
+  $mail->Username = $ui->escaped('email_settings_user','post');
+  $mail->Password = $ui->escaped('email_settings_password','post');
   
-  if ($_POST['email_settings_ssl'] == 'T') {
+  if ($ui->escaped('email_settings_ssl','post') == 'T') {
    $mail->SMTPSecure = 'tls';
-  } else if ($_POST['email_settings_ssl'] == 'S') {
+  } else if ($ui->escaped('email_settings_ssl','post') == 'S') {
    $mail->SMTPSecure = 'ssl';
   }
   
-  $mail->Port = $_POST['email_settings_port'];  
+  $mail->Port = $ui->id('email_settings_port',5,'post');
   $mail->setFrom('noreply@easy-wi');
  
   if(!$mail->smtpConnect()) {
-   $errors[]= 'Mailer Error: ' . $mail->ErrorInfo;
+   $errors[]= 'Mailer Error: Invalide Data';
   } else {
    $mail->smtpClose();
    $data[]='OK';
