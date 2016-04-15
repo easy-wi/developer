@@ -96,7 +96,7 @@
     <hr/>
     </div>
     <div class="form-group">    
-      <label class="control-label" for="email_template">E-Mail Templates (<img src="images/flags/<?php echo $templateLanguage;?>.png" alt="Flag: 16_<?php echo $templateLanguage;?>'.png"/>)
+      <label class="control-label" for="email_template">E-Mail Templates (<img src="images/flags/<?php echo $templateLanguage;?>.png" alt="Flag: 16_<?php echo $templateLanguage;?>'.png"/>)</label>
     </div> 
 <!-- Categories -->
 <?php echo $resultHtmlCategories; ?>

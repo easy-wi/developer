@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <topic>Subject</topic>
+    <id>User ID</id>
+    <creationTime>Create Time</creationTime>
+    <active>Y=active or N=not active</active>
+    <salutation>Salutation</salutation>
+    <cname>Username</cname>
+    <fullname>Firstname with lastname</fullname>
+    <name>Lastname</name>
+    <vname>Firstname</vname>
+    <birthday>Date of Birth</birthday>
+    <mail>E-Mail Adress</mail>
+    <phone>Phone number</phone>
+    <fax>Fax number</fax>
+    <handy>Mobile number</handy>
+    <country>Country</country>
+    <city>City</city>
+    <cityn>PLZ</cityn>
+    <street>Streetname</street>
+    <streetn>House number</streetn>
+    <language>Languagecode (Ex. de)</language>
+    <lastlogin>Date of last login</lastlogin>
+    <urlhost>URL to login.php</urlhost>
+    <password>Password</password>
+    <date>Date of mail</date>
+    <ip>IP Adress of the Server</ip>
+    <port>Port 1</port>
+    <port2>Port 1</port2>
+    <port3>Port 1</port3>
+    <port4>Port 1</port4>
+    <ports>Port 1</ports>
+    <variable>Variable</variable>
+    <variabledesc>Description</variabledesc>
+    <templatename>Template name</templatename>
+    <copycc>Copy CC</copycc>
+    <copybcc>Copy BCC</copybcc>
+    <attachments>attachments</attachments>
+    <back>Back</back>
+    <templatesettinghead>E-Mail Template Setting</templatesettinghead>
+</sprache>

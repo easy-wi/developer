@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <topic>Betreff</topic>
+    <id>User ID</id>
+    <creationTime>erstellungszeitpunkt</creationTime>
+    <active>Y=active der N=not active</active>
+    <salutation>Begrüßung</salutation>
+    <cname>Username</cname>
+    <fullname>Vorname und Nachname</fullname>
+    <name>Nachname</name>
+    <vname>Vorname</vname>
+    <birthday>Geburtstag</birthday>
+    <mail>E-Mail Adresse</mail>
+    <phone>Telefonnummer</phone>
+    <fax>Faxnummer</fax>
+    <handy>Handynummer</handy>
+    <country>Land</country>
+    <city>Stadt</city>
+    <cityn>PLZ</cityn>
+    <street>Straße</street>
+    <streetn>Hausnummer</streetn>
+    <language>Benutzersprache (z.B. de)</language>
+    <lastlogin>Letzter Login</lastlogin>
+    <urlhost>URL zum Panel</urlhost>
+    <password>Passwort</password>
+    <date>Aktuelles Datum</date>
+    <ip>IP Adresse des Servers</ip>
+    <port>Port 1</port>
+    <port2>Port 1</port2>
+    <port3>Port 1</port3>
+    <port4>Port 1</port4>
+    <ports>Port 1</ports>
+    <variable>Benutzbare Variablen</variable>
+    <variabledesc>Beschreibung</variabledesc>
+    <templatename>Template Name</templatename>
+    <copycc>Copy CC</copycc>
+    <copybcc>Copy BCC</copybcc>
+    <attachments>Anhänge</attachments>
+    <back>Zurück</back>
+    <templatesettinghead>E-Mail Template Einstellungen</templatesettinghead>
+</sprache>

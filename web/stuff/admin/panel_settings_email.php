@@ -45,6 +45,7 @@ include(EASYWIDIR . '/stuff/keyphrasefile.php');
 $sprache = getlanguagefile('settings', $user_language, $reseller_id);
 $gssprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $usprache = getlanguagefile('user', $user_language, $reseller_id);
+$esprache = getlanguagefile('email', $user_language, $reseller_id);
 
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
@@ -110,7 +111,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $catid=$ui->id('cat', 2, 'get');
     $reseller_id=$ui->id('rid', 2, 'get');
     
-    $getquerysettingemailis = $sql->prepare("SELECT MAX(id) as `ID` FROM `setting_email_template`");
+    $getquerysettingemailis = $sql->prepare("SELECT MAX(id) as `ID` FROM `settings_email_template`");
     $getquerysettingemailis->execute();
     $resultid=$getquerysettingemailis->fetchColumn();
     $resultid++;
@@ -127,7 +128,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
    }else{
     
     //Load Data from DB - View:Edit
-    $querysettingemail = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `id`=? LIMIT 1");
+    $querysettingemail = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `id`=? LIMIT 1");
     $querysettingemail->execute(array($ui->w('id', 2, 'get')));
     $emaillanguage_xml = array();
     
@@ -151,7 +152,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
   //Save Data 
   if($ui->w('d', 3, 'get')=='add' && is_numeric($ui->id('id',2,'post'))){
    $changeCount = 0;
-   $queryupdateemailsetting = $sql->prepare("INSERT INTO `setting_email_template` (`id`,`reseller_id`,`language`,`active`,`category`,`email_setting_name`,`subject`,`ccmailing`,`bccmailing`,`email_body`) VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`active`=VALUES(`active`),`category`=VALUES(`category`),`email_setting_name`=VALUES(`email_setting_name`),`reseller_id`=VALUES(`reseller_id`),`subject`=VALUES(`subject`),`ccmailing`=VALUES(`ccmailing`),`bccmailing`= VALUES(`bccmailing`),`email_body`= VALUES(`email_body`)"); 
+   $queryupdateemailsetting = $sql->prepare("INSERT INTO `settings_email_template` (`id`,`reseller_id`,`language`,`active`,`category`,`email_setting_name`,`subject`,`ccmailing`,`bccmailing`,`email_body`) VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`active`=VALUES(`active`),`category`=VALUES(`category`),`email_setting_name`=VALUES(`email_setting_name`),`reseller_id`=VALUES(`reseller_id`),`subject`=VALUES(`subject`),`ccmailing`=VALUES(`ccmailing`),`bccmailing`= VALUES(`bccmailing`),`email_body`= VALUES(`email_body`)"); 
    $queryupdateemailsetting->execute(array($ui->id('id',2,'post'),$reseller_id,$ui->escaped('email_setting_language','post'),1,$ui->escaped('email_setting_category','post'),$ui->escaped('email_setting_name','post'),$ui->escaped('email_subject','post'), $ui->escaped('ccmailing','post'),$ui->escaped('bccmailing','post'),$ui->escaped('email_body','post')));
    $changeCount += $queryupdateemailsetting->rowCount();
    if ($changeCount == 0) {
@@ -186,9 +187,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
      $email_settings[$row['email_setting_name']] = $row['email_setting_value'];
     }
  
-    $querycategory = $sql->prepare("SELECT * FROM `setting_email_category` WHERE `reseller_id`=?");
-    $querysettingemail = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=?");
-    $querysettingemail2 = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=? AND `email_setting_name` =? LIMIT 1");
+    $querycategory = $sql->prepare("SELECT * FROM `settings_email_category` WHERE `reseller_id`=?");
+    $querysettingemail = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=?");
+    $querysettingemail2 = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=? AND `email_setting_name` =? LIMIT 1");
     
     $querycategory->execute(array($reseller_id));
     
@@ -293,7 +294,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     
     //Delete Template
     if($ui->w('d', 4, 'get')=='dell' && is_numeric($ui->w('id', 2, 'get'))){
-     $deletequerysettingemail = $sql->prepare("DELETE FROM `setting_email_template` WHERE `id` = ?");
+     $deletequerysettingemail = $sql->prepare("DELETE FROM `settings_email_template` WHERE `id` = ?");
     
      if($deletequerysettingemail->execute(array($ui->id('id', 2, 'get')))){
       $template_file = $spracheResponse->table_del;

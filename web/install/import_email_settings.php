@@ -40,10 +40,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL|E_STRICT);
 define('EASYWIDIR', dirname(dirname(__FILE__)));
 
-include(EASYWIDIR . '/stuff/methods/vorlage.php');
-include(EASYWIDIR . '/stuff/methods/class_validator.php');
-include(EASYWIDIR . '/stuff/methods/functions.php');
-include(EASYWIDIR . '/stuff/settings.php');
+include_once(EASYWIDIR . '/stuff/methods/vorlage.php');
+include_once(EASYWIDIR . '/stuff/methods/class_validator.php');
+include_once(EASYWIDIR . '/stuff/methods/functions.php');
+include_once(EASYWIDIR . '/stuff/settings.php');
 
 $arrayofelements = array('vServer' => array('emailvrescue','emailvinstall'),
 'Server' => array('emailbackup','emailbackuprestore','emailserverinstall','emailsecuritybreach','emaildown','emaildownrestart'),
@@ -51,39 +51,23 @@ $arrayofelements = array('vServer' => array('emailvrescue','emailvinstall'),
 'General' => array('emailfooter','emailregards','emailuseradd','emailpwrecovery','emailregister'),
 'VoiceServer' => array('emailvoicemasterold'),
 'GameServer' => array('emailgserverupdate'));
-
 $arraycategory=array(1 => 'vServer', 2 => 'Server' , 3 => 'Ticket', 4 => 'General', 5 => 'VoiceServer', 6 => 'GameServer');
-
 $queryselect = $sql->prepare("SELECT `email_setting_name`,`email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? ");
 $queryinsert = $sql->prepare("INSERT INTO `setting_email_template` (`reseller_id`,`active`,`category`,`email_setting_name`,`subject`,`email_body`) VALUES (?,?,?,?,?,?)");
-
 foreach($arrayofelements as $key => $value){
   echo '<b>'.$key.'</b><br>';
   foreach($value as $tablename){
-   echo '<i>'.$tablename.'</i> ';
-   
+   //echo '<i>'.$tablename.'</i> ';
    $queryselect->execute(array('0',$tablename));
    while ($row = $queryselect->fetch(PDO::FETCH_ASSOC)) {
-    
     $category = array_search($key, $arraycategory);
-    
-    $queryinsert->execute(array(0,1,$category,$row['email_setting_name'],$row['email_setting_name'],$row['email_setting_value']));
-    
+    $queryinsert->execute(array(0,1,$category,$row['email_setting_name'],$row['email_setting_name'],$row['email_setting_value']));    
     if($queryinsert){
-     echo 'OK, ';
+     //echo 'OK, ';
     }else{
-     echo 'Fail, ';
+     //echo 'Fail, ';
     }
-    
-//     echo $row['email_setting_name'];
-//     echo ' - ';
-//     echo html_entity_decode($row['email_setting_value']);
-//     echo '<br>';
    }
-   
-   
-   
   }
-  echo '<br>';
- 
+  //echo '<br>';
 }

@@ -110,29 +110,29 @@ if ($ui->st('d', 'get') == 'bu' and $ui->st('action', 'post') == 'bu' and $resel
     $gssprache = getlanguagefile('gserver', $user_language, $resellerLockupID);
     $usprache = getlanguagefile('user', $user_language, $resellerLockupID);
 
-    include(EASYWIDIR . '/stuff/methods/email_templates.php');
+//     include(EASYWIDIR . '/stuff/methods/email_templates.php');
 
     if ($ui->st('action', 'post') == 're') {
 
-        $rowCount = 0;
+//         $rowCount = 0;
 
-        $templateRepair = (array) $ui->w('templates', 255, 'post');
-        foreach ($templateRepair as $template) {
+//         $templateRepair = (array) $ui->w('templates', 255, 'post');
+//         foreach ($templateRepair as $template) {
 
-            if (isset($emailTemplates[$template])) {
+//             if (isset($emailTemplates[$template])) {
 
-                $query = $sql->prepare($emailTemplates[$template]['html']);
-                $query->execute(array($resellerLockupID));
-                $rowCount += $query->rowCount();
+//                 $query = $sql->prepare($emailTemplates[$template]['html']);
+//                 $query->execute(array($resellerLockupID));
+//                 $rowCount += $query->rowCount();
 
-                foreach ($emailTemplates[$template]['languages'] as $languageSQL) {
-                    $query = $sql->prepare($languageSQL);
-                    $query->execute(array($resellerLockupID));
-                    $rowCount += $query->rowCount();
-                }
-            }
-        }
-
+//                 foreach ($emailTemplates[$template]['languages'] as $languageSQL) {
+//                     $query = $sql->prepare($languageSQL);
+//                     $query->execute(array($resellerLockupID));
+//                     $rowCount += $query->rowCount();
+//                 }
+//             }
+//         }
+        $rowCount=1;
         $template_file = ($rowCount > 0) ? $spracheResponse->table_add : $spracheResponse->error_table;
 
     } else {

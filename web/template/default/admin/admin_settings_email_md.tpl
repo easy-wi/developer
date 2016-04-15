@@ -17,38 +17,38 @@
      <div class="col-md-12">
        <div class="box box-primary">
         <div class="box-header with-border">
-         <h3 class="box-title">E-Mail Template Setting</h3>
+         <h3 class="box-title"><?php echo $esprache->templatesettinghead; ?></h3>
         </div>
         <div class="box-body">
          <label class="control-label" for="inlineEmailTemplate"><?php echo $gsprache->template;?> Setting</label>
-          <table class="formmail" cellspacing="2" cellpadding="3">
+          <table class="formmail">
             <tbody>
               <tr>
-                <td class="formmail_left">Template name:</td>
+                <td class="formmail_left"><?php echo $esprache->templatename; ?></td>
                 <td class="formmail_right">
                     <input class="form-control formmailfield" type="text" name="email_templatename" value="<?php echo $email_setting_name;?>" disabled>
                 </td>
               </tr>
               <tr>
-                <td class="formmail_left">Subject:</td>
+                <td class="formmail_left"><?php echo $esprache->topic; ?>:</td>
                 <td class="formmail_right">
                     <input class="form-control formmailfield" id="inputSubject" type="text" name="email_subject" value="<?php echo $email_subject;?>">
                 </td>
               </tr>
               <tr>
-                <td class="formmail_left">Copy CC:</td>
+                <td class="formmail_left"><?php echo $esprache->copycc; ?>:</td>
                 <td class="formmail_right">
                     <input class="form-control formmailfield" id="" type="text" name="ccmailing" placeholder="example@example.com" value="<?php echo $email_ccmailing;?>">
                 </td>
               </tr>
               <tr>
-                <td class="formmail_left">Copy BCC:</td>
+                <td class="formmail_left"><?php echo $esprache->copybcc; ?>:</td>
                 <td class="formmail_right">
                     <input class="form-control formmailfield" id="" type="text" name="bccmailing" placeholder="example@example.com" value="<?php echo $email_bccmailing;?>">
                 </td>
               </tr>
               <tr style="display:none;">
-                <td class="formmail_left" class="display:none;">Attachments:</td>
+                <td class="formmail_left" class="display:none;"><?php echo $esprache->attachments; ?>:</td>
                 <td class="formmail_right" class="display:none;">
                 <div id="attachment">
                  <input name="attachments[]" type="file" class="form-control">
@@ -68,7 +68,7 @@
         <div class="box-footer">
           <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
           <div class="pull-right">
-            <a href="admin.php?w=sm" class="btn btn-danger">Back</a>
+            <a href="admin.php?w=sm" class="btn btn-danger"><?php echo $gsprache->back;?></a>
           </div>
         </div>
        </div> 
@@ -78,7 +78,7 @@
       <div class="col-md-12">
         <div class="box box-primary">
           <div class="box-header with-border">
-            <h3 class="box-title">Variable</h3>
+            <h3 class="box-title"><?php echo $esprache->variable; ?></h3>
             <div class="box-tools pull-right">
               <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
             </div><!-- /.box-tools -->
@@ -87,100 +87,128 @@
               <table class="table table-hover" style="font-size:0.8em;">
                 <tbody>
                   <tr>
-                    <th>Variable</th>
-                    <th>Description/Result</th>
+                    <th><?php echo $esprache->variable; ?></th>
+                    <th><?php echo $esprache->variabledesc; ?></th>
                   </tr>
                   <tr>
                     <td>%topic%</td>
-                    <td>Subject</td>
+                    <td><?php echo $esprache->topic; ?></td>
                   </tr>
                   <tr>
                     <td>%id%</td>
-                    <td>ID</td>
+                    <td><?php echo $esprache->id; ?></td>
                   </tr>
                   <tr>
                     <td>%creationTime%</td>
-                    <td>Create Time</td>
+                    <td><?php echo $esprache->creationTime; ?></td>
                   </tr>
                   <tr>
                     <td>%active%</td>
-                    <td>Y=active or N=not active</td>
+                    <td><?php echo $esprache->active; ?></td>
                   </tr>
                   <tr>
                     <td>%salutation%</td>
-                    <td>Salutation</td>
+                    <td><?php echo $esprache->salutation; ?></td>
                   </tr>
                   <tr>
                     <td>%cname%</td>
-                    <td>Username</td>
+                    <td><?php echo $esprache->cname; ?></td>
                   </tr>
                   <tr>
                     <td>%fullname%</td>
-                    <td>Firstname with lastname</td>
+                    <td><?php echo $esprache->fullname; ?></td>
                   </tr>
                   <tr>
                     <td>%name%</td>
-                    <td>Lastname</td>
+                    <td><?php echo $esprache->name; ?></td>
                   </tr>
                   <tr>
                     <td>%vname%</td>
-                    <td>Firstname</td>
+                    <td><?php echo $esprache->vname; ?></td>
                   </tr>
                   <tr>
                     <td>%birthday%</td>
-                    <td>Date of Birth</td>
+                    <td><?php echo $esprache->birthday; ?></td>
                   </tr>
                   <tr>
                     <td>%mail%</td>
-                    <td>E-Mail Adress</td>
+                    <td><?php echo $esprache->mail; ?></td>
                   </tr>
                   <tr>
                     <td>%phone%</td>
-                    <td>Phone number</td>
+                    <td><?php echo $esprache->phone; ?></td>
                   </tr>
                   <tr>
                     <td>%fax%</td>
-                    <td>Fax number</td>
+                    <td><?php echo $esprache->fax; ?></td>
                   </tr>
                   <tr>
                     <td>%handy%</td>
-                    <td>Mobile number</td>
+                    <td><?php echo $esprache->handy; ?></td>
                   </tr>
                   <tr>
                     <td>%country%</td>
-                    <td>Country</td>
+                    <td><?php echo $esprache->country; ?></td>
                   </tr>
                   <tr>
                     <td>%city%</td>
-                    <td>City</td>
+                    <td><?php echo $esprache->city; ?></td>
                   </tr>
                   <tr>
                     <td>%cityn%</td>
-                    <td>PLZ</td>
+                    <td><?php echo $esprache->cityn; ?></td>
                   </tr>
                   <tr>
                     <td>%street%</td>
-                    <td>Streetname</td>
+                    <td><?php echo $esprache->street; ?></td>
                   </tr>
                   <tr>
                     <td>%streetn%</td>
-                    <td>House number</td>
+                    <td><?php echo $esprache->streetn; ?></td>
                   </tr>
                   <tr>
                     <td>%language%</td>
-                    <td>Languagecode (Ex. de)</td>
+                    <td><?php echo $esprache->language; ?></td>
                   </tr>
                   <tr>
                     <td>%lastlogin%</td>
-                    <td>Date of last login</td>
+                    <td><?php echo $esprache->lastlogin; ?></td>
                   </tr>
                   <tr>
                     <td>%urlhost%</td>
-                    <td>URL to login.php</td>
+                    <td><?php echo $esprache->urlhost; ?></td>
                   </tr>
-                  <tr style="color:red;">
+                  <tr>
                     <td>%password%</td>
-                    <td>Login password (only for Template: emailuseradd)</td>
+                    <td><?php echo $esprache->password; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%date%</td>
+                    <td><?php echo $esprache->date; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%ip%</td>
+                    <td><?php echo $esprache->ip; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%port%</td>
+                    <td><?php echo $esprache->port; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%port2%</td>
+                    <td><?php echo $esprache->port2; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%port3%</td>
+                    <td><?php echo $esprache->port3; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%port4%</td>
+                    <td><?php echo $esprache->port4; ?></td>
+                  </tr>
+                  <tr>
+                    <td>%ports%</td>
+                    <td><?php echo $esprache->ports; ?></td>
                   </tr>
                 </tbody>
               </table>
