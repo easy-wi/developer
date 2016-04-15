@@ -78,7 +78,7 @@
                         <div class="form-group">
                             <label for="inputCountry"><?php echo $sprache->country;?></label>
                             <div class="controls">
-                                <select class="form-control" id="inputCountry" name="flagmenu">
+                                <select class="form-control" id="inputCountry" name="country">
                                     <?php foreach ($selectlanguages as $la) { ?>
                                     <option value="<?php echo $la;?>" <?php if ($la==$country) echo 'selected="selected"'; ?>><?php echo $la;?></option>
                                     <?php } ?>

@@ -46,7 +46,7 @@
         Order deny,allow
         deny from all
     </FilesMatch>
-    <FilesMatch "^(admin|ajax|api|cloud|get_password|images|index|install|jobs|lend|login|protectioncheck|reboot|serverallocation|startupdates|statuscheck|switch|update|userpanel|ajaxfunctions|import_email_settings)\.php$">
+    <FilesMatch "^(admin|ajax|api|cloud|get_password|images|index|install|jobs|lend|login|protectioncheck|reboot|serverallocation|startupdates|statuscheck|switch|update|userpanel|ajaxfunctions)\.php$">
         Order allow,deny
         allow from all
     </FilesMatch>

@@ -53,7 +53,7 @@ $arrayofelements = array('vServer' => array('emailvrescue','emailvinstall'),
 'GameServer' => array('emailgserverupdate'));
 $arraycategory=array(1 => 'vServer', 2 => 'Server' , 3 => 'Ticket', 4 => 'General', 5 => 'VoiceServer', 6 => 'GameServer');
 $queryselect = $sql->prepare("SELECT `email_setting_name`,`email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? ");
-$queryinsert = $sql->prepare("INSERT INTO `setting_email_template` (`reseller_id`,`active`,`category`,`email_setting_name`,`subject`,`email_body`) VALUES (?,?,?,?,?,?)");
+$queryinsert = $sql->prepare("INSERT INTO `settings_email_template` (`reseller_id`,`active`,`category`,`email_setting_name`,`subject`,`email_body`) VALUES (?,?,?,?,?,?)");
 foreach($arrayofelements as $key => $value){
   echo '<b>'.$key.'</b><br>';
   foreach($value as $tablename){

@@ -68,7 +68,7 @@
         <div class="box-footer">
           <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
           <div class="pull-right">
-            <a href="admin.php?w=sm" class="btn btn-danger"><?php echo $gsprache->back;?></a>
+            <a href="admin.php?w=sm" class="btn btn-danger"><?php echo $esprache->back;?></a>
           </div>
         </div>
        </div> 

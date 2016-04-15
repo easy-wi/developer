@@ -637,7 +637,7 @@ if (!function_exists('passwordgenerate')) {
      */
     function sendmail($template, $userid, $server, $shorten, $connectInfo = array()) {
 
-     global $sql, $rSA;
+     global $sql, $rSA, $ui;
      $urlhost='';
      if (!isset($aeskey)) {
       include(EASYWIDIR . '/stuff/keyphrasefile.php');
@@ -693,13 +693,13 @@ if (!function_exists('passwordgenerate')) {
      
      
      //Load E-Mail template data
-     $loaddatatemplatequery = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`=? LIMIT 1");
-     $loaddatatemplatequery->execute(array($template,$reseller_id,$userLanguage));
+     $loaddatatemplatequery = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`=? LIMIT 1");
+     $loaddatatemplatequery->execute(array($template,$resellerid,$email_country));
      
      //default language 'de'
      if($loaddatatemplatequery->rowCount() <= 0){
-         $loaddatatemplatequery = $sql->prepare("SELECT * FROM `setting_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`='de' LIMIT 1");
-         $loaddatatemplatequery->execute(array($template,$reseller_id));
+         $loaddatatemplatequery = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`='de' LIMIT 1");
+         $loaddatatemplatequery->execute(array($template,$resellerid));
      }
      
      while ($row = $loaddatatemplatequery->fetch(PDO::FETCH_ASSOC)) {
@@ -779,10 +779,10 @@ if (!function_exists('passwordgenerate')) {
        $noreply='(This is an automated mail. Please do not reply to it since the account is configured to send only.)';
        $emailfooter ='';
        $emailregards ='';
-       $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%', '%username%', '%date%', '%shorten%','%ip%', '%port%', '%port2%', '%port3%', '%port4%', '%port5%', '%ports%');
+       $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%email%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%', '%username%', '%date%', '%shorten%','%ip%', '%port%', '%port2%', '%port3%', '%port4%', '%port5%', '%ports%');
        //$keys = array('%email%','%firstname%','%lastname%','%salutation%','%kdn%','%fullname%','%urlhost%','%passwort%','%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%', '%ip%', '%port%', '%port2%', '%port3%', '%port4%', '%port5%', '%ports%');
        //$replacements = array($usermail,$firstname,$lastname,$salutation,$kdn,$fullname,$urlhost,$password,$server, $username, $maildate, $shorten, $emailregards, $emailfooter);
-       $replacements = array($emailfooter,$emailregards,$noreply,$topic,$email_id,$email_creationTime,$email_active,$salutation,$email_cname,$fullname,$email_name,$email_vname,$email_birthday,$email_mail,$email_phone,$email_fax,$email_handy,$email_country,$email_city,$email_cityn,$email_street,$email_streetn,$userLanguage,$email_lastlogin,$email_urlhost,$password,$server, $username, $maildate, $shorten);
+       $replacements = array($emailfooter,$emailregards,$noreply,$topic,$email_id,$email_creationTime,$email_active,$salutation,$email_cname,$fullname,$email_name,$email_vname,$email_birthday,$email_mail,$email_mail,$email_phone,$email_fax,$email_handy,$email_country,$email_city,$email_cityn,$email_street,$email_streetn,$userLanguage,$email_lastlogin,$email_urlhost,$password,$server, $username, $maildate, $shorten);
         
        //More IP Adress
        if (is_array($connectInfo) and count($connectInfo) > 0 and isset($connectInfo['ip'])) {
