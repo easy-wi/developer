@@ -23,7 +23,7 @@
     <?php foreach ($table as $table_row){ ?>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel box <?php if($table_row['img']=='16_bad') echo 'box-warning'; else if($table_row['img']=='16_error') echo 'box-danger'; else echo 'box-success collapsed-box';?> " style=" background-color: <?php if($table_row['img']=='16_bad') echo 'rgba(255, 138, 0, 0.33)'; else if($table_row['img']=='16_error') echo 'rgba(210, 0, 0, 0.15)'; else echo 'rgba(0, 150, 136, 0.20)';?>">
+            <div class="panel box <?php if($table_row['img']=='16_bad') echo 'box-warning'; else if($table_row['img']=='16_error') echo 'box-danger'; else echo 'box-success collapsed-box';?> " style=" background-color: <?php if($table_row['img']=='16_bad') echo 'rgba(255, 138, 0, 0.09)'; else if($table_row['img']=='16_error') echo 'rgba(210, 0, 0, 0.09)'; else echo 'rgba(0, 150, 136, 0.09)';?>">
 
                 <div class="box-header">
                     <h3 class="box-title"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="18"> <a data-widget="collapse"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h3>
