@@ -23,10 +23,13 @@
     <?php foreach ($table as $table_row){ ?>
     <div class="row">
         <div class="col-md-12">
-            <div class="panel box <?php if($table_row['img']=='16_bad') echo 'box-warning'; else if($table_row['img']=='16_error') echo 'box-danger'; else echo 'box-success';?>">
+            <div class="panel box <?php if($table_row['img']=='16_bad') echo 'box-warning'; else if($table_row['img']=='16_error') echo 'box-danger'; else echo 'box-success collapsed-box';?> " style=" background-color: <?php if($table_row['img']=='16_bad') echo 'rgba(255, 138, 0, 0.33)'; else if($table_row['img']=='16_error') echo 'rgba(210, 0, 0, 0.15)'; else echo 'rgba(0, 150, 136, 0.20)';?>">
 
                 <div class="box-header">
-                    <h3 class="box-title"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="18"> <a href="hlsw://<?php echo $table_row['server'];?>"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h3>
+                    <h3 class="box-title"><img src="images/games/icons/<?php echo $table_row['gameShorten'];?>.png" alt="<?php echo $table_row['gameShorten'];?>" width="18"> <a data-widget="collapse"><?php echo $table_row['server'].' '.$table_row['name'];?></a></h3>
+					<div class="box-tools pull-right">
+                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div>
                 </div>
 
                 <div class="box-body">
@@ -54,6 +57,8 @@
                         <a href="userpanel.php?w=gs&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-primary"><i class="fa fa-cog"></i> <?php echo $gsprache->settings;?></button></a>
                         <a href="userpanel.php?w=gs&amp;d=ri&amp;id=<?php echo $table_row['id'];?>"><button class="btn btn-sm btn-warning"><i class="fa fa-refresh"></i> <?php echo $sprache->reinstall;?></button></a>
                         <?php if($table_row['upload']==true){ ?><a href="userpanel.php?w=gs&amp;d=du&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onsubmit="return confirm('<?php echo $gsprache->sure;?>');"><button class="btn btn-sm btn-info"><i class="icon-white icon-film"></i> SourceTV</button></a><?php } ?>
+						
+						
                     </div>
 
                     <dl class="dl-horizontal">
@@ -82,6 +87,8 @@
                         <dd><?php echo $table_row['cname'];?></dd>
                         <dt><?php echo $sprache->ftp_password;?></dt>
                         <dd><?php echo $table_row['cftppass'];?></dd>
+						<dt>Fast-connect:</dt>
+                        <dd><a href="hlsw://<?php echo $table_row['server'];?>">Link</a></dd>
                         <?php } ?>
                     </dl>
                 </div>
