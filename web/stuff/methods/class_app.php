@@ -1910,7 +1910,7 @@ class AppServer {
 
     private function linuxMigrateServer ($sourceFTP, $targetTemplate, $modFolder) {
 
-        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $targetTemplate . '/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $targetTemplate . '/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/migrate-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 

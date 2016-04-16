@@ -715,7 +715,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $iniVars = @parse_ini_string($row['install_paths'], true);
                 $homeDir = ($iniVars and isset($iniVars[$homeLabel]['path'])) ? (string) $iniVars[$homeLabel]['path'] : '/home';
-                $homeDir .= '/' . $username;
+
+                if (substr($homeDir, -1, 1) != '/') {
+                    $homeDir .= '/';
+                }
+
+                $homeDir .= $username;
             }
 
             if ($gamebinary == 'srcds_run'){
