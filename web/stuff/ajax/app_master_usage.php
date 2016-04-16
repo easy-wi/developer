@@ -59,7 +59,7 @@ $table2 = array();
 $usedPorts = array();
 $usedSpace = array();
 
-$query = $sql->prepare("SELECT r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`ram`,r.`cores`,r.`hyperthreading`,r.`install_paths`,r.`quota_active`,COUNT(g.`id`) AS `installedServer`,SUM(g.`slots`) AS `installedSlots`,SUM(g.`maxram`) AS `installedRam`,SUM(g.`hdd`) AS `hdd_used` FROM `rserverdata` AS r LEFT JOIN `gsswitch` AS g ON g.`rootID`=r.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
+$query = $sql->prepare("SELECT r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,CASE WHEN r.`ram` IS NULL OR r.`ram`=0 THEN 999999 ELSE r.`ram` END AS `ram` ,r.`cores`,r.`hyperthreading`,r.`install_paths`,r.`quota_active`,COUNT(g.`id`) AS `installedServer`,SUM(g.`slots`) AS `installedSlots`,SUM(g.`maxram`) AS `installedRam`,SUM(g.`hdd`) AS `hdd_used` FROM `rserverdata` AS r LEFT JOIN `gsswitch` AS g ON g.`rootID`=r.`id` WHERE r.`id`=? AND r.`resellerid`=? LIMIT 1");
 $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
