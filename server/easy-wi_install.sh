@@ -745,7 +745,9 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
             sed -i "s/include=\/etc\/php5\/fpm\/pool.d\/\*.conf/include=\/home\/$MASTERUSER\/fpm-pool.d\/\*.conf/g" /etc/php5/fpm/php-fpm.conf
 
         elif [ "$WEBSERVER" == "Apache" ]; then
-            apt-get install apache2-mpm-itk libapache2-mod-php5 php5 -y
+            checkInstall apache2-mpm-itk
+            checkInstall libapache2-mpm-itk
+            apt-get install libapache2-mod-php5 php5 -y
             a2enmod php5
         fi
     fi
