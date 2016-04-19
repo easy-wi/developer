@@ -779,9 +779,7 @@ if (!function_exists('passwordgenerate')) {
        $noreply='(This is an automated mail. Please do not reply to it since the account is configured to send only.)';
        $emailfooter ='';
        $emailregards ='';
-       $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%email%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%', '%username%', '%date%', '%shorten%','%ip%', '%port%', '%port2%', '%port3%', '%port4%', '%port5%', '%ports%');
-       //$keys = array('%email%','%firstname%','%lastname%','%salutation%','%kdn%','%fullname%','%urlhost%','%passwort%','%server%', '%username%', '%date%', '%shorten%', '%emailregards%', '%emailfooter%', '%ip%', '%port%', '%port2%', '%port3%', '%port4%', '%port5%', '%ports%');
-       //$replacements = array($usermail,$firstname,$lastname,$salutation,$kdn,$fullname,$urlhost,$password,$server, $username, $maildate, $shorten, $emailregards, $emailfooter);
+       $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%email%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%','%username%','%date%','%shorten%','%ip%','%port%','%port2%','%port3%','%port4%','%port5%','%ports%');
        $replacements = array($emailfooter,$emailregards,$noreply,$topic,$email_id,$email_creationTime,$email_active,$salutation,$email_cname,$fullname,$email_name,$email_vname,$email_birthday,$email_mail,$email_mail,$email_phone,$email_fax,$email_handy,$email_country,$email_city,$email_cityn,$email_street,$email_streetn,$userLanguage,$email_lastlogin,$email_urlhost,$password,$server, $username, $maildate, $shorten);
         
        //More IP Adress

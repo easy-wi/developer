@@ -65,6 +65,11 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $reseller_id = $admin_id;
 }
 
+
+// Add jQuery plugin chosen to the header
+$htmlExtraInformation['css'][] = '<link href="css/default/summernote/summernote.css" rel="stylesheet" type="text/css">';
+$htmlExtraInformation['js'][] = '<script src="js/default/plugins/summernote/summernote.min.js" type="text/javascript"></script>';
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $template_file = $spracheResponse->token;

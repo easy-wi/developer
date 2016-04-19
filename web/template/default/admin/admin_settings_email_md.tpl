@@ -219,14 +219,11 @@
 </section>
 </form>
 
-<!-- CK Editor -->
-<script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
-<script>
+<!-- Summernote Editor -->
+<script type="text/javascript">
     $(function () {
-        CKEDITOR.replace('email_body_<?php echo $email_language;?>',{
-            height: 500
+        $('#email_body_<?php echo $email_language; ?>').summernote({
+        height: 500
         });
-        CKEDITOR.config.extraAllowedContent = '*{*}';
-        CKEDITOR.config.allowedContent = true;
     });
 </script>
