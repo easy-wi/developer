@@ -64,13 +64,7 @@
         </a>
 
         <div class="navbar-custom-menu">
-
-            <div class="nav navbar-btn pull-right" style="padding-right: 10px;">
-                <a href="login.php?w=lo"><span class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> Logout</span></a>
-            </div>
-
             <ul class="nav navbar-nav">
-
                 <?php if($statsArray['ticketsTotal']>0){ ?>
                 <li class="dropdown messages-menu hidden-xs">
                     <a href="userpanel.php?w=ti">
@@ -103,10 +97,19 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user"></i>
+                        <img src="images/Places-user-identity-icon.png" class="user-image" alt="User Image">
                         <span><?php echo $great_user;?> <i class="caret"></i></span>
                     </a>
                     <ul class="dropdown-menu">
+                        <!-- User image -->
+                         <li class="user-header">
+                            <img src="images/Places-user-identity-icon.png" class="img-circle" alt="User Image">
+                            <p>
+                              <?php echo $great_user;?> <br/>
+                              <small></small>
+                            </p>
+                         </li>
+                        <!-- Main Area -->
                         <li><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
@@ -120,6 +123,15 @@
                         <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
                         <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Github</a></li>
                         <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
+                        <!-- Menu Footer-->
+                        <li class="user-footer">
+                          <div class="pull-left">
+                            <a href="userpanel.php?w=se" class="btn btn-default btn-flat">Profile</a>
+                          </div>
+                          <div class="pull-right">
+                            <a href="login.php?w=lo" class="btn btn-default btn-danger" style="color:white;"><i class="fa fa-power-off"></i> Logout</a>
+                          </div>
+                        </li>
                     </ul>
                 </li>
             </ul>
@@ -133,7 +145,6 @@
         </div>
     </nav>
     </header>
-    <div class="wrapper row-offcanvas row-offcanvas-left">
         <!-- Left side column. contains the logo and sidebar -->
         <aside class="main-sidebar sidebar-offcanvas">
             <!-- sidebar: style can be found in sidebar.less -->
