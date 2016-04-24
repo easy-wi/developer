@@ -730,7 +730,18 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
             fi
         fi
 
-        apt-get install php5-common php5-curl php5-gd php5-mcrypt php5-mysql php5-cli -y
+        checkInstall php5-common
+        checkInstall php7.0-common
+        checkInstall php5-curl
+        checkInstall php7.0-curl
+        checkInstall php5-gd
+        checkInstall php7.0-gd
+        checkInstall php5-mcrypt
+        checkInstall php7.0-mcrypt
+        checkInstall php5-mysql
+        checkInstall php7.0-mysql
+        checkInstall php5-cli
+        checkInstall php7.0-cli
 
         if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
@@ -747,8 +758,12 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
         elif [ "$WEBSERVER" == "Apache" ]; then
             checkInstall apache2-mpm-itk
             checkInstall libapache2-mpm-itk
-            apt-get install libapache2-mod-php5 php5 -y
+            checkInstall libapache2-mod-php5
+            checkInstall libapache2-mod-php7.0
+            checkInstall php5
+            checkInstall php7.0
             a2enmod php5
+            a2enmod php7.0
         fi
     fi
 fi
@@ -1299,6 +1314,10 @@ if [ "$INSTALL" == "EW" ]; then
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt -subj "/C=/ST=/L=/O=/OU=/CN=$IP_DOMAIN"
     fi
 
+    #In case of php 7 the socket is different
+    PHP_VERSION=`php -v | grep -E '^PHP' | awk '{print $2}' | awk -F '.' '{print $1}'`
+    PHP_SOCKET="/var/run/php${PHP_VERSION}-fpm-${FILE_NAME}.sock"
+
     if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
         FILE_NAME_POOL=/home/$MASTERUSER/fpm-pool.d/$FILE_NAME.conf
@@ -1306,7 +1325,7 @@ if [ "$INSTALL" == "EW" ]; then
         echo "[$IP_DOMAIN]" > $FILE_NAME_POOL
         echo "user = easywi_web" >> $FILE_NAME_POOL
         echo "group = www-data" >> $FILE_NAME_POOL
-        echo "listen = /var/run/php5-fpm-$FILE_NAME.sock" >> $FILE_NAME_POOL
+        echo "listen = ${PHP_SOCKET}" >> $FILE_NAME_POOL
         echo "listen.owner = easywi_web" >> $FILE_NAME_POOL
         echo "listen.group = www-data" >> $FILE_NAME_POOL
         echo "pm = dynamic" >> $FILE_NAME_POOL
@@ -1381,7 +1400,7 @@ if [ "$INSTALL" == "EW" ]; then
             echo '        include /etc/nginx/fastcgi_params;' >> $FILE_NAME_VHOST
         fi
 
-        echo "        fastcgi_pass unix:/var/run/php5-fpm-$FILE_NAME.sock;" >> $FILE_NAME_VHOST
+        echo "        fastcgi_pass unix:${PHP_SOCKET};" >> $FILE_NAME_VHOST
         echo '    }' >> $FILE_NAME_VHOST
         echo '}' >> $FILE_NAME_VHOST
 
