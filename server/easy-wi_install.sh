@@ -746,6 +746,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
         if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
             checkInstall php5-fpm
+            checkInstall php7.0-fpm
 
             if [ "$WEBSERVER" == "Lighttpd" ]; then
                 lighttpd-enable-mod fastcgi
@@ -754,6 +755,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
             makeDir /home/$MASTERUSER/fpm-pool.d/
             sed -i "s/include=\/etc\/php5\/fpm\/pool.d\/\*.conf/include=\/home\/$MASTERUSER\/fpm-pool.d\/\*.conf/g" /etc/php5/fpm/php-fpm.conf
+            sed -i "s/include=\/etc\/php/7.0\/fpm\/pool.d\/\*.conf/include=\/home\/$MASTERUSER\/fpm-pool.d\/\*.conf/g" /etc/php/7.0/fpm/php-fpm.conf
 
         elif [ "$WEBSERVER" == "Apache" ]; then
             checkInstall apache2-mpm-itk
@@ -765,6 +767,10 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
             a2enmod php5
             a2enmod php7.0
         fi
+        
+        #In case of php 7 the socket is different
+        PHP_VERSION=`php -v | grep -E '^PHP' | awk '{print $2}' | awk -F '.' '{print $1}'`
+        PHP_SOCKET="/var/run/php${PHP_VERSION}-fpm-${FILE_NAME}.sock"
     fi
 fi
 
@@ -1314,10 +1320,6 @@ if [ "$INSTALL" == "EW" ]; then
         openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $SSL_DIR/$FILE_NAME.key -out $SSL_DIR/$FILE_NAME.crt -subj "/C=/ST=/L=/O=/OU=/CN=$IP_DOMAIN"
     fi
 
-    #In case of php 7 the socket is different
-    PHP_VERSION=`php -v | grep -E '^PHP' | awk '{print $2}' | awk -F '.' '{print $1}'`
-    PHP_SOCKET="/var/run/php${PHP_VERSION}-fpm-${FILE_NAME}.sock"
-
     if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
         FILE_NAME_POOL=/home/$MASTERUSER/fpm-pool.d/$FILE_NAME.conf
@@ -1407,7 +1409,13 @@ if [ "$INSTALL" == "EW" ]; then
         chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
 
         okAndSleep "Restarting PHP-FPM and Nginx."
-        service php5-fpm restart
+
+        if [ -f /etc/init.d/php7.0-fpm ]; then
+            service php7.0-fpm restart
+        else
+            service php5-fpm restart
+        fi
+
         service nginx restart
 
     elif [ "$WEBSERVER" == "Apache" ]; then
