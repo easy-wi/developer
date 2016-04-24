@@ -1178,6 +1178,11 @@ if [ "$INSTALL" == "GS" ]; then
         removeIfExists steamcmd_linux.tar.gz
         chown -R $MASTERUSER:$MASTERUSER /home/$MASTERUSER/masterserver/steamCMD
         su -c "./steamcmd.sh +login anonymous +quit" $MASTERUSER
+        if [ -f /home/$MASTERUSER/masterserver/steamCMD/linux32/steamclient.so ]; then
+            su -c "mkdir -p ~/.steam/sdk32/" $MASTERUSER
+            su -c "chmod 750 -R ~/.steam/" $MASTERUSER
+            su -c "ln -s ~/masterserver/steamCMD/linux32/steamclient.so ~/.steam/sdk32/steamclient.so" $MASTERUSER
+        fi
     fi
 
     chown -R $INSTALLMASTER:$INSTALLMASTER /home/$INSTALLMASTER
@@ -1543,7 +1548,7 @@ if [ "$INSTALL" == "VS" ]; then
 fi
 
 okAndSleep "Removing not needed packages."
-apt-get autoremove
+apt-get autoremove -y
 
 if [ "$INSTALL" == "EW" ]; then
 
