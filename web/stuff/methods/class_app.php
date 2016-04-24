@@ -1604,7 +1604,7 @@ class AppServer {
             $script .= 'cd `dirname $SCREENLOG`' . "\n";
             $script .= 'tail -f screenlog.0 | while read LINE; do' . "\n";
 
-            $script .= 'if [[ `echo $LINE | grep "Completed SourceTV demo"` ]]; then' . "\n";
+            $script .= 'if [[ `echo $LINE | grep -E "Completed (SourceTV|GOTV)"` ]]; then' . "\n";
             $script .= 'DEMO=`echo -n "$LINE" | awk \'{print $4}\' | tr -d \'"\' | tr -d \',\'`' . "\n";
 
             $script .= 'if [ "$LSOF" != "" ]; then ' . "\n";
