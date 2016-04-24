@@ -16,7 +16,7 @@
     <multipleHelperEndpoint>Comunemente dovrai registrare un'applicazione al gestore dei servizi. Durante la creazione ti verranno forniti chiave e token d'accesso. Entrambi devono essere inseriti nel pannello. Presso l'applicazione è necessario configurare un endpoint. L'endpoint per il pannello è %url%</multipleHelperEndpoint>
     <nouser>Non è stato trovato nessun utente con username o indirizzo E-mail da te forniti.</nouser>
     <password>Password</password>
-    <passwdlost>Ho dimenticato la mia password</passwdlost>
+	<passwdlost>Ho dimenticato la mia password</passwdlost>
     <passwordr>Recupero della password</passwordr>
     <passwordrepeat>Ripeti la password</passwordrepeat>
     <passwordreset>Ripristina la password</passwordreset>
