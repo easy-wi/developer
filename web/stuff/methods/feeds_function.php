@@ -38,7 +38,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 //Load Twitter API 1.1
-require_once('TwitterAPIExchange.php');
+require_once(EASYWIDIR . '/third_party/TwitterAPI/TwitterAPIExchange.php');
 if (isset($newsInclude) and $newsInclude == true) {
 
     $update = $sql->prepare("UPDATE `feeds_settings` SET `lastUpdate`=NOW() WHERE `resellerID`=? LIMIT 1");
