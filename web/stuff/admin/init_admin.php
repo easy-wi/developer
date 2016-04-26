@@ -48,7 +48,8 @@ $adminInclude = true;
 $pa = User_Permissions($admin_id);
 
 if (!isanyadmin($admin_id) and count($pa) == 0) {
-    redirect('login.php');
+    header('Location: admin.php');
+    die('No Access');
 }
 
 $ewVersions['files'] = '5.30';
@@ -66,7 +67,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $ewVersions['releasenotesEN'] = $row['releasenotesEN'];
 }
 
-if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and ($ewVersions['cVersion'] < $ewVersions['version'] or $ewVersions['files'] < $ewVersions['version'])) {
+if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and (version_compare($ewVersions['version'], $ewVersions['cVersion']) == 1 or version_compare($ewVersions['version'], $ewVersions['files']) == 1)) {
     $toooldversion = $vcsprache->newversion.$ewVersions['version'];
 }
 

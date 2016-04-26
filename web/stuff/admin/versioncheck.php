@@ -229,7 +229,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
                 $sql->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
 
-                if ($ewVersions['cVersion'] < $ewVersions['version'] and is_file(EASYWIDIR . '/install/update.php')) {
+                if (version_compare($ewVersions['version'], $ewVersions['cVersion']) == 1 and is_file(EASYWIDIR . '/install/update.php')) {
                     include(EASYWIDIR . '/install/update.php');
                 } else {
                     $response->addError('Can not open: '. EASYWIDIR . '/install/update.php');
@@ -300,12 +300,12 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
     $update = ($reseller_id == 0 and isset($pa['updateEW']) and $pa['updateEW'] == true) ? '<div class="right"><a href="admin.php?w=vc&amp;d=ud">Update</a></div>' : '';
 
-    if ($ewVersions['cVersion'] < $ewVersions['version']) {
+    if (version_compare($ewVersions['version'], $ewVersions['cVersion']) == 1) {
         $state = 1;
         $class = 'versioncheckbad';
         $isok = $vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
 
-    } else if ($ewVersions['files'] < $ewVersions['version']) {
+    } else if (version_compare($ewVersions['version'], $ewVersions['files']) == 1) {
         $state = 1;
         $class = 'versioncheckbad';
         $isok = $vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'] . '. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;

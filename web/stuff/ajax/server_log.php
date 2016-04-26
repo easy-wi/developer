@@ -85,7 +85,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $array['error'] = 'Cannot download screenlog from ' . $downloadChrooted;
             } else {
                 $array['lastLog'] = $ftpConnect->getLastFileSize();
-                $array['log'] = nl2br($ftpConnect->getTempFileContent());
+                $array['log'] = nl2br(htmlentities($ftpConnect->getTempFileContent()));
             }
 
         } else {
