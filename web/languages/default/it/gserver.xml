@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<abkuerz>Abbreviato</abkuerz>
+	<abkuerz>Abbreviazione</abkuerz>
     <action>Azione</action>
 	<active>Attiva</active>
 	<all>Seleziona tutti i giochi</all>
@@ -50,7 +50,7 @@
     <gs_add2>Aggiungi un server - Step 2: Dettagli del server</gs_add2>
     <gs_add>Aggiungi un server - Step 2: utente, root server, giochi</gs_add>
     <hdd>Spazio nell'Hard Disk (MB)</hdd>
-    <hddinstalled>Hard Disk assegnato/i</hddinstalled>
+    <hddinstalled>Hard Disk assegnato</hddinstalled>
     <heading_delete>Elimina server di gioco</heading_delete>
     <heading_template>Panoramica del server di gioco</heading_template>
     <help_calendar>
@@ -86,7 +86,7 @@
 	Entrambe le azioni vengono intraprese con il pulsante <em>Esegui</em> e solitamente sono completate in un paio di minuti.
     ]]>
     </help_reinstall>
-    <homeDir>Home dir</homeDir>
+    <homeDir>Cartella Home</homeDir>
     <hour>Ore</hour>
     <import_corrected>La directory trovata è corretta?</import_corrected>
     <import_destination>Server di destinazione, giochi e modelli da importare</import_destination>

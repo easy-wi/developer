@@ -1,27 +1,27 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <active>Attivo</active>
-    <activeGS>Attiva il prestito del server di gioco per</activeGS>
-    <activeVS>Attiva il prestito del server voce per</activeVS>
+    <activeGS>Attiva il test dei voce per</activeGS>
+    <activeVS>Attiva il test dei server voce per</activeVS>
     <all>Chiunque</all>
     <anonymous>Anonimi</anonymous>
-    <available>disponibile</available>
+    <available>Disponibile</available>
     <free>Disponibile in</free>
     <ftpupload>Concedi l'upload demo</ftpupload>
     <ftpuploadpath>Demo FTP</ftpuploadpath>
     <ipblock>Qualcuno con il tuo indirizzo IP, ma non tu, ha già prestato il server!</ipblock>
-    <lend>Presta</lend>
-    <lendaccess>Presta attraverso</lendaccess>
+    <lend>Testa</lend>
+    <lendaccess>Testa attraverso</lendaccess>
     <lendhostip>Indirizzo IP del web host se in XML</lendhostip>
     <lendhostkey>Chiave se XML</lendhostkey>
     <maxplayer>Slots massimi</maxplayer>
-    <maxtime>Periodo massimo di prestito (minuti)</maxtime>
+    <maxtime>Periodo massimo di test (minuti)</maxtime>
     <minplayer>Slots minimi</minplayer>
-    <mintime>Periodo minimo di prestito (minuti)</mintime>
+    <mintime>Periodo minimo di test (minuti)</mintime>
     <minutes>Minuti</minutes>
     <nextcheck>Prossimo controllo sullo stato</nextcheck>
-    <nextfree>Secondo il piano, il prossimo server di gioco sarà libero in</nextfree>
-    <nextfreevo>Secondo il piano, il prossimo server voce sarà libero in</nextfreevo>
+    <nextfree>In teoria, il prossimo server di gioco sarà libero in</nextfree>
+    <nextfreevo>In teoria, il prossimo server voce sarà libero in</nextfreevo>
     <playersteps>Passi tra gli slots</playersteps>
     <ready>Pronto</ready>
     <registered>Registrato</registered>
@@ -36,5 +36,5 @@
     <timesteps>Intervallo tra i minuti</timesteps>
     <timeleft>Tempo rimasto</timeleft>
     <used>Utilizzato</used>
-    <usedserver>Server utilizzato</usedserver>
+    <usedserver>Server utilizzati</usedserver>
 </sprache>
