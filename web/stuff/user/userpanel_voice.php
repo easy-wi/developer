@@ -217,17 +217,19 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $query->execute(array($ui->id('id',10, 'post'), $user_id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            $snapshot= @gzuncompress($row['snapshot']);
+            $snapshot = @gzuncompress($row['snapshot']);
             $connection = new TS3($queryip, $queryport,'serveradmin', $querypassword);
             $errorcode = $connection->errorcode;
 
             if (strpos($errorcode,'error id=0') === false) {
+
                 $template_file = $spracheResponse->error_ts_query_connect . $errorcode;
 
             } else {
                 $connection->StartServer($volocalserverid);
                 $reply = $connection->Snapshotdeploy($volocalserverid, $snapshot);
                 if (isset($reply[0]['id']) and $reply[0]['id'] == '0') {
+
                     $move = array();
 
                     $channelListOld = @json_decode($row['channels']);
@@ -277,17 +279,19 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $query = $sql->prepare("SELECT *,AES_DECRYPT(`querypassword`,:aeskey) AS `decryptedquerypassword`,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_masterserver` WHERE `id`=:id AND (`resellerid`=:reseller_id OR (`managedServer`='Y' AND `managedForID`=:reseller_id)) LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey,':id' => $masterserver,':reseller_id' => $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
             $masteractive = $row['active'];
             $addedby = $row['addedby'];
             $queryport = $row['queryport'];
             $querypassword = $row['decryptedquerypassword'];
 
             if ($addedby == 2) {
+
                 $queryip = $row['ssh2ip'];
             } else if ($addedby == 1) {
-                $pselect3 = $sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $pselect3->execute(array($row['rootid'], $reseller_id));
-                foreach ($pselect3->fetchall(PDO::FETCH_ASSOC) as $row3) {
+                $query2 = $sql->prepare("SELECT `ip`,`bitversion` FROM `rserverdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query2->execute(array($row['rootid'], $reseller_id));
+                foreach ($query2->fetchall(PDO::FETCH_ASSOC) as $row3) {
                     $queryip = $row3['ip'];
                 }
             }
@@ -302,8 +306,11 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $template_file = $spracheResponse->error_ts_query_connect . $errorcode;
 
             } else {
+
                 if ($ui->port('po', 'get') == 1) {
+
                     $servergroups = array();
+
                     foreach($connection->ServerGroups($localserverid) as $servergroup) {
                         if ($servergroup['type'] == 1) {
                             $servergroups[$servergroup['id']] = $servergroup['name'];
@@ -323,15 +330,29 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 } else if ($ui->smallletters('action', 2, 'post') == 'ad') {
 
                     if ($ui->id('group',255, 'post')) {
-                        $newkey = $connection->AddKey($localserverid, $ui->id('group',255, 'post'));
 
-                        $template_file = $spracheResponse->ts_query_success . $newkey[0]['token'];
+                        $groupAllowed = false;
 
-                        $loguseraction = '%add% %voserver% Token ' . $address;
-                        $insertlog->execute();
+                        foreach($connection->ServerGroups($localserverid) as $servergroup) {
+                            if ($servergroup['type'] == 1 and $servergroup['id'] == $ui->id('group',255, 'post')) {
+                                $groupAllowed = true;
+                                break;
+                            }
+                        }
+
+                        if ($groupAllowed) {
+
+                            $newkey = $connection->AddKey($localserverid, $ui->id('group',255, 'post'));
+
+                            $template_file = $spracheResponse->ts_query_success . $newkey[0]['token'];
+
+                            $loguseraction = '%add% %voserver% Token ' . $address;
+                            $insertlog->execute();
+                        }
                     }
 
                 } else if ($ui->smallletters('action', 2, 'post') == 'dl') {
+
                     $del = $connection->DelKey($localserverid, $ui->post['token']);
 
                     $template_file = $spracheResponse->ts_query_success . $del[0]['msg'];
