@@ -54,4 +54,5 @@
     <vhostConfigPath>Vhost Config Storagepath</vhostConfigPath>
     <vhostTemplate>Modello del Vhost</vhostTemplate>
     <vhostStoragePath>Percorso di archiviazione del Vhost</vhostStoragePath>
+    <webFtp>Web FTP</webFtp>
 </sprache>
