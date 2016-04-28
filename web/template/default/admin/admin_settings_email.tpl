@@ -125,13 +125,10 @@
             $('#smtptestresult').find('div').remove();
             $('.smtpresult').find('i').remove();
 
-            event.preventDefault(); // Totally stop stuff happening
-            event.stopPropagation(); // Stop stuff happening
-
-            // START A LOADING SPINNER HERE
+            event.preventDefault();
+            event.stopPropagation();
             $('.boxtest').append('<div class="overlay imagelay"><i class="fa fa-refresh fa-spin"></i></div>');
-
-            // Create a formdata object and add the files
+            
             var data = new FormData();
 
             //Host
@@ -152,45 +149,37 @@
             //E-Mail
             data.append('inputEmail', $('#inputEmail').val());
 
-            console.log(data);
-
             $.ajax({
                 url: 'ajaxfunctions.php?d=smttest',
                 type: 'POST',
                 data: data,
                 cache: false,
                 dataType: 'json',
-                processData: false, // Don't process the files
-                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                processData: false,
+                contentType: false,
                 success: function(data, textStatus, jqXHR)
                 {
                     if(typeof data.error === 'undefined')
                     {
-                        console.log('SUCCESS: ' + data.success);
-                        $('#smtptestresult').append('<div><span style="font-size:2em;color:#00a65a;" class="fa fa-check"></span>'+data.success+'</div>');
+                        $('#smtptestresult').append('<div><span style="font-size:2em;color:#00a65a;" class="fa fa-check"></span></div>');
                         $('.smtp').removeClass('has-error');
                         $('.smtp').addClass('has-success');
                         $('.smtpresult').append('<i class="fa fa-check"></i>');
                     }
                     else
                     {
-                        // Handle errors here
-                        console.log('ERRORS: ' + data.error);
-                        $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span>'+data.error+'</div>');
+                        $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span></div>');
                         $('.smtp').addClass('has-error');
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown)
                 {
-                    // Handle errors here
-                    console.log('ERRORS: ' + textStatus);
-                    $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span>'+data.error+'</div>');
+                    $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span></div>');
                     $('.smtp').addClass('has-error');
                     // STOP LOADING SPINNER
                 },
                 complete: function()
                 {
-                    // STOP LOADING SPINNER
                     $( "div" ).remove( ".imagelay" );
                 }
             });

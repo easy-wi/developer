@@ -73,7 +73,6 @@ if($ui->w('d', 7, 'get')=='smttest')
    $errors[]= 'Mailer Error: Invalide Data';
   } else {
    $mail->smtpClose();
-   $data[]='OK';
   }
 
  }catch (phpmailerException $e) {
@@ -84,7 +83,7 @@ if($ui->w('d', 7, 'get')=='smttest')
  
  
  if(empty($errors)){
-  $data=array('success' => 'OK','data' => $data);
+  $data=array('success' => 'OK');
  }else{
   $data=array('error' => $errors);
  }
