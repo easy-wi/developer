@@ -18,8 +18,8 @@
 	<neben>Dati FTP utilizzati per il server Fastdownload</neben>
 	<noset>Nessun dato FTP disponibile</noset>
 	<own>Usa il server FTP principale</own>
-	<own2>Server Fastdownload privato</own2>
+	<own2>Server Fastdownload personale</own2>
 	<server>Dettagli del server</server>
 	<startfdl>Inizia l'accoppiamento</startfdl>
-	<udsuc>Dai FTP cambiati con successo</udsuc>
+	<udsuc>Dai FTP modificati con successo</udsuc>
 </sprache>

@@ -3,10 +3,10 @@
 	<account>Account</account>
 	<action>Azione</action>
 	<admin>Admin</admin>
-	<all>All</all>
+	<all>Tutti</all>
 	<banned_till>Banned fino al</banned_till>
     <date>Data</date>
-    <help_logs>Tutte le azioni di interfaccia importanti stanno per essere registrati. In questo modo, si avrà il quadro completo. Le azioni verranno registrati anche con nome.</help_logs>
+    <help_logs>Tutte le azioni importanti sono registrate. In questo modo, si avrà la cronologia completa. Anche i nomi utenti saranno registrati.</help_logs>
     <hostname>Host name</hostname>
 	<ip>IP</ip>
 	<shown>Amount</shown>

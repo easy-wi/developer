@@ -9,7 +9,7 @@
     <api>API</api>
     <apiAuth>Autenticazione esterna</apiAuth>
     <appMaster>App master</appMaster>
-    <appRoot>App/Game master</appRoot>
+    <appRoot>Server master</appRoot>
 	<backup>Backup</backup>
 	<change>Modifica</change>
     <chosenNoResult>Nessun risultato trovato per la stringa </chosenNoResult>
@@ -29,7 +29,7 @@
     <dataTablesNoRecords>Nessun valore da mostrare</dataTablesNoRecords>
     <dataTablesPrevious>Precedente</dataTablesPrevious>
     <dataTablesSearch>Ricerca: </dataTablesSearch>
-	<datetime>Date/tempo</datetime>
+	<datetime>Formato data</datetime>
     <dedicated>Dedicato</dedicated>
 	<del>Elimina</del>
     <delSafe>Elimina in modo sicuro</delSafe>
@@ -50,7 +50,7 @@
     <game>Gioco</game>
     <gameserver>Server di gioco</gameserver>
     <gameroot>Server root di gioco</gameroot>
-    <generalsettings>Impostazioni generali</generalsettings>
+	<generalsettings>Impostazioni generali</generalsettings>
     <greating_home>Benvenuto nell'interfaccia web %name% !</greating_home>
     <groups>Gruppi</groups>
     <help_home>
@@ -67,12 +67,12 @@
     <jobs>Lavori</jobs>
     <jobPending>Lavoro in attesa</jobPending>
 	<last>Il tuo ultimo login è avventuo: </last>
-	<lendserver>Prova/Presta server</lendserver>
+	<lendserver>Server di test</lendserver>
 	<licence>Il numero massimo di licenze è stato raggiunto.</licence>
     <licence_version>Non sei autorizzato ad eeguire questa versione!</licence_version>
 	<logs>Resoconti</logs>
-	<master>Master</master>
-    <master_apps>Master apps</master_apps>
+	<master>Server principali</master>
+    <master_apps>Applicazioni installate</master_apps>
     <migration>Servizio di migrazione</migration>
 	<mod>Modifica</mod>
     <modules>Moduli</modules>
@@ -88,7 +88,7 @@
     <reinstall>Reinstalla</reinstall>
     <repair>Ripara</repair>
 	<reseller>Rivenditore</reseller>
-	<root>Root server</root>
+	<root>Server root</root>
 	<save>Salva</save>
     <search>Ricerca</search>
     <server>Server</server>
@@ -101,9 +101,9 @@
     <status_inactive>Inattivo</status_inactive>
     <status_ok>OK</status_ok>
     <status_password>Password</status_password>
-    <status_server_tag>Marchio</status_server_tag>
-    <status_stop>Fermato</status_stop>
-    <stop>Ferma</stop>
+    <status_server_tag>Tag</status_server_tag>
+    <status_stop>Arrestato</status_stop>
+    <stop>Arresta</stop>
     <subnets>Sottoreti</subnets>
     <substitutes>Sostituti</substitutes>
 	<support2>Nuovo ticket di supporto</support2>
@@ -112,11 +112,11 @@
     <sure_delete>Ne sei sicuro? Tutti i dati sul server in oggetto verranno eliminati irrecuperabilmente!</sure_delete>
     <system_check>Controllo di sistema</system_check>
 	<template>Modello</template>
-	<templates>Immagini/Modelli</templates>
+	<templates>Modelli</templates>
 	<traffic>Traffico</traffic>
 	<update>Aggiorna</update>
     <upload>Carica</upload>
-    <use>Ustilizza</use>
+    <use>Utilizza</use>
     <used>In uso</used>
 	<user>Utente</user>
     <userImport>Importa utenti</userImport>

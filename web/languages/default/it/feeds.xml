@@ -13,9 +13,9 @@
     <title>Titolo</title>
     <updateMinutes>Controlla ogni X minuti per nuovi aggiornmenti</updateMinutes>
     <useLocal>Mostra notizie locali</useLocal>
-    <oauth_access_token>Oauth access token</oauth_access_token>
-    <oauth_access_token_secret>Oauth access token secret</oauth_access_token_secret>
-    <consumer_key>Consumer key</consumer_key>
-    <consumer_secret>Consumer secret</consumer_secret>
-    <twittersettings>Twitter Settings</twittersettings>
+	<oauth_access_token>Token di accesso Oauth</oauth_access_token>
+    <oauth_access_token_secret>segreto del token di accesso Oauth</oauth_access_token_secret>
+    <consumer_key>Chiave del cliente</consumer_key>
+    <consumer_secret>Segreto del cliente</consumer_secret>
+    <twittersettings>Impostazioni di Twitter</twittersettings>
 </sprache>
