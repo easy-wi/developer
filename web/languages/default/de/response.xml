@@ -13,4 +13,5 @@
     <table_del>Die Daten wurden erfolgreich aus der Datenbank entfernt.</table_del>
     <token>Error: CSFR Schutztoken abgelaufen, oder nicht vorhanden.</token>
     <ts_query_success>TS3 Serverquery erfolgreich. Die Antwort vom TS3 Serverquery ist: </ts_query_success>
+    <ts_query_error>TS3 Serverquery fehlerhaft. Manipulation entdeckt!</ts_query_error>
 </sprache>

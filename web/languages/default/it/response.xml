@@ -13,4 +13,5 @@
     <table_del>Dati rimossi con successo dal database.</table_del>
     <token>Errore: il token di protezione CSFR è scaduto o non corrisponde a quello del server.</token>
     <ts_query_success>Richiesta al server TS3 completata con successo. La risposta del server è: </ts_query_success>
+    <ts_query_error>TS3 Serverquery fail.</ts_query_error>
 </sprache>

@@ -13,4 +13,5 @@
     <table_del>Successfully removed the data from the database.</table_del>
     <token>Error: CSFR protection token timed out or does not match.</token>
     <ts_query_success>TS3 server query successful. TS3 query reply is: </ts_query_success>
+    <ts_query_error>TS3 Serverquery fail.</ts_query_error>
 </sprache>

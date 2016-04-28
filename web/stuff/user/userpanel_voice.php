@@ -348,7 +348,15 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                             $loguseraction = '%add% %voserver% Token ' . $address;
                             $insertlog->execute();
+                        }else{
+                         
+                            $template_file = $spracheResponse->ts_query_error;
+                         
                         }
+                    }else{
+                     
+                     $template_file = $spracheResponse->ts_query_error;
+                     
                     }
 
                 } else if ($ui->smallletters('action', 2, 'post') == 'dl') {
