@@ -116,7 +116,7 @@ class Tables {
                 }
 
             } catch(PDOException $error) {
-                $this->errors[] = $error->getMessage();
+                // nothing
             }
         }
     }
