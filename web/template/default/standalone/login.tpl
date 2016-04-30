@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
 
+
+	
     <?php if(isset($header)) echo $header;?>
     <title><?php if(isset($title)) echo $title;?></title>
 
@@ -27,13 +29,20 @@
 
 </head>
 
-<body class="login-page" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
+<body class="login-page" style="background-image: url(images/background.png);" <?php echo implode(' ',$htmlExtraInformation['body']);?>>
 
 <div class="login-box">
-    <div class="login-logo">
-      <a href="login.php"><?php echo (empty($rSA['login_header_text'])) ? '' : getLoginHeader($rSA['login_header_text']); ?></a>
-    </div>
-    <div class="login-box-body">
+
+        <div class="login-logo" style=
+		"background:white;-moz-box-shadow:  2px 2px 27px 1px rgba(0, 0, 0, 0.56);
+-webkit-box-shadow:  2px 2px 27px 1px rgba(0, 0, 0, 0.56);
+box-shadow:  2px 2px 27px 1px rgba(0, 0, 0, 0.56);">
+            <a href="https://easy-wi.com/"><b>Easy-</b>Wi</a>
+        </div>
+
+    <div style="-moz-box-shadow:  2px 2px 27px 1px rgba(0, 0, 0, 0.56);
+-webkit-box-shadow:  2px 2px 27px 1px rgba(0, 0, 0, 0.56);
+box-shadow:  2px 2px 27px 1px rgba(0, 0, 0, 0.56);" class="login-box-body">
 
         <?php if (isset($sus)) { ?>
         <div class="alert alert-danger alert-dismissable">
@@ -42,9 +51,9 @@
             <b><?php echo $sprache->sus_heading;?></b> <?php echo $sus;?>
         </div>
         <?php } else { ?>
-
-        <p class="login-box-msg"><?php echo $sprache->heading;?></p>
-
+			
+              <p class="login-box-msg"><?php echo $sprache->heading;?></p>
+			
         <?php if(isset($header)){ ?>
         <div class="box box-primary">
             <div class="alert alert-danger">
@@ -56,7 +65,7 @@
         <form action="login.php" method="post">
 
             <div class="form-group has-feedback">
-                <input type="text" name="username" class="form-control" placeholder="<?php echo $sprache->user;?>" required>
+                <input type="text" name="username" class="form-control" placeholder="<?php echo $sprache->user;?> / Email" required>
                 <span class="fa fa-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
@@ -84,14 +93,31 @@
             <?php } ?>
         </div><!-- /.social-auth-links -->
         <?php } ?>
-        <br/>
-        <a href="login.php?w=pr"><?php echo $sprache->passwdlost;?></a><br/>
         <?php }?>
-
+<a href="login.php?w=pr" >Forgot Password</a>
     </div><!-- /.login-box-body -->
 
-    <div>
-        &copy; <a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">Easy-WI.com</a> 2011 - <?php echo date('Y'); ?>
+ <div class="copyright" style="position: fixed; bottom: 5px; right: 5px; padding: 5px;
+	width: 200px;
+text-align: center;
+
+border: 2px rgb(0, 0, 0) inset;
+
+background: rgba(0, 0, 0, 0.8);
+
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+filter: alpha(opacity=80);
+-moz-opacity: 0.8
+-khtml-opacity: 0.8;
+opacity: 0.8;
+
+-moz-box-shadow:  0px 0px 10px 1px rgb(0, 0, 0);
+-webkit-box-shadow:  0px 0px 10px 1px rgb(0, 0, 0);
+box-shadow:  0px 0px 10px 1px rgb(0, 0, 0);
+">
+	 <span style="color:#FFFFFF;"> &copy; <a href="https://easy-wi.com" target="_blank" title="free gameserver, voiceserver, dedicated and virtualserver webinterface easy-wi.com">Easy-WI.com</a> 2011 - <?php echo date('Y'); ?></a></span>
     </div>
 </div>
 
