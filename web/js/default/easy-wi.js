@@ -101,6 +101,14 @@ function checkall(checked,check) {
     }
 }
 
+function textdrop(id) {
+    if (document.getElementById(id).style.display == "") {
+        document.getElementById(id).style.display = "none";
+    } else {
+        document.getElementById(id).style.display = "";
+    }
+}
+
 function toggleID (id, value) {
     if (value == 'Y') {
         $(id).show();
