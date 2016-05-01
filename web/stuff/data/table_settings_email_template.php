@@ -36,11 +36,11 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 $defined['settings_email_template'] = array(
-    'id' => array("Type"=>"int(11) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'reseller_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
+    'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'reseller_id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"MUL","Default"=>"0","Extra"=>""),
     'language' => array("Type"=>"varchar(2)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'active' => array("Type"=>"varchar(1)","Null"=>"NO","Key"=>"","Default"=>"Y","Extra"=>""),
-    'category' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'category' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"","Default"=>"0","Extra"=>""),
     'email_setting_name' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'subject' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'email_body' => array("Type"=>"text","Null"=>"No","Key"=>"","Default"=>"","Extra"=>""),
