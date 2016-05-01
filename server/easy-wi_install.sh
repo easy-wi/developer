@@ -103,7 +103,7 @@ function checkInstall {
     fi
 }
 
-INSTALLER_VERSION="1.4"
+INSTALLER_VERSION="1.5"
 OS=""
 USERADD=`which useradd`
 USERMOD=`which usermod`
@@ -691,6 +691,12 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
 
     if [ "$PHPINSTALL" == "Yes" ]; then
 
+        USE_PHP_VERSION='5'
+
+        if [ "$OS" == "ubuntu" -a "`printf "${OSVERSION}\n16.03" | sort -V | tail -n 1`" != "16.03" ]; then
+            USE_PHP_VERSION='7.0'
+        fi 
+
         if [ "$OS" == "debian" -a "$DOTDEB" == "Yes" ]; then
 
             cyanMessage " "
@@ -730,23 +736,16 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
             fi
         fi
 
-        checkInstall php5-common
-        checkInstall php7.0-common
-        checkInstall php5-curl
-        checkInstall php7.0-curl
-        checkInstall php5-gd
-        checkInstall php7.0-gd
-        checkInstall php5-mcrypt
-        checkInstall php7.0-mcrypt
-        checkInstall php5-mysql
-        checkInstall php7.0-mysql
-        checkInstall php5-cli
-        checkInstall php7.0-cli
+        checkInstall php${USE_PHP_VERSION}-common
+        checkInstall php${USE_PHP_VERSION}-curl
+        checkInstall php${USE_PHP_VERSION}-gd
+        checkInstall php${USE_PHP_VERSION}-mcrypt
+        checkInstall php${USE_PHP_VERSION}-mysql
+        checkInstall php${USE_PHP_VERSION}-cli
 
         if [ "$WEBSERVER" == "Nginx" -o "$WEBSERVER" == "Lighttpd" ]; then
 
-            checkInstall php5-fpm
-            checkInstall php7.0-fpm
+            checkInstall php${USE_PHP_VERSION}-fpm
 
             if [ "$WEBSERVER" == "Lighttpd" ]; then
                 lighttpd-enable-mod fastcgi
@@ -760,12 +759,9 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
         elif [ "$WEBSERVER" == "Apache" ]; then
             checkInstall apache2-mpm-itk
             checkInstall libapache2-mpm-itk
-            checkInstall libapache2-mod-php5
-            checkInstall libapache2-mod-php7.0
-            checkInstall php5
-            checkInstall php7.0
-            a2enmod php5
-            a2enmod php7.0
+            checkInstall libapache2-mod-php${USE_PHP_VERSION}
+            checkInstall php${USE_PHP_VERSION}
+            a2enmod php${USE_PHP_VERSION}
         fi
         
         #In case of php 7 the socket is different
@@ -1409,13 +1405,7 @@ if [ "$INSTALL" == "EW" ]; then
         chown -R $MASTERUSER:$WEBGROUPID /home/$MASTERUSER/
 
         okAndSleep "Restarting PHP-FPM and Nginx."
-
-        if [ -f /etc/init.d/php7.0-fpm ]; then
-            service php7.0-fpm restart
-        else
-            service php5-fpm restart
-        fi
-
+        service php${USE_PHP_VERSION}-fpm restart
         service nginx restart
 
     elif [ "$WEBSERVER" == "Apache" ]; then
