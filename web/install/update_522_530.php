@@ -1,10 +1,9 @@
 <?php
-
 /**
- * File: tables_entries_repair.php.
- * Author: Ulrich Block
- * Date: 10.01.14
- * Contact: <ulrich.block@easy-wi.com>
+ * File: update_522_530.php
+ * Author: Daniel Rodriguez Baumann
+ * Date: 15.04.2016
+ * Contact: <daniel@triopsi.com>
  *
  * This file is part of Easy-WI.
  *
@@ -37,21 +36,26 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (!isset($displayToUser) and (!isset($admin_id) or $main != 1 or $reseller_id != 0)) {
-    header('Location: admin.php');
-    die('No Access');
-}
+if (isset($include) and $include == true) {
 
-$query = $sql->prepare("SELECT DISTINCT(`id`) FROM `userdata` u WHERE `accounttype`='r' AND NOT EXISTS (SELECT 1 FROM `settings` WHERE `resellerid`=u.`id`)");
-$query2 = $sql->prepare("INSERT INTO `settings` (`resellerid`) VALUES (?)");
-$query->execute();
-while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-    $query2->execute(array($row['id']));
-}
+    $response->add('Action: Update Setting E-Mail');
 
-$query = $sql->prepare("SELECT DISTINCT(`id`) FROM `userdata` u WHERE `accounttype`='r' AND NOT EXISTS (SELECT 1 FROM `lendsettings` WHERE `resellerid`=u.`id`)");
-$query2 = $sql->prepare("INSERT INTO `lendsettings` (`resellerid`) VALUES (?)");
-$query->execute();
-while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-    $query2->execute(array($row['id']));
+    $query = $sql->prepare("INSERT INTO `settings_email_category` (`id`, `name`, `reseller_id`) VALUES (1, 'vServer', 0), (2, 'Server', 0), (3, 'Ticket', 0), (4, 'General', 0), (5, 'VoiceServer', 0), (6, 'GameServer', 0) ON DUPLICATE KEY UPDATE `id`=`id`");
+    $query->execute();
+
+    $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES ('5.30','','')");
+    $query->execute();
+
+    $response->add('Action: insert_easywi_version done: ');
+    $query->closecursor();
+    
+     //Install E-Mail template
+     include(EASYWIDIR . '/stuff/data/email_templates.php');
+     foreach ($emailTemplates as $template) {
+         $query = $sql->prepare($template['query']);
+         $query->execute(array(0));
+     }
+
+} else {
+    echo "Error: this file needs to be included by the updater!<br />";
 }

@@ -6,6 +6,7 @@
         <li class="active"><i class="fa fa-envelope"></i> E-Mail <?php echo $gsprache->settings;?></li>
     </ol>
 </section>
+
 <form role="form" action="admin.php?w=sm&amp;r=sm" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
     <input type="hidden" name="token" value="<?php echo token();?>">

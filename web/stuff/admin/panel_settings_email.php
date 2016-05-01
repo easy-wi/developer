@@ -65,7 +65,6 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $reseller_id = $admin_id;
 }
 
-
 // Add jQuery plugin chosen to the header
 $htmlExtraInformation['css'][] = '<link href="css/default/summernote/summernote.css" rel="stylesheet" type="text/css">';
 $htmlExtraInformation['js'][] = '<script src="js/default/plugins/summernote/summernote.min.js" type="text/javascript"></script>';
@@ -109,18 +108,18 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 } else {
 
     //New Teamplete Skin - Data Model
-    if($ui->w('d', 2, 'get')=='md' && is_numeric($ui->w('id', 2, 'get'))){
-        if($ui->id('id', 2, 'get') == 00){
+    if ($ui->w('d', 2, 'get') == 'md' and ($ui->id('id', 2, 'get') or $ui->w('id', 2, 'get') == 00)) {
 
+        if ($ui->w('id', 2, 'get') == 00) {
 
-            $tablename=$ui->w('tablename', 255, 'get');
-            $language=$ui->w('lt', 2, 'get');
-            $catid=$ui->id('cat', 2, 'get');
-            $reseller_id=$ui->id('rid', 2, 'get');
+            $tablename = $ui->w('tablename', 255, 'get');
+            $language = $ui->w('lt', 2, 'get');
+            $catid = $ui->id('cat', 2, 'get');
+            $reseller_id = $ui->id('rid', 2, 'get');
 
-            $query = $sql->prepare("SELECT MAX(id) as `ID` FROM `settings_email_template`");
+            $query = $sql->prepare("SELECT MAX(id) as `id` FROM `settings_email_template`");
             $query->execute();
-            $resultid=$query->fetchColumn();
+            $resultid = $query->fetchColumn();
             $resultid++;
 
             $email_id = $resultid;
@@ -132,7 +131,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $email_language = $language;
             $email_catid = $catid;
 
-        }else{
+        } else {
 
             //Load Data from DB - View:Edit
             $query = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `id`=? LIMIT 1");
@@ -154,15 +153,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         //Load Teamplate Skin MD
         $template_file = 'admin_settings_email_md.tpl';
 
-    }else{
+    } else {
 
         //Save Data
-        if($ui->w('d', 3, 'get')=='add' && is_numeric($ui->id('id',2,'post'))){
-            $changeCount = 0;
+        if ($ui->w('d', 3, 'get')=='add' and $ui->id('id', 2, 'post')){
+
             $query = $sql->prepare("INSERT INTO `settings_email_template` (`id`,`reseller_id`,`language`,`active`,`category`,`email_setting_name`,`subject`,`ccmailing`,`bccmailing`,`email_body`) VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`active`=VALUES(`active`),`category`=VALUES(`category`),`email_setting_name`=VALUES(`email_setting_name`),`reseller_id`=VALUES(`reseller_id`),`subject`=VALUES(`subject`),`ccmailing`=VALUES(`ccmailing`),`bccmailing`= VALUES(`bccmailing`),`email_body`= VALUES(`email_body`)");
-            $query->execute(array($ui->id('id',2,'post'),$reseller_id,$ui->escaped('email_setting_language','post'),1,$ui->escaped('email_setting_category','post'),$ui->escaped('email_setting_name','post'),$ui->escaped('email_subject','post'), $ui->escaped('ccmailing','post'),$ui->escaped('bccmailing','post'),$ui->escaped('email_body','post')));
-            $changeCount += $query->rowCount();
-            if ($changeCount == 0) {
+            $query->execute(array($ui->id('id',2,'post'), $reseller_id, $ui->escaped('email_setting_language','post'), 1, $ui->escaped('email_setting_category','post'), $ui->escaped('email_setting_name','post'), $ui->escaped('email_subject','post'), $ui->escaped('ccmailing','post'), $ui->escaped('bccmailing','post'), $ui->escaped('email_body','post')));
+
+            if ($query->rowCount() == 0) {
                 $template_file = $spracheResponse->error_table;
             } else {
                 $loguseraction = '%mod% %emailsettings%';
@@ -170,13 +169,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $template_file = $spracheResponse->table_add;
             }
 
-        }else{
+        } else {
 
             //Load Teamplate with language ID
-            $templateLanguage = $ui->w('tl', 2, 'get');
-            if(empty($templateLanguage)){
-                $templateLanguage=$user_language;
-            }
+            $templateLanguage = ($ui->w('tl', 2, 'get')) ? $ui->w('tl', 2, 'get') : $user_language;
 
             //Categorie Array
             $arrayofelements = array(
@@ -188,7 +184,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 'GameServer' => array('emailgserverupdate')
             );
 
-            $arraycategory=array(1 => 'vServer', 2 => 'Server' , 3 => 'Ticket', 4 => 'General', 5 => 'VoiceServer', 6 => 'GameServer');
+            $arraycategory = array(1 => 'vServer', 2 => 'Server' , 3 => 'Ticket', 4 => 'General', 5 => 'VoiceServer', 6 => 'GameServer');
 
             //Load E-Mail Setting from DB View:List
             $query = $sql->prepare("SELECT `email_setting_name`,`email_setting_value` FROM `settings_email` WHERE `reseller_id`=?");
@@ -196,15 +192,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $email_settings[$row['email_setting_name']] = $row['email_setting_value'];
             }
-            $query = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=?");
-            $query2 = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=? AND `email_setting_name` =? LIMIT 1");
-            $query3 = $sql->prepare("SELECT * FROM `settings_email_category` WHERE `reseller_id`=?");
-            
-            $query3->execute(array($reseller_id));
 
+            $query3 = $sql->prepare("SELECT * FROM `settings_email_category` WHERE `reseller_id`=?");
+            $query3->execute(array($reseller_id));
             while ($row = $query3->fetch(PDO::FETCH_ASSOC)) {
                 $email_categories[$row['id']] = $row['name'];
             }
+
+            $query = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=?");
+            $query2 = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `reseller_id`=? AND `category`=? AND `language`=? AND `email_setting_name` =? LIMIT 1");
 
             //HTMLCat
             $resultHtmlCategories='';
@@ -214,6 +210,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 if ($i % 2 != 0){
                     $resultHtmlCategories.='<div class="row">';
                 }
+
                 $resultHtmlCategories.='
      <div class="col-md-6">
      <div class="box box-primary">
@@ -236,6 +233,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($reseller_id, $catid, $templateLanguage));
 
                 if ($query->rowCount() > 0){
+
                     foreach($arrayofelements[$nameofcategory] as $tablename){
 
                         $query2->execute(array($reseller_id,$catid,$templateLanguage,$tablename));
@@ -304,7 +302,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $template_file = 'admin_settings_email.tpl';
 
             //Delete Template
-            if($ui->w('d', 4, 'get')=='dell' && is_numeric($ui->w('id', 2, 'get'))){
+            if ($ui->w('d', 4, 'get')=='dell' && is_numeric($ui->w('id', 2, 'get'))){
                 $query = $sql->prepare("DELETE FROM `settings_email_template` WHERE `id` = ?");
 
                 if($query->execute(array($ui->id('id', 2, 'get')))){

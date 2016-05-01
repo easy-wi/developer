@@ -768,11 +768,11 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `feeds_settings` (`settingsID`,`resellerID`) VALUES (1,0) ON DUPLICATE KEY UPDATE `settingsID`=`settingsID`");
             $query->execute();
             
-            $query = $sql->prepare("INSERT INTO `settings_email_category` (`id`, `name`, `reseller_id`) VALUES (1, 'vServer', 0), (2, 'Server', 0), (3, 'Ticket', 0), (4, 'General', 0), (5, 'VoiceServer', 0), (6, 'GameServer', 0)");
+            $query = $sql->prepare("INSERT INTO `settings_email_category` (`id`, `name`, `reseller_id`) VALUES (1, 'vServer', 0), (2, 'Server', 0), (3, 'Ticket', 0), (4, 'General', 0), (5, 'VoiceServer', 0), (6, 'GameServer', 0) ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
            
             //Install E-Mail template
-            include(EASYWIDIR . '/stuff/methods/email_templates.php');
+            include(EASYWIDIR . '/stuff/data/email_templates.php');
             foreach ($emailTemplates as $template) {
                 $query = $sql->prepare($template['query']);
                 $query->execute(array(0));
