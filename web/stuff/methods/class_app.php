@@ -206,7 +206,7 @@ class AppServer {
 
         global $sql, $aeskey;
 
-        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,t.`steamGameserverToken`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey`,AES_DECRYPT(s.`steamServerToken`,:aeskey) AS `d_steamServerToken` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
+        $query = $sql->prepare("SELECT t.`id` AS `template_id`,t.`steamgame`,t.`gameq`,t.`shorten`,t.`protected`,t.`protectedSaveCFGs`,t.`gamebinary`,t.`gamebinaryWin`,t.`binarydir`,t.`modfolder`,t.`copyStartBinary`,t.`cmd` AS `template_cmd`,t.`modcmds` AS `template_modcmds`,t.`steamGameserverToken`,`configedit`,s.*,AES_DECRYPT(s.`uploaddir`,:aeskey) AS `d_uploaddir`,AES_DECRYPT(s.`webapiAuthkey`,:aeskey) AS `d_webapiauthkey`,AES_DECRYPT(s.`steamServerToken`,:aeskey) AS `d_steamServerToken` FROM `serverlist` AS s INNER JOIN `servertypes` AS t ON t.`id`=s.`servertype` WHERE s.`id`=:id AND s.`switchID`=:appServerID LIMIT 1");
         $query->execute(array(':aeskey' => $aeskey, ':id' => $id, ':appServerID' => $appServerID));
 
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -221,6 +221,7 @@ class AppServer {
             $this->appServerDetails['template']['binarydir'] = (string) $row['binarydir'];
             $this->appServerDetails['template']['modfolder'] = (string) $row['modfolder'];
             $this->appServerDetails['template']['modcmds'] = (string) $row['template_modcmds'];
+            $this->appServerDetails['template']['steamgame'] = (string) $row['steamgame'];
             $this->appServerDetails['template']['steamGameserverToken'] = (string) $row['steamGameserverToken'];
             $this->appServerDetails['template']['configedit'] = $row['configedit'];
             $this->appServerDetails['template']['copyStartBinary'] = $row['copyStartBinary'];
@@ -1438,8 +1439,17 @@ class AppServer {
                 $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
             }
 
-            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \) ! -name "*.tar.bz2" ! -path "' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . '/backup/*" -delete' . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \)';
+            $script .= ' ! -name "*.tar.bz2" ! -name "steamclient.so" ! -path "' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . '/backup/*" -delete' . "\n";
             $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name "*.bz2" -delete' . "\n";
+        }
+
+        if ($this->appServerDetails['template']['steamgame'] == 'S') {
+            $script .= 'if [ ! -f "' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/.steam/sdk32/steamclient.so') . '" ]; then' . "\n";
+            $script .= '    mkdir -p "' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/.steam/sdk32/') . '"' . "\n";
+            $script .= '    ln -s "' . $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/masterserver//steamCMD/linux32/steamclient.so') . '" "';
+            $script .= $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/.steam/sdk32/steamclient.so') . '"' . "\n";
+            $script .= 'fi' . "\n";
         }
 
         if (count($this->appMasterServerDetails['configBinaries']) > 0 or count($this->appMasterServerDetails['configFiles']) > 0 ) {
@@ -1486,7 +1496,7 @@ class AppServer {
             $script .= 'if [ "$BINARY_DIR" != "" ]; then cd "$BINARY_DIR"; fi' . "\n";
 		}
 
-        // Loop used for ARK only. Ensures enough time has elapsed for worl save
+        // Loop used for ARK only. Ensures enough time has elapsed for world save
         if ($this->appServerDetails['template']['gameBinary'] == 'ShooterGameServer') {
 
             // For 30 seconds check every half second if the world save is done and a restart can be performed
