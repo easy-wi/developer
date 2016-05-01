@@ -3,6 +3,8 @@
  * File: ajaxfunctions.php
  * Author: Daniel Rodriguez Baumann
  * Contact: <daniel@triopsi.com>
+ * Author: Ulrich Block
+ * Contact: <ulrich.block@easy-wi.com>
  *
  * This file is part of Easy-WI.
  *
@@ -36,56 +38,64 @@
  */
 
 define('EASYWIDIR', dirname(__FILE__));
+
 include(EASYWIDIR . '/stuff/methods/vorlage.php');
 include(EASYWIDIR . '/stuff/methods/class_validator.php');
 include(EASYWIDIR . '/stuff/methods/functions.php');
 include(EASYWIDIR . '/stuff/settings.php');
 include(EASYWIDIR . '/third_party/phpmailer/class.phpmailer.php');
+
 if (!class_exists('SSH2')) {
     include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
 }
+
+// No access
+if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['settings'])) {
+    redirect('login.php');
+}
+
 $data = array();
-$errors = array();
 
 //Mail Test
-if($ui->w('d', 7, 'get')=='smttest')
-{
+if ($ui->w('d', 7, 'get') == 'smttest' and $ui->id('email_settings_port', 5, 'post')) {
 
- try{ 
-  $mail = new PHPMailer();
-  $mail->CharSet = 'UTF-8';
-  $mail->isSMTP();
-  $mail->SMTPAuth = true;                                 
-  $mail->Host = $ui->escaped('email_settings_host','post'); 
-  $mail->Username = $ui->escaped('email_settings_user','post');
-  $mail->Password = $ui->escaped('email_settings_password','post');
-  
-  if ($ui->escaped('email_settings_ssl','post') == 'T') {
-   $mail->SMTPSecure = 'tls';
-  } else if ($ui->escaped('email_settings_ssl','post') == 'S') {
-   $mail->SMTPSecure = 'ssl';
-  }
-  
-  $mail->Port = $ui->id('email_settings_port',5,'post');
-  $mail->setFrom('noreply@easy-wi');
- 
-  if(!$mail->smtpConnect()) {
-   $errors[]= 'Mailer Error: Invalide Data';
-  } else {
-   $mail->smtpClose();
-  }
+    $errors = array();
 
- }catch (phpmailerException $e) {
-   $errors[]= 'Mailer Error EXP: ' . $e->errorMessage(); //Pretty error messages from PHPMailer
- } catch (Exception $e) {
-   $errors[]= 'Mailer Error EXP: ' . $e->getMessage(); //Boring error messages from anything else!
- }
- 
- 
- if(empty($errors)){
-  $data=array('success' => 'OK');
- }else{
-  $data=array('error' => $errors);
- }
+    try{
+        $mail = new PHPMailer();
+        $mail->CharSet = 'UTF-8';
+        $mail->isSMTP();
+        $mail->SMTPAuth = true;
+        $mail->Host = $ui->escaped('email_settings_host','post');
+        $mail->Username = $ui->escaped('email_settings_user','post');
+        $mail->Password = $ui->escaped('email_settings_password','post');
+
+        if ($ui->escaped('email_settings_ssl','post') == 'T') {
+            $mail->SMTPSecure = 'tls';
+        } else if ($ui->escaped('email_settings_ssl','post') == 'S') {
+            $mail->SMTPSecure = 'ssl';
+        }
+
+        $mail->Port = $ui->id('email_settings_port', 5, 'post');
+        $mail->setFrom('noreply@easy-wi');
+
+        if(!$mail->smtpConnect()) {
+            $errors[]= 'Mailer Error: Invalide Data';
+        } else {
+            $mail->smtpClose();
+        }
+
+    } catch (phpmailerException $e) {
+        $errors[] = 'Mailer Error EXP: ' . $e->errorMessage(); //Pretty error messages from PHPMailer
+    } catch (Exception $e) {
+        $errors[] = 'Mailer Error EXP: ' . $e->getMessage(); //Boring error messages from anything else!
+    }
+
+    if (count($errors) == 0) {
+        $data = array('success' => 'OK');
+    } else {
+        $data = array('error' => $errors);
+    }
 }
+
 echo json_encode($data);
