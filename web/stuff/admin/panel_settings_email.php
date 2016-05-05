@@ -172,6 +172,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         } else {
 
             //Load Teamplate with language ID
+            $email_categories = array();
             $templateLanguage = ($ui->w('tl', 2, 'get')) ? $ui->w('tl', 2, 'get') : $user_language;
 
             //Categorie Array
@@ -211,11 +212,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $resultHtmlCategories.='<div class="row">';
                 }
 
-                $resultHtmlCategories.='
+                $resultHtmlCategories .= '
      <div class="col-md-6">
      <div class="box box-primary">
      <div class="box-header with-border">
-     <h3 class="box-title">'.$nameofcategory.'</h3>
+     <h3 class="box-title">' . $nameofcategory . '</h3>
      <div class="box-tools pull-right">
      <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
      </div><!-- /.box-tools -->

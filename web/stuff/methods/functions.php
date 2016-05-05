@@ -625,9 +625,9 @@ if (!function_exists('passwordgenerate')) {
 
         return $paneldomain;
     }
-    
+
     /**
-     * Send with the help of template a email. 
+     * Send with the help of template a email.
      * @param unknown $template
      * @param unknown $userid
      * @param unknown $server
@@ -637,239 +637,252 @@ if (!function_exists('passwordgenerate')) {
      */
     function sendmail($template, $userid, $server, $shorten, $connectInfo = array()) {
 
-     global $sql, $rSA, $ui;
-     $urlhost='';
-     if (!isset($aeskey)) {
-      include(EASYWIDIR . '/stuff/keyphrasefile.php');
-     }
-     if (!class_exists('PHPMailer')) {
-      include(EASYWIDIR . '/third_party/phpmailer/PHPMailerAutoload.php');
-     }
-     
-     if ($template == 'emailnewticket') {
-      $writerid = $shorten[1];
-      $shorten = $shorten[0];
-     }
-     
-     //Load costomer
-     $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? LIMIT 1");
-     $query->execute(array($userid));
-     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-      $lastname=$row['name'];
-      $firstname=$row['vname'];
-      $fullname = (empty($row['vname'])||empty($row['name']))?$row['mail']:$row['vname'] . ' ' . $row['name'];
-      $cname = $row['cname'];
-      $salutation=($row['salutation'] == 1) ? 'Sehr geehrter Herr': 'Sehr geehrte Frau';
-      $salutation=(empty($row['vname'])||empty($row['name']))?'Hallo':$salutation;
-      $usermail = $row['mail'];
-      $username = (empty($row['vname'])||empty($row['name']))?$row['cname']:$row['vname'] . ' ' . $row['name'];
-      $resellerid = $row['resellerid'];
-      
-      $email_id=$row['id'];
-      $email_creationTime=$row['creationTime'];
-      $email_active=$row['active'];
-      $email_cname=$cname;
-      $email_name=$lastname;
-      $email_vname=$firstname;
-      $email_birthday=$row['birthday'];
-      $email_mail=$usermail;
-      $email_phone=$row['phone'];
-      $email_fax=$row['fax'];
-      $email_handy=$row['handy'];
-      $email_country=$row['country'];
-      $email_city=$row['city'];
-      $email_cityn=$row['cityn'];
-      $email_street=$row['street'];
-      $email_streetn=$row['streetn'];
-      $userLanguage=$row['language'];
-      $email_lastlogin=$row['lastlogin'];
-     }
-     $email_urlhost=(isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . '/login.php' : 'http://' . $ui->server['HTTP_HOST'] . '/login.php';
-     
-     $password= $shorten;
-     
-     //Sprache des Admins
-     $resellerLanguage = $rSA['language'];
-     
-     
-     //Load E-Mail template data
-     $loaddatatemplatequery = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`=? LIMIT 1");
-     $loaddatatemplatequery->execute(array($template,$resellerid,$email_country));
-     
-     //default language 'de'
-     if($loaddatatemplatequery->rowCount() <= 0){
-         $loaddatatemplatequery = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`='de' LIMIT 1");
-         $loaddatatemplatequery->execute(array($template,$resellerid));
-     }
-     
-     while ($row = $loaddatatemplatequery->fetch(PDO::FETCH_ASSOC)) {
-         foreach ($row as $k => $v) {
-            $dataTemplate[$k] = $v;
-         }
-     }  
-     
+        global $sql, $rSA, $ui;
 
-     if ($template == 'emailnewticket' and isset($writerid)) {
-     
-      $query = $sql->prepare("SELECT `vname`,`name`,`cname` FROM `userdata` WHERE `id`=? LIMIT 1");
-      $query->execute(array($writerid));
-      while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-       $username = ($row['vname'] . ' ' . $row['name'] == ' ') ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
-      }
-      $topic ='#' . $shorten;
-      
-      
-     }else{
-      //Topic/Subject
-      $topic=$dataTemplate['subject'];
-     }
-     
-     if (!isset($resellerid) or $resellerid == $userid) {
-     
-      $resellersid = 0;
-     
-      if (!isset($resellerid)) {
-       $resellerid = 0;
-      }
-     
-     } else {
-      $resellersid = $resellerid;
-     }
-     
-     $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
-     $query->execute(array($resellersid, 'email_settings_type'));
-     $email_settings_type = $query->fetchColumn();
-     
-     if ($email_settings_type and $email_settings_type != 'N') {
-       
-      $query->execute(array($resellersid, 'email'));
-      $resellermail = $query->fetchColumn();
-      
-      //Load Language and timezone (Resellerid)
-      $query = $sql->prepare("SELECT `timezone`,`language` FROM `settings` WHERE `resellerid`=? LIMIT 1");
-      $query->execute(array($resellerid));
-      while($row = $query->fetch(PDO::FETCH_ASSOC)) {
-       $resellerLanguage = $row['language'];
-       $resellerstimezone = $row['timezone'];
-      }
-      
-      if (!isset($resellerstimezone) or $resellerstimezone == null) {
-       $resellerstimezone = 0;
-      }
-      
-      //Date of Email
-      $maildate = date('Y-m-d H:i:s', strtotime("$resellerstimezone hour"));
-      
-      //Create E-Mail Body
-      if ($template == 'contact') {
-       $startMail = true;
-       $topic = 'You\'ve been contacted by ' . $userid .'.';
-       $mailBody = $server;
-       $usermail = $resellermail;
-      } else {
-     
-       if ($resellerid == $userid) {
-        $resellermail = $resellersmail;
-        $lookupID = $resellersid;
-       } else {
-        $lookupID = $resellerid;
-       }
-       
-       //Variablen
-       $noreply='(This is an automated mail. Please do not reply to it since the account is configured to send only.)';
-       $emailfooter ='';
-       $emailregards ='';
-       $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%email%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%','%username%','%date%','%shorten%','%ip%','%port%','%port2%','%port3%','%port4%','%port5%','%ports%');
-       $replacements = array($emailfooter,$emailregards,$noreply,$topic,$email_id,$email_creationTime,$email_active,$salutation,$email_cname,$fullname,$email_name,$email_vname,$email_birthday,$email_mail,$email_mail,$email_phone,$email_fax,$email_handy,$email_country,$email_city,$email_cityn,$email_street,$email_streetn,$userLanguage,$email_lastlogin,$email_urlhost,$password,$server, $username, $maildate, $shorten);
-        
-       //More IP Adress
-       if (is_array($connectInfo) and count($connectInfo) > 0 and isset($connectInfo['ip'])) {
-        //%ip%
-        $replacements[] = $connectInfo['ip'];
-        //%port%......
-        $ports = array();
-        if ((isset($connectInfo['port']))) {
-         $ports[] = $connectInfo['port'];
-         $replacements[] = $connectInfo['port'];
+        $urlhost='';
+
+        if (!isset($aeskey)) {
+            include(EASYWIDIR . '/stuff/keyphrasefile.php');
+        }
+        if (!class_exists('PHPMailer')) {
+            include(EASYWIDIR . '/third_party/phpmailer/PHPMailerAutoload.php');
+        }
+
+        if ($template == 'emailnewticket') {
+            $writerid = $shorten[1];
+            $shorten = $shorten[0];
+        }
+
+        //Load costomer
+        $query = $sql->prepare("SELECT * FROM `userdata` WHERE `id`=? LIMIT 1");
+        $query->execute(array($userid));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $lastname = $row['name'];
+            $firstname = $row['vname'];
+            $fullname = (empty($row['vname']) or empty($row['name'])) ? $row['mail'] : $row['vname'] . ' ' . $row['name'];
+            $cname = $row['cname'];
+            $salutation = ($row['salutation'] == 1) ? 'Sehr geehrter Herr': 'Sehr geehrte Frau';
+            $salutation = (empty($row['vname']) or empty($row['name'])) ? 'Hallo' : $salutation;
+            $usermail = $row['mail'];
+            $username = (empty($row['vname']) or empty($row['name'])) ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
+            $resellerid = $row['resellerid'];
+
+            $email_id = $row['id'];
+            $email_creationTime = $row['creationTime'];
+            $email_active = $row['active'];
+            $email_cname = $cname;
+            $email_name = $lastname;
+            $email_vname = $firstname;
+            $email_birthday = $row['birthday'];
+            $email_mail = $usermail;
+            $email_phone = $row['phone'];
+            $email_fax = $row['fax'];
+            $email_handy = $row['handy'];
+            $email_country = $row['country'];
+            $email_city = $row['city'];
+            $email_cityn = $row['cityn'];
+            $email_street = $row['street'];
+            $email_streetn = $row['streetn'];
+            $userLanguage = $row['language'];
+            $email_lastlogin = $row['lastlogin'];
+        }
+
+        if (!isset($resellerid) or !isset($email_country)) {
+            return false;
+        }
+
+        $dataTemplate = array();
+        $email_urlhost = (isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . '/login.php' : 'http://' . $ui->server['HTTP_HOST'] . '/login.php';
+
+        $password = $shorten;
+
+        //Sprache des Admins
+        $resellerLanguage = $rSA['language'];
+
+        //Load E-Mail template data
+        $loaddatatemplatequery = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`=? LIMIT 1");
+        $loaddatatemplatequery->execute(array($template, $resellerid, $email_country));
+
+        //default language 'de'
+        if ($loaddatatemplatequery->rowCount() <= 0){
+            $loaddatatemplatequery = $sql->prepare("SELECT * FROM `settings_email_template` WHERE `email_setting_name`=? AND `reseller_id`=? AND `language`='de' LIMIT 1");
+            $loaddatatemplatequery->execute(array($template, $resellerid));
+        }
+
+        while ($row = $loaddatatemplatequery->fetch(PDO::FETCH_ASSOC)) {
+            foreach ($row as $k => $v) {
+                $dataTemplate[$k] = $v;
+            }
+        }
+
+
+        if ($template == 'emailnewticket' and isset($writerid)) {
+
+            $query = $sql->prepare("SELECT `vname`,`name`,`cname` FROM `userdata` WHERE `id`=? LIMIT 1");
+            $query->execute(array($writerid));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $username = ($row['vname'] . ' ' . $row['name'] == ' ') ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
+            }
+
+            $topic = '#' . $shorten;
+
+
+        } else if (isset($dataTemplate['subject'])) {
+            //Topic/Subject
+            $topic = $dataTemplate['subject'];
         } else {
-         $replacements[] = '';
+            return false;
         }
-     
-        //%ports%
-        for ($i = 2; $i < 6; $i++) {
-         if (isset($connectInfo["port{$i}"])) {
-          $ports[] = $connectInfo["port{$i}"];
-          $replacements[] = $connectInfo["port{$i}"];
-         } else {
-          $replacements[] = '';
-         }
+
+        if (!isset($resellerid) or $resellerid == $userid) {
+
+            $resellersid = 0;
+
+            if (!isset($resellerid)) {
+                $resellerid = 0;
+            }
+
+        } else {
+            $resellersid = $resellerid;
         }
-        $replacements[] = implode(', ', $ports);
-       } else {
-        for ($i = 0; $i < 7; $i++) {
-         $replacements[] = '';
-        }
-       }
-       
-       $mailtext = $dataTemplate['email_body'];
-       $mailBody = str_replace($keys, $replacements, $mailtext);
-       if (isset($usermail) and $usermail != 'ts3@import.mail' and ismail($usermail)) {
-        $startMail = true;
-       }
-      }
-      
-      //Create E-Mail Object and send this
-      if (isset($startMail) and isset($topic)) {
-       $mail = new PHPMailer();
-       $mail->CharSet = 'UTF-8';
-       $mail->setFrom($resellermail);
-       $mail->addAddress($usermail);
-       
-       if(!empty($dataTemplate['bccmailing'])){
-          $mail->addBCC($dataTemplate['bccmailing']);
-       }
-       if(!empty($dataTemplate['ccmailing'])){
-            $mail->addCC($dataTemplate['ccmailing']);
-       }
-       
-       $mail->Subject = $topic;
-       $mail->msgHTML($mailBody);
-       if ($email_settings_type == 'S') {
-        $mail->isSMTP();
+
         $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
-        $query->execute(array($resellersid, 'email_settings_host'));
-        $mail->Host = $query->fetchColumn();
-        $query->execute(array($resellersid, 'email_settings_port'));
-        $mail->Port = $query->fetchColumn();
-        $query->execute(array($resellersid, 'email_settings_ssl'));
-        $email_settings_ssl = $query->fetchColumn();
-        if ($email_settings_ssl == 'T') {
-         $mail->SMTPSecure = 'tls';
-        } else if ($email_settings_ssl == 'S') {
-         $mail->SMTPSecure = 'ssl';
+        $query->execute(array($resellersid, 'email_settings_type'));
+        $email_settings_type = $query->fetchColumn();
+
+        if ($email_settings_type and $email_settings_type != 'N') {
+
+            $query->execute(array($resellersid, 'email'));
+            $resellermail = $query->fetchColumn();
+            $resellerstimezone =  (!isset($rSA['timezone']) or $rSA['timezone'] == null) ? 0 : $rSA['timezone'];
+
+            //Date of Email
+            $maildate = date('Y-m-d H:i:s', strtotime("$resellerstimezone hour"));
+
+            //Create E-Mail Body
+            if ($template == 'contact') {
+                $startMail = true;
+                $topic = 'You\'ve been contacted by ' . $userid .'.';
+                $mailBody = $server;
+                $usermail = $resellermail;
+
+            } else {
+
+                if ($resellerid == $userid) {
+                    $resellermail = $resellersmail;
+                    $lookupID = $resellersid;
+                } else {
+                    $lookupID = $resellerid;
+                }
+
+                //Variablen
+                $noreply='(This is an automated mail. Please do not reply to it since the account is configured to send only.)';
+                $emailfooter ='';
+                $emailregards ='';
+                $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%email%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%','%username%','%date%','%shorten%','%ip%','%port%','%port2%','%port3%','%port4%','%port5%','%ports%');
+                $replacements = array($emailfooter, $emailregards, $noreply, $topic, $email_id, $email_creationTime, $email_active, $salutation, $email_cname, $fullname, $email_name, $email_vname, $email_birthday, $email_mail, $email_mail, $email_phone, $email_fax, $email_handy, $email_country, $email_city, $email_cityn, $email_street, $email_streetn, $userLanguage, $email_lastlogin, $email_urlhost, $password, $server, $username, $maildate, $shorten);
+
+                //More IP Adress
+                if (is_array($connectInfo) and count($connectInfo) > 0 and isset($connectInfo['ip'])) {
+
+                    //%ip%
+                    $replacements[] = $connectInfo['ip'];
+                    //%port%......
+                    $ports = array();
+
+                    if ((isset($connectInfo['port']))) {
+                        $ports[] = $connectInfo['port'];
+                        $replacements[] = $connectInfo['port'];
+                    } else {
+                        $replacements[] = '';
+                    }
+
+                    //%ports%
+                    for ($i = 2; $i < 6; $i++) {
+                        if (isset($connectInfo["port{$i}"])) {
+                            $ports[] = $connectInfo["port{$i}"];
+                            $replacements[] = $connectInfo["port{$i}"];
+                        } else {
+                            $replacements[] = '';
+                        }
+                    }
+
+                    $replacements[] = implode(', ', $ports);
+
+                } else {
+                    for ($i = 0; $i < 7; $i++) {
+                        $replacements[] = '';
+                    }
+                }
+
+                $mailtext = $dataTemplate['email_body'];
+                $mailBody = str_replace($keys, $replacements, $mailtext);
+
+                if (isset($usermail) and $usermail != 'ts3@import.mail' and ismail($usermail)) {
+                    $startMail = true;
+                }
+            }
+
+            //Create E-Mail Object and send this
+            if (isset($startMail) and isset($topic)) {
+
+                $mail = new PHPMailer();
+                $mail->CharSet = 'UTF-8';
+                $mail->setFrom($resellermail);
+                $mail->addAddress($usermail);
+
+                if (!empty($dataTemplate['bccmailing'])) {
+                    $mail->addBCC($dataTemplate['bccmailing']);
+                }
+
+                if (!empty($dataTemplate['ccmailing'])) {
+                    $mail->addCC($dataTemplate['ccmailing']);
+                }
+
+                $mail->Subject = $topic;
+                $mail->msgHTML($mailBody);
+
+                if ($email_settings_type == 'S') {
+
+                    $mail->isSMTP();
+
+                    $query = $sql->prepare("SELECT `email_setting_value` FROM `settings_email` WHERE `reseller_id`=? AND `email_setting_name`=? LIMIT 1");
+                    $query->execute(array($resellersid, 'email_settings_host'));
+                    $mail->Host = $query->fetchColumn();
+                    $query->execute(array($resellersid, 'email_settings_port'));
+                    $mail->Port = $query->fetchColumn();
+                    $query->execute(array($resellersid, 'email_settings_ssl'));
+                    $email_settings_ssl = $query->fetchColumn();
+
+                    if ($email_settings_ssl == 'T') {
+                        $mail->SMTPSecure = 'tls';
+                    } else if ($email_settings_ssl == 'S') {
+                        $mail->SMTPSecure = 'ssl';
+                    }
+
+                    $mail->SMTPAuth = true;
+                    $query->execute(array($resellersid, 'email_settings_user'));
+                    $mail->Username = $query->fetchColumn();
+                    $query->execute(array($resellersid, 'email_settings_password'));
+                    $mail->Password = $query->fetchColumn();
+                }
+
+                if ($mail->send()) {
+
+                    $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
+                    $query->execute(array($userid, $topic, ($resellerid == $userid) ? $resellersid : $resellerid));
+
+                    return true;
+                }
+            }
+
+            return false;
         }
-        $mail->SMTPAuth = true;
-        $query->execute(array($resellersid, 'email_settings_user'));
-        $mail->Username = $query->fetchColumn();
-        $query->execute(array($resellersid, 'email_settings_password'));
-        $mail->Password = $query->fetchColumn();
-       }
-       if ($mail->send()) {
-        $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
-        if ($resellerid == $userid) {
-         $query->execute(array($userid, $topic, $resellersid));
-        } else {
-         $query->execute(array($userid, $topic, $resellerid));
-        }
+
         return true;
-       }
-      }
-      return false;
-     }
-     return true;
     }
- 
-    
+
+
     function IncludeTemplate($use, $file, $location = 'admin') {
 
         if (is_file(EASYWIDIR . '/template/' . $use. '/' . $location. '/' . $file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
@@ -891,8 +904,11 @@ if (!function_exists('passwordgenerate')) {
     }
 
     function returnButton ($templateToUse, $template, $what, $do, $id, $description = '') {
+
         ob_start();
+
         include(IncludeTemplate($templateToUse, $template, 'ajax'));
+
         return ob_get_clean();
     }
 
@@ -960,7 +976,7 @@ if (!function_exists('passwordgenerate')) {
 
         global $sql;
 
-        $typeQuery=($type != null) ? " AND `type`='${type}'" : '';
+        $typeQuery = ($type != null) ? " AND `type`='${type}'" : '';
 
         $query = $sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
         $query->execute(array($action));
@@ -970,7 +986,7 @@ if (!function_exists('passwordgenerate')) {
             $query2->execute(array($row['type'], $row['affectedID'], $action));
             while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
-                if ($type==null) {
+                if ($type = =null) {
                     $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
                     $update->execute(array($row['type'], $row['affectedID'], $row2['jobID']));
 
@@ -1584,13 +1600,13 @@ $(function() {
 
         return $table;
     }
+
     /**
      * Get the Slogan from DB
-     * @param unknown $valueoftitle
+     * @param {sting} valueOfTitle
      * @return string
      */
-    function getLoginHeader($valueoftitle){
-      $valueoftitle = explode(" ",$valueoftitle);
-      return "<b>".$valueoftitle[0]."</b> ".$valueoftitle[1];
+    function getLoginHeader($valueOfTitle){
+        return preg_replace('/(.+)[\s](.+)/i', '<b>${1}</b> $2', $valueOfTitle, -1, $count);
     }
 }
