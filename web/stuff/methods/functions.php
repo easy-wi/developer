@@ -986,7 +986,7 @@ if (!function_exists('passwordgenerate')) {
             $query2->execute(array($row['type'], $row['affectedID'], $action));
             while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
-                if ($type = =null) {
+                if ($type == null) {
                     $update = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE (`status` IS NULL OR `status`=1) AND `type`=? AND `affectedID`=? AND `jobID`!=?");
                     $update->execute(array($row['type'], $row['affectedID'], $row2['jobID']));
 
