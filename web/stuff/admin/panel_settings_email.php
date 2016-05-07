@@ -90,7 +90,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'email_settings_ssl', ($ui->w('email_settings_ssl',1, 'post')) ? $ui->w('email_settings_ssl',1, 'post') : 'N'));
     $changeCount += $query->rowCount();
-    $query->execute(array($reseller_id, 'email_settings_type', ($ui->w('email_settings_type',1, 'post')) ? $ui->w('email_settings_type',1, 'post') : 'P'));
+    $query->execute(array($reseller_id, 'email_settings_type', ($ui->w('email_settings_type', 1, 'post')) ? $ui->w('email_settings_type',1, 'post') : 'P'));
     $changeCount += $query->rowCount();
     $query->execute(array($reseller_id, 'email_settings_user', ($ui->ismail('email_settings_user', 'post')) ? $ui->ismail('email_settings_user', 'post') : $ui->username('email_settings_user',255, 'post')));
     $changeCount += $query->rowCount();
@@ -186,6 +186,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             );
 
             $arraycategory = array(1 => 'vServer', 2 => 'Server' , 3 => 'Ticket', 4 => 'General', 5 => 'VoiceServer', 6 => 'GameServer');
+
+            // Default values
+            $email_settings = array(
+                'email_settings_type' => 'P',
+                'email_settings_ssl' => 'N',
+                'email_settings_host' => 'localhost',
+                'email_settings_port' => '',
+                'email_settings_user' => '',
+                'email_settings_password' => ''
+            );
 
             //Load E-Mail Setting from DB View:List
             $query = $sql->prepare("SELECT `email_setting_name`,`email_setting_value` FROM `settings_email` WHERE `reseller_id`=?");

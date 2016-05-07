@@ -79,11 +79,13 @@
                                 <input class="form-control" id="inputPassword" type="text" name="email_settings_password" value="<?php echo $email_settings['email_settings_password'];?>">
                             </div>
                         </div>
-                        <div class="S switch box-footer <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?> smtp">
-                            <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                        <div class="S switch <?php if($email_settings['email_settings_type']!='S') echo 'display_none';?> smtp">
                             <div class="pull-right" style="margin-left:5px;"><a class="btn btn-success" id="submitTest"><i class="fa fa-retweet"></i> Testing</a></div>
                             <div class="pull-right" id="smtptestresult"></div>
                         </div>
+                    </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
                     </div>
                 </div>
             </div>
