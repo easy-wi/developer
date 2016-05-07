@@ -42,7 +42,7 @@ if (!defined('AJAXINCLUDED')) {
     die('Do not access directly!');
 }
 
-include(EASYWIDIR . '/third_party/phpmailer/class.phpmailer.php');
+include(EASYWIDIR . '/third_party/phpmailer/PHPMailerAutoload.php');
 
 if (!class_exists('SSH2')) {
     include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
