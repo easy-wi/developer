@@ -132,26 +132,6 @@
             event.stopPropagation();
 
             $('.boxtest').append('<div class="overlay imagelay"><i class="fa fa-refresh fa-spin"></i></div>');
-            
-            var data = new FormData();
-
-            //Host
-            data.append('email_settings_host', $('#inputHost').val());
-
-            //Port
-            data.append('email_settings_port', $('#inputPort').val());
-
-            //SSL
-            data.append('email_settings_ssl', $('#inputSSL').val());
-
-            //Username
-            data.append('email_settings_user', $('#inputUser').val());
-
-            //Passwort
-            data.append('email_settings_password', $('#inputPassword').val());
-
-            //E-Mail
-            data.append('inputEmail', $('#inputEmail').val());
 
             $.post({
                 url: 'ajax.php?d=smtptest',
@@ -180,7 +160,6 @@
                 error: function(jqXHR, textStatus, errorThrown) {
                     $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span></div>');
                     $('.smtp').addClass('has-error');
-                    // STOP LOADING SPINNER
                 },
                 complete: function() {
                     $( "div" ).remove( ".imagelay" );

@@ -44,6 +44,10 @@ if (!defined('AJAXINCLUDED')) {
 
 include(EASYWIDIR . '/third_party/phpmailer/class.phpmailer.php');
 
+if (!class_exists('SSH2')) {
+    include(EASYWIDIR . '/third_party/phpseclib/autoloader.php');
+}
+
 $data = array();
 
 //Mail Test
