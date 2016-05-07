@@ -74,17 +74,19 @@ try {
     }
 
     if ($ui->escaped('email_settings_ssl','post') == 'S' or $ui->escaped('email_settings_ssl','post') == 'T') {
-        $mail->SMTPOptions = array(
-            'ssl' => array(
+        $smtpConnect = $mail->smtpConnect([
+            'ssl' => [
                 'verify_peer' => false,
                 'verify_peer_name' => false,
                 'allow_self_signed' => true
-            )
-        );
+            ]
+        ]);
+    } else {
+        $smtpConnect = $mail->smtpConnect();
     }
 
 
-    if (!$mail->smtpConnect()) {
+    if (!$smtpConnect) {
         $errors[]= 'Mailer Error: Invalid data';
     } else {
         $mail->smtpClose();
