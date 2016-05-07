@@ -64,16 +64,29 @@ try {
     $mail->Username = $ui->escaped('email_settings_user','post');
     $mail->Password = $ui->escaped('email_settings_password','post');
 
+    $mail->Port = $ui->id('email_settings_port', 5, 'post');
+    $mail->setFrom('noreply@easy-wi');
+
     if ($ui->escaped('email_settings_ssl','post') == 'T') {
         $mail->SMTPSecure = 'tls';
     } else if ($ui->escaped('email_settings_ssl','post') == 'S') {
         $mail->SMTPSecure = 'ssl';
     }
 
-    $mail->Port = $ui->id('email_settings_port', 5, 'post');
-    $mail->setFrom('noreply@easy-wi');
+    if ($ui->escaped('email_settings_ssl','post') == 'S' or $ui->escaped('email_settings_ssl','post') == 'T') {
+        $smtpConnect = $mail->smtpConnect([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ]);
+    } else {
+        $smtpConnect = $mail->smtpConnect();
+    }
 
-    if (!$mail->smtpConnect()) {
+
+    if (!$smtpConnect) {
         $errors[]= 'Mailer Error: Invalid data';
     } else {
         $mail->smtpClose();
