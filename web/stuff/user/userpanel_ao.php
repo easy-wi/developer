@@ -197,7 +197,7 @@ if ($ui->id('id', 10, 'get') and $ui->id('adid', 10, 'get') and in_array($ui->st
                 $descriptionrow = $query->fetchColumn();
 			}
 
-            $addescription = nl2br($descriptionrow);
+            $addescription = $descriptionrow;
 
             $query3 =  ($protected == 'Y') ? $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `paddon`='Y' AND `resellerid`=? LIMIT 1") : $sql->prepare("SELECT `id` FROM `addons_installed` WHERE `userid`=? AND `serverid`=? AND `addonid`=? AND `servertemplate`=? AND `resellerid`=? LIMIT 1");
             $query3->execute(array($user_id, $serverid, $adid, $servertemplate, $resellerLockupID));
