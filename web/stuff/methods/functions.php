@@ -863,19 +863,16 @@ if (!function_exists('passwordgenerate')) {
                     $query->execute(array($resellersid, 'email_settings_password'));
                     $mail->Password = $query->fetchColumn();
 
-                    $smtpConnect = $mail->smtpConnect([
-                        'ssl' => [
+                    $mail->SMTPOptions = array(
+                        'ssl' => array(
                             'verify_peer' => false,
                             'verify_peer_name' => false,
                             'allow_self_signed' => true
-                        ]
-                    ]);
-
-                } else {
-                    $smtpConnect = $mail->smtpConnect();
+                        )
+                    );
                 }
 
-                if ($smtpConnect and $mail->send()) {
+                if ($mail->send()) {
 
                     $query = $sql->prepare("INSERT INTO `mail_log` (`uid`,`topic`,`date`,`resellerid`) VALUES (?,?,NOW(),?)");
                     $query->execute(array($userid, $topic, ($resellerid == $userid) ? $resellersid : $resellerid));
