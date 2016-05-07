@@ -50,7 +50,7 @@ if (!class_exists('SSH2')) {
 }
 
 // No access
-if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['settings'])) {
+if ((!isset($admin_id)) or (isset($admin_id) and !$pa['settings'])) {
     redirect('login.php');
 }
 
