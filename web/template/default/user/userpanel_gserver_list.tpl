@@ -85,8 +85,6 @@
                         <dd><?php echo $table_row['cname'];?></dd>
                         <dt><?php echo $sprache->ftp_password;?></dt>
                         <dd><?php echo $table_row['cftppass'];?></dd>
-						<dt>Fast-connect:</dt>
-                        <dd><a href="hlsw://<?php echo $table_row['server'];?>">Link</a></dd>
                         <?php } ?>
                     </dl>
                 </div>
