@@ -93,7 +93,7 @@ if (isset($include) and $include == true) {
 <li>CDN auf der der Login Seite benutzt</li>
 <li>ExternalID beim Voice Server nicht einstellbar</li>
 <li>Repquota Bug in der statuscheck.php</li>
-</ul>','<div align=\"right\">03.25.2015</div>
+</ul>','<div align=\"right\">03.25.2016</div>
 <b>Changes:</b><br/>
 <ul>
 <li>Gameserver:
