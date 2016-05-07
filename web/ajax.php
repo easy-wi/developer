@@ -319,6 +319,11 @@ if ($ui->smallletters('w', 9, 'get') == 'datatable') {
 
     require_once(EASYWIDIR . '/stuff/ajax/userpanel_mapgroup.php');
     die;
+
+} else if (isset($admin_id) and $pa['settings'] and $ui->w('d', 8, 'get') == 'smtptest' and $ui->id('email_settings_port', 5, 'post')) {
+
+    require_once(EASYWIDIR . '/stuff/ajax/email_smtp_test.php');
+    die;
 }
 
 die('No Access:' . $ui->smallletters('d', 200, 'get'));

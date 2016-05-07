@@ -130,6 +130,7 @@
 
             event.preventDefault();
             event.stopPropagation();
+
             $('.boxtest').append('<div class="overlay imagelay"><i class="fa fa-refresh fa-spin"></i></div>');
             
             var data = new FormData();
@@ -152,37 +153,36 @@
             //E-Mail
             data.append('inputEmail', $('#inputEmail').val());
 
-            $.ajax({
-                url: 'ajaxfunctions.php?d=smttest',
-                type: 'POST',
-                data: data,
+            $.post({
+                url: 'ajax.php?d=smtptest',
+                data: {
+                    email_settings_host: $('#inputHost').val(),
+                    email_settings_port: $('#inputPort').val(),
+                    email_settings_ssl: $('#inputSSL').val(),
+                    email_settings_user: $('#inputUser').val(),
+                    email_settings_password: $('#inputPassword').val(),
+                    inputEmail: $('#inputEmail').val()
+                },
                 cache: false,
                 dataType: 'json',
-                processData: false,
-                contentType: false,
-                success: function(data, textStatus, jqXHR)
-                {
-                    if(typeof data.error === 'undefined')
-                    {
+                success: function(data, textStatus, jqXHR) {
+
+                    if (typeof data.error === 'undefined') {
                         $('#smtptestresult').append('<div><span style="font-size:2em;color:#00a65a;" class="fa fa-check"></span></div>');
                         $('.smtp').removeClass('has-error');
                         $('.smtp').addClass('has-success');
                         $('.smtpresult').append('<i class="fa fa-check"></i>');
-                    }
-                    else
-                    {
+                    } else {
                         $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span></div>');
                         $('.smtp').addClass('has-error');
                     }
                 },
-                error: function(jqXHR, textStatus, errorThrown)
-                {
+                error: function(jqXHR, textStatus, errorThrown) {
                     $('#smtptestresult').append('<div><span style="font-size:2em;color:#d73925;" class="fa fa-times"></span></div>');
                     $('.smtp').addClass('has-error');
                     // STOP LOADING SPINNER
                 },
-                complete: function()
-                {
+                complete: function() {
                     $( "div" ).remove( ".imagelay" );
                 }
             });
