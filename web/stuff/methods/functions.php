@@ -770,9 +770,6 @@ if (!function_exists('passwordgenerate')) {
 
                 if ($resellerid == $userid) {
                     $resellermail = $resellersmail;
-                    $lookupID = $resellersid;
-                } else {
-                    $lookupID = $resellerid;
                 }
 
                 //Variablen
