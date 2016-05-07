@@ -64,10 +64,13 @@ function loadServerSettings (serverType, usageType) {
             defaultVhostTemplate += '      #       fastcgi_split_path_info ^(.+\.php)(/.+)$;\r\n';
             defaultVhostTemplate += '      #       # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini\r\n';
             defaultVhostTemplate += '      #\r\n';
-            defaultVhostTemplate += '      #       # With php5-cgi alone:\r\n';
-            defaultVhostTemplate += '      #       fastcgi_pass 127.0.0.1:9000;\r\n';
-            defaultVhostTemplate += '      #       # With php5-fpm:\r\n';
+            defaultVhostTemplate += '      # With php5-cgi alone:\r\n';
+            defaultVhostTemplate += '      # fastcgi_pass 127.0.0.1:9000;\r\n';
+            defaultVhostTemplate += '      # With php5-fpm:\r\n';
             defaultVhostTemplate += '      fastcgi_pass unix:/var/run/php5-fpm.sock;\r\n';
+            defaultVhostTemplate += '      # With php7-fpm:\r\n';
+            defaultVhostTemplate += '      # fastcgi_pass unix:/var/run/php7.0-fpm.sock;\r\n';
+            defaultVhostTemplate += '      include fastcgi.conf;\r\n';
             defaultVhostTemplate += '      fastcgi_index index.php;\r\n';
             defaultVhostTemplate += '      include fastcgi_params;\r\n';
             defaultVhostTemplate += '      fastcgi_param  PHP_VALUE "open_basedir=%vhostpath%/%user%/%htdocs%/%path%:%vhostpath%/%user%/tmp\nsession.save_path=%vhostpath%/%user%/sessions\nupload_tmp_dir=%vhostpath%/%user%/tmp\nallow_url_fopen=Off\nallow_url_include=Off\n%phpConfiguration%";\r\n';
