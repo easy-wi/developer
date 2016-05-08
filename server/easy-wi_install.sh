@@ -1542,7 +1542,7 @@ if [ "$INSTALL" == "VS" ]; then
         fi
 
         cyanMessage " "
-        cyanMessage "Please secify the IPv4 address of the Easy-WI web panel."
+        cyanMessage "Please specify the IPv4 address of the Easy-WI web panel."
         read IP_ADDRESS
 
         if [ "$IP_ADDRESS" != "" ]; then
