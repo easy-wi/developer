@@ -116,7 +116,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=? WHERE `appID`=?");
 
-    $query = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t INNER JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
+    $query = $sql->prepare("SELECT t.`appID`,t.`shorten` FROM `servertypes` t INNER JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID`,t.`shorten` ORDER BY t.`appID`");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 

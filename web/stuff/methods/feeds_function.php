@@ -37,8 +37,12 @@
  * Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
+
 //Load Twitter API 1.1
-require_once(EASYWIDIR . '/third_party/TwitterAPI/TwitterAPIExchange.php');
+if (!class_exists('TwitterAPIExchange')) {
+    require_once(EASYWIDIR . '/third_party/TwitterAPI/TwitterAPIExchange.php');
+}
+
 if (isset($newsInclude) and $newsInclude == true) {
 
     $update = $sql->prepare("UPDATE `feeds_settings` SET `lastUpdate`=NOW() WHERE `resellerID`=? LIMIT 1");
@@ -64,7 +68,7 @@ if (isset($newsInclude) and $newsInclude == true) {
 
             $newsAmount = $row['newsAmount'];
 
-            $query2 = $sql->prepare("SELECT t.* FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`steamgame`!='N' GROUP BY t.`appID` ORDER BY t.`appID`");
+            $query2 = $sql->prepare("SELECT DISTINCT(t.`appID`) AS `appID`, t.* FROM `servertypes` AS t LEFT JOIN `rservermasterg` AS r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`appID` IS NOT NULL AND t.`steamgame`!='N' ORDER BY t.`appID`");
             $query2->execute();
             while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
 
