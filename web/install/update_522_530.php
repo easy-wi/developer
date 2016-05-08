@@ -51,7 +51,7 @@ if (isset($include) and $include == true) {
     }
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('5.30','<div align=\"right\">01.05.2016</div>
+('5.30','<div align=\"right\">08.05.2016</div>
 <b>&Auml;nderungen:</b><br/>
 <ul>
 <li>Game Server:
@@ -88,7 +88,7 @@ if (isset($include) and $include == true) {
 <li>Minecraft Templates</li>
 <li>Falsches HTML Tag br wird bei Addon Beschreibung angezeigt</li>
 <li>Fehlender fastcgi.conf Include beim Nginx FPM Template</li>
-</ul>','<div align=\"right\">01.05.2016</div>
+</ul>','<div align=\"right\">05.08.2016</div>
 <b>Changes:</b><br/>
 <ul>
 <li>Game server:
