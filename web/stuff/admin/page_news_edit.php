@@ -169,7 +169,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 }
 
                 $query = $sql->prepare("SELECT `name` FROM `page_terms` WHERE `type`='category' AND `language`=? AND `resellerid`=? GROUP BY `name` ORDER BY `name` DESC");
-                $query2 = $sql->prepare("SELECT `name` FROM `page_terms` WHERE `type`='tag' AND `language`=? AND `resellerid`=? GROUP BY `name` ORDER BY `count` DESC LIMIT 10");
+                $query2 = $sql->prepare("SELECT `name`,MIN(`count`) AS `count` FROM `page_terms` WHERE `type`='tag' AND `language`=? AND `resellerid`=? GROUP BY `name` ORDER BY `count` DESC LIMIT 10");
                 foreach ($lang_avail as $lg) {
                     $categories[$lg] = array();
                     $keywords[$lg] = array();
@@ -395,7 +395,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
 
             }
 
-            $query = $sql->prepare("UPDATE `page_terms` SET `count`=`count`-1 WHERE `name`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("UPDATE `page_terms` SET `count`=(CASE WHEN `count`=0 THEN 0 ELSE (`count`-1) END) WHERE `name`=? AND `resellerid`=? LIMIT 1");
             foreach ($countreduce as $keyword) {
                 $query->execute(array($keyword, $resellerLockupID));
                 $rowCount += (int) $query->rowCount();
@@ -517,7 +517,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $pageUrl = $row['pageurl'];
     }
 
-    $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`released`,p.`authorid`,p.`authorname`,t.`title`,t.`shortlink`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='news' AND p.`resellerid`=? GROUP BY p.`id`");
+    $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`released`,p.`authorid`,p.`authorname`,t.`title`,t.`shortlink`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='news' AND p.`resellerid`=?");
     $query2 = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query3 = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
     $query4 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
@@ -561,7 +561,6 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         $date = ($user_language == 'de') ? date('d.m.Y H:m:s', strtotime($row['date'])) : $row['date'];
 
         $table[] = array('id' => $row['id'], 'author' => $author, 'date' => $date, 'released' => $released, 'title' => $page_title, 'link' => $link, 'languages' => $p_languages);
-
     }
 
     configureDateTables('-1', '1, "desc"');
