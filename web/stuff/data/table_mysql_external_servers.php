@@ -52,6 +52,7 @@ $defined['mysql_external_servers'] = array(
     'max_updates_per_hour' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'max_connections_per_hour' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
     'max_userconnections_per_hour' => array("Type"=>"bigint(19) unsigned","Null"=>"YES","Key"=>"","Default"=>"0","Extra"=>""),
+    'description' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'externalID' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"MUL","Default"=>"","Extra"=>""),
     'resellerid' => array("Type"=>"int(10) unsigned","Null"=>"YES","Key"=>"MUL","Default"=>"0","Extra"=>"")
 );

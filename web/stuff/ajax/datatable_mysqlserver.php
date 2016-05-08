@@ -79,10 +79,10 @@ if (isset($orderFields[$iSortCol]) and is_array($orderFields[$iSortCol])) {
 }
 
 if ($sSearch) {
-    $query = $sql->prepare("SELECT s.`id`,s.`active`,s.`ip`,s.`interface`,s.`max_databases`,(SELECT COUNT(1) AS `amount` FROM `mysql_external_dbs` AS d WHERE d.`sid`=s.`id`) AS `installed_databases` FROM `mysql_external_servers` AS s WHERE s.`resellerid`=:reseller_id AND (s.`id` LIKE :search OR s.`ip` LIKE :search OR s.`interface` LIKE :search {$statusQuery}) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query = $sql->prepare("SELECT s.`id`,s.`description`,s.`active`,s.`ip`,s.`interface`,s.`max_databases`,(SELECT COUNT(1) AS `amount` FROM `mysql_external_dbs` AS d WHERE d.`sid`=s.`id`) AS `installed_databases` FROM `mysql_external_servers` AS s WHERE s.`resellerid`=:reseller_id AND (s.`id` LIKE :search OR s.`ip` LIKE :search OR s.`interface` LIKE :search {$statusQuery}) ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array(':search' => '%' . $sSearch . '%', ':reseller_id' => $resellerLockupID));
 } else {
-    $query = $sql->prepare("SELECT s.`id`,s.`active`,s.`ip`,s.`interface`,s.`max_databases`,(SELECT COUNT(1) AS `amount` FROM `mysql_external_dbs` AS d WHERE d.`sid`=s.`id`) AS `installed_databases` FROM `mysql_external_servers` AS s WHERE s.`resellerid`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
+    $query = $sql->prepare("SELECT s.`id`,s.`description`,s.`active`,s.`ip`,s.`interface`,s.`max_databases`,(SELECT COUNT(1) AS `amount` FROM `mysql_external_dbs` AS d WHERE d.`sid`=s.`id`) AS `installed_databases` FROM `mysql_external_servers` AS s WHERE s.`resellerid`=? ORDER BY $orderBy LIMIT {$iDisplayStart},{$iDisplayLength}");
     $query->execute(array($resellerLockupID));
 }
 
@@ -96,5 +96,5 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $statusMessage = $gsprache->status_inactive;
     }
 
-    $array['aaData'][] = array($row['ip'], $row['id'], returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $status, (string) $statusMessage), '<a href="' . $row['interface'] . '" target="_blank">' . $row['interface'] . '</a>', (int) $row['installed_databases'] . '/' . (int) $row['max_databases'], returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'my', 'ri', $row['id'], $gsprache->reinstall) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'my', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'my', 'md', $row['id'], $gsprache->mod));
+    $array['aaData'][] = array($row['ip'], $row['id'], $row['description'], returnButton($template_to_use, 'ajax_admin_show_status.tpl', '', '', $status, (string) $statusMessage), '<a href="' . $row['interface'] . '" target="_blank">' . $row['interface'] . '</a>', (int) $row['installed_databases'] . '/' . (int) $row['max_databases'], returnButton($template_to_use, 'ajax_admin_buttons_ri.tpl', 'my', 'ri', $row['id'], $gsprache->reinstall) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'my', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_md.tpl', 'my', 'md', $row['id'], $gsprache->mod));
 }

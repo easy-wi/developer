@@ -27,6 +27,7 @@
                         <tr>
                             <th>IP</th>
                             <th>ID</th>
+                            <th><?php echo $sprache->description;?></th>
                             <th><?php echo $gsprache->status;?></th>
                             <th><?php echo $sprache->interface;?></th>
                             <th><?php echo $sprache->usage;?></th>
@@ -39,6 +40,7 @@
                         <tr>
                             <th>IP</th>
                             <th>ID</th>
+                            <th><?php echo $sprache->description;?></th>
                             <th><?php echo $gsprache->status;?></th>
                             <th><?php echo $sprache->interface;?></th>
                             <th><?php echo $sprache->usage;?></th>

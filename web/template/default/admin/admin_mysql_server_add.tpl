@@ -107,6 +107,13 @@
                                 <input class="form-control" id=inputInterface type="text" name="interface" value="<?php echo $interface;?>">
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="inputDescription"><?php echo $sprache->description;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="box-body">

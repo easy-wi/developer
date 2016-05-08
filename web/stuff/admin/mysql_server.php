@@ -72,6 +72,7 @@ $max_connections_per_hour = ($ui->id('max_connections_per_hour', 255, 'post')) ?
 $max_userconnections_per_hour = ($ui->id('max_userconnections_per_hour', 255, 'post')) ? $ui->id('max_userconnections_per_hour', 255, 'post') : 0;
 $connectIpOnly = ($ui->active('connectIpOnly', 'post')) ? $ui->active('connectIpOnly', 'post') : 'N';
 $externalAddress = ($ui->ip('externalAddress', 'post')) ? $ui->ip('externalAddress', 'post') : $ui->domain('externalAddress', 'post');
+$description = $ui->description('description', 'post');
 
 // At this point all variables are defined that can come from the user
 
@@ -116,16 +117,16 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `mysql_external_servers` (`externalID`,`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`connect_ip_only`,`external_address`,`resellerid`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?,?)");
-                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $connectIpOnly, $externalAddress, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `mysql_external_servers` (`externalID`,`active`,`ip`,`port`,`user`,`password`,`max_databases`,`interface`,`max_queries_per_hour`,`max_updates_per_hour`,`max_connections_per_hour`,`max_userconnections_per_hour`,`connect_ip_only`,`external_address`,`description`,`resellerid`) VALUES (?,?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?,?,?,?,?)");
+                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $connectIpOnly, $externalAddress, $description, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%add% MySQL Server ' . $ip;
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `mysql_external_servers` SET `externalID`=?,`active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=?,`connect_ip_only`=?,`external_address`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $connectIpOnly, $externalAddress, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `mysql_external_servers` SET `externalID`=?,`active`=?,`ip`=?,`port`=?,`user`=?,`password`=AES_ENCRYPT(?,?),`max_databases`=?,`interface`=?,`max_queries_per_hour`=?,`max_updates_per_hour`=?,`max_connections_per_hour`=?,`max_userconnections_per_hour`=?,`connect_ip_only`=?,`external_address`=?,`description`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($externalID, $active, $ip, $port, $user, $password, $aeskey, $max_databases, $interface, $max_queries_per_hour, $max_updates_per_hour, $max_connections_per_hour, $max_userconnections_per_hour, $connectIpOnly, $externalAddress, $description, $id, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
                 $loguseraction = '%mod% MySQL Server ' . $ip;
@@ -174,6 +175,7 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
                 $max_userconnections_per_hour = $row['max_userconnections_per_hour'];
                 $connectIpOnly = $row['connect_ip_only'];
                 $externalAddress = $row['external_address'];
+                $description = $row['description'];
             }
 
             // Check if database entry exists and if not display 404 page
