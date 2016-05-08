@@ -43,7 +43,7 @@ function submitToForm() {
         checkbox = $(this);
         language = checkbox.val();
 
-        $('#textValue-' + language).html($('#text-' + language).code());
+        $('#textValue-' + language).html($('#text-' + language).parent().find('.note-editable').html());
     });
 }
 

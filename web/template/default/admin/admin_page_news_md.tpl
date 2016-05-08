@@ -89,7 +89,7 @@
                         <div class="form-group">
                             <label for="text-<?php echo $lg;?>"></label>
                             <div class="controls">
-                                <div id="text-<?php echo $lg;?>"><?php echo $table[$lg]['text'];?></div>
+                                <div class="summernote" id="text-<?php echo $lg;?>"><?php echo $table[$lg]['text'];?></div>
                             </div>
                         </div>
 
@@ -160,7 +160,9 @@
 </section>
 
 <script type="text/javascript">
-    $(function () {
-        <?php foreach ($lang_avail as $lg) echo "$('#text-$lg').summernote({height: 300});"; ?>
+    $(document).ready(function() {
+        $('.summernote').summernote({
+            height: 300
+        });
     });
 </script>
