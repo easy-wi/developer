@@ -10,7 +10,6 @@
 
 
 <section class="content">
-
     <div class="row">
         <div class="col-md-4">
             <div class="box box-primary">
@@ -23,7 +22,7 @@
                         <div class="form-group">
                             <label for="dateRange"><?php echo $sprache->dmy;?></label>
                             <div class="input-prepend input-group">
-                                <span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                                <span class="add-on input-group-addon"><i class="fa fa-calendar"></i></span>
                                 <input type="text" name="dateRange" id="dateRange" class="form-control" value="<?php echo $dateRange;?>">
                             </div>
                         </div>
