@@ -46,8 +46,12 @@ if (isset($include) and $include == true) {
     //Install E-Mail template
     include(EASYWIDIR . '/stuff/data/email_templates.php');
     foreach ($emailTemplates as $template) {
-        $query = $sql->prepare($template['query']);
-        $query->execute(array(0));
+        try {
+            $query = $sql->prepare($template['query']);
+            $query->execute(array(0));
+        } catch(PDOException $error) {
+            $response->add($error->getMessage());
+        }
     }
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
