@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #    Author:     Ulrich Block <ulrich.block@easy-wi.com>
 #
 #    This file is part of Easy-WI.
