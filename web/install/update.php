@@ -180,7 +180,7 @@ if (versioncheck($version, '5.21', 'update_520-521.php', $response)) {
 if (versioncheck($version, '5.22', 'update_521-522.php', $response)) {
     $version = '5.22';
 }
-if (versioncheck($version, '5.30', 'update_521_522-530.php', $response)) {
+if (versioncheck($version, '5.30', 'update_522-530.php', $response)) {
     $version = '5.30';
 }
 
