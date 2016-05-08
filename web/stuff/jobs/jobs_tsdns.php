@@ -38,7 +38,7 @@
  */
 
 
-$query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' GROUP BY `hostID`");
+$query = $sql->prepare("SELECT `hostID`,MAX(`resellerID`) AS `resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' GROUP BY `hostID`");
 $query2 = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
 $query3 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='ds' AND `hostID`=?");
 $query4 = $sql->prepare("SELECT `active`,`dns`,`ip`,`port` FROM `voice_dns` WHERE `dnsID`=? AND `resellerID`=? LIMIT 1");

@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-$query = $sql->prepare("SELECT `hostID`,`resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='gs' GROUP BY `hostID`");
+$query = $sql->prepare("SELECT `hostID`,MAX(`resellerID`) AS `resellerID` FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='gs' GROUP BY `hostID`");
 $query2 = $sql->prepare("SELECT * FROM `jobs` WHERE (`status` IS NULL OR `status`='1') AND `type`='gs' AND `hostID`=?");
 $query3 = $sql->prepare("SELECT `serverip`,`port`,`pallowed` FROM `gsswitch` WHERE `id`=? LIMIT 1");
 $query4 = $sql->prepare("DELETE FROM `gsswitch` WHERE `id`=? LIMIT 1");
