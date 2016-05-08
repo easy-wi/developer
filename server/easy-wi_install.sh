@@ -1443,7 +1443,6 @@ if [ "$INSTALL" == "EW" ]; then
         echo '       AssignUserId easywi_web www-data' >> $FILE_NAME_VHOST
         echo '       MaxClientsVHost 50' >> $FILE_NAME_VHOST
         echo '       NiceValue 10' >> $FILE_NAME_VHOST
-        echo '       php_admin_flag allow_url_fopen off' >> $FILE_NAME_VHOST
         echo '       php_admin_flag allow_url_include off' >> $FILE_NAME_VHOST
         echo '       php_admin_flag display_errors off' >> $FILE_NAME_VHOST
         echo '       php_admin_flag log_errors on' >> $FILE_NAME_VHOST
