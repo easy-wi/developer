@@ -62,15 +62,23 @@ if (isset($include) and $include == true) {
 <li>Einstellungen:
 <ul>
 <li>SMTP Connection Test hinzugefügt</li>
+<li>Neues E-Mail Template Management</li>
 </ul></li>
 <li>Diverses:
 <ul>
+<li>XSS beim Gameserver Log</li>
+<li>Unvollständige TS3 Gruppen Validierung beim Token Erstellen</li>
 <li>Fehlermeldungen fehlender Tabellen bei DB Repair unterdrückt</li>
 <li>Code Vorbereitung für Semantic Versioning</li>
-<li>HybridAuth auf 2.6.0 aktualisiert</li>
 <li>RSS Feed der Twitter API 1.1 werden unterstützt</li>
 <li>Automatischer Redirect zum install Ordner</li>
 <li>Slogan Support bei der Login Page hinzugefügt</li>
+<li>HybridAuth auf 2.6.0 aktualisiert</li>
+<li>PHP Mailer auf 5.2.14 aktualisiert</li>
+<li>jQuery auf 2.2.3 aktualisiert</li>
+<li>Summernote auf 0.8.1 aktualisiert</li>
+<li>Chosen auf 1.5.1 aktualisiert</li>
+<li>Font Awesome auf 4.6.2 aktualisiert</li>
 </ul></li>
 </ul>
 <b>Bugfixes:</b>
@@ -78,6 +86,8 @@ if (isset($include) and $include == true) {
 <li>Game Server Umzugsservice benutzt falschen Pfad</li>
 <li>steamclient.so kann bei Valve Servern nicht gefunden werden</li>
 <li>Minecraft Templates</li>
+<li>Falsches HTML Tag br wird bei Addon Beschreibung angezeigt</li>
+<li>Fehlender fastcgi.conf Include beim Nginx FPM Template</li>
 </ul>','<div align=\"right\">01.05.2016</div>
 <b>Changes:</b><br/>
 <ul>
@@ -89,22 +99,32 @@ if (isset($include) and $include == true) {
 <li>Settings:
 <ul>
 <li>Added SMTP connection</li>
+<li>New E-Mail template management</li>
 </ul></li>
 <li>Miscellaneous:
 <ul>
 <li>Supressed error return of missing tables at DB repair</li>
 <li>Code preperation for semantic versioning</li>
-<li>Upgraded HybridAuth 2.6.0</li>
 <li>Added RSS Feed with Twitter API 1.1</li>
 <li>Automatic redirection to install folder</li>
 <li>Slogan support at login page</li>
+<li>Upgraded HybridAuth to 2.6.0</li>
+<li>Upgraded PHP Mailer to 5.2.14</li>
+<li>Upgraded jQuery to 2.2.3</li>
+<li>Upgraded Summernote to 0.8.1</li>
+<li>Upgraded Chosen to 1.5.1</li>
+<li>Upgraded Font Awesome to 4.6.2</li>
 </ul></li>
 </ul>
 <b>Bugfixes:</b>
 <ul>
+<li>XSS at game server log</li>
+<li>Incomplete TS3 group validation at token create</li>
 <li>Migrate game server using incorrect path</li>
 <li>steamclient.so not found on valve server start up</li>
 <li>Minecraft templates</li>
+<li>Incorrect HTML tag br is added at addon description display</li>
+<li>Missing fastcgi.conf include at Nginx fpm template</li>
 </ul>')");
     $query->execute();
     $response->add('Action: insert_easywi_version done: ');
