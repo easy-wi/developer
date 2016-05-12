@@ -863,13 +863,13 @@ if (!function_exists('passwordgenerate')) {
                     $query->execute(array($resellersid, 'email_settings_password'));
                     $mail->Password = $query->fetchColumn();
 
-                    $smtpConnect = $mail->smtpConnect([
-                        'ssl' => [
+                    $smtpConnect = $mail->smtpConnect(array(
+                        'ssl' => array(
                             'verify_peer' => false,
                             'verify_peer_name' => false,
                             'allow_self_signed' => true
-                        ]
-                    ]);
+                        )
+                    ));
 
                 } else {
                     $smtpConnect = $mail->smtpConnect();

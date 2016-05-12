@@ -74,13 +74,13 @@ try {
     }
 
     if ($ui->escaped('email_settings_ssl','post') == 'S' or $ui->escaped('email_settings_ssl','post') == 'T') {
-        $smtpConnect = $mail->smtpConnect([
-            'ssl' => [
+        $smtpConnect = $mail->smtpConnect(array(
+            'ssl' => array(
                 'verify_peer' => false,
                 'verify_peer_name' => false,
                 'allow_self_signed' => true
-            ]
-        ]);
+            )
+        ));
     } else {
         $smtpConnect = $mail->smtpConnect();
     }
