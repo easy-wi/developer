@@ -262,7 +262,7 @@ class AppServer {
             $lendDetails = array('rcon' => '', 'password' => '', 'slots' => $this->appServerDetails['slots']);
         }
 
-        $placeholder = array('%binary%', '%tickrate%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%');
+        $placeholder = array('%binary%', '%tickrate%', '%tic%', '%ip%', '%port%', '%tvport%', '%port2%', '%port3%', '%port4%', '%port5%', '%slots%', '%map%', '%mapgroup%', '%fps%', '%minram%', '%maxram%', '%maxcores%', '%folder%', '%user%', '%absolutepath%', '%ftpPassword%');
 
         $replacePlaceholderWith = array(
             $this->appServerDetails['template']['gameBinary'],
@@ -284,7 +284,8 @@ class AppServer {
             $this->appServerDetails['maxCores'],
             $this->appServerDetails['app']['templateChoosen'],
             $this->appServerDetails['userName'],
-            $this->appServerDetails['absolutePath']
+            $this->appServerDetails['absolutePath'],
+            $this->appServerDetails['ftpPassword']
         );
 
         return array('placeholder' => $placeholder, 'replacePlaceholderWith' => $replacePlaceholderWith);
