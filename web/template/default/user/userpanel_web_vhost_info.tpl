@@ -33,6 +33,19 @@
             </div>
         </div>
     </div>
+	
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="textarea"><?php echo $sprache->help_fdl_ut;?></label>
+                        <textarea id="textarea" class="form-control" rows="4"><?php echo $utCfg;?></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">

@@ -342,6 +342,12 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
 sv_allowdownload "1"
 sv_allowupload "1"';
 
+    $utCfg = '[IpDrv.HTTPDownload]
+RedirectToURL=http://' . $defaultDns . '/
+ProxyServerHost=
+ProxyServerPort=3128
+UseCompression=True';
+
     $codCfg = 'set sv_allowDownload "1"
 set sv_wwwBaseURL "http://' . $defaultDns . '/"
 set sv_wwwDlDisconnected "0"

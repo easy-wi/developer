@@ -23,6 +23,7 @@
     <help_default_dns>Questo (sotto)dominio può essere inserito tra domini. Nel caso venga rimosso dalla gestione del dominio, questo verrà disattivto.</help_default_dns>
     <help_fdl_attention>Attenzione! Il metodo raccomandato è di creare una sottocartella per ogni gioco. Possono essere come cod4, cstrike, css, etc...</help_fdl_attention>
     <help_fdl_hl>I server basati su Half-Life 1 (CS 1.6, TFC, DOD, etc.) e Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) necessitano di bisogno di voci come questa nel server.cfg</help_fdl_hl>
+	<help_fdl_ut>I server basati su UnrealEngine (UT GOTY, UT2004) necessitano di bisogno di voci come questa nel server.ini</help_fdl_ut>
     <help_fdl_cod>Il server di Call of Duty richiede voci come questa nel server.cfg</help_fdl_cod>
     <help_inode_block_ratio>La maggior parte dei sistemi hanno un rapporto di 4. Questo significa che 4 blocchi avranno un inode.</help_inode_block_ratio>
     <help_web_master>Attenzione, raccomandiamo di utilizzare l'host per il solo uso della funzione Fastdownload. Altri pannelli e software possono causare problemi o può essere influenzata dal Fastdownload. Il Fastdownload potrebbe avere l'effetto indesiderato di generare molto traffico e carico che influenzerà altri server o daemon.</help_web_master>
