@@ -643,7 +643,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
         if [ "$LOCAL_IP" == "" ]; then
 
             cyanMessage " "
-            cyanMessage "Could not detect lokal IP. Please specify which to use."
+            cyanMessage "Could not detect local IP. Please specify which to use."
             read LOCAL_IP
         fi
 
