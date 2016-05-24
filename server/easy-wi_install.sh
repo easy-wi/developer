@@ -165,7 +165,7 @@ if [ -f /etc/debian_version ]; then
 fi
 
 if [ "$OS" == "" ]; then
-    errorAndExit "Error: Could not detect OS. Currently only Debian and Ubuntuu are supported. Aborting!"
+    errorAndExit "Error: Could not detect OS. Currently only Debian and Ubuntu are supported. Aborting!"
 else
     okAndSleep "Detected OS $OS"
 fi
