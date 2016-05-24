@@ -165,7 +165,7 @@ if [ -f /etc/debian_version ]; then
 fi
 
 if [ "$OS" == "" ]; then
-    errorAndExit "Error: Could not detect OS. Currently only Debian and Ubuntuu are supported. Aborting!"
+    errorAndExit "Error: Could not detect OS. Currently only Debian and Ubuntu are supported. Aborting!"
 else
     okAndSleep "Detected OS $OS"
 fi
@@ -643,7 +643,7 @@ if [ "$INSTALL" == "EW" -o "$INSTALL" == "WR" -o "$INSTALL" == "MY" ]; then
         if [ "$LOCAL_IP" == "" ]; then
 
             cyanMessage " "
-            cyanMessage "Could not detect lokal IP. Please specify which to use."
+            cyanMessage "Could not detect local IP. Please specify which to use."
             read LOCAL_IP
         fi
 

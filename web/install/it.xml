@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<aeskey2>La chiave AES è richiesta per criptare dati senisibli come passwords di account FTP. Assicurat che sia una stringa complessa.</aeskey2>
+	<aeskey3>Salva la chiave. Nel caso venisse persa tutti i dati criptati verranno persi.</aeskey3>
+	<aeskey>Chiave AES</aeskey>
+	<brandname>Tag del server</brandname>
+    <brandname2>I server posso essere ricercati attraverso le tag dei server Voice e gioco</brandname2>
+    <captcha>Captcha</captcha>
+	<captcha_2>Usa una Captcha al login</captcha_2>
+	<confirm_change>Salvare le modifiche applicate?</confirm_change>
+    <continue>Continua</continue>
+    <cron_external>Cronjobs esterni</cron_external>
+    <cron_external_text>Nel caso non si possa fare uso di cronjobs interni, &ecaute; possibile richiamare gli stessi file con dei cronjobs esterni. Se desideri farne uso &egrave; necessario inserire gli IP chiamanti nella whitelist nelle impostazioni del pannello:</cron_external_text>
+    <cron_internal>Cronjobs interni</cron_internal>
+    <cron_internal_text>Il metodo raccomandato &egrave; quello di fare uso di cronjobs interni. Questi possono essere installati in questo cos&igrave;:</cron_internal_text>
+    <data>Perfavore, riempi tutti i campi seguenti. Sono tutti richiesti.</data>
+	<db>Nome del database</db>
+	<domain>Dominio corrente</domain>
+	<email2>Questo indirizzo sar&agrave; utilizzato nell'invio di dati e mail agli utenti.</email2>
+	<email>Email</email>
+    <error_cname>Errore: Nessun nome utente inserito!</error_cname>
+    <error_config_php_data>Errore: Il file stuff/config.php esiste, ma non contiene tutte le variabili!</error_config_php_data>
+    <error_config_keyphrase_php_missing>Errore: Il file stuff/config.php e/o il file stuff/keyphrasefile.php non esistono!</error_config_keyphrase_php_missing>
+	<error_database>Errore: Non sono in grado di stabilire una connessione con il database</error_database>
+    <error_email>Errore: Nessun indirizzo email inserito!</error_email>
+    <error_game_insert>Errore: non &egrave; stato possibile inserire i seguenti giochi: </error_game_insert>
+    <error_keyphrase_php_create>Errore: Il file stuff/config.php e/o il file stuff/keyphrasefile.php non possono essere creati!</error_keyphrase_php_create>
+    <error_password>Errore: Le password non corrispondono!</error_password>
+    <error_system_curl>L'estensione curl non &grave installata, si &egrave; pregati di installarla.</error_system_curl>
+    <error_system_ftp>L'estensione ftp non &grave installata, si &egrave; pregati di installarla.</error_system_ftp>
+    <error_system_fopen>L'estensione fopen non &grave abilitata, si &egrave; pregati di abilitarla.</error_system_fopen>
+    <error_system_gd>L'estensione gd non &grave installata, si &egrave; pregati di installarla.</error_system_gd>
+    <error_system_hash>L'estensione hash non &grave installata, si &egrave; pregati di installarla.</error_system_hash>
+    <error_system_php_version>&Egrave; richiesta la versione PHP 5.4 . La tua versione PHP &egrave; troppo vecchia: </error_system_php_version>
+    <error_system_json>L'estensione json non &grave installata, si &egrave; pregati di installarla.</error_system_json>
+    <error_system_openssl>L'estensione openssl non &grave installata, si &egrave; pregati di installarla.</error_system_openssl>
+    <error_system_PDO>L'estensione PDO non &grave installata, si &egrave; pregati di installarla.</error_system_PDO>
+    <error_system_pdo_mysql>L'estensione pdo_mysql non &grave installata, si &egrave; pregati di installarla.</error_system_pdo_mysql>
+    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_SimpleXML>L'estensione SimpleXML non &grave installata, si &egrave; pregati di installarla.</error_system_SimpleXML>
+    <faillogins>Login falliti</faillogins>
+	<faillogins2>Possibili login falliti in serie</faillogins2>
+	<finished>L'installazione &egrave; stata completata. Perfavore eliminila la cartella "install".</finished>
+    <games_insert>Il prossimo step aggiunger&agrave; i server di gioco e le estensioni.</games_insert>
+	<header>Impostazioni</header>
+	<host>Host del database</host>
+	<image_server2>Se una installazione principale non &egrave; impostata i dati saranno scaricati da questo server.</image_server2>
+	<image_server3>Usa un server immagine</image_server3>
+	<image_server>Server immagine</image_server>
+    <install_done>L'installazione &egrave; stata completata con successo. Perfavore ricordati di configurare i cronjobs.</install_done>
+    <install_done_folder>Perfavore elimina la cartella "install/".</install_done_folder>
+    <installUrl>URL</installUrl>
+	<ip>IP del server web</ip>
+	<language>Lingua predefinita</language>
+    <menu_welcome>Benvenuto</menu_welcome>
+    <menu_system>Controllo di sistema</menu_system>
+    <menu_db_access>Accessi al database</menu_db_access>
+    <menu_db_access_check>Controllo degli accessi al database</menu_db_access_check>
+    <menu_db_add>Creando le tabelle</menu_db_add>
+    <menu_db_check>Controllando le tabelle</menu_db_check>
+    <menu_admin_add>Account Amministratore</menu_admin_add>
+    <menu_page_data>Dati del sito web</menu_page_data>
+    <menu_gamedata_add>Inserisci dati dei giochi</menu_gamedata_add>
+    <menu_finish>Fine</menu_finish>
+	<no>No</no>
+    <ok_admin_user>L'account amministratore iniziale &grave; stato creato con successo.</ok_admin_user>
+    <ok_configuration>La configurazione &egrave; stata scritta.</ok_configuration>
+    <ok_db_connect>La connessione al database pu&ograve; essere stabilita.</ok_db_connect>
+    <ok_db_tables_check>Tablelle del database create con successo.</ok_db_tables_check>
+    <ok_db_tables_check_repair>Tablelle del database corrette con successo.</ok_db_tables_check_repair>
+    <ok_db_tables_create>Tablelle del database create.</ok_db_tables_create>
+    <ok_files_created>I files stuff/keyphrasefile.php e config.php possono essere creati.</ok_files_created>
+    <ok_gameserver_data>I dati del server di gioco sono state aggiunte.</ok_gameserver_data>
+	<passw_1>Password</passw_1>
+	<passw_2>Ripeti la nuova password</passw_2>
+	<prefix1>Definisci username</prefix1>
+	<prefix2>Se definisci un username, gli id degli utenti verranno aggiunti alla fine del nome definito. Sono permessi sono un picclo numero di numeri e lettere. Esempio: cliente_ sar&agrave; cliente_2 e cos&igrave; via</prefix2>
+	<prefix3>Username predefinito</prefix3>
+    <system_ok_curl>L'estensione curl &egrave; installata.</system_ok_curl>
+    <system_ok_fopen>L'estensione fopen &egrave; installata.</system_ok_fopen>
+    <system_ok_ftp>L'estensione ftp &egrave; installata.</system_ok_ftp>
+    <system_ok_gd>L'estensione gd &egrave; installata.</system_ok_gd>
+    <system_ok_hash>L'estensione hash &egrave; installata.</system_ok_hash>
+    <system_ok_json>L'estensione json &egrave; installata.</system_ok_json>
+    <system_ok_openssl>L'estensione openssl &egrave; installata.</system_ok_openssl>
+    <system_ok_PDO>L'estensione PDO &egrave; installata.</system_ok_PDO>
+    <system_ok_pdo_mysql>L'estensione pdo_mysql &egrave; installata.</system_ok_pdo_mysql>
+    <system_ok_php_version>&Egrave; richiesta almeno la versione di PHP 5.4. La tua versione &egrave; OK: </system_ok_php_version>
+    <system_ok_SimpleXML>L'estensione SimpleXML &egrave; installata.</system_ok_SimpleXML>
+    <timezone>Zona oraria</timezone>
+	<title>Titolo della homepage</title>
+	<user>Utente del database</user>
+	<user2>Username amministratore</user2>
+    <welcome_header>Benvenuto nell'installer dell'Easy-WI!</welcome_header>
+    <welcome_old_version>Attenzione. Si sta per installare una versione antiquata. La versione corrente &egrave;: </welcome_old_version>
+    <welcome_text>Per prima cosa verr&agrave; effettuato un controllo del sistema, per assicurarsi che lo spazio web provveda le funzionalit&agrave; richieste. Dopo il check le tabelle nel database verranno create e i dati iniziali verranno inseriti e configurati.</welcome_text>
+    <yes>SI</yes>
+</sprache>
