@@ -86,7 +86,7 @@
     <system_ok_PDO>PDO extension is installed.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql extension is installed.</system_ok_pdo_mysql>
     <system_ok_php_version>At least PHP 5.4 is required. Your PHP version is ok: </system_ok_php_version>
-    <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
+    <system_ok_SimpleXML>Extension SimpleXML is installed.</system_ok_SimpleXML>
     <timezone>Timezone</timezone>
 	<title>Homepage title</title>
 	<user>Databaseuser</user>
