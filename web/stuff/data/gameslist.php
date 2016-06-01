@@ -41,7 +41,8 @@
 $gameImages = array(
     array(
         ':steamgame' => 'S',
-        ':appID' => 232330,
+        ':appID' => 240,
+        ':serverID' => 232330,
         ':updates' => 1,
         ':shorten' => 'css',
         ':description' => 'Counter-Strike: Source',
@@ -78,7 +79,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 90,
+        ':appID' => 10,
+        ':serverID' => 90,
         ':updates' => 1,
         ':shorten' => 'cstrike',
         ':description' => 'Counter-Strike 1.6',
@@ -115,7 +117,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 90,
+        ':appID' => 80,
+        ':serverID' => 90,
         ':updates' => 1,
         ':shorten' => 'czero',
         ':description' => 'Counter-Strike: Condition Zero',
@@ -152,7 +155,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 232290,
+        ':appID' => 300,
+        ':serverID' => 232290,
         ':updates' => 1,
         ':shorten' => 'dods',
         ':description' => 'Day of Defeat: Source',
@@ -190,6 +194,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'cod4',
         ':description' => 'Call of Duty 4',
@@ -226,7 +231,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 4020,
+        ':appID' => 4000,
+        ':serverID' => 4020,
         ':updates' => 1,
         ':shorten' => 'gmod',
         ':description' => 'Garrysmod',
@@ -263,7 +269,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 510,
+        ':appID' => 500,
+        ':serverID' => 510,
         ':updates' => 1,
         ':shorten' => 'left4dead',
         ':description' => 'Left 4 Dead',
@@ -300,7 +307,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 222860,
+        ':appID' => 550,
+        ':serverID' => 222860,
         ':updates' => 1,
         ':shorten' => 'left4dead2',
         ':description' => 'Left 4 Dead 2',
@@ -337,7 +345,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 17575,
+        ':appID' => 17570,
+        ':serverID' => 17575,
         ':updates' => 1,
         ':shorten' => 'pvkii',
         ':description' => 'Pirates, Vikings, and Knights II',
@@ -374,7 +383,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 17515,
+        ':appID' => 17510,
+        ':serverID' => 17515,
         ':updates' => 1,
         ':shorten' => 'ageofchivalry',
         ':description' => 'Age Of Chivalry',
@@ -411,7 +421,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 90,
+        ':appID' => 30,
+        ':serverID' => 90,
         ':updates' => 1,
         ':shorten' => 'dod',
         ':description' => 'Day of Defeat',
@@ -448,7 +459,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 232370,
+        ':appID' => 320,
+        ':serverID' => 232370,
         ':updates' => 1,
         ':shorten' => 'hl2mp',
         ':description' => 'HL2 Deathmatch',
@@ -485,7 +497,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 17705,
+        ':appID' => 17700,
+        ':serverID' => 17705,
         ':updates' => 1,
         ':shorten' => 'insurgency',
         ':description' => 'Insurgency',
@@ -522,7 +535,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 232250,
+        ':appID' => 440,
+        ':serverID' => 232250,
         ':updates' => 1,
         ':shorten' => 'tf',
         ':description' => 'Team Fortress 2',
@@ -559,7 +573,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' =>  'S',
-        ':appID' => 90,
+        ':appID' => 20,
+        ':serverID' => 90,
         ':updates' => 1,
         ':shorten' => 'tfc',
         ':description' => 'Team Fortress Classic',
@@ -596,7 +611,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 17505,
+        ':appID' => 17500,
+        ':serverID' => 17505,
         ':updates' => 1,
         ':shorten' => 'zps',
         ':description' => 'Zombie Panic Source',
@@ -634,6 +650,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'S',
         ':appID' => 211820,
+        ':serverID' => 211820,
         ':updates' => 1,
         ':shorten' => 'starbound',
         ':description' => 'Starbound',
@@ -670,7 +687,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 740,
+        ':appID' => 730,
+        ':serverID' => 740,
         ':updates' => 1,
         ':shorten' => 'csgo',
         ':description' => 'Counter-Strike: Global Offensive',
@@ -707,7 +725,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 317670,
+        ':appID' => 224260,
+        ':serverID' => 317670,
         ':updates' => 1,
         ':shorten' => 'nmrih',
         ':description' => 'No More Room in Hell',
@@ -744,7 +763,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 234630,
+        ':appID' => 332670,
+        ':serverID' => 234630,
         ':updates' => 1,
         ':shorten' => 'projectcars',
         ':description' => 'Project Cars',
@@ -782,6 +802,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'mc',
         ':description' => 'Minecraft',
@@ -819,6 +840,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'bukkit',
         ':description' => 'MC Bukkit',
@@ -856,6 +878,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'tekkit',
         ':description' => 'MC Tekkit',
@@ -893,6 +916,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'tekkit-classic',
         ':description' => 'MC Tekkit Classic',
@@ -930,6 +954,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'samp',
         ':description' => 'GTA San Andreas',
@@ -967,6 +992,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'mtasa',
         ':description' => 'Multi Theft Auto San Andreas',
@@ -1004,6 +1030,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'teeworlds',
         ':description' => 'Teeworlds',
@@ -1041,6 +1068,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'killingfloor252',
         ':description' => 'KillingFloor 2.52',
@@ -1078,6 +1106,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'sauerbratenremod',
         ':description' => 'Sauerbraten',
@@ -1115,6 +1144,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'shootmania',
         ':description' => 'Shootmania',
@@ -1152,6 +1182,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'trackmania',
         ':description' => 'Trackmania2',
@@ -1189,6 +1220,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'ut99',
         ':description' => 'Unreal Tournament',
@@ -1226,6 +1258,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'ut2004',
         ':description' => 'UT2004',
@@ -1263,6 +1296,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'warsow',
         ':description' => 'WarSow',
@@ -1299,7 +1333,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 261140,
+        ':appID' => 259080,
+        ':serverID' => 261140,
         ':updates' => 1,
         ':shorten' => 'jc2',
         ':description' => 'Just Cause 2 Multi Player',
@@ -1336,7 +1371,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 376030,
+        ':appID' => 346110,
+        ':serverID' => 376030,
         ':updates' => 1,
         ':shorten' => 'arkse',
         ':description' => 'ARK: Survival Evolved',
@@ -1373,7 +1409,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 233780,
+        ':appID' => 107410,
+        ':serverID' => 233780,
         ':updates' => 1,
         ':shorten' => 'arma3',
         ':description' => 'Arma3',
@@ -1410,7 +1447,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 258550,
+        ':appID' => 252490,
+        ':serverID' => 258550,
         ':updates' => 1,
         ':shorten' => 'rust',
         ':description' => 'Rust',
@@ -1448,6 +1486,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'spigot',
         ':description' => 'MC Spigot',
@@ -1485,6 +1524,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'hexxit',
         ':description' => 'MC Hexxit',
@@ -1521,7 +1561,8 @@ $gameImages = array(
     ),
     array(
         ':steamgame' => 'S',
-        ':appID' => 445400,
+        ':appID' => 407530,
+        ':serverID' => 445400,
         ':updates' => 1,
         ':shorten' => 'arksotf',
         ':description' => 'ARK: Survival Of The Fittest',
@@ -1559,6 +1600,7 @@ $gameImages = array(
     array(
         ':steamgame' => 'N',
         ':appID' => null,
+        ':serverID' => null,
         ':updates' => 1,
         ':shorten' => 'mcforge',
         ':description' => 'MC Forge',

@@ -100,6 +100,11 @@
                             <div class="controls"><input class="form-control" id="inputSteamAppID" type="text" name="appID" value="<?php echo $appID;?>"></div>
                         </div>
 
+                        <div class="form-group">
+                            <label class="control-label" for="inputSteamServerID">Steam serverID</label>
+                            <div class="controls"><input class="form-control" id="inputSteamServerID" type="text" name="serverID" value="<?php echo $serverID;?>"></div>
+                        </div>
+
                         <div class="form-group<?php if(isset($errors['gamemod'])) echo ' has-error';?>">
                             <label class="control-label" for="inputMods"><?php echo $sprache->mods;?></label>
                             <div class="controls">
