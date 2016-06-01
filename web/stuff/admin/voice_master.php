@@ -68,7 +68,6 @@ if ($reseller_id != 0 and $admin_id != $reseller_id) {
     $reseller_id = $admin_id;
 }
 
-
 if ($ui->w('action',4, 'post') and !token(true)) {
 
 	unset($header, $text);
@@ -108,12 +107,12 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $defaulthostbutton_tooltip = $ui->description('defaulthostbutton_tooltip', 'post');
     $defaulthostbutton_url = $ui->url('defaulthostbutton_url', 'post');
     $defaulthostbutton_gfx_url = $ui->url('defaulthostbutton_gfx_url', 'post');
-    $defaultFlexSlotsFree = $ui->id('defaultFlexSlotsFree', 11, 'post');
-    $defaultFlexSlotsPercent = $ui->id('defaultFlexSlotsPercent', 3, 'post');
-    $tsdnsServerID = $ui->id('tsdnsServerID', 19, 'post');
     $description = $ui->description('description', 'post');
     $iniConfiguration = $ui->escaped('iniConfiguration', 'post');
 
+    $tsdnsServerID = $ui->id('tsdnsServerID', 19, 'post') || 1;
+    $defaultFlexSlotsFree = $ui->id('defaultFlexSlotsFree', 11, 'post') || 5;
+    $defaultFlexSlotsPercent = $ui->id('defaultFlexSlotsPercent', 3, 'post') || 80;
     $queryport = ($ui->port('queryport', 'post')) ? $ui->port('queryport', 'post') : 10011;
     $filetransferport = ($ui->port('filetransferport', 'post')) ? $ui->port('filetransferport', 'post') : 30033;
     $defaultname = ($ui->startparameter('defaultname', 'post')) ? $ui->startparameter('defaultname', 'post') : "My Voiceserver " . $rSA['brandname'];
@@ -336,7 +335,7 @@ virtualserver_weblist_enabled 0 = Off';
                 $errors['keyname'] = $sprache->keyname;
             }
 
-            $ssh2Check = (count($errors) == 0 and $ui->st('d', 'get') != 'ri' and $active == 'Y') ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 20, 'post'), $ui->active('publickey', 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
+            $ssh2Check = (count($errors) == 0 and $ui->st('d', 'get') != 'ri' and $active == 'Y') ? ssh_check($ui->ip('ip', 'post'), $ui->port('port', 'post'), $ui->username('user', 50, 'post'), $ui->w('publickey', 1, 'post'), $ui->startparameter('keyname', 'post'), $ui->password('pass', 255, 'post')) : true;
 
             if ($ssh2Check !== true) {
 
