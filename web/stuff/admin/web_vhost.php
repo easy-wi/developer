@@ -361,7 +361,12 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $vhostObject = new HttpdManagement($webMasterID, $resellerLockupID);
 
-                if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+
+                if ($vhostObject == false) {
+                    $template_file = 'Unknown Error';
+                } else if (!$vhostObject->ssh2Connect() or !$vhostObject->sftpConnect()) {
+                    $template_file = $gsprache->error_connect;
+                } else {
 
                     if ($ui->st('action', 'post') == 'ad') {
 
@@ -446,7 +451,11 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         $vhostObject = new HttpdManagement($webMasterID, $resellerLockupID);
 
-        if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+        if ($vhostObject == false) {
+            $template_file = 'Unknown Error';
+        } else if (!$vhostObject->ssh2Connect() or !$vhostObject->sftpConnect()) {
+            $template_file = $gsprache->error_connect;
+        } else {
             $vhostObject->vhostDelete($id);
             $vhostObject->restartHttpdServer();
         }
@@ -497,7 +506,11 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
         $vhostObject = new HttpdManagement($webMasterID, $resellerLockupID);
 
-        if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+        if ($vhostObject == false) {
+            $template_file = 'Unknown Error';
+        } else if (!$vhostObject->ssh2Connect() or !$vhostObject->sftpConnect()) {
+            $template_file = $gsprache->error_connect;
+        } else {
 
             $vhostObject->vhostReinstall($id);
             $vhostObject->restartHttpdServer();
@@ -506,7 +519,6 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $loguseraction = '%ri% %webvhost% ' . $dns;
             $insertlog->execute();
 
-        } else {
             $template_file = $spracheResponse->error_table;
         }
 

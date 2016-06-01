@@ -318,17 +318,18 @@ if (isset($webMasterID) and $ui->st('d', 'get') == 'pw' and $ui->id('id', 10, 'g
 
         $vhostObject = new HttpdManagement($webMasterID, $reseller_id);
 
-        if ($vhostObject != false and $vhostObject->ssh2Connect() and $vhostObject->sftpConnect()) {
+        if ($vhostObject == false) {
+            $template_file = 'Unknown Error';
+        } else if (!$vhostObject->ssh2Connect() or !$vhostObject->sftpConnect()) {
+            $template_file = $gsprache->error_connect;
+        } else {
 
             $vhostObject->vhostReinstall($id);
             $vhostObject->restartHttpdServer();
 
-            $template_file = $spracheResponse->table_del;
+            $template_file = $gsprache->reinstall;
             $loguseraction = '%ri% %webvhost% ' . $dns;
             $insertlog->execute();
-
-        } else {
-            $template_file = $spracheResponse->error_table;
         }
 
         // Request did not add up. Display 404 error.

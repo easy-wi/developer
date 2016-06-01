@@ -108,15 +108,13 @@ class HttpdManagement {
                 $this->ssh2Pass = new phpseclib\Crypt\RSA();
 
                 if ($row['publickey'] == 'B') {
-                    $this->ssh2Pass->setPassword($row['pass']);
+                    $this->ssh2Pass->setPassword($row['decryptedpass']);
                 }
 
                 $this->ssh2Pass->loadKey(file_get_contents($privateKey));
 
             } else {
-
                 $this->ssh2Pass = $row['decryptedpass'];
-
             }
 
             $this->dataPrepared = true;
@@ -280,7 +278,7 @@ class HttpdManagement {
         }
     }
 
-    public function changePassword ($vhostID, $newPassword = false) {
+    public function changePassword($vhostID, $newPassword = false) {
 
         if ($this->getVhostData($vhostID) != false) {
             if ($this->ssh2Object != false) {
@@ -297,7 +295,7 @@ class HttpdManagement {
         }
     }
 
-    public function sftpConnect () {
+    public function sftpConnect() {
 
         if ($this->dataPrepared == false) {
             return false;
@@ -313,7 +311,7 @@ class HttpdManagement {
 
     }
 
-    public function ssh2Connect () {
+    public function ssh2Connect() {
 
         if ($this->dataPrepared == false) {
             return false;
@@ -329,7 +327,7 @@ class HttpdManagement {
 
     }
 
-    public function setInactive ($vhostID) {
+    public function setInactive($vhostID) {
 
         $this->changePassword($vhostID, passwordgenerate(10));
         $this->removeVhost($vhostID, false);
@@ -338,7 +336,7 @@ class HttpdManagement {
 
     }
 
-    public function vhostMod ($vhostID) {
+    public function vhostMod($vhostID) {
 
         $this->addVhost($vhostID, false);
         $this->changePassword ($vhostID);
