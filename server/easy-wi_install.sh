@@ -400,15 +400,15 @@ if [ "$INSTALL" != "MY" ]; then
 
         if [ -d /home/$MASTERUSER/.ssh ]; then
             rm -rf /home/$MASTERUSER/.ssh
-            mkdir -p /home/$MASTERUSER/.ssh
-            chown $MASTERUSER:$MASTERUSER /home/$MASTERUSER/.ssh
         fi
+
+        mkdir -p /home/$MASTERUSER/.ssh
+        chown $MASTERUSER:$MASTERUSER /home/$MASTERUSER/.ssh
+        cd /home/$MASTERUSER/.ssh
 
         cyanMessage " "
         cyanMessage "It is recommended but not required to set a password"
         su -c "ssh-keygen -t rsa" $MASTERUSER
-
-        cd /home/$MASTERUSER/.ssh
 
         KEYNAME=`find -maxdepth 1 -name "*.pub" | head -n 1`
 
