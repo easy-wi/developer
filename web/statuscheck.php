@@ -921,7 +921,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                             unset($newtrafficdata, $newtraffic, $ts3id);
 
                             $modbadserver = array();
-                            $newnotified = 'N';
+                            $newnotified = 0;
 
                             $virtualserver_id = $server['virtualserver_id'];
                             $vs = $server['virtualserver_status'];
