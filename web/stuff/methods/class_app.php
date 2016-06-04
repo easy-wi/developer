@@ -2093,6 +2093,7 @@ class AppServer {
         global $resellerLockupID;
 
         $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/backup/');
+        $backUpFile = $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-$GAMETEMPLATE.tar.bz2');
         $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
@@ -2101,14 +2102,15 @@ class AppServer {
         $script .= 'rm -f ' . $scriptName . "\n";
 
         $script .= 'if [ ! -d "' . $backupDir . '" ]; then mkdir -p "' . $backupDir . '"; fi' . "\n";
-        $script .= 'find "' . $backupDir . '" -maxdepth 1 -type f -name "*.tar.bz2" -delete' . "\n";
         $script .= 'find "' . $serverDir . '" -mindepth 1 -maxdepth 1 -type d | while read FOLDER; do' . "\n";
         $script .= 'GAMETEMPLATE=`basename $FOLDER`' . "\n";
+        $script .= 'if [[ `lsof -f -- "' . $backUpFile . '" 2>/dev/null` ]]; then continue; fi' . "\n";
+        $script .= 'if [ -f "' . $backUpFile . '" ]; then rm -f "' . $backUpFile . '"; fi' . "\n";
         $script .= 'cd "' . $serverDir . '/$GAMETEMPLATE"' . "\n";
-        $script .= '${IONICE}nice -n +19 tar cfj "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-$GAMETEMPLATE.tar.bz2" .') . "\n";
+        $script .= '${IONICE}nice -n +19 tar cfj "' . $backUpFile . '" .' . "\n";
 
         if (strlen($ftpUploadString) > 0) {
-            $script .= 'wput -q --limit-rate=4098 --basename="' . $backupDir . '" "' . $backupDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-$GAMETEMPLATE.tar.bz2" "' . $ftpUploadString . '"' . "\n";
+            $script .= 'wput -q --limit-rate=4098 --basename="' . $backupDir . '" "' . $backUpFile . '" "' . $ftpUploadString . '"' . "\n";
         }
 
         $script .= 'done' . "\n";
