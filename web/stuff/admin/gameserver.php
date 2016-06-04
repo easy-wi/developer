@@ -382,7 +382,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             foreach ($gameDetails as $gameID => $gameValues) {
 
-                $query->execute(array($gameID, $id, $ui->id('fps', 6, 'post', $gameID), $ui->mapname('map', 'post', $gameID), $ui->mapname('mapGroup', 'post', $gameID), $ui->startparameter('cmd', 'post', $gameID), $gameValues['modCmd'], $ui->active('ownCmd', 'post', $gameID), $ui->id('tic', 5, 'post', $gameID), $gameValues['gamemod'], $gameValues['gamemod2'], $ui->active('userFps', 'post', $gameID), $ui->active('userTick', 'post', $gameID), $ui->active('userMap', 'post', $gameID), $ui->active('userUploadDir', 'post', $gameID), $ui->id('upload', 1, 'post', $gameID), $ui->url('uploadDir', 'post', $gameID), $aeskey, $resellerLockupID));
+                $query->execute(array($gameID, $id, $ui->id('fps', 6, 'post', $gameID), $ui->mapname('map', 'post', $gameID), $ui->mapname('mapGroup', 'post', $gameID), $ui->startparameter('cmd', 'post', $gameID), $gameValues['modCmd'], $ui->active('ownCmd', 'post', $gameID) ? $ui->active('ownCmd', 'post', $gameID) : 'N', $ui->id('tic', 5, 'post', $gameID), $gameValues['gamemod'], $gameValues['gamemod2'], $ui->active('userFps', 'post', $gameID) ? $ui->active('userFps', 'post', $gameID) : 'N', $ui->active('userTick', 'post', $gameID) ? $ui->active('userTick', 'post', $gameID) : 'N', $ui->active('userMap', 'post', $gameID) ? $ui->active('userMap', 'post', $gameID) : 'N', $ui->active('userUploadDir', 'post', $gameID) ? $ui->active('userUploadDir', 'post', $gameID) : 'N', $ui->id('upload', 1, 'post', $gameID) ? $ui->id('upload', 1, 'post', $gameID) : 1, $ui->url('uploadDir', 'post', $gameID), $aeskey, $resellerLockupID));
 
                 $insertedServerIDs[] = $sql->lastInsertId();
 
@@ -395,7 +395,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             foreach ($gameIDs as $gameID) {
                 if (!isset($gameDetails[$gameID])) {
 
-                    $query->execute(array($ui->id('fps', 6, 'post', $gameID), $ui->mapname('map', 'post', $gameID), $ui->mapname('mapGroup', 'post', $gameID), $ui->startparameter('cmd', 'post', $gameID), $ui->active('ownCmd', 'post', $gameID), $ui->id('tic', 5, 'post', $gameID), $ui->active('userFps', 'post', $gameID), $ui->active('userTick', 'post', $gameID), $ui->active('userMap', 'post', $gameID), $ui->active('userUploadDir', 'post', $gameID), $ui->id('upload', 1, 'post', $gameID), $ui->url('uploadDir', 'post', $gameID), $aeskey, $id, $gameID, $resellerLockupID));
+                    $query->execute(array($ui->id('fps', 6, 'post', $gameID), $ui->mapname('map', 'post', $gameID), $ui->mapname('mapGroup', 'post', $gameID), $ui->startparameter('cmd', 'post', $gameID), $ui->active('ownCmd', 'post', $gameID) ? $ui->active('ownCmd', 'post', $gameID) : 'N', $ui->id('tic', 5, 'post', $gameID), $ui->active('userFps', 'post', $gameID) ? $ui->active('userFps', 'post', $gameID) : 'N', $ui->active('userTick', 'post', $gameID) ? $ui->active('userTick', 'post', $gameID) : 'N', $ui->active('userMap', 'post', $gameID) ? $ui->active('userMap', 'post', $gameID) : 'N', $ui->active('userUploadDir', 'post', $gameID) ? $ui->active('userUploadDir', 'post', $gameID) : 'N', $ui->id('upload', 1, 'post', $gameID) ? $ui->id('upload', 1, 'post', $gameID) : 1, $ui->url('uploadDir', 'post', $gameID), $aeskey, $id, $gameID, $resellerLockupID));
 
                     $rowCount += $query->rowCount();
                 }
@@ -440,7 +440,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 }
 
                 $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`updateRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, $currentActiveGame, $externalID, $id, $resellerLockupID));
+                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post') ? $ui->port('port2', 'post') : null, $ui->port('port3', 'post') ? $ui->port('port3', 'post') : null, $ui->port('port4', 'post') ? $ui->port('port4', 'post') : null, $ui->port('port5', 'post') ? $ui->port('port5', 'post') : null, $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, $currentActiveGame, $externalID, $id, $resellerLockupID));
 
                 $rowCount += $query->rowCount();
 

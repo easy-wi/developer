@@ -482,7 +482,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $serverTemplate = ($ui->id("servertemplate_${switchID}", 1, 'post')) ? $ui->id("servertemplate_${switchID}", 1, 'post') : 1;
             $modcmd = $ui->escaped("mod_${switchID}", 'post');
             $workShop = ($ui->active("workShop_${switchID}", 'post')) ? $ui->active("workShop_${switchID}", 'post') : 'Y';
-            $workshopCollection = $ui->id("workshopCollection_${switchID}", 10, 'post');
+            $workshopCollection = $ui->id("workshopCollection_${switchID}", 10, 'post') ? $ui->id("workshopCollection_${switchID}", 10, 'post') : null;
             $webapiAuthkey = $ui->w("webapiAuthkey_${switchID}", 32, 'post');
             $steamServerToken = $ui->w("steamServerToken_${switchID}", 32, 'post');
 
