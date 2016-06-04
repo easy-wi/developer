@@ -39,6 +39,7 @@
 
 $defined['voice_server'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
+    'description' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'active' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),
     'iniConfiguration' => array("Type"=>"text","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'autoRestart' => array("Type"=>"enum('Y','N')","Null"=>"YES","Key"=>"","Default"=>"Y","Extra"=>""),

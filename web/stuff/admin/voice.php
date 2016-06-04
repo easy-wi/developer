@@ -74,6 +74,7 @@ $hostbanner_gfx_url = $ui->url('hostbanner_gfx_url', 'post');
 $hostbutton_tooltip = $ui->description('hostbutton_tooltip', 'post');
 $hostbutton_url = $ui->url('hostbutton_url', 'post');
 $hostbutton_gfx_url = $ui->url('hostbutton_gfx_url', 'post');
+$description = $ui->names('description', 255, 'post');
 $max_download_total_bandwidth = ($ui->isinteger('max_download_total_bandwidth', 'post')) ? $ui->isinteger('max_download_total_bandwidth', 'post') : 65536;
 $max_upload_total_bandwidth = ($ui->isinteger('max_upload_total_bandwidth', 'post')) ? $ui->isinteger('max_upload_total_bandwidth', 'post') : 65536;
 $maxtraffic = ($ui->escaped('maxtraffic', 'post') === 0 or $ui->escaped('maxtraffic', 'post') == '-1' or $ui->id('maxtraffic', 255, 'post')) ? $ui->escaped('maxtraffic', 'post') : 1024;
@@ -127,6 +128,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
             // Should only be set in case of GET requests
             if (!$ui->st('action', 'post')) {
+                $description = $row['description'];
                 $externalID = $row['externalID'];
                 $active = $row['active'];
                 $backup = $row['backup'];
@@ -299,8 +301,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
                     $username = strtolower(getusername($userID));
 
-                    $query = $sql->prepare("INSERT INTO `voice_server` (`active`,`iniConfiguration`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
-                    $query->execute(array($active, $iniConfiguration, $backup, $lendserver, $userID, $rootID, $ip, $port, $slots, $initialpassword, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $localServerID, $dns, $maxtraffic, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $autoRestart, $externalID, $resellerLockupID));
+                    $query = $sql->prepare("INSERT INTO `voice_server` (`description`,`active`,`iniConfiguration`,`backup`,`lendserver`,`userid`,`masterserver`,`ip`,`port`,`slots`,`initialpassword`,`password`,`forcebanner`,`forcebutton`,`forceservertag`,`forcewelcome`,`max_download_total_bandwidth`,`max_upload_total_bandwidth`,`localserverid`,`dns`,`maxtraffic`,`serverCreated`,`flexSlots`,`flexSlotsFree`,`flexSlotsPercent`,`autoRestart`,`externalID`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,NOW(),?,?,?,?,?,?)");
+                    $query->execute(array($description, $active, $iniConfiguration, $backup, $lendserver, $userID, $rootID, $ip, $port, $slots, $initialpassword, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $localServerID, $dns, $maxtraffic, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $autoRestart, $externalID, $resellerLockupID));
                     $rowCount = $query->rowCount();
 
                     $id = $sql->lastInsertId();
@@ -313,8 +315,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
             } else if ($ui->st('action', 'post') == 'md' and $id) {
 
-                $query = $sql->prepare("UPDATE `voice_server` SET `active`=?,`iniConfiguration`=?,`backup`=?,`lendserver`=?,`ip`=?,`port`=?,`slots`=?,`password`=?,`forcebanner`=?,`forcebutton`=?,`forceservertag`=?,`forcewelcome`=?,`max_download_total_bandwidth`=?,`max_upload_total_bandwidth`=?,`dns`=?,`flexSlots`=?,`flexSlotsFree`=?,`flexSlotsPercent`=?,`maxtraffic`=?,`autoRestart`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $iniConfiguration, $backup, $lendserver, $ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $dns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $maxtraffic, $autoRestart, $externalID, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `voice_server` SET `description`=?,`active`=?,`iniConfiguration`=?,`backup`=?,`lendserver`=?,`ip`=?,`port`=?,`slots`=?,`password`=?,`forcebanner`=?,`forcebutton`=?,`forceservertag`=?,`forcewelcome`=?,`max_download_total_bandwidth`=?,`max_upload_total_bandwidth`=?,`dns`=?,`flexSlots`=?,`flexSlotsFree`=?,`flexSlotsPercent`=?,`maxtraffic`=?,`autoRestart`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($description, $active, $iniConfiguration, $backup, $lendserver, $ip, $port, $slots, $password, $forcebanner, $forcebutton, $forceservertag, $forcewelcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $dns, $flexSlots, $flexSlotsFree, $flexSlotsPercent, $maxtraffic, $autoRestart, $externalID, $id, $resellerLockupID));
                 $rowCount = $query->rowCount();
 
                 $return = $connection->ModServer($localServerID, $slots, $ip, $port, $initialpassword, $name, $welcome, $max_download_total_bandwidth, $max_upload_total_bandwidth, $hostbanner_url, $hostbanner_gfx_url, $hostbutton_url, $hostbutton_gfx_url, $hostbutton_tooltip, null, null, null, null, null, null, null, $customConfigurations);
@@ -540,8 +542,8 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
 
                 if (isset($tsdnsServerID) and isid($tsdnsServerID, 10)) {
 
-                    $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id AND (`resellerid`=:reseller_id OR `managedForID`=:managedForID) LIMIT 1");
-                    $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID,':reseller_id' => $resellerLockupID,':managedForID' => $admin_id));
+                    $query = $sql->prepare("SELECT *,AES_DECRYPT(`ssh2port`,:aeskey) AS `decryptedssh2port`,AES_DECRYPT(`ssh2user`,:aeskey) AS `decryptedssh2user`,AES_DECRYPT(`ssh2password`,:aeskey) AS `decryptedssh2password` FROM `voice_tsdns` WHERE `active`='Y' AND `id`=:id LIMIT 1");
+                    $query->execute(array(':aeskey' => $aeskey,':id' => $tsdnsServerID));
                     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                         $publickey = $row['publickey'];
                         $queryip = $row['ssh2ip'];

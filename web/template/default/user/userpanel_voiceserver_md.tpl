@@ -31,6 +31,13 @@
 
                     <div class="box-body">
 
+                        <div class="form-group">
+                            <label for="inputDescription"><?php echo $gsprache->description;?></label>
+                            <div class="controls">
+                                <input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>">
+                            </div>
+                        </div>
+
                         <?php if ($usedns=='Y'){ ?>
                         <div class="form-group">
                             <label for="defaultdns"><?php echo $sprache->defaultdns;?></label>

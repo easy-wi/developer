@@ -25,7 +25,7 @@
             <div class="panel box <?php if($table_row['stopped']=='Y') echo 'box-primary'; else if($table_row['stopped']=='C') echo 'box-danger'; else echo 'box-success';?>">
                 <div class="box-body">
 
-                    <h4><?php echo $table_row['server'];?></h4>
+                    <h4><?php echo (strlen($table_row['description']) == 0) ? $table_row['server'] : $table_row['description'] . ' ' . $table_row['server'];?></h4>
 
                     <div class="form-group">
                         <a href="userpanel.php?w=vo&amp;d=st&amp;id=<?php echo $table_row['id'];?>&amp;action=re&amp;r=vo" onclick="return confirm('<?php echo $table_row['address'];?>: <?php echo $sprache->confirm_restart;?>');"><button class="btn btn-sm btn-success"><i class="icon-white icon-play"></i> <?php echo $gsprache->start;?></button></a>

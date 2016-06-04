@@ -495,6 +495,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
         $query->execute(array($id, $user_id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+            $description = $row['description'];
             $masterserver = $row['masterserver'];
             $ip = $row['ip'];
             $port = $row['port'];
@@ -763,8 +764,8 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
 
                 $connection->CloseConnection();
 
-                $query = $sql->prepare("UPDATE `voice_server` SET `dns`=?,`initialpassword`=?,`iniConfiguration`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($dns, $initialpassword, $iniConfiguration, $id, $reseller_id));
+                $query = $sql->prepare("UPDATE `voice_server` SET `description`=?,`dns`=?,`initialpassword`=?,`iniConfiguration`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($ui->names('description', 255, 'post'), $dns, $initialpassword, $iniConfiguration, $id, $reseller_id));
 
                 $loguseraction = '%mod% %voserver% ' . $ip . ':' . $port;
                 $insertlog->execute();
@@ -994,6 +995,7 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['vo'])) {
+
             $dns = $row['dns'];
 
             if ($row['type'] == 'ts3') {
@@ -1028,12 +1030,13 @@ if ($ui->st('d', 'get') == 'bu' and $ui->id('id', 10, 'get') and (!isset($_SESSI
                 $minutes = floor(($row['uptime'] - ($days * 86400) - ($hours * 3600)) / 60);
                 $uptime = $days . 'D/' . $hours . 'H/' . $minutes . 'M';
                 $password = ($row['initialpassword'] != '' and $row['initialpassword'] != null) ? '?password='.$row['initialpassword'] : '';
-                $server = ($row['usedns'] == 'N' or $dns==null or $dns == '') ? '<a href="ts3server://'.$row['ip'] . ':' . $row['port'].$password.'">'.$row['ip'] . ':' . $row['port'].'</a>' : '<a href="ts3server://'.$row['dns'].$password.'">'.$row['dns'].' ('.$row['ip'] . ':' . $row['port'].')</a>';
+                $server = ($row['usedns'] == 'N' or $dns == null or $dns == '') ? '<a href="ts3server://'.$row['ip'] . ':' . $row['port'].$password.'">'.$row['ip'] . ':' . $row['port'].'</a>' : '<a href="ts3server://'.$row['dns'].$password.'">'.$row['dns'].' ('.$row['ip'] . ':' . $row['port'].')</a>';
                 $address = $row['ip'] . ':' . $row['port'];
                 $filetraffic = round(($row['filetraffic'] / 1024), 2);
                 $maxtraffic = ($row['maxtraffic'] >= 0) ? round($row['maxtraffic']) : $row['maxtraffic'];
             }
-            $table[] = array('id' => $row['id'], 'virtual_id' => $row['localserverid'], 'backup' => $row['backup'], 'filetraffic' => $filetraffic,'maxtraffic' => $maxtraffic, 'server' => $server,'address' => $address,'usage' => $usage,'uptime' => $uptime,'stopped' => $stopped,'img' => $imgName,'alt' => $imgAlt,'type' => $type);
+
+            $table[] = array('id' => $row['id'], 'virtual_id' => $row['localserverid'], 'description' => $row['description'], 'backup' => $row['backup'], 'filetraffic' => $filetraffic, 'maxtraffic' => $maxtraffic, 'server' => $server,'address' => $address, 'usage' => $usage, 'uptime' => $uptime, 'stopped' => $stopped, 'img' => $imgName, 'alt' => $imgAlt, 'type' => $type);
         }
     }
 
