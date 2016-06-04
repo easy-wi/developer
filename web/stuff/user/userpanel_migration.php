@@ -47,28 +47,31 @@ include(EASYWIDIR . '/stuff/methods/class_ftp.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 include(EASYWIDIR . '/stuff/methods/class_app.php');
 
-$sprache = getlanguagefile('gserver',$user_language,$reseller_id);
+$sprache = getlanguagefile('gserver', $user_language, $reseller_id);
 $loguserid = $user_id;
 $logusername = getusername($user_id);
 $logusertype = 'user';
 $logreseller = 0;
 $logsubuser = 0;
+
 if (isset($admin_id)) {
     $logsubuser = $admin_id;
 } else if (isset($subuser_id)) {
     $logsubuser = $subuser_id;
 }
+
 if (isset($admin_id) and $reseller_id != 0) {
     $reseller_id = $admin_id;
 }
+
 $ftpAddress = '';
-$ftpPort=21;
+$ftpPort = 21;
 $ftpUser = '';
 $ftpPassword = '';
 $ftpPath = '';
 $thisID = 0;
 $thisTemplate = '';
-$ssl=($ui->active('ssl', 'post')) ? $ui->active('ssl', 'post') : 'N';
+$ssl = ($ui->active('ssl', 'post')) ? $ui->active('ssl', 'post') : 'N';
 $error = array();
 $table = array();
 
@@ -77,6 +80,7 @@ $query2 = $sql->prepare("SELECT s.`id`,t.`description`,t.`shorten`,t.`gamebinary
 $query->execute(array($aeskey, $user_id, $reseller_id));
 
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
     if (!isset($_SESSION['sID']) or in_array($row['id'], $substituteAccess['gs'])) {
 
         $temp = array();
@@ -223,6 +227,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $appServer = new AppServer($rootID);
         $appServer->getAppServerDetails($thisID);
+        $appServer->stopAppHard();
         $appServer->migrateToEasyWi(array('user' => $ftpUser, 'password' => $ftpPassword, 'path' => $ftpPath, 'connectString' => $ftpConnectString), $gameSwitchTemplate, $modFolder);
         $appServer->execute();
 
