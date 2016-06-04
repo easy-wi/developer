@@ -98,10 +98,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $rootID = 0;
 
-            $query = $sql->prepare("SELECT `serverip`,`port`,`port2`,`port3`,`port4`,`port5`,`userid`,`rootID`,`externalID`,`active`,`autoRestart`,`updateRestart`,`lendserver`,`eacallowed`,`slots`,`pallowed`,`pallowed`,`pallowed`,`brandname`,`war`,`tvenable`,`minram`,`maxram`,AES_DECRYPT(`ftppassword`,?) AS `ftpPassword`,(SELECT `servertype` FROM `serverlist` WHERE `id`=g.`serverid` LIMIT 1) AS `gameID`  FROM `gsswitch` AS g WHERE `id`=? AND `resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT *,AES_DECRYPT(`ftppassword`,?) AS `ftpPassword`,(SELECT `servertype` FROM `serverlist` WHERE `id`=g.`serverid` LIMIT 1) AS `gameID`  FROM `gsswitch` AS g WHERE `id`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 $ip = $row['serverip'];
+                $description = $row['description'];
                 $port = $row['port'];
                 $port2 = ($row['port2'] == 0) ? '' : $row['port2'];
                 $port3 = ($row['port3'] == 0) ? '' : $row['port3'];
@@ -170,6 +171,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $tvEnable = $ui->active('tvEnable', 'post');
         $ip = $ui->ip4('ip', 'post');
         $port = $ui->port('port', 'post');
+        $description = $ui->names('description', 255, 'post');
         $slots = ($ui->id('slots', 5, 'post')) ? $ui->id('slots', 5, 'post') : 12;
         $minRam = ($ui->id('minRam', 5, 'post')) ? $ui->id('minRam', 5, 'post') : 512;
         $maxRam = ($ui->id('maxRam', 5, 'post')) ? $ui->id('maxRam', 5, 'post') : 1024;
@@ -366,8 +368,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `gsswitch` (`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`updateRestart`,`ftppassword`,`ppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,1,'Y',?)");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, passwordgenerate(10), $aeskey, $resellerLockupID, $externalID));
+                $query = $sql->prepare("INSERT INTO `gsswitch` (`description`,`active`,`hdd`,`taskset`,`cores`,`userid`,`pallowed`,`eacallowed`,`lendserver`,`serverip`,`rootID`,`homeLabel`,`tvenable`,`port`,`port2`,`port3`,`port4`,`port5`,`minram`,`maxram`,`slots`,`war`,`brandname`,`autoRestart`,`updateRestart`,`ftppassword`,`ppassword`,`resellerid`,`serverid`,`stopped`,`externalID`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,AES_ENCRYPT(?,?),AES_ENCRYPT(?,?),?,1,'Y',?)");
+                $query->execute(array($description, $active, $hdd, $ui->active('taskset', 'post'), $usedCores, $userID, $protectionAllowed, $eacAllowed, $lendServer, $ip, $rootID, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post'), $ui->port('port3', 'post'), $ui->port('port4', 'post'), $ui->port('port5', 'post'), $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, passwordgenerate(10), $aeskey, $resellerLockupID, $externalID));
 
                 $id = $sql->lastInsertId();
 
@@ -439,8 +441,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     }
                 }
 
-                $query = $sql->prepare("UPDATE `gsswitch` SET `active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`updateRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post') ? $ui->port('port2', 'post') : null, $ui->port('port3', 'post') ? $ui->port('port3', 'post') : null, $ui->port('port4', 'post') ? $ui->port('port4', 'post') : null, $ui->port('port5', 'post') ? $ui->port('port5', 'post') : null, $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, $currentActiveGame, $externalID, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `gsswitch` SET `description`=?,`active`=?,`hdd`=?,`taskset`=?,`cores`=?,`pallowed`=?,`eacallowed`=?,`lendserver`=?,`serverip`=?,`homeLabel`=?,`tvenable`=?,`port`=?,`port2`=?,`port3`=?,`port4`=?,`port5`=?,`minram`=?,`maxram`=?,`slots`=?,`war`=?,`brandname`=?,`autoRestart`=?,`updateRestart`=?,`ftppassword`=AES_ENCRYPT(?,?),`serverid`=?,`externalID`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+                $query->execute(array($description, $active, $hdd, $ui->active('taskset', 'post'), $usedCores, $protectionAllowed, $eacAllowed, $lendServer, $ip, $homeLabel, $tvEnable, $port, $ui->port('port2', 'post') ? $ui->port('port2', 'post') : null, $ui->port('port3', 'post') ? $ui->port('port3', 'post') : null, $ui->port('port4', 'post') ? $ui->port('port4', 'post') : null, $ui->port('port5', 'post') ? $ui->port('port5', 'post') : null, $minRam, $maxRam, $slots, $war, $brandname, $autoRestart, $updateRestart, $ftpPassword, $aeskey, $currentActiveGame, $externalID, $id, $resellerLockupID));
 
                 $rowCount += $query->rowCount();
 

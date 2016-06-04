@@ -280,10 +280,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $hlds_6 = $row['hlds_6'];
         }
 
-        $query = $sql->prepare("SELECT g.`autoRestart`,g.`updateRestart`,g.`id`,g.`serverip`,g.`port`,g.`eacallowed`,g.`serverid`,g.`newlayout`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,u.`cname`,r.`ftpport` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT g.`description`,g.`autoRestart`,g.`updateRestart`,g.`id`,g.`serverip`,g.`port`,g.`eacallowed`,g.`serverid`,g.`newlayout`,g.`protected`,AES_DECRYPT(g.`ftppassword`,?) AS `cftppass`,AES_DECRYPT(g.`ppassword`,?) AS `pftppass`,u.`cname`,r.`ftpport` FROM `gsswitch` g INNER JOIN `userdata` u ON g.`userid`=u.`id` INNER JOIN `rserverdata` r ON g.`rootID`=r.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
         $query->execute(array($aeskey, $aeskey, $id, $user_id, $resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
+            $description = $row['description'];
             $autoRestart = $row['autoRestart'];
             $updateRestart = $row['updateRestart'];
             $gsIP = $row['serverip'];
@@ -436,7 +437,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $template_file = ($i > 0) ? 'userpanel_gserver_md.tpl' : 'userpanel_404.tpl';
 
-    } else if ($ui->smallletters('action',2, 'post') == 'md' and $ui->id('shorten',19, 'post')) {
+    } else if ($ui->smallletters('action',2, 'post') == 'md' and $ui->id('shorten', 19, 'post')) {
 
         $switchID = $ui->id('shorten', 19, 'post');
         $rootID = 0;
@@ -552,8 +553,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $updated = false;
         }
 
-        $query = $sql->prepare("UPDATE `gsswitch` SET `autoRestart`=?,`updateRestart`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-        $query->execute(array($ui->active('autoRestart', 'post'), $ui->active('updateRestart', 'post'), $id, $resellerLockupID));
+        $query = $sql->prepare("UPDATE `gsswitch` SET `description`=?,`autoRestart`=?,`updateRestart`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query->execute(array($ui->names('description', 255, 'post'), $ui->active('autoRestart', 'post'), $ui->active('updateRestart', 'post'), $id, $resellerLockupID));
 
         $updated = ($query->rowCount() > 0) ? true : $updated;
 
@@ -997,6 +998,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($aeskey, $user_id,$resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         if (!isset($_SESSION['sID']) or in_array($row['id'],$substituteAccess['gs'])) {
+            $description = $row['description'];
             $rootid = $row['rootID'];
             $war = $row['war'];
             $brandname = $row['brandname'];
@@ -1019,7 +1021,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $address = $ip . ':' . $port;
             $map = (in_array($row['queryMap'], array(false, null, ''))) ? 'Unknown' : $row['queryMap'];
-            $updatetime=($user_language == 'de') ? ($row['queryUpdatetime'] != '') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
+            $updatetime = ($user_language == 'de') ? ($row['queryUpdatetime'] != '') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
             $upload = ($row['upload'] > 1 and $row['upload'] < 4) ? true : false;
             $currentTemplate = (($protected == 'N' or $tprotected == 'N') and $servertemplate > 1) ? $row['shorten'] . '-' . $servertemplate : $row['shorten'];
             $ce = explode(',', $row['cores']);
@@ -1054,6 +1056,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             if ($pa['ftpaccess'] or $pa['miniroot']) {
+
                 if ($row['newlayout'] == 'Y') {
                     $cname = $cname . '-' . $row['id'];
                 }
@@ -1103,7 +1106,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 'premoved' => $premoved,
                 'nameremoved' => $nameremoved,
                 'server' => $address,
-                'name' => $name,
+                'name' => (strlen($description) == 0) ? $name : $description . ' ' . $name,
                 'img' => $imgName,
                 'alt' => $imgAlt,
                 'imgp' => $imgNameP,

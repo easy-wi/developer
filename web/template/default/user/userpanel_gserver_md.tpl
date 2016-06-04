@@ -32,6 +32,15 @@
 
                     <div class="box-body">
 
+                        <div class="form-group">
+
+                            <label for="inputDescription"><?php echo $gsprache->description;?></label>
+
+                            <div class="controls">
+                                <input class="form-control" id="inputDescription" type="text" name="description" value="<?php echo $description;?>">
+                            </div>
+                        </div>
+
                         <?php if ($pa['ftpaccess'] and $ftpAccess=='Y') { ?>
                         <div class="form-group">
                             <label for="ftppass"><?php echo $sprache->ftp_password;?></label>
