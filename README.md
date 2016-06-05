@@ -18,6 +18,12 @@ Who is the target group for Easy-WI?
 ------------------------
 No matter if you are a commercial entity that is providing hosting solutions, are sponsoring (game)server daemons, organize a LAN party, need to manage clan server, or are a private individual, Easy-WI is meant for everybody.
 
+Where can I find the installer and other scripts?
+------------------------
+* [Installer](https://github.com/easy-wi/installer/)
+* [Optional Server Side Scripts](https://github.com/easy-wi/server/)
+* [External PHP Scripst](https://github.com/easy-wi/external/)
+
 
 Which functions and modules are available?
 ------------------------
