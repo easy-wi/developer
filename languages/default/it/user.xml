@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <accounttype>Tipo di account</accounttype>
+    <accounttype_admin>Amministratore</accounttype_admin>
+    <accounttype_reseller>Rivenditore</accounttype_reseller>
+    <accounttype_user>Utente</accounttype_user>
+    <active>Attivo</active>
+    <activeIn>Disattivato</activeIn>
+    <activeRegister>Registrazione in sospeso</activeRegister>
+    <addon>Gestione degli addons (user)</addon>
+    <adresse>Indirizzo del server</adresse>
+    <badlogins>Numero massi di login permessi raggiunto!</badlogins>
+    <badloginsreset>Ripristina tentativi falliti:</badloginsreset>
+    <bear2>Modifica i dati utente</bear2>
+    <bez>Pagamento</bez>
+    <birthday>Compleanno</birthday>
+    <creationTime>Creato il</creationTime>
+    <country>Paese</country>
+    <einz>Sistema di trasferimento automatico di addebito</einz>
+    <email>E-mail</email>
+    <error_cname>Errore: Username errato!</error_cname>
+    <error_id>Nessun utente selezionato:</error_id>
+    <error_in>Non tutti i campi richiesi sono stati compilato o sono stati utilizzati caratteri non tollerati.</error_in>
+    <error_mail>Indirizzo e-mail non valido</error_mail>
+    <error_mail_exists>Indirizzo e-mail già esistente con un altro utente.</error_mail_exists>
+    <error_pass>Errore: Password errata!</error_pass>
+    <error_passw_succ>Le password non corrispondono.</error_passw_succ>
+    <example>Esempio:</example>
+    <fastdl2>Dati di accesso per il fastdownload</fastdl2>
+    <fastdl>Utilizza il Fastdownload</fastdl>
+    <fname>Cognome</fname>
+    <freeips>Indirizzi IP non utilizzati</freeips>
+    <ftpaccess>Accesso FTP</ftpaccess>
+    <ftppsw>Password FTP</ftppsw>
+    <groupname>Nome del gruppo</groupname>
+    <gserver>Server di gioco</gserver>
+    <han>Numero di telefono</han>
+    <heading_add>Aggiungi utente</heading_add>
+    <heading_detail>Dettagli utente</heading_detail>
+    <heading_list>Panoramica utente</heading_list>
+    <help_substitutes_list>Lista di aiuto sostituti</help_substitutes_list>
+    <hnum>Numero di telefono di casa</hnum>
+    <inst>Server installati</inst>
+    <ips>Indirizzi IPv4:</ips>
+    <ips_possible1>1.1.1.1</ips_possible1>
+    <ips_possible2>1.1.1.3/6</ips_possible2>
+    <mail_backup>Invia e-mail quando un backup è creato/ripristinato.</mail_backup>
+    <mail_gsupdate>Invia e-mail quando un server master è aggiornato.</mail_gsupdate>
+    <mail_securitybreach>Invia e-mail quando dei files di un server di gioco sono stati manipolati.</mail_securitybreach>
+    <mail_serverdown>Invia e-mail quando un server non può essere raggiunto.</mail_serverdown>
+    <mail_ticket>Invia e-mail quando un nuovo ticket di supporto è scritto.</mail_ticket>
+    <mail_vserver>Invia e-mail quando una VPS viene creata o un ripristino viene avviato.</mail_vserver>
+    <max>Massimo</max>
+    <miniroot>Root</miniroot>
+    <modfastdl>Modifica i dati di accesso del Fastdownload</modfastdl>
+    <nickname>Nickname</nickname>
+    <passw>Modifica la password del pannello</passw>
+    <passw_1>Immetti la nuova password</passw_1>
+    <passw_2>Ripeti la nuova password</passw_2>
+    <passw_succ_ae>Password moficata con successo</passw_succ_ae>
+    <password>Password</password>
+    <paypal>PayPal</paypal>
+    <plz>Codice postale</plz>
+    <rch>sul conto</rch>
+    <reset>Reinstalla</reset>
+    <restart>Riavvia</restart>
+    <right>Cambia i permessi dell'utente</right>
+    <root>Root</root>
+    <salutation>Saluto</salutation>
+    <salutation2>Signore</salutation2>
+    <salutation3>Signora</salutation3>
+    <server>Server</server>
+    <serverdata>Server installati</serverdata>
+    <settings>Impostazioni del pannello</settings>
+    <show_help_text>Mostra messaggi di aiuto</show_help_text>
+    <shown>Risultati per pagina:</shown>
+    <socialConnect>Connetti con</socialConnect>
+    <socialRemove>Rimuovi la connessione con</socialRemove>
+    <socialSignin>Entra con </socialSignin>
+    <stadt>Città</stadt>
+    <str>Strada</str>
+    <switch>Passa all'utente</switch>
+    <tel>Numero di telefono</tel>
+    <tickets>Tickets di supporto</tickets>
+    <updateTime>Aggiornato alle</updateTime>
+    <user>Username</user>
+    <user_users>Gestione utenti</user_users>
+    <user_admins>Gestione amministratori</user_admins>
+    <userdata>Dati utente</userdata>
+    <usersettings>Impostazioni utente</usersettings>
+    <usertickets>Tickets di supporto</usertickets>
+    <user_create>Il seguente utente è stato creato con successo.</user_create>
+    <user_server>Server di gioco eliminati da:</user_server>
+    <vname>Nome</vname>
+    <wipsw>Password per accedeere al pannello</wipsw>
+</sprache>

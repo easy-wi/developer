@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <bad_ca>La stringa inserita non corrisponde con codice captcha.</bad_ca>
+    <bad_up>L'utente non esiste o la password inserita è errata.</bad_up>
+    <back>Indietro</back>
+    <banned>Troppi tentativi d'accesso effettuati. perfavore, richiedi una nuova password o contattaci.</banned>
+    <captcha>Captcha</captcha>
+    <email>E-mail o nome utente</email>
+    <exp>La tua licenza è scaduta.</exp>
+    <heading>Login utente</heading>
+    <ipBad>IP non corretto: </ipBad>
+    <ipOK>Gli IP permessi sono</ipOK>
+    <linkexpired>Il link è scaduto.</linkexpired>
+    <multipleHeader>Utenti multipli trovati</multipleHeader>
+    <multipleHelper>Utenti multipli sono stati trovati connessi al login per %sp%. Perfavore,selezionane uno.</multipleHelper>
+    <multipleHelperEndpoint>Comunemente dovrai registrare un'applicazione al gestore dei servizi. Durante la creazione ti verranno forniti chiave e token d'accesso. Entrambi devono essere inseriti nel pannello. Presso l'applicazione è necessario configurare un endpoint. L'endpoint per il pannello è %url%</multipleHelperEndpoint>
+    <nouser>Non è stato trovato nessun utente con username o indirizzo E-mail da te forniti.</nouser>
+    <password>Password</password>
+	<passwdlost>Ho dimenticato la mia password</passwdlost>
+    <passwordr>Recupero della password</passwordr>
+    <passwordrepeat>Ripeti la password</passwordrepeat>
+    <passwordreset>Ripristina la password</passwordreset>
+    <passwordreseted>La password è stata aggiornata.</passwordreseted>
+    <pwnomatch>Le password non corrispondono.</pwnomatch>
+    <send>Un E-mail con il token di attivazion è stata inviata all'indirizzo E-mail da lei fornito.</send>
+    <sus>Il tuo account è sospeso. Perfavore contattaci se ritieni che questo sia un errore.</sus>
+    <sus_heading>Attenzione!</sus_heading>
+    <user>Nome utente</user>
+    <urlBad>URL in uso non corretto:</urlBad>
+    <urlOK>L'URL è </urlOK>
+</sprache>

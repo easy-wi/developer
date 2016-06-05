@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<abkuerz>Abbreviazione</abkuerz>
+    <action>Azione</action>
+	<active>Attiva</active>
+	<all>Seleziona tutti i giochi</all>
+    <anticheat>Anti-cheat</anticheat>
+    <authkey_info><![CDATA[La tua chiave di autorizzazione API è richiesta per poter scaricare le mappe di Steam. Ulteriori informazioni possono essere trovate <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">qui</a>.]]></authkey_info>
+    <backup_create>Il backup verrà creato.</backup_create>
+    <backup_recover>Il backup verrà ripristinato.</backup_recover>
+    <belegt2>Cartelle esistenti</belegt2>
+	<belegt>Porte utilizzate</belegt>
+	<beschr>Descrizione</beschr>
+	<bin>File eseguibile</bin>
+    <bin_folder>Cartella dell'eseguibile (e.x. orangebox)</bin_folder>
+    <brandname>Tag del server</brandname>
+    <cant_install>Non sono in grado di avviare l'installazione nel server</cant_install>
+    <collection_info><![CDATA[ID della collezione dello workshop utilizzata per scaricare le mappe. Ulteriori informazioni a riguardo possono essere trovate <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">qui</a>.]]></collection_info>
+	<config>Configurazioni del server</config>
+	<confirm_change>Salvare le modifiche?</confirm_change>
+	<confirm_delete>Eliminare il server?</confirm_delete>
+	<confirm_restart>(Ri)avviare il server?</confirm_restart>
+	<confirm_stop>Fermare il server?</confirm_stop>
+    <coreBind>CPU cores</coreBind>
+	<create>Crea</create>
+    <delete_server>I seguenti server(s) verranno eliminati</delete_server>
+    <details>Opzioni aggiuntive del server</details>
+	<easy>Facile</easy>
+    <error_folder>Errore: L'utente possiede questo tipo di server sulla porta specificata.</error_folder>
+    <error_id>Errore: Nessun server può essere trovato.</error_id>
+    <error_md>Error: Il server non può essere modificato.</error_md>
+    <error_notinstalled>Errore: Devi installare un server master nel server root per questo gioco.</error_notinstalled>
+    <error_port>Errore: Un server con la stessa porta esiste già su questo server.</error_port>
+    <error_server_install>Errore: Non sono in grado di avviare l'installazione del server.</error_server_install>
+    <error_user>Errore: Non posso aggiungere l'utente.</error_user>
+    <failed>Errore: Non sono in grado di stabilire una connessione con il server.</failed>
+    <folder>Cartella del server</folder>
+	<fps>FPS del server</fps>
+	<friday>Venerdì</friday>
+    <ftp_adresse>Indirizzo FTP</ftp_adresse>
+    <ftp_link>Link FTP</ftp_link>
+    <ftp_password>Password dell'account FTP</ftp_password>
+    <ftp_path>Radice del serverFTP</ftp_path>
+    <ftp_port>Porta del server FTP</ftp_port>
+    <ftp_user>Username dell'account FTP</ftp_user>
+	<full>Completa</full>
+	<game>Gioco</game>
+	<games>Giochi</games>
+    <gameswitch>Scegli un tipo di gioco</gameswitch>
+    <gs_add2>Aggiungi un server - Step 2: Dettagli del server</gs_add2>
+    <gs_add>Aggiungi un server - Step 2: utente, root server, giochi</gs_add>
+    <hdd>Spazio nell'Hard Disk (MB)</hdd>
+    <hddinstalled>Hard Disk assegnato</hddinstalled>
+    <heading_delete>Elimina server di gioco</heading_delete>
+    <heading_template>Panoramica del server di gioco</heading_template>
+    <help_calendar>
+    <![CDATA[
+	È possibile pianificare il riavvio del server di gioco.<br />
+	Questa funzione è utile se hai intenzione di modificare gioco o modello ad un tempo prestabilito.
+    ]]>
+    </help_calendar>
+    <help_config>
+    <![CDATA[
+	La nostra interfaccia web ti permette di modificare i files di configurazione più importanti per il tuo server di gioco. I file di configurazione appartenenti ai plugins verranno aggiunti una volta che saranno stati installati mediante l'interfaccia web.<br />
+	<br />
+    Potresti non vedere i files di configurazione nell'interfaccia web,in questo caso potrai modificare i files in questione meditante l'FTP.
+    ]]>
+    </help_config>
+    <help_md>
+    <![CDATA[
+	In questo pannello hai la possibilità di modificare i giochi in ogni momento. Nello specifico, dal <em>Modello</em>,da cui sarai in grado di gestire più configurazioni.
+	]]>
+    </help_md>
+    <help_list>
+    <![CDATA[
+	Questa panoramica dettagliata elenca le informazioni sul server di gioco, per esempio, il modello attivo, i dati FTP, ecc. I sottomenu vi permetteranno modificare le configurazioni.<br />
+	Giochi e modelli possono essere definiti dalle <em>Impostazioni</em>. Dalle <em>Configurazioni del server</em> potrete gestire le impotazioni dei plugins e delle estensioni. Se desideri cambiare automaticamente gioco o modello, il pannello <em>Pianifica riavii</em> sarà di grande aiuto per te. La isoluzione di eventuali problemi può essere fatta attraverso i <em>Resoconti</em>.
+    ]]>
+    </help_list>
+    <help_reinstall>
+    <![CDATA[
+	Dal pulsante <em>Risincronizzazione</em> aggiungeremo dei files mancanti senza modificare quelli già presenti. Potresti trovare beneficio da questa funzione nel caso di una eliminazione accidentale di un file essenziale.<br />
+    <br />
+	Con il pulsante <em>Reintalla</em> invece, ripristineremo completamente il server. Tutti i dati saranno persi ed il server verrà ripristinato con le configurazioni iniziali.<br />
+    <br />
+	Entrambe le azioni vengono intraprese con il pulsante <em>Esegui</em> e solitamente sono completate in un paio di minuti.
+    ]]>
+    </help_reinstall>
+    <homeDir>Cartella Home</homeDir>
+    <hour>Ore</hour>
+    <import_corrected>La directory trovata è corretta?</import_corrected>
+    <import_destination>Server di destinazione, giochi e modelli da importare</import_destination>
+    <import_source>Sorgente dei dati da importare</import_source>
+    <import_start>Servizio di migrazione inizializzato. Questo processo richiederà del tempo!</import_start>
+    <installAll>Tutti i giochi</installAll>
+    <installGames>Giochi preinstallati</installGames>
+    <ip>Indirizzo IP del server di gioco</ip>
+    <lendserver>Server prestabile</lendserver>
+    <primary>Gioco principale</primary>
+    <map>Mappa</map>
+    <mod>Cartella delle mod (e.g. cstrike o tf)</mod>
+    <monday>Lunedì</monday>
+    <nameremoved>Tag del server rimossa</nameremoved>
+    <never>Mai</never>
+    <no_game>Nessun gioco è stato selezionato.</no_game>
+    <no_server_left>Nessun server rimasto per questo utente. Eliminando l'utente dal server root.</no_server_left>
+    <off2>Off</off2>
+    <off>Il server è offline</off>
+    <on>On</on>
+    <password>Password</password>
+    <player>Giocatori</player>
+    <port>Porta</port>
+    <port_gs>Porta del server di gioco</port_gs>
+    <premoved>Password del server rimossa</premoved>
+    <protect>Modalità protezione</protect>
+    <ramMax>RAM Massima</ramMax>
+    <ramMin>RAM Minima</ramMin>
+    <raminstalled>RAM assegnata</raminstalled>
+    <rcon>Password remote (RCON)</rcon>
+    <recover>Recupera</recover>
+    <reinstall>Reinstalla</reinstall>
+    <restart_all>Riavvia tutti i server</restart_all>
+    <restarts>Riavvia il server</restarts>
+    <restarttime>Pianifica riavii</restarttime>
+    <resync>Risincronizzazione</resync>
+    <root>Server root</root>
+    <saturday>Sabato</saturday>
+    <server>Indirizzo del server</server>
+    <serverinstalled>Servers installati</serverinstalled>
+    <servername>Nome del server</servername>
+    <serverrestart>(Ri)avviando il server</serverrestart>
+    <serverstop>Fermando il server</serverstop>
+    <servertype>Tipo di server</servertype>
+    <server_details>Dettagli per</server_details>
+    <server_installed>Resincronizzazione/Reinstallazione avviata con successo nel server.</server_installed>
+    <server_ud>Dati del server aggiornati</server_ud>
+    <since>Da</since>
+    <slots>Slot dei giocatori</slots>
+    <slotsinstalled>Solt installati</slotsinstalled>
+    <slotsused>Slot utilizzati</slotsused>
+    <start>Comando di avvio</start>
+    <startmap>Mappa (o file) di avvio</startmap>
+    <startmapgroup>Gruppo della mappa</startmapgroup>
+    <start_own>Comando di avvio personalizzato</start_own>
+    <stop>Ferma il server</stop>
+    <sunday>Domenica</sunday>
+    <switch>Passa all'utente</switch>
+    <thursday>Giovedì</thursday>
+    <tick>Tickrate</tick>
+    <tuesday>Martedì</tuesday>
+    <tv>TV permessa</tv>
+    <tvport>SourceTV</tvport>
+    <tvuploadstart>SourceTV upload avviato</tvuploadstart>
+    <type>Tipo di installazione</type>
+    <updated>La configurazione è stata modificata con successo.</updated>
+    <updatetime>Stato all'orario</updatetime>
+    <usage>Allocazione del server</usage>
+    <usedports>Porte utilizzate</usedports>
+    <user>Nome utente</user>
+    <useredit>Modificabile dall'utente</useredit>
+    <user_add>Utente aggiunto con successo al server root.</user_add>
+    <war>Server privato</war>
+    <webFtp>Web FTP</webFtp>
+    <wednesday>Mercoledì</wednesday>
+</sprache>

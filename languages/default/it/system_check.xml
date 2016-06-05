@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <cron_external>Cronjobs esterni</cron_external>
+    <cron_run>ultimo cronjob avviato alle:</cron_run>
+    <cron_internal>Cronjobs interni</cron_internal>
+    <cron_text>Il metedo raccomandato è di utilizzare cronjobs interni. Nel caso tu non possa fare uso di cronjobs interni, gli stessi files possono essere chiamati con un cronjob esterno. Nel caso tu voglia farne uso, dovrai inserire nella whitelist l'IP o gli IP chiamanti nelle impostazioni del pannello.</cron_text>
+    <error_system_curl>L'estensione curl non è attualmente installata. Sei pregato di installarla.</error_system_curl>
+    <error_system_ftp>L'estensione ftp non è attualmente installata. Sei pregato di installarla.</error_system_ftp>
+    <error_system_fopen>fopen function cannot be used. please enable it.</error_system_fopen>
+    <error_system_gd>L'estensione gd non è attualmente installata. Sei pregato di installarla.</error_system_gd>
+    <error_system_hash>L'estensione hash non è attualmente installata. Sei pregato di installarla.</error_system_hash>
+    <error_system_php_version>At least PHP 5.4 is required. Your PHP version is to old: </error_system_php_version>
+    <error_system_json>L'estensione json non è attualmente installata. Sei pregato di installarla.</error_system_json>
+    <error_system_openssl>L'estensione openssl non è attualmente installata. Sei pregato di installarla.</error_system_openssl>
+    <error_system_PDO>L'estensione PDO non è attualmente installata. Sei pregato di installarla.</error_system_PDO>
+    <error_system_pdo_mysql>L'estensione pdo_mysql non è attualmente installata. Sei pregato di installarla.</error_system_pdo_mysql>
+    <error_system_php_version>È richiesta una versione di PHP pari o superiore alla 5.4. L'attuale versione di PHP è troppo vecchia: </error_system_php_version>
+    <error_system_SimpleXML>L'estensione SimpleXML non è attualmente installata. Sei pregato di installarla.</error_system_SimpleXML>
+    <system_ok_curl>L'estensione curl è installata.</system_ok_curl>
+    <system_ok_fopen>fopen function can be used.</system_ok_fopen>
+    <system_ok_ftp>L'estensione ftp è installata.</system_ok_ftp>
+    <system_ok_gd>L'estensione gd è installata.</system_ok_gd>
+    <system_ok_hash>L'estensione hash è installata.</system_ok_hash>
+    <system_ok_json>L'estensione json è installata.</system_ok_json>
+    <system_ok_openssl>L'estensione openssl è installata.</system_ok_openssl>
+    <system_ok_PDO>L'estensione DO  è installata.</system_ok_PDO>
+    <system_ok_pdo_mysql>L'estensione pdo_mysql e è installata.</system_ok_pdo_mysql>
+    <system_ok_php_version>È richiesta una versione di PHP pari o superiore alla 5.4. L'attuale versione è OK:  </system_ok_php_version>
+    <system_ok_SimpleXML>L'estensione SimpleXML è installata.</system_ok_SimpleXML>
+</sprache>

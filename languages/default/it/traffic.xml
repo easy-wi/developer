@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <accuracy>Precisione</accuracy>
+    <all>Tutto</all>
+    <barin_colour>Traffico in entrata</barin_colour>
+    <barout_colour>Traffico in uscita</barout_colour>
+    <bar_slots_total_colour>Slot totali</bar_slots_total_colour>
+    <bar_slots_usage_colour>Slot utilizzati</bar_slots_usage_colour>
+    <bartotal_colour>Traffico totale</bartotal_colour>
+    <bg_colour>Sfondo</bg_colour>
+    <blue>Blu</blue>
+    <border_colour>Bordo</border_colour>
+    <column_byte>Bytes inviati</column_byte>
+    <column_date>Data</column_date>
+    <column_destip>IP di destinazione</column_destip>
+    <column_sourceip>IP di partenza</column_sourceip>
+    <databaseacces>Dati di accesso al database</databaseacces>
+    <databasestructure>Struttura del database (Nome delle tabelle e colonne)</databasestructure>
+    <day>Giorno</day>
+    <days>Giorni</days>
+    <dbname>Nome</dbname>
+    <dbpassword>Password</dbpassword>
+    <dbuser>Utente</dbuser>
+    <dmy>Periodo di tempo</dmy>
+    <graphsettings>Impostazioni RGB (red green blue, rosso verde blu) della grafica </graphsettings>
+    <green>Verde</green>
+    <ip>IP</ip>
+    <ips>IPs</ips>
+    <kind>Mostra il traffico di</kind>
+    <line_colour>Linee di divisione</line_colour>
+    <months>mesi</months>
+    <multiplier>Moltiplicatore</multiplier>
+    <range>Lasso di tempo</range>
+    <red>Rosso</red>
+    <server>Server</server>
+    <statip>Indirizzo/IP</statip>
+    <statsFor>Statistiche per</statsFor>
+    <subnet>Sottorete</subnet>
+    <subnets>Sottoreti</subnets>
+    <table_name>Nome della tabella</table_name>
+    <text_colour>Testo</text_colour>
+    <total>Totale</total>
+    <type>Tipo</type>
+    <unit>Unità di account</unit>
+    <user>Utente</user>
+    <years>Anni</years>
+</sprache>

@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <abkuerz>Abbreviato</abkuerz>
+    <active>Attivo</active>
+    <all>Tutti</all>
+    <all_games>Seleziona tutti i giochi</all_games>
+    <all_roots>Seleziona tutti i server di gioco</all_roots>
+    <blocksize>Dimesione del blocco</blocksize>
+    <cfgdir>Cartella di configurazione</cfgdir>
+    <configBadFiles>Faile cattivi</configBadFiles>
+    <configBadTime>Rimuovi i file cattivi dopo N giorni</configBadTime>
+    <configBinaries>Eseguibili del server</configBinaries>
+    <configDemoTime>Rimuovi le demo dopo N giorni</configDemoTime>
+    <configFiles>Collegamento ai file di configurazione</configFiles>
+    <configIonice>Utilizza ionice</configIonice>
+    <configLogTime>Logs dopo N giorni</configLogTime>
+    <configUserID>Gli ID degli utenti partono da </configUserID>
+    <configZtmpTime>Rimuovi i files ZTMP dopo N giorni</configZtmpTime>
+    <confirm1>Avviare l'aggiornamento/gli aggiornamenti?</confirm1>
+    <desc>Descrizione</desc>
+    <error_root_db>Errore: non posso eliminare il server dal database!</error_root_db>
+    <error_root_dbmasterdel>Errore: Non posso eliminare il server master dal database!</error_root_dbmasterdel>
+    <error_root_install>Errore: Non posso avviare l'installazione seguente!</error_root_install>
+    <error_root_masterdel2>Errore: Non posso eliminare i files dal server!</error_root_masterdel2>
+    <error_root_masterdel>Errore: Il server master è stato già eliminato!</error_root_masterdel>
+    <error_root_noselect>Errore: Non sono stati selezionati servers.</error_root_noselect>
+    <error_root_updatemaster>Errore: Non posso avviare l'aggiornamento all'IP dato!</error_root_updatemaster>
+    <ftp_port>Porta FTP</ftp_port>
+    <haupt_ip>IP SSH2 e Main</haupt_ip>
+    <header_add>Aggiungi un server master</header_add>
+    <header_del>Elimina il server master</header_del>
+    <header_update>Aggiorna il server master</header_update>
+    <help_blocksize>La maggior parte degli OS sono configurati con un blocksize di 4096. Questo significa che un blocco contiene 4096 Byte.</help_blocksize>
+    <help_inode_block_ratio>La maggior parte dei sistemi hanno un rapporto di 4. Questo significa che 4 blocchi hanno un inode.</help_inode_block_ratio>
+    <inodeBlockRatio>Rapporto Bloccho/Inode</inodeBlockRatio>
+    <installed>Server master installati</installed>
+    <installeds>Slot installati</installeds>
+    <installPaths>Percorsi di installazione</installPaths>
+    <ips>IPs</ips>
+    <keyname>Nome del file chiave pubblico</keyname>
+    <keyuse>Una un file chiave pubblico</keyuse>
+    <master_update>I server con gli indirizzi IP seguentisono statu aggiornati con successo</master_update>
+    <maxserver2>Server massimi</maxserver2>
+    <maxserver>Servers installai</maxserver>
+    <maxslots>Slot massimi</maxslots>
+    <os>Sistema operativo</os>
+    <os_bit>Vesione Bit</os_bit>
+    <password>Password</password>
+    <quotaActive>Attiva Quota</quotaActive>
+    <quotaCmd>Comando Quota</quotaCmd>
+    <quotaWarning>Attenzione! Senza quota l'utente è in grado di caricare files fino a riempire il disco!</quotaWarning>
+    <repquotaCmd>Comando Repquota</repquotaCmd>
+    <resellerAssign>Affida al rivenditore</resellerAssign>
+    <root_masterdel>Processo di rimorzione inizializzato con successo.</root_masterdel>
+    <root_masterinstall>Il server master è stato aggiunto al database ed è in fase di isntallazione.</root_masterinstall>
+    <root_updatemaster>Aggiornamento inizializzato con successo</root_updatemaster>
+    <show>Mostra</show>
+    <showg>Solo server con il gioco</showg>
+    <showt>Solo server con il tipo di server</showt>
+    <spiele>Giochi</spiele>
+    <ssh_pass>Password SSH2</ssh_pass>
+    <ssh_port>Porta SSH2</ssh_port>
+    <ssh_user>Username SSH2</ssh_user>
+    <steam>Gioco di steam</steam>
+    <steamWarning>Attenzione! Se hai inseito dei dati qui, verranno sovrascritt e le credenziali di login date nel template del gioco!</steamWarning>
+    <updateMinute>Aggiornamenti orari al minuto</updateMinute>
+    <useds>Slot utilizzati:</useds>
+    <zusatz_ip>IP addizionali</zusatz_ip>
+</sprache>
