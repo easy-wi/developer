@@ -909,7 +909,7 @@ class AppServer {
 
             $line = str_replace(array("\r"), '', $line);
 
-            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml))$/', $line)) {
+            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml|yaml))$/', $line)) {
 
                 $exploded = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -927,9 +927,9 @@ class AppServer {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                }  else if ($cvarProtectArray[$configPathAndFile]['type'] == 'yml') {
+                }  else if ($cvarProtectArray[$configPathAndFile]['type'] == 'yml' or $cvarProtectArray[$configPathAndFile]['type'] == 'yaml') {
 
-                    $splitLine = preg_split("/(?:(?<!-))\s+/", $line);
+                    $splitLine = preg_split("/(?:(?<!-))\s*:\s*/", $line);
 
                  } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('ini','lua'))) {
 
@@ -1045,6 +1045,15 @@ class AppServer {
     private function replaceArrayValues($givenArray, $replacements) {
 
         foreach(array_keys($givenArray) as $key) {
+
+            if (is_array($givenArray[$key])) {
+                $givenArray[$key] = $this->replaceArrayValues($givenArray[$key], $replacements);
+            }
+
+            if (isset($this->undefinedRequiredVars[$key])) {
+                unset($this->undefinedRequiredVars[$key]);
+            }
+
             if (isset($replacements[$key])) {
                 $givenArray[$key] = $replacements[$key];
             }
@@ -1062,10 +1071,6 @@ class AppServer {
         $iniString = '';
 
         foreach($array as $key => $value) {
-
-            if (isset($this->undefinedRequiredVars[$key])) {
-                unset($this->undefinedRequiredVars[$key]);
-            }
 
             if (is_array($value)) {
 
@@ -1105,6 +1110,19 @@ class AppServer {
         $iniString .= $this->generateIniString($this->undefinedRequiredVars);
 
         return $iniString;
+    }
+
+    private function replaceYaml($stored, $replacements) {
+
+        $this->undefinedRequiredVars = $replacements;
+
+        $replacedArray = $this->replaceArrayValues($stored, $replacements);
+
+        foreach ($this->undefinedRequiredVars as $key => $value) {
+            $replacedArray[$key] = $value;
+        }
+
+        return Spyc::YAMLDump($replacedArray);
     }
 
     private function correctProtectedFiles () {
@@ -1152,6 +1170,20 @@ class AppServer {
 
                         $ftpObect->writeContentToTemp($this->replaceIni($parsedConfig, $values['cvars']));
 
+                    } else if ($values['type'] === 'yml' or $values['type'] === 'yaml') {
+
+                        if (!class_exists('Spyc')) {
+                            include(EASYWIDIR . '/third_party/spyc/Spyc.php');
+                        }
+
+                        $parsedConfig = Spyc::YAMLLoadString($configFileContent);
+
+                        if (!$parsedConfig) {
+                            $parsedConfig = array();
+                        }
+
+                        $ftpObect->writeContentToTemp($this->replaceYaml($parsedConfig, $values['cvars']));
+
                     } else {
 
                         $cvarsNotFound = $values['cvars'];
@@ -1176,16 +1208,6 @@ class AppServer {
                             foreach ($values['cvars'] as $cvar => $value) {
 
                                 if ($values['type'] == 'cfg' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
-
-                                    $edited = true;
-
-                                    unset($cvarsNotFound[$cvar]);
-
-                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
-
-                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
-
-                                } else if ($values['type'] == 'yml' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
 
                                     $edited = true;
 
