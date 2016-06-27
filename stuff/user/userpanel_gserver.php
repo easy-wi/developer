@@ -866,29 +866,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         }
                     }
 
+                    $ftp->tempHandle = null;
+
                     if ($ui->smallletters('type', 4, 'get') == 'easy') {
-
-                        $ftp->tempHandle = null;
                         $ftp->writeContentToTemp($newconfig);
-
                     } else if ($ui->smallletters('type', 4, 'get') == 'full') {
-
-                        $ftp->tempHandle = null;
-
-                        if (mb_strlen($ui->post['cleanedconfig'], 'UTF-8') < 16385) {
-
-                            $ftp->writeContentToTemp($ui->post['cleanedconfig']);
-
-                        } else {
-                            $post_lines = explode('<br />', nl2br($ui->post['cleanedconfig']));
-                            $post_lines[] = "\r\n";
-                            $post_lines[] = "\r\n";
-                            $post_lines[] = "\r\n";
-
-                            foreach ($post_lines as $line) {
-                                $ftp->writeContentToTemp(($line == "\r\n") ? $line :  $line . "\r\n");
-                            }
-                        }
+                        $ftp->writeContentToTemp($ui->post['cleanedconfig']);
                     }
 
                     $uploaded = false;
