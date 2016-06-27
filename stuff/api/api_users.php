@@ -622,7 +622,7 @@ if (array_value_exists('action', 'add', $data)) {
 
                 $tempArray = array();
 
-                $query = $sql->prepare("SELECT `webVhostID`,`active`,`hdd`,`hddUsage`,`dns`,`externalID` FROM `webVhost` WHERE `userID`=? AND `resellerID`=?");
+                $query = $sql->prepare("SELECT `webVhostID`,`active`,`hdd`,`hddUsage`,`defaultDomain` AS `dns`,`externalID` FROM `webVhost` WHERE `userID`=? AND `resellerID`=?");
                 $query->execute(array($userArray['userdetails']['id'], $resellerID));
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $tempArray[] = $row;
