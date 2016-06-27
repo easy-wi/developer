@@ -152,7 +152,7 @@ class EasyWiFTP {
 
             foreach (array_keys($this->tempHandle) as $k) {
 
-                fseek($this->tempHandle[$k], 0);
+                rewind($this->tempHandle[$k]);
 
                 $fstats = fstat($this->tempHandle[$k]);
 
@@ -165,13 +165,7 @@ class EasyWiFTP {
 
             $fstats = fstat($this->tempHandle);
 
-            $startAtSize = ($fstats['size'] > 32768) ? ($fstats['size'] - 32768) : 0;
-            fseek($this->tempHandle, $startAtSize);
-            fseek($this->tempHandle, $startAtSize);
-
-
-            return ($fstats['size'] > 0) ? fread($this->tempHandle, 32768) : '';
-
+            return ($fstats['size'] > 0) ? fread($this->tempHandle, $fstats['size']) : '';
         }
 
         return false;
@@ -187,14 +181,13 @@ class EasyWiFTP {
             $this->tempHandle = tmpfile();
         }
 
-        $contentLength = strlen($content);
+        $contentLength = mb_strlen($content, 'UTF-8');
 
         if ($this->tempHandle and $contentLength > 0) {
 
-            fwrite($this->tempHandle, $content, $contentLength);
+            $writeSuccess = @fwrite($this->tempHandle, $content, $contentLength);
 
-            return true;
-
+            return ($writeSuccess);
         }
 
         return false;
@@ -222,7 +215,7 @@ class EasyWiFTP {
 
                     $this->arrayToChDir($combinedFolders, $secondConnection);
 
-                    fseek($this->tempHandle[$k], 0);
+                    rewind($this->tempHandle[$k]);
 
                     // only upload in case we have downloaded some data.
                     $fstats = fstat($this->tempHandle[$k]);
@@ -247,9 +240,9 @@ class EasyWiFTP {
                 $combinedFolders = $this->combineFolderFile($folders, $file);
                 $this->arrayToChDir($combinedFolders, $secondConnection);
 
-                fseek($this->tempHandle, 0);
+                rewind($this->tempHandle);
 
-                // only upload in case we have downloaded some data.
+                // only upload in case we have some data.
                 $fstats = fstat($this->tempHandle);
 
                 if ($fstats['size'] > 0) {
@@ -257,9 +250,7 @@ class EasyWiFTP {
                         return true;
                     }
                 }
-
             }
-
         }
 
         return false;
