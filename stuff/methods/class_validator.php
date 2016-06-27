@@ -503,7 +503,7 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
-        if ($check and is_string($check) and preg_match('/^[\w\/\-\_\.\,]+$/', $check)) {
+        if ($check and is_string($check) and preg_match('/^[\w\/\-\_\.\,\@]+$/', $check)) {
             return $check;
         } else if ($check) {
             return $this->loop($check, 'folder', $type);
