@@ -49,7 +49,7 @@ if (!class_exists('EasyWiFTP')) {
 
 class AppServer {
 
-    private $uniqueHex, $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array();
+    private $uniqueHex, $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array(), $undefinedRequiredVars = array();
 
     public $appMasterServerDetails = array(), $appServerDetails = false;
 
@@ -903,6 +903,7 @@ class AppServer {
         $debugger= array();
 
         $replaceSettings = $this->getReplacements();
+        @parse_ini_string($this->appServerDetails['template']['configedit'], true, INI_SCANNER_RAW);
 
         foreach (explode("\n", $this->appServerDetails['template']['configedit']) as $line) {
 
@@ -964,9 +965,13 @@ class AppServer {
                     }
 
                     $cvarProtectArray[$configPathAndFile]['cvars'][$splitLine[0]] = $replacedLine;
-                } else {
+
+                } else if (isset($splitLine[0])) {
                     $debugger[] = 'no second part for ' . $splitLine[0];
+                } else {
+                    $debugger[] = '$splitLine not defined';
                 }
+
             } else {
                 $debugger[] = 'The sorry rest: ' . $line;
             }
@@ -1033,6 +1038,75 @@ class AppServer {
         return array('path' => $path, 'file' => $splitConfigPath[$i]);
     }
 
+    private function isAssociative($array) {
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    private function replaceArrayValues($givenArray, $replacements) {
+
+        foreach(array_keys($givenArray) as $key) {
+            if (isset($replacements[$key])) {
+                $givenArray[$key] = $replacements[$key];
+            }
+        }
+
+        return $givenArray;
+    }
+
+    private function stringOrNumber($value) {
+        return (is_numeric($value)) ? $value : '"' . $value . '"';
+    }
+
+    private function generateIniString($array) {
+
+        $iniString = '';
+
+        foreach($array as $key => $value) {
+
+            if (isset($this->undefinedRequiredVars[$key])) {
+                unset($this->undefinedRequiredVars[$key]);
+            }
+
+            if (is_array($value)) {
+
+                foreach($value as $arrayValue) {
+                    $iniString .= $key . '=' . $this->stringOrNumber($arrayValue) . PHP_EOL;
+                }
+
+            } else {
+                $iniString .= $key . '=' . $this->stringOrNumber($value) . PHP_EOL;
+            }
+        }
+
+        return $iniString;
+    }
+
+    private function replaceIni($stored, $replacements) {
+
+        $this->undefinedRequiredVars = $replacements;
+        $iniString = "";
+
+        $arrayKeys = array_keys($stored);
+
+        if (count($arrayKeys) !== 0) {
+
+            if (is_array($stored[$arrayKeys[0]]) and $this->isAssociative($stored[$arrayKeys[0]])) {
+
+                foreach($stored as $iniGroup => $values) {
+                    $iniString .= '[' . $iniGroup . ']' . PHP_EOL;
+                    $iniString .= $this->generateIniString($this->replaceArrayValues($values, $replacements));
+                }
+
+            } else {
+                $iniString = $this->generateIniString($this->replaceArrayValues($stored, $replacements));
+            }
+        }
+
+        $iniString .= $this->generateIniString($this->undefinedRequiredVars);
+
+        return $iniString;
+    }
+
     private function correctProtectedFiles () {
 
         $protectedConfigs = $this->protectedSettingsToArray();
@@ -1044,8 +1118,6 @@ class AppServer {
             if ($ftpObect->loggedIn === true) {
 
                 foreach ($protectedConfigs as $config => $values) {
-
-                    $cvarsNotFound = $values['cvars'];
 
                     $fileWithPath = $this->appServerDetails['absoluteFTPPath'] . '/' . $config;
 
@@ -1069,125 +1141,129 @@ class AppServer {
                     // We have one temp handle for all files to reduce the amount of needed ram
                     $ftpObect->tempHandle = null;
 
-                    // Depending how the file was uploaded and written, there might be lots of not needed characters in the file
-                    // A clean up will make the file handling lot easier
-                    $configFileContent = str_replace(array("\0","\b","\r","\Z"),"", $configFileContent);
+                    //TODO handle each type of file with specific parser
+                    if ($values['type'] === 'ini') {
 
-                    $lines = explode("\n", $configFileContent);
-                    $lineCount = count($lines) - 1;
-                    $i = 0;
+                        $parsedConfig = @parse_ini_string($configFileContent, false, INI_SCANNER_RAW);
 
-                    // iterate over all lines
-                    foreach ($lines as $singeLine) {
+                        if (!$parsedConfig) {
+                            $parsedConfig = array();
+                        }
 
-                        // Set to false on each iteration to be able to detect config overwrites
-                        $edited = false;
+                        $ftpObect->writeContentToTemp($this->replaceIni($parsedConfig, $values['cvars']));
 
-                        // For easier comparison make a string to lower
-                        $loweredSingleLine = strtolower($singeLine);
+                    } else {
 
-                        foreach ($values['cvars'] as $cvar => $value) {
+                        $cvarsNotFound = $values['cvars'];
 
-                            if ($values['type'] == 'cfg' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
+                        // Depending how the file was uploaded and written, there might be lots of not needed characters in the file
+                        // A clean up will make the file handling lot easier
+                        $configFileContent = str_replace(array("\0","\b","\r","\Z"),"", $configFileContent);
 
-                                $edited = true;
+                        $lines = explode("\n", $configFileContent);
+                        $lineCount = count($lines) - 1;
+                        $i = 0;
 
-                                unset($cvarsNotFound[$cvar]);
+                        // iterate over all lines
+                        foreach ($lines as $singeLine) {
 
-                                $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+                            // Set to false on each iteration to be able to detect config overwrites
+                            $edited = false;
 
-                                $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
+                            // For easier comparison make a string to lower
+                            $loweredSingleLine = strtolower($singeLine);
 
-                            } else if ($values['type'] == 'yml' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
+                            foreach ($values['cvars'] as $cvar => $value) {
 
-                                $edited = true;
+                                if ($values['type'] == 'cfg' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
 
-                                unset($cvarsNotFound[$cvar]);
+                                    $edited = true;
 
-                                $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+                                    unset($cvarsNotFound[$cvar]);
 
-                                $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
+                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
 
-                             } else if ($values['type'] == 'ini' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\=[\s+]{0,}(.*)$/', $loweredSingleLine)) {
+                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
 
-                                $edited = true;
+                                } else if ($values['type'] == 'yml' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '\s+(.*)$/', $loweredSingleLine)) {
 
-                                unset($cvarsNotFound[$cvar]);
+                                    $edited = true;
 
-                                $ftpObect->writeContentToTemp($cvar . '=' . $value);
+                                    unset($cvarsNotFound[$cvar]);
 
-                            } else if ($values['type'] == 'ddot' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\:[\s+]{0,}(.*)$/', $loweredSingleLine)) {
+                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
 
-                                $edited = true;
+                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar . '  ' . $value : $cvar . '  ' . $value);
 
-                                unset($cvarsNotFound[$cvar]);
+                                } else if ($values['type'] == 'ddot' and preg_match('/^[\s\/]{0,}' . strtolower($cvar) . '[\s+]{0,}\:[\s+]{0,}(.*)$/', $loweredSingleLine)) {
 
-                                $ftpObect->writeContentToTemp($cvar . ':' . $value);
+                                    $edited = true;
 
-                            } else if ($values['type'] == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $loweredSingleLine)) {
+                                    unset($cvarsNotFound[$cvar]);
 
-                                $edited = true;
+                                    $ftpObect->writeContentToTemp($cvar . ':' . $value);
 
-                                unset($cvarsNotFound[$cvar]);
+                                } else if ($values['type'] == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $loweredSingleLine)) {
 
-                                $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+                                    $edited = true;
 
-                                $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
+                                    unset($cvarsNotFound[$cvar]);
 
-                            } else if ($values['type'] == 'json' and preg_match("/^(.*)[\"]" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $loweredSingleLine)) {
+                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
 
-                                $edited = true;
+                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
 
-                                unset($cvarsNotFound[$cvar]);
+                                } else if ($values['type'] == 'json' and preg_match("/^(.*)[\"]" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $loweredSingleLine)) {
 
-                                $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+                                    $edited = true;
 
-                                $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
+                                    unset($cvarsNotFound[$cvar]);
 
-                            } else if ($values['type'] == 'xml' and @preg_match("/^(.*)\<" . strtolower($cvar) . "\>(.*)\<\/" . strtolower($cvar) . "\>(.*)$/", $loweredSingleLine)) {
+                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
 
-                                $edited = true;
+                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
 
-                                unset($cvarsNotFound[$cvar]);
+                                } else if ($values['type'] == 'xml' and @preg_match("/^(.*)\<" . strtolower($cvar) . "\>(.*)\<\/" . strtolower($cvar) . "\>(.*)$/", $loweredSingleLine)) {
 
-                                $splitLine = preg_split('/\<' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+                                    $edited = true;
 
-                                $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
+                                    unset($cvarsNotFound[$cvar]);
+
+                                    $splitLine = preg_split('/\<' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
+
+                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . '<' .$cvar . '>' . $value . '</' . $cvar . '>' : '<' . $cvar . '> ' . $value . '</' . $cvar . '>');
+                                }
                             }
+
+                            // Write untouched content
+                            if ($edited == false) {
+                                $ftpObect->writeContentToTemp($singeLine);
+                            }
+
+                            // If we do not count, we would add a newline at the end every time, a file is edited
+                            if ($i < $lineCount) {
+                                $ftpObect->writeContentToTemp("\r\n");
+                            }
+
+                            $i++;
                         }
 
-                        // Write untouched content
-                        if ($edited == false) {
-                            $ftpObect->writeContentToTemp($singeLine);
-                        }
+                        $debug = array();
 
-                        // If we do not count, we would add a newline at the end every time, a file is edited
-                        if ($i < $lineCount) {
-                            $ftpObect->writeContentToTemp("\r\n");
-                        }
+                        // In case of ini or CFG files we can add entries, which are missing from the file and should be protected
+                        foreach ($cvarsNotFound as $cvar => $value) {
 
-                        $i++;
-                    }
+                            if ($values['type'] == 'cfg') {
 
-                    $debug = array();
+                                $ftpObect->writeContentToTemp($cvar . '  ' . $value . "\r\n");
 
-                    // In case of ini or CFG files we can add entries, which are missing from the file and should be protected
-                    foreach ($cvarsNotFound as $cvar => $value) {
+                            } else if ($values['type'] == 'ddot') {
 
-                        if ($values['type'] == 'cfg') {
+                                $ftpObect->writeContentToTemp($cvar . ':' . $value . "\r\n");
 
-                            $ftpObect->writeContentToTemp($cvar . '  ' . $value . "\r\n");
-
-                        } else if ($values['type'] == 'ini') {
-
-                            $ftpObect->writeContentToTemp($cvar . '=' . $value . "\r\n");
-
-                        } else if ($values['type'] == 'ddot') {
-
-                            $ftpObect->writeContentToTemp($cvar . ':' . $value . "\r\n");
-
-                        } else {
-                            $debug[] = 'Type is: ' . $values['type'] . ' and key value: ' . $cvar . '=>' . $value;
+                            } else {
+                                $debug[] = 'Type is: ' . $values['type'] . ' and key value: ' . $cvar . '=>' . $value;
+                            }
                         }
                     }
 
