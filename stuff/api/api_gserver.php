@@ -774,7 +774,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
             $customID = $localID;
 
-            if ($active != $oldActive or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $hdd != $oldHdd or $pallowed != $oldProtected or count($gamesToBeRemoved) > 0) {
+            if ($active != $oldActive or $port != $oldPort or $homeDirLabel != $oldHomeDirLabel or $hdd != $oldHdd or $pallowed != $oldProtected or count($gamesToBeRemoved) > 0 or strlen($initialpassword) > 1) {
 
                 $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='gs' AND (`status` IS NULL OR `status`='1') AND `action`!='ad' AND `affectedID`=? and `resellerID`=?");
                 $query->execute(array($localID, $resellerID));
