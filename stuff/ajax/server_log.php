@@ -89,7 +89,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             }
 
         } else {
-            $array['error'] = 'Cannot connect to FTP Server ' . $row2['ip'] . ':' . $row2['ftpport'];
+            $array['error'] = 'Cannot connect to FTP Server ' . $row['ftp_ip'] . ':' . $row['ftpport'];
         }
     }
 }
