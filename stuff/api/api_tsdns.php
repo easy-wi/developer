@@ -280,7 +280,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data)) {
 
         $affectedCount = 0;
 
-        $query = $sql->prepare("SELECT `dnsID`,`userID`,`tsdnsID`,`dns` FROM `webVhost` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerID`=?");
+        $query = $sql->prepare("SELECT `dnsID`,`userID`,`tsdnsID`,`dns` FROM `voice_dns` WHERE `" . $from[$data['identify_server_by']] . "`=? AND `resellerID`=?");
         $query->execute(array($data[$data['identify_server_by']], $resellerID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
