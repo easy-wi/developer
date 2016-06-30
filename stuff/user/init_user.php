@@ -157,7 +157,7 @@ $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='mo' AND
 $query->execute();
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-    if ($row['active'] == 'Y' and $row['type'] == 'U' and is_file(EASYWIDIR . '/stuff/' . $row['file'])) {
+    if ($row['active'] == 'Y' and $row['type'] == 'U' and is_file(EASYWIDIR . '/stuff/custom_modules/' . $row['file'])) {
         $query2->execute(array($row['id'], $user_language));
         $name = $query2->fetchColumn();
 
