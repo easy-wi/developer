@@ -483,7 +483,7 @@ if ($currentStep == 6 and count($systemCheckError) == 0) {
 
     if (isset($_POST['passw1'])) {
 
-        if ($_POST['passw1'] != $_POST['passw2'] or preg_match('/^[\w\S]{6,120}$/', $_POST['passw1'])) {
+        if ($_POST['passw1'] != $_POST['passw2'] or !preg_match('/^[\w\S]{6,120}$/', $_POST['passw1'])) {
             $displayToUser .= "<div class='alert alert-danger'>{$languageObject->error_password}</div>";
         }
 
