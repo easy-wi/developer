@@ -46,6 +46,8 @@ use Decoda\Decoda;
 
 $sprache_bad = getlanguagefile('home', $user_language, $reseller_id);
 
+$feedArray = array();
+
 $statsArray = array(
     'gameMasterInstalled' => 0,
     'gameMasterActive' => 0,
@@ -149,8 +151,6 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
     $statsArray['mysqlMasterDBPercent'] = ($statsArray['mysqlMasterDBAvailable'] > 0) ? round($statsArray['mysqlDBInstalled'] / ($statsArray['mysqlMasterDBAvailable'] / 100), 2) : 0;
 
     $statsArray['mysqlActivePercent'] = ($statsArray['mysqlDBInstalled'] > 0) ? round($statsArray['mysqlDBActive'] / ($statsArray['mysqlDBInstalled'] / 100), 2) : 0;
-
-    $feedArray = array();
 
     if ($reseller_id == 0 and $admin_id == $reseller_id) {
         $query = $sql->prepare("SELECT * FROM `feeds_settings` WHERE `resellerID`=0 AND `active`='Y' LIMIT 1");
