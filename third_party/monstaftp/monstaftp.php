@@ -91,9 +91,9 @@ if ($ui->escaped('ftpAction', 'get') == "templateProcess") {
 
 // Check for AJAX post
 if ($ui->escaped('ftpAction', 'post') != "" || $ui->escaped('ftpAction', 'get') != "") {
-    $ajaxRequest=1;
+    $ajaxRequest = 1;
 } else {
-    $ajaxRequest=0;
+    $ajaxRequest = 0;
 }
 
 // Check resetting upload erreor array

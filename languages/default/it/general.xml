@@ -35,9 +35,11 @@
     <delSafe>Elimina in modo sicuro</delSafe>
     <delAny>Elimina in ogni caso</delAny>
     <delDB>Rimuovi dal database</delDB>
+    <description>Descrizione</description>
     <domains>Domini</domains>
     <downloads>Downloads</downloads>
     <edit>Modifica</edit>
+    <error_connect></error_connect>
     <errors>Errore/i</errors>
     <exec>Esegui</exec>
     <export>Esporta</export>

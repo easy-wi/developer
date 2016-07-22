@@ -880,10 +880,11 @@ function checkFileChecked() {
 function activateActionButtons(active,paste) {
 
 	// Paste button
-	if (paste == 1 || globalClipboardAction == 'copy')
-		document.getElementById('actionButtonPaste').disabled = false;
-	else
-		document.getElementById('actionButtonPaste').disabled = true;
+    var actionButtonPaste = document.getElementById('actionButtonPaste');
+
+    if (actionButtonPaste) {
+        actionButtonPaste.disabled = (!(paste == 1 || globalClipboardAction == 'copy'));
+    }
 	
 	// All other buttons
 	if (active == 1) {

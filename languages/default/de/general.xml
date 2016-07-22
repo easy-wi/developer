@@ -35,9 +35,11 @@
     <delSafe>Sicheres Löschen</delSafe>
     <delAny>In jedem Fall Löschen</delAny>
     <delDB>Aus der Datenbank Löschen</delDB>
+    <description>Beschreibung</description>
     <domains>Domains</domains>
     <downloads>Downloads</downloads>
     <edit>Bearbeiten</edit>
+    <error_connect>Fehler beim Verbinden zum Server</error_connect>
     <errors>Fehler</errors>
     <exec>Ausführen</exec>
     <export>Exportieren</export>

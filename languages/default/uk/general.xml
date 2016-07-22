@@ -35,9 +35,11 @@
     <delSafe>Safe delete</delSafe>
     <delAny>Delete in any case</delAny>
     <delDB>Remove from database</delDB>
+    <description>Description</description>
     <domains>Domains</domains>
     <downloads>Downloads</downloads>
     <edit>Edit</edit>
+    <error_connect>Error while connecting to the server</error_connect>
     <errors>Error(s)</errors>
     <exec>Execute</exec>
     <export>Export</export>
