@@ -492,9 +492,9 @@ virtualserver_weblist_enabled 0 = Off';
 
                 $query = $sql->prepare("SELECT `id` FROM `voice_masterserver` WHERE `ssh2ip`=? AND `resellerid`=? LIMIT 1");
                 $query->execute(array($ip, $reseller_id));
+                $masterid = $query->fetchColumn();
 
-                if (!isid($query->fetchColumn(), 10)) {
-
+                if (!isid($masterid, 10)) {
 
                     if ($ui->st('d', 'get') != 'ri') {
                         // https://github.com/easy-wi/developer/issues/36 managedServer,managedForID added
@@ -508,7 +508,6 @@ virtualserver_weblist_enabled 0 = Off';
 
                     $loguseraction = '%add% %voserver% %master% ' . $ip;
                     $insertlog->execute();
-
                 }
 
                 $template_file = 'admin_voicemasterserver_add2.tpl';
