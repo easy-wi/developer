@@ -30,11 +30,11 @@ $lang_skins_empty = "[skins] cartella vuota!";
 $lang_skins_locked = "[skins] cartella bloccata!";
 $lang_skins_missing = "[skins] cartella mancante!";
 
-$lang_missing_fields = "Error! Please complete all the marked fields";
-$lang_max_logins = "You have exceeded the allowed login attempts and have been locked out. Please try again in [n] minutes";
-$lang_cant_connect = "Error! Couldn't connect to FTP host";
-$lang_cant_authenticate = "Error! Couldn't authenticate your login";
-$lang_ip_conflict = "An IP conflict has been detected";
+$lang_missing_fields = "Errore! Perfavore completa tutti i campi segnalati";
+$lang_max_logins = "Hai superato il numero di tentativi di login massimi effettubili e sei stato bloccato. Perfavore ritenta in [n] minuti";
+$lang_cant_connect = "Errore! Non sono in gradi di connettermi all'host FTP";
+$lang_cant_authenticate = "Errore! Non sono in grado di autenticare il tuo login";
+$lang_ip_conflict = "È stato rilevato un conflitto IP";
 
 $lang_table_name = "Nome";
 $lang_table_size = "Dimensione";
