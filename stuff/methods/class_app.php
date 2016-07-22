@@ -1088,9 +1088,11 @@ class AppServer {
 
     private function replaceIni($stored, $replacements) {
 
-        $this->undefinedRequiredVars = $replacements;
-        $iniString = "";
+        if (!$stored) {
+            $stored = array();
+        }
 
+        $iniString = "";
         $arrayKeys = array_keys($stored);
 
         if (count($arrayKeys) !== 0) {
@@ -1112,9 +1114,11 @@ class AppServer {
         return $iniString;
     }
 
-    private function replaceYaml($stored, $replacements) {
+    private function replaceArray($stored, $replacements) {
 
-        $this->undefinedRequiredVars = $replacements;
+        if (!$stored) {
+            $stored = array();
+        }
 
         $replacedArray = $this->replaceArrayValues($stored, $replacements);
 
@@ -1122,7 +1126,19 @@ class AppServer {
             $replacedArray[$key] = $value;
         }
 
-        return Spyc::YAMLDump($replacedArray);
+        return $replacedArray;
+    }
+
+    private function replaceYaml($stored, $replacements) {
+        return Spyc::YAMLDump($this->replaceArray($stored, $replacements));
+    }
+
+    private function replaceJSON($stored, $replacements) {
+        return json_encode($this->replaceArray($stored, $replacements), JSON_PRETTY_PRINT);
+    }
+
+    private function replaceLua($stored, $replacements) {
+        return Lua::arrayToLua($this->replaceArray($stored, $replacements));
     }
 
     private function correctProtectedFiles () {
@@ -1158,17 +1174,12 @@ class AppServer {
 
                     // We have one temp handle for all files to reduce the amount of needed ram
                     $ftpObect->tempHandle = null;
+                    $this->undefinedRequiredVars = $values['cvars'];
 
                     //TODO handle each type of file with specific parser
                     if ($values['type'] === 'ini') {
 
-                        $parsedConfig = @parse_ini_string($configFileContent, false, INI_SCANNER_RAW);
-
-                        if (!$parsedConfig) {
-                            $parsedConfig = array();
-                        }
-
-                        $ftpObect->writeContentToTemp($this->replaceIni($parsedConfig, $values['cvars']));
+                        $ftpObect->writeContentToTemp($this->replaceIni(@parse_ini_string($configFileContent, false, INI_SCANNER_RAW), $values['cvars']));
 
                     } else if ($values['type'] === 'yml' or $values['type'] === 'yaml') {
 
@@ -1178,11 +1189,21 @@ class AppServer {
 
                         $parsedConfig = Spyc::YAMLLoadString($configFileContent);
 
-                        if (!$parsedConfig) {
-                            $parsedConfig = array();
+                        $ftpObect->writeContentToTemp($this->replaceYaml($parsedConfig, $values['cvars']));
+
+                    } else if ($values['type'] == 'json') {
+
+                        $ftpObect->writeContentToTemp($this->replaceJSON(@parse_ini_string(@json_decode($configFileContent), false, INI_SCANNER_RAW), $values['cvars']));
+
+                    } else if ($values['type'] == 'lua') {
+
+                        if (!class_exists('Lua')) {
+                            include(EASYWIDIR . '/stuff/methods/class_lua.php');
                         }
 
-                        $ftpObect->writeContentToTemp($this->replaceYaml($parsedConfig, $values['cvars']));
+                        $parsedConfig = Lua::luaToArray($configFileContent);
+
+                        $ftpObect->writeContentToTemp($this->replaceLua($parsedConfig, $values['cvars']));
 
                     } else {
 
@@ -1224,26 +1245,6 @@ class AppServer {
                                     unset($cvarsNotFound[$cvar]);
 
                                     $ftpObect->writeContentToTemp($cvar . ':' . $value);
-
-                                } else if ($values['type'] == 'lua' and preg_match("/^(.*)" . strtolower($cvar) . "[\s+]{0,}\=[\s+]{0,}(.*)[\,]$/", $loweredSingleLine)) {
-
-                                    $edited = true;
-
-                                    unset($cvarsNotFound[$cvar]);
-
-                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
-
-                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' = ' .$value : $cvar . '=' . $value);
-
-                                } else if ($values['type'] == 'json' and preg_match("/^(.*)[\"]" . strtolower($cvar) . "[\s+]{0,}:[\s+]{0,}(.*)[\,]{0,1}$/", $loweredSingleLine)) {
-
-                                    $edited = true;
-
-                                    unset($cvarsNotFound[$cvar]);
-
-                                    $splitLine = preg_split('/' . $cvar . '/', $singeLine, -1, PREG_SPLIT_NO_EMPTY);
-
-                                    $ftpObect->writeContentToTemp((isset($splitLine[1])) ? $splitLine[0] . $cvar. ' : ' .$value : $cvar . ':' . $value);
 
                                 } else if ($values['type'] == 'xml' and @preg_match("/^(.*)\<" . strtolower($cvar) . "\>(.*)\<\/" . strtolower($cvar) . "\>(.*)$/", $loweredSingleLine)) {
 
