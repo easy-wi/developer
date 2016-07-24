@@ -23,6 +23,7 @@
                         <input id="inputCommand" type="text" class="form-control" name="command" value="" onkeydown="enterUsed(event)">
                         <span class="input-group-btn">
                             <button class="btn btn-primary btn-flat" type="button" onclick="submitForm()"><i class="fa fa-play-circle"></i></button>
+                            <button class="btn btn-primary btn-flat" type="button" onclick="getLog()"><i class="fa fa-refresh"></i></button>
                         </span>
                     </div>
                     <?php } ?>
