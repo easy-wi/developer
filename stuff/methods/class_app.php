@@ -1062,8 +1062,13 @@ class AppServer {
         return $givenArray;
     }
 
-    private function stringOrNumber($value) {
-        return (is_numeric($value)) ? $value : '"' . $value . '"';
+    private function booleanOrValue($value) {
+
+        if (is_bool($value)) {
+            return ($value) ? "true" : "false";
+        }
+
+        return $value;
     }
 
     private function generateIniString($array) {
@@ -1075,11 +1080,11 @@ class AppServer {
             if (is_array($value)) {
 
                 foreach($value as $arrayValue) {
-                    $iniString .= $key . '=' . $this->stringOrNumber($arrayValue) . PHP_EOL;
+                    $iniString .= $key . '=' . $this->booleanOrValue($arrayValue) . PHP_EOL;
                 }
 
             } else {
-                $iniString .= $key . '=' . $this->stringOrNumber($value) . PHP_EOL;
+                $iniString .= $key . '=' . $this->booleanOrValue($value) . PHP_EOL;
             }
         }
 
