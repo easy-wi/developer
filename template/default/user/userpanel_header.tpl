@@ -266,7 +266,7 @@
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
-                            <?php foreach ($customModules['mo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '> <a href="userpanel.php?w='.$k.'"><i class="fa fa-tasks"></i>'.$v.'</a></li>'; }; ?>
+                            <?php foreach ($customModules['mo'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="userpanel.php?w='.$k.'"><i class="fa fa-tasks"></i> '.$v.'</a></li>'; }; ?>
                         </ul>
                     </li>
                     <?php } ?>
