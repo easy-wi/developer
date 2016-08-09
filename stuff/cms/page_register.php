@@ -304,7 +304,7 @@ if (isset($registration) and in_array($registration, array('A', 'M', 'D'))) {
                         $activationLink .= ($page_data->seo == 'Y') ? 'activate/' . $activeHash . '/' : '&amp;activate=' . $activeHash;
 
                         // send Mail
-                        sendmail('emailregister',$userID,'', $activationLink);
+                        sendmail('emailregister',$userID, $activationLink,'');
 
                     } else {
                         $directLogin = true;
