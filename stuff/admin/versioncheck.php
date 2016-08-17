@@ -141,12 +141,12 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ve
 
                     while ($ze = zip_read($zo)) {
 
-                        $name = zip_entry_name($ze);
+                        $targetName = preg_replace('/^(easy-wi-developer(?:-[\\w]+)?\\/)/', '', zip_entry_name($ze), -1 );
                         $zeo = zip_entry_open($zo, $ze, 'r');
 
-                        if (preg_match('/^(.*)\.[\w]{1,}$/', $name)) {
+                        if (preg_match('/^(.*)\.[\w]{1,}$/', $targetName)) {
 
-                            $folders = preg_split('/\//',$name,-1,PREG_SPLIT_NO_EMPTY);
+                            $folders = preg_split('/\//', $targetName, -1, PREG_SPLIT_NO_EMPTY);
                             $count = count($folders) - 1;
                             $i = 0;
 
@@ -163,7 +163,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ve
                                 $i++;
                             }
 
-                            if (isset($checkfolder) and $checkfolder!='' and !is_dir(EASYWIDIR . '/' . $checkfolder) and !is_file(EASYWIDIR . '/' . $checkfolder)) {
+                            if (isset($checkfolder) and $checkfolder != '' and !is_dir(EASYWIDIR . '/' . $checkfolder) and !is_file(EASYWIDIR . '/' . $checkfolder)) {
 
                                 @mkdir($checkfolder);
 
@@ -174,20 +174,20 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ve
                                 }
                             }
 
-                        } else if (!is_dir(EASYWIDIR . '/' . $name) and !is_file(EASYWIDIR . '/' . $name)) {
+                        } else if (!is_dir(EASYWIDIR . '/' . $targetName) and !is_file(EASYWIDIR . '/' . $targetName)) {
 
-                            @mkdir(EASYWIDIR . '/' . $name);
+                            @mkdir(EASYWIDIR . '/' . $targetName);
 
-                            if (is_dir(EASYWIDIR . '/' . $name)) {
-                                $response->add('Creating new folder: '.$name);
+                            if (is_dir(EASYWIDIR . '/' . $targetName)) {
+                                $response->add('Creating new folder: '.$targetName);
                             } else {
-                                $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $name . '</b>');
+                                $response->addError('Cannot create the folder <b>'.EASYWIDIR . '/' . $targetName . '</b>');
                             }
                         }
 
-                        if (preg_match('/^(.*)\.[\w]{1,}$/', $name) and $zeo) {
+                        if (preg_match('/^(.*)\.[\w]{1,}$/', $targetName) and $zeo) {
 
-                            $nf = @fopen($name, 'w');
+                            $nf = @fopen($targetName, 'w');
 
                             if ($nf) {
 
@@ -195,12 +195,12 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ve
 
                                 if ($fz > 0) {
                                     if (@fwrite($nf, zip_entry_read($ze, $fz), $fz)) {
-                                        $response->add('Unpacking: '. $name);
+                                        $response->add('Unpacking: '. $targetName);
                                     } else {
-                                        $response->addError('Unpacking: '. $name);
+                                        $response->addError('Unpacking: '. $targetName);
                                     }
                                 } else {
-                                    $response->addError('Unpacking: '. $name);
+                                    $response->addError('Unpacking: '. $targetName);
                                 }
 
                                 zip_entry_close($ze);
@@ -210,7 +210,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ve
                                 }
 
                             } else {
-                                $response->addError('Unpacking: '. $name);
+                                $response->addError('Unpacking: '. $targetName);
                             }
                         }
 
