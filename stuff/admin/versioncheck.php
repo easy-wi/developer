@@ -48,7 +48,7 @@ $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
 
-if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($ewVersions['cVersion'] < $ewVersions['version'] or $ewVersions['files'] < $ewVersions['version'])) {
+if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and version_compare($ewVersions['version'], $ewVersions['cVersion']) == 1) {
 
     if ($ui->w('action', 4, 'post') == 'ud') {
 
@@ -119,7 +119,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
             $response->add('Downloading: ' . $licenceDetails['v'] . '.zip');
 
-            $fp = @fopen('http://update.easy-wi.com/ew/' . $licenceDetails['v'] . '.zip', 'rb', false, $opts);
+            $fp = @fopen('https://api.github.com/repos/easy-wi/developer/zipball/' . $licenceDetails['v'], 'rb', false, $opts);
             $zip = @fopen(EASYWIDIR . '/tmp/' . $licenceDetails['v'] . '.zip', 'wb');
 
             if ($fp == true and $zip == true) {
@@ -280,15 +280,8 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
 
     $table = array();
 
-    if ($user_language == 'de') {
-        $column = 'de';
-        $release = 'releasenotesDE';
-    } else {
-        $column = 'en';
-        $release = 'releasenotesEN';
-    }
-
-    $release = '<div class="right"><a href="https://easy-wi.com/forum/showthread.php?tid='.$ewVersions[$release] . '" target="_blank">'.$vcsprache->releaseNotes . '</a></div>';
+    $release = '<div class="right"><a href="https://github.com/easy-wi/developer/releases/tag/'.$ewVersions['version'] . '" target="_blank">' . $vcsprache->releaseNotes . '</a></div>';
+    $column = ($user_language == 'de') ? 'de' : 'en';
 
     $query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");
     $query->execute();
@@ -304,11 +297,6 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ($
         $state = 1;
         $class = 'versioncheckbad';
         $isok = $vcsprache->outdated . ' ' . $ewVersions['cVersion'] . ' ' . $vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
-
-    } else if (version_compare($ewVersions['version'], $ewVersions['files']) == 1) {
-        $state = 1;
-        $class = 'versioncheckbad';
-        $isok = $vcsprache->filesoutdated . ' ' . $ewVersions['cVersion'] . '. '.$vcsprache->latestversion . ' ' . $ewVersions['version'] . '.' . $release . ' ' . $update;
 
     } else {
         $state = 2;

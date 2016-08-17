@@ -184,14 +184,30 @@ if (versioncheck($version, '5.30', 'update_522-530.php', $response)) {
     $version = '5.30';
 }
 
+try {
+
+    $query = $sql->prepare("SELECT `developer` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
+    $query->execute();
+
+    if ($query->fetchColumn() == 'Y') {
+
+        $devVersion = '5.32';
+
+        if (versioncheck($version, $devVersion, 'update_developer.php', $response)) {
+            $version = $devVersion;
+        }
+    }
+
+} catch (PDOException $e) {
+    //
+}
+
 $response->add('Repairing tables if needed.');
 $tables->correctExistingTables();
 
 foreach($tables->getExecutedSql() as $change){
     $response->add($change);
 }
-
-include(EASYWIDIR . '/stuff/methods/tables_entries_repair.php');
 
 # Ende
 if (!isset($updateinclude) or $updateinclude == false) {

@@ -151,6 +151,16 @@
                                 <input class="form-control" id="inputLoginText" type="text" name="loginheadertext" value="<?php echo $loginHeaderText;?>">
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="inputDeveloper">Developer Version</label>
+                            <div class="controls">
+                                <select class="form-control" id="inputDeveloper" name="developer">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if($developer=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
             </div>
             <div class="box box-primary">

@@ -52,22 +52,13 @@ if (!isanyadmin($admin_id) and count($pa) == 0) {
     die('No Access');
 }
 
-$ewVersions['files'] = '5.30';
-
 $vcsprache = getlanguagefile('versioncheck', $user_language, $reseller_id);
 $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
 $query->execute();
 $ewVersions['cVersion'] = $query->fetchColumn();
+$ewVersions['version'] = $rSA['version'];
 
-$query = $sql->prepare("SELECT `version`,`releasenotesDE`,`releasenotesEN` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
-$query->execute();
-while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-    $ewVersions['version'] = $row['version'];
-    $ewVersions['releasenotesDE'] = $row['releasenotesDE'];
-    $ewVersions['releasenotesEN'] = $row['releasenotesEN'];
-}
-
-if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and (version_compare($ewVersions['version'], $ewVersions['cVersion']) == 1 or version_compare($ewVersions['version'], $ewVersions['files']) == 1)) {
+if ($reseller_id == 0 and $ui->st('w', 'get') != 'vc' and version_compare($ewVersions['version'], $ewVersions['cVersion']) == 1) {
     $toooldversion = $vcsprache->newversion.$ewVersions['version'];
 }
 

@@ -101,8 +101,7 @@ try {
         $loguserip = 'localhost';
         $userHostname = 'localhost';
     }
-}
-catch(PDOException $error) {
+} catch(PDOException $error) {
     die($error->getMessage());
 }
 

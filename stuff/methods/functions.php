@@ -268,11 +268,7 @@ if (!function_exists('passwordgenerate')) {
 
     function serverAmount($resellerid) {
 
-        global $sql, $user_language;
-
-        $query = $sql->prepare("SELECT `licence` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
-        $query->execute();
-        $json = @json_decode($query->fetchColumn());
+        global $sql, $user_language, $rSA;
 
         $query = $sql->prepare("SELECT  COUNT(g.`id`) AS `amount` FROM `gsswitch` g LEFT JOIN `userdata` u ON g.`userid`=u.`id` LEFT JOIN `userdata` r ON g.`resellerid`= r.`id` WHERE g.`active`='Y' AND u.`active`='Y' AND (r.`active`='Y' OR r.`active` IS NULL)");
         $query->execute();
@@ -332,7 +328,7 @@ if (!function_exists('passwordgenerate')) {
             $dCount = (int) $query->fetchColumn();
         }
 
-        return array('left' => $left, 'count' => $count, 'gsCount' => $gsCount, 'vCount' => $vCount, 'voCount' => $voCount, 'dCount' => $dCount, 'mG' => $mG, 'mVs' => $mVs, 'mVo' => $mVo, 'mD' => $mD, 'lG' => $lG, 'lVs' => $lVs, 'lVo' => $lVo, 'lD' => $lD, 'p' => $json->p, 'b' => $json->b, 't' => $json->t, 'u' => $json->u, 'c' => $json->c, 'v' => $json->v);
+        return array('left' => $left, 'count' => $count, 'gsCount' => $gsCount, 'vCount' => $vCount, 'voCount' => $voCount, 'dCount' => $dCount, 'mG' => $mG, 'mVs' => $mVs, 'mVo' => $mVo, 'mD' => $mD, 'lG' => $lG, 'lVs' => $lVs, 'lVo' => $lVo, 'lD' => $lD, 'p' => 'Y', 'b' => 'Y', 't' => 'g', 'u' => 'U', 'c' => 'B', 'v' => $rSA['version']);
     }
 
     function getusername($userid) {
@@ -1043,6 +1039,10 @@ if (!function_exists('passwordgenerate')) {
 
         $domain = str_replace(array('https://', 'http://'),'', $domain);
 
+        if ($port == 443) {
+            $domain = 'ssl://' . $domain;
+        }
+
         if (isdomain($domain)) {
             $fp = @fsockopen($domain, $port, $errno, $errstr, 10);
         } else {
@@ -1217,26 +1217,23 @@ if (!function_exists('passwordgenerate')) {
 
     function licenceRequest($return = false) {
 
-        global $sql, $ui;
+        global $sql, $ui, $rSA;
 
-        $licencecode = webhostRequest('l.easy-wi.com', $ui->server['HTTP_HOST'], '/licence.php', null, 80);
-        $licencecode = cleanFsockOpenRequest($licencecode, '{', '}');
-        $json = @json_decode($licencecode);
+        $developer = (isset($rSA['developer'])) ? $rSA['developer'] : 'N';
 
-        if ($json and isset($json->v)) {
-            $licencecode = array();
+        $apiResponse = webhostRequest('api.github.com', $ui->server['HTTP_HOST'], '/repos/easy-wi/developer/' . (($developer == 'Y') ? 'tags' : 'releases/latest'), null, 443);
+        $json = @json_decode($apiResponse);
 
-            foreach($json as $k => $v) {
-                $licencecode[$k] = $v;
-            }
+        if (($developer == 'N' and is_object($json) and property_exists($json, 'tag_name') or ($developer == 'Y' and is_array($json) and isset($json[0]) and is_object($json[0]) and property_exists($json[0], 'name')))) {
 
-            $licencecode['lt'] = time();
-            $licencecode = json_encode($licencecode);
+            $varsion = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
+            $apiResponse = array('v' => $varsion);
 
-            $query2 = $sql->prepare("UPDATE `settings` SET `licence`=?,`version`=?,`releasenotesDE`=?,`releasenotesEN`=? WHERE `resellerid`=0 LIMIT 1");
-            $query2->execute(array($licencecode, $json->v, $json->de, $json->en));
+            $query = $sql->prepare("UPDATE `settings` SET `version`=? WHERE `resellerid`=0 LIMIT 1");
+            $query->execute(array($varsion));
         }
-        return ($return == true) ? $licencecode : false;
+
+        return ($return == true) ? $apiResponse : false;
     }
 
     function token ($check = false) {
