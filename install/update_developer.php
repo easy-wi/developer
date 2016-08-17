@@ -37,8 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include == true) {
-
+if (isset($include) and $include == true and isset($devVersion)) {
 
     $query = $sql->prepare("SELECT `version` FROM `easywi_version` WHERE `version`=? LIMIT 1");
     $query->execute(array($devVersion));

@@ -87,11 +87,15 @@ if (!isset($sql)) {
     }
 }
 
-function versioncheck ($current, $new ,$file ,$response) {
+function versioncheck ($current, $new ,$file ,$response, $developer = false) {
 
     global $sql;
 
     $include = true;
+
+    if ($developer) {
+        $devVersion = $new;
+    }
 
     if ($current < $new) {
 
@@ -193,7 +197,7 @@ try {
 
         $devVersion = '5.32';
 
-        if (versioncheck($version, $devVersion, 'update_developer.php', $response)) {
+        if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
             $version = $devVersion;
         }
     }
