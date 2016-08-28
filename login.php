@@ -591,8 +591,11 @@ if ($ui->st('w', 'get') == 'lo') {
 
         if (isset($active, $id, $resellerid) and $active == 'Y' and isset($passwordCorrect) and $passwordCorrect) {
 
+            $sessionCookieParameter = session_get_cookie_params();
+
             session_unset();
             session_destroy();
+            session_set_cookie_params($sessionCookieParameter['lifetime'], $sessionCookieParameter['path'], $sessionCookieParameter['domain'], true, ($ui->escaped('HTTPS', 'server') == 'on'));
             session_start();
 
             # https://github.com/easy-wi/developer/issues/2
