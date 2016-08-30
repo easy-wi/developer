@@ -158,6 +158,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $loguseraction = "%reinstall% %gserver% {$appServer->appServerDetails['serverIP']}:{$appServer->appServerDetails['port']}";
 
         } else {
+
+            $appServer->stopApp();
+
             $loguseraction = "%resync% %gserver% {$appServer->appServerDetails['serverIP']}:{$appServer->appServerDetails['port']}";
         }
 
