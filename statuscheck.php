@@ -867,7 +867,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         }
 
                         if ($tsdown == true) {
-                            $cmds[] = $folders . 'if [ -f "ts3server" ]; then TSBIN="ts3server"; else TSBIN="' . $tsdnsbin . '"; fi; function r () { if [ "`ps fx | grep $TSBIN | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; r& ';
+                            $cmds[] = $folders . 'if [ -f "ts3server" ]; then TSBIN="ts3server"; else TSBIN="' . $tsdnsbin . '"; fi; function r () { if [ "`ps fx | grep $TSBIN | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start inifile=ts3server.ini > /dev/null & else ./ts3server_startscript.sh restart inifile=ts3server.ini > /dev/null & fi }; r& ';
                         }
 
                         if ($vrow['usedns'] == 'Y' and $tsdnsdown == true) {
