@@ -307,7 +307,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
 
                         if ($tsdown == true) {
-                            $cmds[] = $folders . 'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
+                            $cmds[] = $folders . 'function restart1 () { if [ "`ps fx | grep '.$tsbin.' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start inifile=ts3server.ini > /dev/null & else ./ts3server_startscript.sh restart inifile=ts3server.ini > /dev/null & fi }; restart1& ';
                         }
 
                         if ($row2['usedns'] == 'Y' and $tsdnsdown == true) {

@@ -550,7 +550,7 @@ virtualserver_weblist_enabled 0 = Off';
                         $ssh2cmd2 = "ps fx | grep '$tsdnsbin' | grep -v 'grep' | awk '{print $1}' | while read pid; do kill ".'$pid'."; done";
 
                     } else if ($active == 'Y') {
-                        $ssh2cmd = $commandFolders . 'function restart1 () { if [ "`ps fx | grep ' . $tsbin . ' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start > /dev/null & else ./ts3server_startscript.sh restart > /dev/null & fi }; restart1& ';
+                        $ssh2cmd = $commandFolders . 'function restart1 () { if [ "`ps fx | grep ' . $tsbin . ' | grep -v grep`" == "" ]; then ./ts3server_startscript.sh start inifile=ts3server.ini > /dev/null & else ./ts3server_startscript.sh restart inifile=ts3server.ini > /dev/null & fi }; restart1& ';
                         $ssh2cmd2 = $commandFolders . ' cd tsdns && function restart2 () { if [ "`ps fx | grep '.$tsdnsbin.' | grep -v grep`" == "" ]; then ./'.$tsdnsbin.' > /dev/null & else ./'.$tsdnsbin.' --update > /dev/null & fi }; restart2& ';
                     }
 
