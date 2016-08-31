@@ -122,17 +122,19 @@ function tsdns ($action, $sship, $sshport, $sshuser, $keyuse, $sshkey, $sshpw, $
 
         $privateKey = EASYWIDIR . '/keys/' . removePub($sshkey);
 
-        $sshpw = new phpseclib\Crypt\RSA();
+        $key = new phpseclib\Crypt\RSA();
 
         if ($keyuse == 'B') {
-            $sshpw->setPassword($sshpw);
+            $key->setPassword($sshpw);
         }
 
         $keyContent = @file_get_contents($privateKey);
 
         if ($keyContent) {
-            $sshpw->loadKey($keyContent);
+            $key->loadKey($keyContent);
         }
+        
+        $sshpw = $key;
     }
 
     if ($sshSftpObject->login($sshuser, $sshpw)) {
