@@ -415,14 +415,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 // the currently running game has been removed. We can stop it dirty
                 if ($currentActiveGame != $oldActiveGame) {
-
                     $appServer->stopAppHard();
-
                 // Attributes changed that require a soft stop
                 } else if (($oldActive == 'Y' and $active == 'N') or $ip != $oldIp or $port != $oldPort or $homeLabel != $oldHomeLabel) {
-
                     $appServer->stopApp();
-
                 }
 
                 // Remove if games got deselected. Cannot happen during gameserver adding
@@ -702,6 +698,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $loguseraction = "%reinstall% %gserver% {$serverip}:{$port}";
 
             } else {
+
+                $appServer->stopApp();
+
                 $loguseraction = "%resync% %gserver% {$serverip}:{$port}";
             }
 
