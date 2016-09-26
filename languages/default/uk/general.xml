@@ -9,7 +9,7 @@
     <api>API</api>
     <apiAuth>External authentication</apiAuth>
     <appMaster>App master</appMaster>
-    <appRoot>App/Game master</appRoot>
+    <appRoot>App/Game Master</appRoot>
 	<backup>Backup</backup>
 	<change>Change</change>
     <chosenNoResult>No result found for</chosenNoResult>
@@ -50,7 +50,7 @@
     <file>File</file>
     <free>Free</free>
     <game>Game</game>
-    <gameserver>Game server</gameserver>
+    <gameserver>Gameserver</gameserver>
     <gameroot>Game root server</gameroot>
     <generalsettings>General settings</generalsettings>
     <greating_home>Welcome to the %name% web interface!</greating_home>
