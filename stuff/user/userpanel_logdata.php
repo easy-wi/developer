@@ -40,7 +40,7 @@ if ((!isset($user_id) or $main != 1) or (isset($user_id) and !$pa['log'])) {
     die;
 }
 
-$sprache = getlanguagefile('logs',$user_language,$reseller_id);
+$sprache = getlanguagefile('logs', $user_language, $reseller_id);
 
 configureDateTables('', '0, "desc"', 'ajax.php?w=datatable&d=userlog');
 

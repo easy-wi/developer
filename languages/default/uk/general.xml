@@ -50,7 +50,7 @@
     <file>File</file>
     <free>Free</free>
     <game>Game</game>
-    <gameserver>Gameserver</gameserver>
+    <gameserver>Game Server</gameserver>
     <gameroot>Game root server</gameroot>
     <generalsettings>General settings</generalsettings>
     <greating_home>Welcome to the %name% web interface!</greating_home>
