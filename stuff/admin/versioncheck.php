@@ -280,7 +280,7 @@ if ($ui->st('d', 'get') == 'ud' and $reseller_id == 0 and $pa['updateEW'] and ve
 
     $table = array();
 
-    $release = '<div class="right"><a href="https://github.com/easy-wi/developer/releases/tag/'.$ewVersions['version'] . '" target="_blank">' . $vcsprache->releaseNotes . '</a></div>';
+    $release = '<div class="right"><a href="https://github.com/easy-wi/developer/releases/tag/' . $ewVersions['version'] . '" target="_blank">' . $vcsprache->releaseNotes . '</a></div>';
     $column = ($user_language == 'de') ? 'de' : 'en';
 
     $query = $sql->prepare("SELECT `version`,`$column` FROM `easywi_version` ORDER BY `id` DESC");

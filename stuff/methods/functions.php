@@ -683,12 +683,18 @@ if (!function_exists('passwordgenerate')) {
             $email_lastlogin = $row['lastlogin'];
         }
 
-        if (!isset($resellerid) or !isset($email_country)) {
+        if ($template != 'contact' and $template != 'easy-wi-update' and (!isset($resellerid) or !isset($email_country))) {
             return false;
         }
 
         $dataTemplate = array();
-        $email_urlhost = (isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . '/login.php' : 'http://' . $ui->server['HTTP_HOST'] . '/login.php';
+
+        // Will not be set in case of console execution
+        if (isset($ui->server['HTTP_HOST'])) {
+            $email_urlhost = (isset($ui->server['HTTPS'])) ? 'https://' . $ui->server['HTTP_HOST'] . '/login.php' : 'http://' . $ui->server['HTTP_HOST'] . '/login.php';
+        } else {
+            $email_urlhost = $rSA['paneldomain'] . '/login.php';
+        }
 
         $password = $shorten;
 
@@ -726,7 +732,7 @@ if (!function_exists('passwordgenerate')) {
         } else if (isset($dataTemplate['subject'])) {
             //Topic/Subject
             $topic = $dataTemplate['subject'];
-        } else {
+        } else if ($template != 'contact' and $template != 'easy-wi-update') {
             return false;
         }
 
@@ -762,6 +768,10 @@ if (!function_exists('passwordgenerate')) {
                 $mailBody = $server;
                 $usermail = $resellermail;
 
+            } else if ($template == 'easy-wi-update') {
+                $startMail = true;
+                $topic = 'An Easy-Wi update has been released';
+                $mailBody = $server;
             } else {
 
                 if ($resellerid == $userid) {
@@ -1221,16 +1231,16 @@ if (!function_exists('passwordgenerate')) {
 
         $developer = (isset($rSA['developer'])) ? $rSA['developer'] : 'N';
 
-        $apiResponse = webhostRequest('api.github.com', $ui->server['HTTP_HOST'], '/repos/easy-wi/developer/' . (($developer == 'Y') ? 'tags' : 'releases/latest'), null, 443);
+        $apiResponse = webhostRequest('api.github.com', isset($ui->server['HTTP_HOST']) ? $ui->server['HTTP_HOST'] : $rSA['paneldomain'], '/repos/easy-wi/developer/' . (($developer == 'Y') ? 'tags' : 'releases/latest'), null, 443);
         $json = @json_decode($apiResponse);
 
         if (($developer == 'N' and is_object($json) and property_exists($json, 'tag_name') or ($developer == 'Y' and is_array($json) and isset($json[0]) and is_object($json[0]) and property_exists($json[0], 'name')))) {
 
-            $varsion = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
-            $apiResponse = array('v' => $varsion);
+            $version = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
+            $apiResponse = array('v' => $version);
 
             $query = $sql->prepare("UPDATE `settings` SET `version`=? WHERE `resellerid`=0 LIMIT 1");
-            $query->execute(array($varsion));
+            $query->execute(array($version));
         }
 
         return ($return == true) ? $apiResponse : false;

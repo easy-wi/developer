@@ -70,8 +70,42 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $currentDays = date('t');
         $currentHour = date('G');
     }
+
     $now = date('Y-m-d', strtotime('now'));
     $sprache = getlanguagefile('gserver', 'uk', 0);
+
+    echo "Fetch Easy-Wi version\r\n";
+
+    licenceRequest();
+
+    $developerVersion = (isset($rSA['developer']) and $rSA['developer'] == 'Y') ? ' developer' : '';
+
+    $query = $sql->prepare("SELECT `version` FROM `easywi_version` ORDER BY `id` DESC LIMIT 1");
+    $query->execute();
+    $installedEasyWiVersion = $query->fetchColumn();
+
+    if (version_compare($rSA['version'], $installedEasyWiVersion) == 1) {
+
+        echo "New Easy-Wi{$developerVersion} version available: {$rSA['version']}\r\n";
+
+        if (date('G') == 5) {
+
+            $updateMail = "A new Easy-Wi{$developerVersion} version is available. The version is {$rSA['version']}.\r\nYou can download it at https://github.com/easy-wi/developer/releases/tag/{$rSA['version']}";
+
+            $query = $sql->prepare("SELECT `id`,`cname`,`mail` FROM `userdata` WHERE `accounttype`='a' AND `active`='Y'");
+            $query->execute();
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                if (sendmail('easy-wi-update', $row['id'], $updateMail, 'Y')) {
+                    echo "Update notification send to user {$row['cname']} ({$row['mail']})\r\n";
+                } else {
+                    echo "Sending update notification to user {$row['cname']} ({$row['mail']}) failed\r\n";
+                }
+            }
+        }
+
+    } else {
+        echo "You are running the latest Easy-Wi{$developerVersion} version: {$installedEasyWiVersion}.\r\n";
+    }
 
     echo "Fetch version for Teamspeak 3 Server\r\n";
 
@@ -435,7 +469,6 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 usleep(500000);
-
             }
         }
 
