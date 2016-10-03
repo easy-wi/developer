@@ -47,6 +47,12 @@ if (!class_exists('EasyWiFTP')) {
     include(EASYWIDIR . '/stuff/methods/class_ftp.php');
 }
 
+if (!class_exists('Yaml')) {
+    include(EASYWIDIR . '/third_party/Symfony/autoloader_yaml.php');
+}
+
+use Symfony\Component\Yaml\Yaml;
+
 class AppServer {
 
     private $uniqueHex, $winCmds = array(), $shellScriptHeader, $shellScripts = array('user' => '', 'server' => array()), $commandReturns = array(), $undefinedRequiredVars = array();
@@ -600,7 +606,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
 
-        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml');
+        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml', 'yaml');
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
@@ -896,11 +902,39 @@ class AppServer {
         }
     }
 
+    private function protectedYaml($replaceSettings, $parsedConfig) {
+
+        $customColumns = customColumns('G', $this->appServerDetails['id']);
+
+        foreach ($parsedConfig as $key => $value) {
+
+            if (is_array($value) or is_object($value)) {
+
+                $parsedConfig[$key] = $this->protectedYaml($replaceSettings, $value);
+
+            } else {
+
+                if (is_string($value) and strpos($value, '%') !== false) {
+                    $parsedConfig[$key] = str_replace($replaceSettings['placeholder'], $replaceSettings['replacePlaceholderWith'], $value);
+                } else {
+                    $parsedConfig[$key] = $value;
+                }
+
+                foreach ($customColumns as $customColumn) {
+                    $parsedConfig[$key] = str_replace('%' . $customColumn['name'] . '%', $customColumn['value'], $parsedConfig[$key]);
+                }
+            }
+        }
+
+        return $parsedConfig;
+    }
+
     private function protectedSettingsToArray () {
 
+        $protectedString = '';
         $cvarProtectArray = array();
         $lendServerReplaceMents = array();
-        $debugger= array();
+        $debugger = array();
 
         $replaceSettings = $this->getReplacements();
         @parse_ini_string($this->appServerDetails['template']['configedit'], true, INI_SCANNER_RAW);
@@ -909,7 +943,11 @@ class AppServer {
 
             $line = str_replace(array("\r"), '', $line);
 
-            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml|yaml))$/', $line)) {
+            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml|Yaml|yaml))$/', $line)) {
+
+                if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars']) and in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
+                    $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+                }
 
                 $exploded = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -919,6 +957,8 @@ class AppServer {
 
                 $cvarProtectArray[$configPathAndFile]['type'] = $cvarType;
 
+                $protectedString = '';
+
             } else if (isset($configPathAndFile) and isset($cvarProtectArray[$configPathAndFile]['type'])) {
 
                 unset($splitLine);
@@ -927,9 +967,9 @@ class AppServer {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                }  else if ($cvarProtectArray[$configPathAndFile]['type'] == 'yml' or $cvarProtectArray[$configPathAndFile]['type'] == 'yaml') {
+                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml'))) {
 
-                    $splitLine = preg_split("/(?:(?<!-))\s*:\s*/", $line);
+                    $protectedString .= $line . "\r\n";
 
                  } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('ini','lua'))) {
 
@@ -975,6 +1015,10 @@ class AppServer {
             } else {
                 $debugger[] = 'The sorry rest: ' . $line;
             }
+        }
+
+        if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars']) and in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
+            $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
         }
 
         if ($this->appServerDetails['lendServer'] == 'Y') {
@@ -1047,15 +1091,18 @@ class AppServer {
         foreach(array_keys($givenArray) as $key) {
 
             if (is_array($givenArray[$key])) {
-                $givenArray[$key] = $this->replaceArrayValues($givenArray[$key], $replacements);
-            }
 
-            if (isset($this->undefinedRequiredVars[$key])) {
-                unset($this->undefinedRequiredVars[$key]);
-            }
+                $givenArray[$key] = $this->replaceArrayValues($givenArray[$key], ((is_array($replacements) or is_object($replacements)) and isset($replacements[$key])) ? $replacements[$key] : $replacements);
 
-            if (isset($replacements[$key])) {
-                $givenArray[$key] = $replacements[$key];
+            } else {
+
+                if (isset($this->undefinedRequiredVars[$key])) {
+                    unset($this->undefinedRequiredVars[$key]);
+                }
+
+                if (isset($replacements[$key])) {
+                    $givenArray[$key] = $replacements[$key];
+                }
             }
         }
 
@@ -1119,6 +1166,22 @@ class AppServer {
         return $iniString;
     }
 
+    private function addNotFoundVars($replacedArray, $key, $value) {
+
+        if (!isset($replacedArray[$key]) or (!is_array($replacedArray[$key]) and !is_object($replacedArray[$key]))) {
+
+            $replacedArray[$key] = $value;
+
+        } else {
+
+            foreach ($replacedArray[$key] as $k => $v) {
+                $replacedArray[$key] = $this->addNotFoundVars($replacedArray[$key], $k, $v);
+            }
+        }
+
+        return $replacedArray;
+    }
+
     private function replaceArray($stored, $replacements) {
 
         if (!$stored) {
@@ -1128,14 +1191,14 @@ class AppServer {
         $replacedArray = $this->replaceArrayValues($stored, $replacements);
 
         foreach ($this->undefinedRequiredVars as $key => $value) {
-            $replacedArray[$key] = $value;
+            $replacedArray = $this->addNotFoundVars($replacedArray, $key, $value);
         }
 
         return $replacedArray;
     }
 
     private function replaceYaml($stored, $replacements) {
-        return Spyc::YAMLDump($this->replaceArray($stored, $replacements));
+        return Yaml::dump($this->replaceArray($stored, $replacements), 2, 4);
     }
 
     private function replaceJSON($stored, $replacements) {
@@ -1186,15 +1249,9 @@ class AppServer {
 
                         $ftpObect->writeContentToTemp($this->replaceIni(@parse_ini_string($configFileContent, false, INI_SCANNER_RAW), $values['cvars']));
 
-                    } else if ($values['type'] === 'yml' or $values['type'] === 'yaml') {
+                    } else if ($values['type'] === 'yml' or $values['type'] === 'Yaml' or $values['type'] === 'yaml') {
 
-                        if (!class_exists('Spyc')) {
-                            include(EASYWIDIR . '/third_party/spyc/Spyc.php');
-                        }
-
-                        $parsedConfig = Spyc::YAMLLoadString($configFileContent);
-
-                        $ftpObect->writeContentToTemp($this->replaceYaml($parsedConfig, $values['cvars']));
+                        $ftpObect->writeContentToTemp($this->replaceYaml(Yaml::parse($configFileContent), $values['cvars']));
 
                     } else if ($values['type'] == 'json') {
 
@@ -1206,9 +1263,7 @@ class AppServer {
                             include(EASYWIDIR . '/stuff/methods/class_lua.php');
                         }
 
-                        $parsedConfig = Lua::luaToArray($configFileContent);
-
-                        $ftpObect->writeContentToTemp($this->replaceLua($parsedConfig, $values['cvars']));
+                        $ftpObect->writeContentToTemp($this->replaceLua(Lua::luaToArray($configFileContent), $values['cvars']));
 
                     } else {
 

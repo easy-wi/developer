@@ -982,6 +982,7 @@ function showFileContextMenu(e,file,folder,isLin) {
     editableExts[14] = 'properties';
     editableExts[15] = 'example';
     editableExts[16] = 'yml';
+    editableExts[16] = 'yaml';
     editableExts[17] = 'json';
 
 	globalContextHeight=12; // top and bottom padding
