@@ -134,7 +134,8 @@ if (array_value_exists('action', 'ls', $data)) {
 
         // MySQL
         if (!isset($listLimit) or in_array('mysqlServer', $listLimit)) {
-            $query = $sql->prepare("SELECT s.`id`,s.`externalID`,s.`ip`,s.`interface` AS `description`,s.`max_databases`, COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`ip`");
+
+            $query = $sql->prepare("SELECT s.`id`,s.`externalID`,s.`ip`,s.`interface` AS `description`,s.`max_databases`, COUNT(d.`id`) AS `installed` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`id`,s.`externalID`,s.`ip`,s.`interface`,s.`max_databases`");
             $query->execute(array($resellerID));
 
             if ($apiType == 'xml' and isset($key) and isset($element)) {
