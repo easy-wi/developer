@@ -72,11 +72,11 @@ if (array_value_exists('action', 'ls', $data)) {
 
         if (!isset($listLimit) or in_array('gameServer', $listLimit)) {
 
-            $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(g.`id`) AS `freeserver`,COUNT(g.`id`) AS `installedserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxslots`-SUM(g.`slots`)) AS `leftslots`,SUM(g.`slots`) AS `installedslots` FROM `rserverdata` r LEFT JOIN `gsswitch` g ON g.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`leftslots`>0 OR `leftslots` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
-            $query2 = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `rservermasterg` AS r INNER JOIN `servertypes` AS t ON r.`servertypeid` = t.`id` WHERE r.`serverid`=?");
-            $query->execute(array($resellerID));
-
             if ($apiType == 'xml' and isset($key) and isset($element)) {
+
+                $query = $sql->prepare("SELECT r.`id`,r.`ip`,r.`description`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`maxserver`-COUNT(g.`id`) AS `freeserver`,COUNT(g.`id`) AS `installedserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxslots`-SUM(g.`slots`)) AS `leftslots`,SUM(g.`slots`) AS `installedslots` FROM `rserverdata` r LEFT JOIN `gsswitch` g ON g.`rootID`=r.`id` GROUP BY r.`id` HAVING ((`freeserver` > 0 OR `freeserver` IS NULL) AND (`leftslots`>0 OR `leftslots` IS NULL) AND `hostactive`='Y' AND `resellerid`=?) ORDER BY `freeserver` DESC");
+                $query2 = $sql->prepare("SELECT t.`shorten`,t.`description` FROM `rservermasterg` AS r INNER JOIN `servertypes` AS t ON r.`servertypeid` = t.`id` WHERE r.`serverid`=?");
+                $query->execute(array($resellerID));
 
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -116,7 +116,13 @@ if (array_value_exists('action', 'ls', $data)) {
 
                     $query2->execute(array($row['id']));
                     while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-                        $listShortenXML = $responsexml->createElement($row2['shorten'], $row2['description']);
+
+                        if (is_numeric(substr($row2['shorten'], 0, 1))) {
+                            $listShortenXML = $responsexml->createElement('hide_numeric_' . $row2['shorten'], $row2['description']);
+                        } else {
+                            $listShortenXML = $responsexml->createElement($row2['shorten'], $row2['description']);
+                        }
+
                         $listServerXML->appendChild($listShortenXML);
                     }
 

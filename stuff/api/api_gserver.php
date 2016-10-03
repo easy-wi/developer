@@ -584,7 +584,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
                 $homeDirLabel = $data['home_label'];
             }
 
-            if ($quotaActive == 'Y' and isset($data['hdd']) and $data['hdd'] != $row['hdd']) {
+            if ($quotaActive == 'Y' and isset($data['hdd']) and strlen($data['hdd']) > 0 and $data['hdd'] != $row['hdd']) {
                 $updateArray[] = $data['hdd'];
                 $eventualUpdate .= ',`hdd`=?';
                 $hdd = $data['hdd'];
