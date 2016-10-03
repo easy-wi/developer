@@ -56,8 +56,18 @@ if (!function_exists('passwordgenerate')) {
     }
 
     function passwordhash($username, $password, $salt=false){
+
         $passworda = str_split($password, (strlen($password) / 2) + 1);
         $usernamea = str_split($username, (strlen($username) / 2) + 1);
+
+        if (!isset($usernamea[1])) {
+            $usernamea[1] = $usernamea[0];
+        }
+
+        if (!isset($passworda[1])) {
+            $passworda[1] = $passworda[0];
+        }
+
         return ($salt == false) ? hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $usernamea[1]) . $passworda[1])): hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $salt . $usernamea[1]) . $passworda[1]));
     }
 
