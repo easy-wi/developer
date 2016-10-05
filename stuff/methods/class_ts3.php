@@ -165,20 +165,18 @@ class TS3 {
 
             $this->socketConnected = true;
 
-            if (strpos(fgets($this->socket, 8192),'TS3') !== false) {
+            if (strpos(fgets($this->socket, 8192), 'TS3') !== false) {
+
                 $welcome = @fgets($this->socket, 8192);
+
                 @fputs($this->socket, "login $admin $querypassword" . "\n");
                 $this->errorcode = $this->ReplaceFromTS3(fgets($this->socket, 8192));
-
+/*
                 @fputs($this->socket, "clientupdate client_nickname=Easy-WI" . "\n");
                 $this->errorcode = $this->ReplaceFromTS3(fgets($this->socket, 8192));
+*/
 
-
-                if (strpos($this->errorcode,'error id=0') === false) {
-                    $this->connected = false;
-                } else {
-                    $this->connected = true;
-                }
+                $this->connected = (strpos($this->errorcode, 'error id=0') === false) ? false : true;
 
             } else {
                 $this->connected = false;
