@@ -1101,7 +1101,6 @@ class AppServer {
                 }
 
                 if (isset($replacements[$key])) {
-                    var_dump(array($givenArray[$key], $replacements[$key]));
                     $givenArray[$key] = $replacements[$key];
                 }
 
