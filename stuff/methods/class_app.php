@@ -1101,7 +1101,13 @@ class AppServer {
                 }
 
                 if (isset($replacements[$key])) {
+                    var_dump(array($givenArray[$key], $replacements[$key]));
                     $givenArray[$key] = $replacements[$key];
+                }
+
+                // Check if it is a numeric value but a string and convert
+                if (is_numeric($givenArray[$key]) and gettype($givenArray[$key]) == "string") {
+                    $givenArray[$key] = (int) $givenArray[$key];
                 }
             }
         }
