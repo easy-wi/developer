@@ -72,7 +72,7 @@ $systemCheckError = array();
 
 if ($currentStep == 0) {
 
-    $apiResponse = webhostRequest('api.github.com', $ui->server['HTTP_HOST'], '/repos/easy-wi/developer/releases/latest', null, 443);
+    $apiResponse = webhostRequest('api.github.com', $_SERVER['HTTP_HOST'], '/repos/easy-wi/developer/releases/latest', null, 443);
     $json = @json_decode($apiResponse);
 
     if (!$json or !is_object($json) or !property_exists($json, 'tag_name') or '5.30' == $json->tag_name) {
