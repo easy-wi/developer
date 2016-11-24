@@ -64,7 +64,7 @@ if (isset($_SESSION['sID'])) {
         $substituteAccess[$row['oType']][] = $row['oID'];
     }
 
-    $query = $sql->prepare("SELECT `name`,`vname`,`lastlogin`,`show_help_text` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `loginName`, `name`,`vname`,`lastlogin`,`show_help_text` FROM `userdata_substitutes` WHERE `sID`=? LIMIT 1");
     $query->execute(array($_SESSION['sID']));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $great_name = $row['name'];
@@ -72,7 +72,7 @@ if (isset($_SESSION['sID'])) {
         $lastlogin = $row['lastlogin'];
         $userWantsHelpText = $row['show_help_text'];
 
-        $great_user = ($row['name'] != '' and $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['cname'];
+        $great_user = ($row['name'] != '' and $row['vname'] != '') ? trim ($row['vname'] . ' ' . $row['name']) : $row['loginName'];
     }
 
     $gscount = count($substituteAccess['gs']);
