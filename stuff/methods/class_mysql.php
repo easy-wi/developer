@@ -79,6 +79,29 @@ class ExternalSQL {
         }
     }
 
+    private function flushAll() {
+
+        try {
+
+            $sql = "FLUSH PRIVILEGES";
+            $this->remotesql->exec($sql);
+
+        } catch (PDOException $error) {
+            return $this->errorReturn($error->getMessage(), $sql);
+        }
+
+        try {
+
+            $sql = "FLUSH HOSTS";
+            $this->remotesql->exec($sql);
+
+        } catch (PDOException $error) {
+            return $this->errorReturn($error->getMessage(), $sql);
+        }
+
+        return true;
+    }
+
     public function AddUser ($username, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
 
         if ($this->error != 'ok') {
@@ -105,62 +128,70 @@ class ExternalSQL {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
-        try {
+        $dbReturn = $this->flushAll();
 
-            $sql = "FLUSH PRIVILEGES";
-            $this->remotesql->exec($sql);
-
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
-
-        try {
-
-            $sql = "FLUSH HOSTS";
-            $this->remotesql->exec($sql);
-
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
+        if ($dbReturn !== true) {
+            return $dbReturn;
         }
 
         return 'ok';
 	}
 
-    public function AddDB ($mailData, $dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+    private function noHostTable() {
 
-		if ($this->error != 'ok') {
-			return $this->error;
-		}
+        $sql = "SELECT VERSION()";
+        $query = $this->remotesql->prepare($sql);
+        $query->execute(array());
+
+        list($version) = explode('-', $query->fetchColumn());
+
+        return (version_compare($version, '5.6.7') >= 0);
+    }
+
+    private function checkUserHostExists($dbname, $hostName) {
+
+        $sql = "SELECT 1 AS `found` FROM `mysql`.`user` WHERE  `User`=? AND `Host`=? LIMIT 1";
+        $query = $this->remotesql->prepare($sql);
+        $query->execute(array($dbname, $hostName));
+
+        return ($query->fetchColumn() == 1);
+    }
+
+    private function createUserOn($hostName, $dbname, $password) {
+
+        if ($this->checkUserHostExists($dbname, $hostName)) {
+            return true;
+        }
 
         try {
 
-            $sql = "CREATE USER ?@'' IDENTIFIED BY ?";
+            $sql = "CREATE USER ?@? IDENTIFIED BY ?";
             $query = $this->remotesql->prepare($sql);
-            $query->execute(array($dbname, $password));
+            $query->execute(array($dbname, $hostName, $password));
 
         } catch (PDOException $error) {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
+        return true;
+    }
+
+    private function grantUsageOn($hostName, $dbname, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
         try {
 
-            $sql = "GRANT USAGE ON *.* TO ?@'' IDENTIFIED BY ? WITH MAX_QUERIES_PER_HOUR " . $max_queries_per_hour . " MAX_CONNECTIONS_PER_HOUR " . $max_connections_per_hour . " MAX_UPDATES_PER_HOUR " . $max_updates_per_hour . " MAX_USER_CONNECTIONS " . $max_userconnections_per_hour;
+            $sql = "GRANT USAGE ON *.* TO ?@? IDENTIFIED BY ? WITH MAX_QUERIES_PER_HOUR " . $max_queries_per_hour . " MAX_CONNECTIONS_PER_HOUR " . $max_connections_per_hour . " MAX_UPDATES_PER_HOUR " . $max_updates_per_hour . " MAX_USER_CONNECTIONS " . $max_userconnections_per_hour;
             $query = $this->remotesql->prepare($sql);
-            $query->execute(array($dbname, $password));
+            $query->execute(array($dbname, $hostName, $password));
 
         } catch (PDOException $error) {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
-        try {
+        return true;
+    }
 
-            $sql = "GRANT USAGE ON *.* TO ?@'localhost' IDENTIFIED BY ? WITH MAX_QUERIES_PER_HOUR " . $max_queries_per_hour . " MAX_CONNECTIONS_PER_HOUR " . $max_connections_per_hour . " MAX_UPDATES_PER_HOUR " . $max_updates_per_hour . " MAX_USER_CONNECTIONS " . $max_userconnections_per_hour;
-            $query = $this->remotesql->prepare($sql);
-            $query->execute(array($dbname, $password));
-
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
+    private function addLocalHostEntry() {
 
         try {
 
@@ -184,6 +215,99 @@ class ExternalSQL {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
+        return true;
+    }
+
+    private function grantAll($hostName, $dbname) {
+
+        try {
+
+            $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EXECUTE ON `" . $dbname . "`.* TO ?@?";
+            $query = $this->remotesql->prepare($sql);
+            $query->execute(array($dbname, $hostName));
+
+        } catch (PDOException $error) {
+            return $this->errorReturn($error->getMessage(), $sql);
+        }
+
+        return true;
+    }
+
+    private function grantCreate($hostNames, $dbname, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
+        foreach ($hostNames as $hostName) {
+
+            $dbReturn = $this->createUserOn($hostName, $dbname, $password);
+
+            if ($dbReturn !== true) {
+                return $dbReturn;
+            }
+
+            $dbReturn = $this->grantUsageOn($hostName, $dbname, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+
+            if ($dbReturn !== true) {
+                return $dbReturn;
+            }
+
+            $dbReconfigure = $this->grantAll($hostName, $dbname);
+
+            if ($dbReconfigure !== true) {
+                return $dbReconfigure;
+            }
+        }
+
+        return true;
+    }
+
+    private function createGrantFlush($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
+        $hostList = array_merge(array('localhost'), ipstoarray($ips));
+
+        $sql = "DROP USER IF EXISTS ?@?";
+        $query = $this->remotesql->prepare($sql);
+
+        foreach ($this->getUsersHostList($dbname) as $host) {
+            if (!in_array($host, $hostList)) {
+                $query->execute(array($dbname, $host));
+            }
+        }
+
+        $dbReturn = $this->grantCreate($hostList, $dbname, $password, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+
+        if ($dbReturn !== true) {
+            return $dbReturn;
+        }
+
+        if (!$this->noHostTable()) {
+
+            $dbReturn = $this->addLocalHostEntry();
+
+            if ($dbReturn !== true) {
+                return $dbReturn;
+            }
+
+            $dbReturn = $this->reconfigureHostTable($ips, $dbname);
+
+            if ($dbReturn !== true) {
+                return $dbReturn;
+            }
+        }
+
+        $dbReturn = $this->flushAll();
+
+        if ($dbReturn !== true) {
+            return $dbReturn;
+        }
+
+        return true;
+    }
+
+    public function AddDB ($mailData, $dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
+		if ($this->error != 'ok') {
+			return $this->error;
+		}
+
         try {
 
             $sql = "CREATE DATABASE IF NOT EXISTS `" . $dbname . "`";
@@ -193,49 +317,10 @@ class ExternalSQL {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
-        try {
+        $dbReturn = $this->createGrantFlush($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
 
-            $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EXECUTE ON `" . $dbname . "`.* TO ?@''";
-            $query = $this->remotesql->prepare($sql);
-            $query->execute(array($dbname));
-
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
-
-        foreach (ipstoarray($ips) as $ip) {
-
-            try {
-                $sql = "SELECT `host` FROM `mysql`.`host` WHERE `host`=? AND `db`=? LIMIT 1";
-                $query = $this->remotesql->prepare($sql);
-                $query->execute(array($ip, $dbname));
-            } catch (PDOException $error) {
-                return $this->errorReturn($error->getMessage(), $sql);
-            }
-
-            if ($query->rowCount() == 0) {
-                try {
-                    $sql2 = "INSERT INTO `mysql`.`host` (`host`,`db`,`Select_priv`,`Insert_priv`,`Update_priv`,`Delete_priv`,`Create_priv`,`Drop_priv`,`Alter_priv`) VALUES (?,?,'Y','Y','Y','Y','Y','Y','Y')";
-                    $query2 = $this->remotesql->prepare($sql2);
-                    $query2->execute(array($ip, $dbname));
-                } catch (PDOException $error) {
-                    return $this->errorReturn($error->getMessage(), $sql2);
-                }
-            }
-        }
-
-        try {
-            $sql = "FLUSH PRIVILEGES";
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
-
-        try {
-            $sql = "FLUSH HOSTS";
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
+        if ($dbReturn !== true) {
+            return $dbReturn;
         }
 
         sendmail('emailserverinstall', $mailData['userId'], $mailData['name'], 'MySQL', $mailData['mailConnectInfo']);
@@ -243,25 +328,7 @@ class ExternalSQL {
         return 'ok';
 	}
 
-    public function ModDB ($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
-
-        if ($this->error!='ok') {
-			return $this->error;
-		}
-
-        try {
-            $sql = "GRANT USAGE ON *.* TO '$dbname'@'' WITH MAX_QUERIES_PER_HOUR " . $max_queries_per_hour . " MAX_CONNECTIONS_PER_HOUR " . $max_connections_per_hour . " MAX_UPDATES_PER_HOUR " . $max_updates_per_hour . " MAX_USER_CONNECTIONS " . $max_userconnections_per_hour;
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
-        try {
-            $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,INDEX,ALTER,CREATE TEMPORARY TABLES,LOCK TABLES,CREATE VIEW,SHOW VIEW,CREATE ROUTINE,ALTER ROUTINE,EXECUTE ON `" . $dbname . "`.* TO ?@''";
-            $query = $this->remotesql->prepare($sql);
-            $query->execute(array($dbname));
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
+    private function reconfigureHostTable($ips, $dbname) {
 
         $iparray = ipstoarray($ips);
         $allowedips = array();
@@ -308,24 +375,31 @@ class ExternalSQL {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
+        return true;
+    }
+
+    public function ModDB ($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour) {
+
+        if ($this->error!='ok') {
+			return $this->error;
+		}
+
+        $dbReturn = $this->createGrantFlush($dbname, $password, $ips, $max_queries_per_hour, $max_connections_per_hour, $max_updates_per_hour, $max_userconnections_per_hour);
+
+        if ($dbReturn !== true) {
+            return $dbReturn;
+        }
+
         try {
-            $sql = "UPDATE `mysql`.`user` SET `Password`=PASSWORD(?) WHERE `User`=?";
+            if ($this->noHostTable()) {
+                $sql = "UPDATE `mysql`.`user` SET `authentication_string`=PASSWORD(?) WHERE`User`=?";
+            } else {
+                $sql = "UPDATE `mysql`.`user` SET `Password`=PASSWORD(?) WHERE `User`=?";
+            }
+
             $query = $this->remotesql->prepare($sql);
             $query->execute(array($password, $dbname));
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
 
-        try {
-            $sql = "FLUSH PRIVILEGES";
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
-
-        try {
-            $sql = "FLUSH HOSTS";
-            $this->remotesql->exec($sql);
         } catch (PDOException $error) {
             return $this->errorReturn($error->getMessage(), $sql);
         }
@@ -339,12 +413,14 @@ class ExternalSQL {
 			return $this->error;
 		}
 
-        try {
-            $sql = "DELETE FROM `mysql`.`host` WHERE `db`=?";
-            $query = $this->remotesql->prepare($sql);
-            $query->execute(array($dbname));
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
+        if (!$this->noHostTable()) {
+            try {
+                $sql = "DELETE FROM `mysql`.`host` WHERE `db`=?";
+                $query = $this->remotesql->prepare($sql);
+                $query->execute(array($dbname));
+            } catch (PDOException $error) {
+                return $this->errorReturn($error->getMessage(), $sql);
+            }
         }
 
         try {
@@ -354,22 +430,29 @@ class ExternalSQL {
             return $this->errorReturn($error->getMessage(), $sql);
         }
 
-        try {
-            $sql = "FLUSH PRIVILEGES";
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
+        $dbReturn = $this->flushAll();
 
-        try {
-            $sql = "FLUSH HOSTS";
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
+        if ($dbReturn !== true) {
+            return $dbReturn;
         }
 
         return 'ok';
 	}
+
+    private function getUsersHostList($username) {
+
+        $hosts = array();
+
+        $sql = "SELECT `Host` FROM `mysql`.`user` WHERE `User`=?";
+        $query = $this->remotesql->prepare($sql);
+        $query->execute(array($username));
+
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $hosts[] = $row['Host'];
+        }
+
+        return $hosts;
+    }
 
     public function DelUser ($username) {
 
@@ -378,31 +461,14 @@ class ExternalSQL {
         }
 
         try {
-            $sql = "DROP USER ?@''";
+
+            $sql = "DROP USER IF EXISTS ?@?";
             $query = $this->remotesql->prepare($sql);
-            $query->execute(array($username));
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
 
-        try {
-            $sql = "DROP USER ?@'localhost'";
-            $query = $this->remotesql->prepare($sql);
-            $query->execute(array($username));
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
+            foreach ($this->getUsersHostList($username) as $host) {
+                $query->execute(array($username, $host));
+            }
 
-        try {
-            $sql = "FLUSH PRIVILEGES";
-            $this->remotesql->exec($sql);
-        } catch (PDOException $error) {
-            return $this->errorReturn($error->getMessage(), $sql);
-        }
-
-        try {
-            $sql = "FLUSH HOSTS";
-            $this->remotesql->exec($sql);
         } catch (PDOException $error) {
             return $this->errorReturn($error->getMessage(), $sql);
         }
