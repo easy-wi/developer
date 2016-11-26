@@ -348,11 +348,11 @@ virtualserver_weblist_enabled 0 = Off';
 
                     $errors['user'] = $sprache->ssh_user;
 
-                    if (!$ui->active('publickey', 'post') == 'N') {
+                    if ($ui->w('publickey', 1, 'post') == 'N') {
 
                         $errors['pass'] = $sprache->ssh_pass;
 
-                    } else if (!$ui->active('publickey', 'post') == 'B') {
+                    } else if ($ui->w('publickey', 1, 'post') == 'B') {
 
                         $errors['pass'] = $sprache->ssh_pass;
                         $errors['publickey'] = $sprache->keyuse;
