@@ -195,7 +195,7 @@ try {
 
     if ($query->fetchColumn() == 'Y') {
 
-        $devVersion = '5.35';
+        $devVersion = '5.36';
 
         if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
             $version = $devVersion;
