@@ -171,10 +171,6 @@ class TS3 {
 
                 @fputs($this->socket, "login $admin $querypassword" . "\n");
                 $this->errorcode = $this->ReplaceFromTS3(fgets($this->socket, 8192));
-/*
-                @fputs($this->socket, "clientupdate client_nickname=Easy-WI" . "\n");
-                $this->errorcode = $this->ReplaceFromTS3(fgets($this->socket, 8192));
-*/
 
                 $this->connected = (strpos($this->errorcode, 'error id=0') === false) ? false : true;
 
@@ -191,7 +187,10 @@ class TS3 {
     }
 
     private function UseServer ($virtualserver_id) {
-        return $this->ReplaceFromTS3($this->SendCommand('use ' . $virtualserver_id));
+
+        $useReturn = $this->ReplaceFromTS3($this->SendCommand('use ' . $virtualserver_id));
+        $this->SendCommand("clientupdate client_nickname=" . $this->ReplaceToTS3("Easy-WI"));
+        return $useReturn;
     }
 
     private function iniLineToCommand($line) {
