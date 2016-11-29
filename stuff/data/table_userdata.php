@@ -49,7 +49,7 @@ $defined['userdata'] = array(
     'token' => array("Type"=>"varchar(32)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'name' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'vname' => array("Type"=>"varchar(255)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'birthday' => array("Type"=>"timestamp","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
+    'birthday' => array("Type"=>"date","Null"=>"YES","Key"=>"","Default"=>"2000-01-01","Extra"=>""),
     'mail' => array("Type"=>"varchar(50)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'phone' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'fax' => array("Type"=>"varchar(50)","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
