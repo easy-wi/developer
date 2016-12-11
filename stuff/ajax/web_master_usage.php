@@ -53,12 +53,14 @@ $totalVhosts = 0;
 $maxHDD = 1000;
 $quotaActive = 'N';
 $ownVhost = 'N';
+$ownFPM = 'N';
+$fpmTemplate = '';
 $usageType = 'F';
 $dns = array();
 $phpConfigurationMaster = array();
 $phpConfigurationVhost = new stdClass();
 
-$query = $sql->prepare("SELECT m.`vhostTemplate`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,m.`usageType`,m.`phpConfiguration`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
+$query = $sql->prepare("SELECT m.`vhostTemplate`,m.`fpmTemplate`,m.`serverType`,m.`maxVhost`,m.`maxHDD`,m.`quotaActive`,m.`defaultdns`,m.`usageType`,m.`phpConfiguration`,(SELECT COUNT(v.`webVhostID`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalVhosts`,(SELECT SUM(v.`hdd`) AS `a` FROM `webVhost` AS v WHERE v.`webMasterID`=m.`webMasterID`) AS `totalHDD` FROM `webMaster` AS m WHERE m.`webMasterID`=? AND m.`resellerID`=? LIMIT 1");
 $query->execute(array($ui->id('id', 10, 'get'), $resellerLockupID));
 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $vhostTemplate = $row['vhostTemplate'];
@@ -67,18 +69,26 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $totalVhosts = (int) $row['totalVhosts'];
     $leftHDD = (int) $row['maxHDD'] - $row['totalHDD'];
     $quotaActive = $row['quotaActive'];
+    $serverType = $row['serverType'];
     $usageType = $row['usageType'];
+    $fpmTemplate = $row['fpmTemplate'];
     $phpConfigurationMaster = @parse_ini_string($row['phpConfiguration'], true, INI_SCANNER_RAW);
 }
 
 // Edit mode will provide the webhost ID
 if ($ui->id('serverID', 10, 'get')) {
 
-    $query = $sql->prepare("SELECT `hdd`,`phpConfiguration` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+    $query = $sql->prepare("SELECT `hdd`,`phpConfiguration`,`ownFPM`,`fpmConfiguration` FROM `webVhost` WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
     $query->execute(array($ui->id('serverID', 10, 'get'), $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
         $hdd = $row['hdd'];
         $phpConfigurationVhost = @json_decode($row['phpConfiguration']);
+        $ownFPM = $row['ownFPM'];
+
+        if ($ownFPM == 'Y') {
+            $fpmTemplate = $row['fpmConfiguration'];
+        }
     }
 
     $query = $sql->prepare("SELECT `domain`,`path`,`ownVhost`,`vhostTemplate` FROM `webVhostDomain` WHERE `webVhostID`=? AND `resellerID`=? ORDER BY `domain`");

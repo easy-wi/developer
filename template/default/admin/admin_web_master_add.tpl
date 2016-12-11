@@ -39,6 +39,19 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="inputServerType"><?php echo $sprache->serverType;?></label>
+                            <div class="controls">
+                                <select class="form-control" id="inputServerType" name="serverType" onchange="loadServerSettings(this.value, $('#inputUsageType').val());">
+                                    <option value="N">Nginx</option>
+                                    <option value="L" <?php if ($serverType=='L') echo 'selected="selected"';?>>Lighttpd</option>
+                                    <option value="H" <?php if ($serverType=='H') echo 'selected="selected"'; ?>>Hiawatha</option>
+                                    <option value="A" <?php if ($serverType=='A') echo 'selected="selected"'; ?>>Apache</option>
+                                    <option value="O" <?php if ($serverType=='O') echo 'selected="selected"'; ?>><?php echo $sprache->other;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="inputUsageType"><?php echo $sprache->usageType;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputUsageType" name="usageType" onchange="loadServerSettings($('#inputServerType').val(), this.value);textdrop('inputPhpConfigurationShow');">
@@ -176,19 +189,6 @@
                             <div class="controls"><input class="form-control" id="inputuserDelCmd" type="text" name="userDelCmd" value="<?php echo $userDelCmd;?>" required></div>
                         </div>
 
-                        <div class="form-group<?php if(isset($errors['publickey'])) echo ' error';?>">
-                            <label for="inputServerType"><?php echo $sprache->serverType;?></label>
-                            <div class="controls">
-                                <select class="form-control" id="inputServerType" name="serverType" onchange="loadServerSettings(this.value, $('#inputUsageType').val());">
-                                    <option value="N">Nginx</option>
-                                    <option value="L" <?php if ($serverType=='L') echo 'selected="selected"';?>>Lighttpd</option>
-                                    <option value="H" <?php if ($serverType=='H') echo 'selected="selected"'; ?>>Hiawatha</option>
-                                    <option value="A" <?php if ($serverType=='A') echo 'selected="selected"'; ?>>Apache</option>
-                                    <option value="O" <?php if ($serverType=='O') echo 'selected="selected"'; ?>><?php echo $sprache->other;?></option>
-                                </select>
-                            </div>
-                        </div>
-
                         <div class="form-group">
                             <label for="inputDirHttpd"><?php echo $sprache->dirHttpd;?></label>
                             <div class="controls"><input class="form-control" id="inputDirHttpd" type="text" name="dirHttpd" value="<?php echo $dirHttpd;?>"></div>
@@ -218,6 +218,23 @@
                             <label for="inputVhostTemplate"><?php echo $sprache->vhostTemplate;?></label>
                             <div class="controls">
                                 <textarea class="form-control" id="inputVhostTemplate" name="vhostTemplate" rows="10" required><?php echo $vhostTemplate;?></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group fpmSupport">
+                            <label for="inputFpmCmd"><?php echo $sprache->fpmCmd;?></label>
+                            <div class="controls"><input class="form-control" id="inputFpmCmd" type="text" name="fpmCmd" value="<?php echo $fpmCmd;?>" required></div>
+                        </div>
+
+                        <div class="form-group fpmSupport">
+                            <label for="inputFpmConfigPath"><?php echo $sprache->fpmConfigPath;?></label>
+                            <div class="controls"><input class="form-control" id="inputFpmConfigPath" type="text" name="fpmConfigPath" value="<?php echo $fpmConfigPath;?>" required></div>
+                        </div>
+
+                        <div class="form-group fpmSupport">
+                            <label for="inputFpmTemplate"><?php echo $sprache->fpmTemplate;?></label>
+                            <div class="controls">
+                                <textarea class="form-control" id="inputFpmTemplate" name="fpmTemplate" rows="10" required><?php echo $fpmTemplate;?></textarea>
                             </div>
                         </div>
 

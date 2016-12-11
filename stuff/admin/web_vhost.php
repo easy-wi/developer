@@ -72,6 +72,8 @@ $vhostTemplate = $ui->escaped('vhostTemplate', 'post');
 $description = $ui->names('description', 255, 'post');
 $defaultDomain = $ui->domain('defaultDomain', 'post');
 $ownVhost = ($ui->active('ownVhost', 'post')) ? $ui->active('ownVhost', 'post') : 'N';
+$ownFPM = ($ui->active('ownFPM', 'post')) ? $ui->active('ownFPM', 'post') : 'N';
+$fpmTemplate = $ui->escaped('fpmTemplate', 'post');
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
 if ($ui->w('action',4, 'post') and !token(true)) {
@@ -255,8 +257,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
 
-                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`phpConfiguration`,`description`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?)");
-                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $description, $externalID, $resellerLockupID));
+                $query = $sql->prepare("INSERT INTO `webVhost` (`webMasterID`,`userID`,`active`,`hdd`,`ftpPassword`,`phpConfiguration`,`description`,`ownFPM`,`fpmConfiguration`,`externalID`,`resellerID`) VALUES (?,?,?,?,AES_ENCRYPT(?,?),?,?,?,?,?,?)");
+                $query->execute(array($webMasterID, $userID, $active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $description, $ownFPM, $fpmTemplate, $externalID, $resellerLockupID));
 
                 $id = (int) $sql->lastInsertId();
 
@@ -272,8 +274,8 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
 
                 $ftpUser = 'web-' . $id;
 
-                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`ftpPassword`=AES_ENCRYPT(?,?),`phpConfiguration`=?,`description`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
-                $query->execute(array($active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $description, $externalID, $id, $resellerLockupID));
+                $query = $sql->prepare("UPDATE `webVhost` SET `active`=?,`hdd`=?,`ftpPassword`=AES_ENCRYPT(?,?),`phpConfiguration`=?,`description`=?,`ownFPM`=?,`fpmConfiguration`=?,`externalID`=? WHERE `webVhostID`=? AND `resellerID`=? LIMIT 1");
+                $query->execute(array($active, $hdd, $ftpPassword, $aeskey, $phpConfiguration, $description, $ownFPM, $fpmTemplate, $externalID, $id, $resellerLockupID));
 
                 // Needs to be set for domain inserts
                 $userID = $oldUserID;

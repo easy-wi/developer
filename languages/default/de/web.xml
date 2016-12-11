@@ -11,6 +11,9 @@
     <error_password_not_match>FTP Passwörter stimmen nicht überein</error_password_not_match>
     <error_password_not_set>FTP Passwort unzulässig, nicht angegeben, oder Wiederholung nicht angegeben.</error_password_not_set>
     <fdlInfo>FastDL Info</fdlInfo>
+    <fpmCmd>PHP FPM Start/Reload Befehl</fpmCmd>
+    <fpmConfigPath>PHP FPM Config Pfad</fpmConfigPath>
+    <fpmTemplate>PHP FPM Template</fpmTemplate>
     <ftpIP>FTP Adresse</ftpIP>
     <ftpPassword>FTP Passwort</ftpPassword>
     <ftpPasswordChanged>FTP Passwort geändert</ftpPasswordChanged>
@@ -36,6 +39,7 @@
     <optional>(optional)</optional>
     <other>Andere</other>
     <overbookPercent>Überbuchen um</overbookPercent>
+    <ownFPM>Eigenes PHP FPM Template</ownFPM>
     <ownVhost>Eigenes Vhosttemplate</ownVhost>
     <path>Pfad</path>
     <pathCorrected>Pfad von %pathGiven% zu %pathConverted% zur Domain %domain% korrigiert</pathCorrected>
@@ -50,6 +54,7 @@
     <usageType>Vhostgebrauch</usageType>
     <userGroup>Webserver Gruppe</userGroup>
     <userAddCmd>Hinzufügen Befehl</userAddCmd>
+    <useDefaultFPM>Benutze Standard PHP FPM Template</useDefaultFPM>
     <userDelCmd>Löschen Befehl</userDelCmd>
     <userModCmd>Bearbeiten Befehl</userModCmd>
     <vhostConfigPath>Vhost Config Speicherpfad</vhostConfigPath>

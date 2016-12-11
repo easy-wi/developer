@@ -25,6 +25,26 @@
 <?php } ?>
 
 <?php if ($usageType == 'W') { ?>
+
+<?php if ($serverType == 'N' or $serverType == 'L') { ?>
+
+<div class="form-group">
+    <label for="inputOwnFPM"><?php echo $sprache->ownFPM;?></label>
+    <select class="form-control" id="inputOwnFPM" name="ownFPM" onchange="SwitchShowHideRows(this.value,'switch', 1);">
+        <option value="N"><?php echo $gsprache->no;?></option>
+        <option value="Y" <?php if($ownFPM=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+    </select>
+</div>
+
+<div class="Y switch form-group<?php if($ownFPM=='N') echo ' display_none';?>">
+    <label for="inputFpmTemplate"><?php echo $sprache->fpmTemplate;?></label>
+    <div class="controls">
+        <textarea class="form-control" id="inputFpmTemplate" name="fpmTemplate" rows="10"><?php echo $fpmTemplate;?></textarea>
+    </div>
+</div>
+
+<?php } ?>
+
 <?php foreach($phpConfigurationMaster as $groupName => $array) { ?>
 <div class="form-group">
     <label for="input<?php echo str_replace(' ', '', $groupName);?>"><?php echo $groupName;?></label>
@@ -78,9 +98,8 @@
     </div>
     <?php } ?>
 </div>
-
 <script type="text/javascript">
-    SwitchShowHideRows('init_ready');
+SwitchShowHideRows('init_ready');
 </script>
 
 <script type="text/javascript">
