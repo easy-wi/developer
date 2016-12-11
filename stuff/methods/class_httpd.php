@@ -195,8 +195,8 @@ class HttpdManagement {
                         $templateFileContentTemp = str_replace('%phpConfiguration%', '', $templateFileContentTemp);
                     }
 
-                    $templateFileContentTemp = $this->removeNotNeededSlashes(str_replace(array('%user%', '%group%', '%vhostpath%', '%email%', '%htdocs%', '%logDir%'), array($row['ftpUser'], $this->hostData['userGroup'], $this->hostData['vhostStoragePath'], $row['mail'], $this->hostData['dirHttpd'], $this->hostData['dirLogs']), $templateFileContentTemp)) . "\r\n";
-                    $templateFileContentTemp = $this->removeNotNeededSlashes(str_replace(array('%path%', '%url%', '%domain%'), array($row2['path'], $row2['domain'], $row2['domain']), $templateFileContentTemp)) . "\r\n";
+                    $templateFileContentTemp = str_replace(array('%user%', '%group%', '%vhostpath%', '%email%', '%htdocs%', '%logDir%'), array($row['ftpUser'], $this->hostData['userGroup'], $this->hostData['vhostStoragePath'], $row['mail'], $this->hostData['dirHttpd'], $this->hostData['dirLogs']), $templateFileContentTemp) . "\r\n";
+                    $templateFileContentTemp = str_replace(array('%path%', '%url%', '%domain%'), array($row2['path'], $row2['domain'], $row2['domain']), $templateFileContentTemp) . "\r\n";
 
                     $this->vhostData['templateFileContent'] .= $templateFileContentTemp;
                 }
