@@ -121,14 +121,15 @@
                             <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
                             <li><a href="admin.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
                             <li><a href="admin.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
-                            
+
                             <li class="divider"></li>
                             <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
                             <li><a href="https://easy-wi.com/forum/" target="_blank"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
                             <li><a href="https://easy-wi.com/de/handbuch/" target="_blank"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
+                            <li><a href="https://gitter.im/easy-wi/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Gitter</a></li>
+                            <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Github</a></li>
                             <li><a href="https://www.facebook.com/easywi" target="_blank"><i class="fa fa-facebook-square fa-fw"></i> Easy-WI @ Facebook</a></li>
                             <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
-                            <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Github</a></li>
                             <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
@@ -155,23 +156,6 @@
         <aside class="main-sidebar sidebar-offcanvas">
             <!-- sidebar: style can be found in sidebar.less -->
             <section class="sidebar">
-                <!-- search form -->
-                <form action="admin.php" method="get" class="sidebar-form">
-                    <input type="hidden" name="w" value="sr">
-                    <?php if($pa['gserver']){ ?><input type="hidden" name="type[]" value="gs"><?php }?>
-                    <?php if($pa['gimages']){ ?><input type="hidden" name="type[]" value="im"><?php }?>
-                    <?php if($pa['addons']){ ?><input type="hidden" name="type[]" value="ad"><?php }?>
-                    <?php if($pa['voiceserver']){ ?><input type="hidden" name="type[]" value="vo"><?php }?>
-                    <?php if($pa['addvserver'] or $pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']){ ?><input type="hidden" name="type[]" value="vs"><?php }?>
-                    <?php if($pa['roots']){ ?><input type="hidden" name="type[]" value="ro"><?php }?>
-                    <?php if($pa['user'] or $pa['user_users']){ ?><input type="hidden" name="type[]" value="us"><?php }?>
-                    <div class="input-group">
-                        <input type="text" name="q" class="form-control" placeholder="Search...">
-                        <span class="input-group-btn">
-                            <button type='submit' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
-                        </span>
-                    </div>
-                </form>
 
                 <ul class="sidebar-menu">
 
