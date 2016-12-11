@@ -44,7 +44,14 @@ function loadServerSettings (serverType, usageType) {
 
         defaultRestartCMD = 'sudo /etc/init.d/nginx reload';
 
+        /* Add redirect from www. -> non www. */
         defaultVhostTemplate = 'server {\r\n';
+        defaultVhostTemplate += '   listen 80;\r\n';
+        defaultVhostTemplate += '   server_name www.%domain%;\r\n';
+        defaultVhostTemplate += '   return 301 $scheme://%domain%$request_uri;\r\n';
+        defaultVhostTemplate += '}\r\n';
+
+        defaultVhostTemplate += 'server {\r\n';
         defaultVhostTemplate += '   listen 80;\r\n';
         defaultVhostTemplate += '   server_name %domain%;\r\n';
         defaultVhostTemplate += '   autoindex off;\r\n';
@@ -89,7 +96,13 @@ function loadServerSettings (serverType, usageType) {
 
         defaultRestartCMD = 'sudo /etc/init.d/apache2 reload';
 
+        /* Add redirect from www. -> non www. */
         defaultVhostTemplate = '<VirtualHost *:80>\r\n';
+        defaultVhostTemplate += '    ServerName www.%domain%\r\n';
+        defaultVhostTemplate += '    ServerName Redirect 301 / http://%domain%/\r\n';
+        defaultVhostTemplate += '</VirtualHost>\r\n';
+
+        defaultVhostTemplate += '<VirtualHost *:80>\r\n';
         defaultVhostTemplate += '    ServerAdmin %email%\r\n';
         defaultVhostTemplate += '    DocumentRoot "%vhostpath%/%user%/%htdocs%/%path%"\r\n';
         defaultVhostTemplate += '    ServerName %domain%\r\n';

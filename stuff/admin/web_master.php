@@ -151,9 +151,15 @@ php_admin_flag mod_rewrite off = OFF';
 if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
     if ($serverType == 'N') {
 
+        $vhostTemplate = 'server {
+   listen 80;
+   server_name www.%domain%;
+   return 301 $scheme://%domain%$request_uri;
+}';
+
         if ($usageType == 'F') {
 
-            $vhostTemplate = 'server {
+            $vhostTemplate .= 'server {
     listen 80;
     server_name %domain%;
     autoindex off;
@@ -167,7 +173,7 @@ if (!$vhostTemplate or strlen($vhostTemplate) < 2) {
 
         } else {
 
-            $vhostTemplate = 'server {
+            $vhostTemplate .= 'server {
    listen 80;
    server_name %domain%;
    autoindex off;
@@ -201,9 +207,14 @@ allow_url_include=Off
 
     } else if ($serverType == 'A') {
 
+        $vhostTemplate = '<VirtualHost *:80>
+    ServerName www.%domain%
+    ServerName Redirect 301 / http://%domain%/
+</VirtualHost>';
+
         if ($usageType == 'F') {
 
-            $vhostTemplate = '<VirtualHost *:80>
+            $vhostTemplate .= '<VirtualHost *:80>
     ServerAdmin %email%
     DocumentRoot "%vhostpath%/%user%/%htdocs%/%path%"
     ServerName %domain%
@@ -224,7 +235,7 @@ allow_url_include=Off
 
         } else {
 
-            $vhostTemplate = '<VirtualHost *:80>
+            $vhostTemplate .= '<VirtualHost *:80>
     ServerAdmin %email%
     DocumentRoot "%vhostpath%/%user%/%htdocs%/%path%"
     ServerName %domain%
