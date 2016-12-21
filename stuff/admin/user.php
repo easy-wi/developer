@@ -133,7 +133,7 @@ $query->execute(array($admin_id));
 $userAccounttype = $query->fetchColumn();
 
 // CSFR protection with hidden tokens. If token(true) returns false, we likely have an attack
-if ($ui->w('action',4, 'post') and !token(true)) {
+if ($ui->w('action', 4, 'post') and !token(true)) {
 
     unset($header, $text);
 
@@ -174,7 +174,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
 
-            $query = ($reseller_id == 0) ? $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND (`resellerid`=? OR `id`=resellerid) LIMIT 1") : $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND `resellerid`=? LIMIT 1");
+            $whereCase = ($pa['user'] and $reseller_id == 0) ? '' : 'AND `accounttype`!=\'a\'';
+
+            $query = ($reseller_id == 0) ? $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND (`resellerid`=? OR `id`=resellerid) {$whereCase} LIMIT 1") : $sql->prepare("SELECT * FROM `userdata` WHERE id=? AND `resellerid`=? {$whereCase} LIMIT 1");
             $query->execute(array($id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -287,13 +289,30 @@ if ($ui->w('action',4, 'post') and !token(true)) {
             }
         }
 
+        if ($ui->st('action', 'post') == 'md') {
+
+            $whereCase = ($pa['user'] and $reseller_id == 0) ? '' : 'AND `accounttype`!=\'a\'';
+
+            if ($reseller_id == 0){
+                $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `id`=? {$whereCase} LIMIT 1");
+                $query->execute(array($id));
+            } else {
+                $query = $sql->prepare("SELECT 1 FROM `userdata` WHERE `id`=? AND `resellerid`=? {$whereCase} LIMIT 1");
+                $query->execute(array($id, $resellerLockupID));
+            }
+
+            if ($query->fetchColumn() != 1) {
+                $noAccessToUser = true;
+            }
+        }
+
         if ($ui->st('action', 'post') == 'ad') {
 
             if (!$password) {
                 $errors['password'] = $sprache->error_pass;
             }
 
-            if (!in_array($accountType, array('a', 'r', 'u'))) {
+            if (!in_array($accountType, array('a', 'r', 'u')) or (!$pa['user'] and $accountType == 'a')) {
                 $errors['accounttype'] = $sprache->accounttype;
             }
 
@@ -328,7 +347,9 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         }
 
         // Submitted values are OK
-        if (count($errors) == 0) {
+        if (isset($noAccessToUser) and $noAccessToUser === true) {
+            $template_file = 'admin_404.tpl';
+        } else if (count($errors) == 0) {
 
             // Make the inserts or updates define the log entry and get the affected rows from insert
             if ($ui->st('action', 'post') == 'ad') {
