@@ -488,11 +488,11 @@ if ($ui->st('w', 'get') == 'lo') {
 
             if ($passwordCorrect !== true and $passwordCorrect !== false) {
                 if (is_array($passwordCorrect)) {
-                    $query = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array($passwordCorrect['hash'], $passwordCorrect['salt'], $id));
+                    $query2 = $sql->prepare("UPDATE `userdata` SET `security`=?,`salt`=? WHERE `id`=? LIMIT 1");
+                    $query2->execute(array($passwordCorrect['hash'], $passwordCorrect['salt'], $id));
                 } else {
-                    $query = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
-                    $query->execute(array($passwordCorrect, $id));
+                    $query2 = $sql->prepare("UPDATE `userdata` SET `security`=? WHERE `id`=? LIMIT 1");
+                    $query2->execute(array($passwordCorrect, $id));
                 }
             }
         }
