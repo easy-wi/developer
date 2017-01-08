@@ -188,6 +188,7 @@ class AppServer {
             $serverTemplateDir = $this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'];
             $serverTemplateDir .= ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/pserver/' : '/server/';
             $this->appServerDetails['absolutePath'] = $this->removeSlashes($serverTemplateDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'] . '/');
+            $this->appServerDetails['absoluteTemplatePath'] = $this->removeSlashes($serverTemplateDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
 
             // For protected users the pserver/ directory is the home folder
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
@@ -719,7 +720,40 @@ class AppServer {
         }
     }
 
-    private function linuxRemoveApp($templates) {
+    private function backUpSpareFiles($template, $spareFiles) {
+
+        if (count($spareFiles) == 0) {
+            return '';
+        }
+
+        $script = 'cd ' . $template . "\n";
+
+        foreach ($spareFiles as $spareFile) {
+
+            $script .= 'TARGET_FOLDER="`dirname ' . $spareFile . '`"' . "\n";
+
+            $script .= 'if [ ! -d "../sparefiles/${TARGET_FOLDER}" ]; then mkdir -p "../sparefiles/${TARGET_FOLDER}"' . "\n";
+
+            $script .= 'cp "' . $spareFile . '" "../sparefiles/' . $spareFile . '"' . "\n";
+        }
+
+        $script .= 'cd ..' . "\n";
+
+        return $script;
+    }
+
+    private function restoreSpareFiles($template) {
+
+        $script = 'if [ -d "sparefiles" ]; then' . "\n";
+        $script .= 'if [ !-d "' . $template . '" ]; then mkdir -p  "' . $template . '"' . "\n";
+        $script .= 'mv "sparefiles/*" "' . $template . '/"' . "\n";
+        $script .= 'rm -rf "sparefiles"' . "\n";
+        $script .= 'fi' . "\n";
+
+        return $script;
+    }
+
+    private function linuxRemoveApp($templates, $spareFiles) {
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/del-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-templates.sh');
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
@@ -729,14 +763,19 @@ class AppServer {
         $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
 
         foreach ($templates as $template) {
+
+            $script .= $this->backUpSpareFiles($template, $spareFiles);
+
             $script .= 'if [ -d "' . $template . '" ]; then ${IONICE}rm -rf "' . $template . '"; fi' . "\n";
             $this->addLogline('app_server.log', 'Server template ' . $serverDir . $template . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' deleted');
+
+            $script .= $this->restoreSpareFiles($template);
         }
 
         $this->addLinuxScript($scriptName, $script);
     }
 
-    public function removeApp ($templates) {
+    public function removeApp($templates, $spareFiles = array()) {
 
         if ($this->appServerDetails) {
 
@@ -744,14 +783,14 @@ class AppServer {
 
             if (count($templates) > 0) {
                 if ($this->appMasterServerDetails['os'] == 'L') {
-                    $this->linuxRemoveApp($templates);
+                    $this->linuxRemoveApp($templates, $spareFiles);
                 } else if ($this->appMasterServerDetails['os'] == 'W') {
                 }
             }
         }
     }
 
-    private function linuxMcWorldSave ($standalone = true) {
+    private function linuxMcWorldSave($standalone = true) {
 
         $screenName = $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'];
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/worldsave-' . $this->appServerDetails['userNameExecute'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
@@ -902,6 +941,24 @@ class AppServer {
         }
     }
 
+    private function replaceValue($customColumns, $replaceSettings, $value) {
+
+        if (is_string($value) and strpos($value, '%') !== false) {
+            $value = str_replace($replaceSettings['placeholder'], $replaceSettings['replacePlaceholderWith'], $value);
+        }
+
+        foreach ($customColumns as $customColumn) {
+            $value = str_replace('%' . $customColumn['name'] . '%', $customColumn['value'], $value);
+        }
+
+        // Check if it is a numeric value but a string and convert
+        if (is_numeric($value) and gettype($value) == "string") {
+            $value = (int) $value;
+        }
+
+        return $value;
+    }
+
     private function protectedYaml($replaceSettings, $parsedConfig) {
 
         $customColumns = customColumns('G', $this->appServerDetails['id']);
@@ -909,24 +966,49 @@ class AppServer {
         foreach ($parsedConfig as $key => $value) {
 
             if (is_array($value) or is_object($value)) {
-
                 $parsedConfig[$key] = $this->protectedYaml($replaceSettings, $value);
-
             } else {
-
-                if (is_string($value) and strpos($value, '%') !== false) {
-                    $parsedConfig[$key] = str_replace($replaceSettings['placeholder'], $replaceSettings['replacePlaceholderWith'], $value);
-                } else {
-                    $parsedConfig[$key] = $value;
-                }
-
-                foreach ($customColumns as $customColumn) {
-                    $parsedConfig[$key] = str_replace('%' . $customColumn['name'] . '%', $customColumn['value'], $parsedConfig[$key]);
-                }
+                $parsedConfig[$key] = $this->replaceValue($customColumns, $replaceSettings, $value);
             }
         }
 
         return $parsedConfig;
+    }
+
+    private function protectedXML($replaceSettings, $parsedConfig) {
+
+        $customColumns = customColumns('G', $this->appServerDetails['id']);
+
+        foreach ($parsedConfig as $key => $value) {
+
+            if (is_array($value) or is_object($value)) {
+
+                // Skip empty ones
+                if (count($value) != 0) {
+//TODO
+                }
+
+            } else {
+                $parsedConfig[$key] = $this->replaceValue($customColumns, $replaceSettings, $value);
+            }
+        }
+
+        return $parsedConfig;
+    }
+
+    private function xmlStringToObject($xml) {
+
+        try {
+
+            if (strpos($xml, '<?xml') === false) {
+                $xml = '<?xml version="1.0"?><xml>' . $xml . '</xml>';
+            }
+
+            return new SimpleXMLElement($xml);
+
+        } catch (Exception $e) {
+            return new stdClass;
+        }
     }
 
     private function protectedSettingsToArray () {
@@ -943,10 +1025,14 @@ class AppServer {
 
             $line = str_replace(array("\r"), '', $line);
 
-            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml|Yaml|yaml))$/', $line)) {
+            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (ini|cfg|lua|json|ddot|yml|Yaml|yaml))$/', $line)) {
 
-                if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars']) and in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
-                    $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+                if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
+                    if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
+                        $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+                    } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
+                        $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedXML($replaceSettings, $this->xmlStringToObject($protectedString));
+                    }
                 }
 
                 $exploded = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
@@ -967,7 +1053,7 @@ class AppServer {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml'))) {
+                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml','xml'))) {
 
                     $protectedString .= $line . "\r\n";
 
@@ -1017,8 +1103,12 @@ class AppServer {
             }
         }
 
-        if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars']) and in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
-            $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+        if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
+            if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
+                $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+            }/* else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
+                $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedXML($replaceSettings, $this->xmlStringToObject($protectedString));
+            }*/
         }
 
         if ($this->appServerDetails['lendServer'] == 'Y') {

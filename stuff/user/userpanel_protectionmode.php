@@ -93,13 +93,12 @@ if ($query->rowCount() == 0 or !$appServer->appServerDetails or $appServer->appS
         $loguseraction = '%restart% %pmode% ' . $appServer->appServerDetails['serverIP'] . ':' . $appServer->appServerDetails['port'];
     }
 
-
     $query = $sql->prepare("UPDATE `serverlist` SET `anticheat`='1' WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query->execute(array($id, $resellerLockupID));
 
     $ftp = new EasyWiFTP($appServer->appMasterServerDetails['ssh2IP'], $appServer->appMasterServerDetails['ftpPort'], $appServer->appServerDetails['userNameExecute'], $appServer->appServerDetails['ftpPasswordExecute']);
 
-    if ($ftp->loggedIn) {
+    if ($ftp->loggedIn and count($files) > 0) {
         $ftp->downloadToTemp($appServer->appServerDetails['absoluteFTPPath'], 0, $files);
     }
 
@@ -108,7 +107,7 @@ if ($query->rowCount() == 0 or !$appServer->appServerDetails or $appServer->appS
 
     $appServer->getAppServerDetails($id);
 
-    if ($ftp->loggedIn) {
+    if ($ftp->loggedIn and count($files) > 0) {
 
         $ftp->createSecondFTPConnect($appServer->appMasterServerDetails['ssh2IP'], $appServer->appMasterServerDetails['ftpPort'], $appServer->appServerDetails['userNameExecute'], $appServer->appServerDetails['ftpPasswordExecute']);
 
@@ -124,7 +123,7 @@ if ($query->rowCount() == 0 or !$appServer->appServerDetails or $appServer->appS
 
         $appServer->getAppServerDetails($id);
         $appServer->userCud('add');
-        $appServer->removeApp(array($appServer->appServerDetails['app']['templateChoosen']));
+        $appServer->removeApp(array($appServer->appServerDetails['app']['templateChoosen']), $files, $appServer->appServerDetails['absoluteFTPPath']);
         $appServer->addApp();
     }
 
