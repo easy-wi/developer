@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<account>Account</account>
+	<action>Action</action>
+	<admin>Admin</admin>
+	<all>All</all>
+	<banned_till>Banned until</banned_till>
+    <date>Date</date>
+    <help_logs>All important interface actions are going to be logged. Thus, you will have the complete overview. Supporters' actions are logged as well with name.</help_logs>
+    <hostname>Host name</hostname>
+	<ip>IP</ip>
+	<shown>Amount</shown>
+	<subuser>Subuser</subuser>
+	<topic>Topic</topic>
+	<user>User</user>
+    <failcount>Failed attempts</failcount>
+    <reason>Reason</reason>
+</sprache>

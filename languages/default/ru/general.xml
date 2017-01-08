@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <active>Активный</active>
+  <action>Действие</action>
+  <add>Добавить</add>
+  <addon>Аддоны</addon>
+  <addon2>Аддон</addon2>
+  <all>Все</all>
+  <api>API</api>
+  <apiAuth>Внешняя авторизация</apiAuth>
+  <appMaster>Нода</appMaster>
+  <appRoot>Игровая нода</appRoot>
+  <backup>Бэкап</backup>
+  <change>Изменить</change>
+  <chosenNoResult>Не найдено результатов по запросу</chosenNoResult>
+  <chosenSelect>Пожалуйста, сделайте выбор</chosenSelect>
+  <columns>Пользовательские столбцы</columns>
+  <comments>Комментарии</comments>
+  <connect_ip_only>Главный IP только для админов (DMZ), дополнительные для внешних подключений</connect_ip_only>
+  <databases>Базы данных</databases>
+  <dataTablesFirst>Первый</dataTablesFirst>
+  <dataTablesEmpty>Нет записей для отображения</dataTablesEmpty>
+  <dataTablesEmptyTable>Данные отсутствуют в таблице</dataTablesEmptyTable>
+  <dataTablesFiltered> (фильтр от _MAX_ записей)</dataTablesFiltered>
+  <dataTablesInfo>Показано от _START_ до _END_ из _TOTAL_ записей</dataTablesInfo>
+  <dataTablesLast>Последний</dataTablesLast>
+  <dataTablesMenu>_MENU_ записей на странице</dataTablesMenu>
+  <dataTablesNext>Следующий</dataTablesNext>
+  <dataTablesNoRecords>Нет записей для отображения</dataTablesNoRecords>
+  <dataTablesPrevious>Предыдущий</dataTablesPrevious>
+  <dataTablesSearch>Поиск: </dataTablesSearch>
+  <datetime>Дата/время</datetime>
+  <dedicated>Выделенный</dedicated>
+  <del>Удалить</del>
+  <delSafe>Безопасное удаление</delSafe>
+  <delAny>Удалить в любом случае</delAny>
+  <delDB>Удалить из базы данных</delDB>
+  <description>Описание</description>
+  <domains>Домены</domains>
+  <downloads>Загрузки</downloads>
+  <edit>Редактировать</edit>
+  <error_connect>Ошибка при подключении к серверу</error_connect>
+  <errors>Ошибка(и)</errors>
+  <exec>Выполнить</exec>
+  <export>Экспорт</export>
+  <externalID>Внешний ID</externalID>
+  <externalIP>Внешний IP</externalIP>
+  <fastdownload>Fastdownload</fastdownload>
+  <feeds>Новости</feeds>
+  <file>Файл</file>
+  <free>Свободно</free>
+  <game>Игра</game>
+  <gameserver>Игровой сервер</gameserver>
+  <gameroot>Главный игровой сервер</gameroot>
+  <generalsettings>Общие настройки</generalsettings>
+  <greating_home>Добро пожаловать в панель управления %name%!</greating_home>
+  <groups>Группы</groups>
+  <help_home><![CDATA[
+	On your <em>Dashboard</em> you can find the status overview of your game and voice servers. Also, you can see the latest news for Valve games (Counter-Strike, Team Fortress, ...). Please note that the listed status information is updated every %n% minutes. For this reason a recently restarted game server might be shown as offline for a while even if it is back online already.
+	]]></help_home>
+  <help_sidebar>Информация о состоянии собираются каждые %n% минут.</help_sidebar>
+  <hostsystem>Хостсистема</hostsystem>
+  <hotline>Горячая линия</hotline>
+  <inactive>Неактивный</inactive>
+  <import>Импортировать</import>
+  <imprint>Imprint</imprint>
+  <jobs>Задания</jobs>
+  <jobPending>Задание в ожидании</jobPending>
+  <last>Ваша последняя авторизация была: </last>
+  <lendserver>Тест Сервер</lendserver>
+  <licence>Ошибка лицензии.</licence>
+  <licence_version>Вы не можете запускать эту версию!</licence_version>
+  <logs>Логи</logs>
+  <master>Главный</master>
+  <master_apps>Игры</master_apps>
+  <migration>Перенести сервер</migration>
+  <mod>Изменить</mod>
+  <modules>Модули</modules>
+  <moreInfo>Больше информации</moreInfo>
+  <network>Сеть</network>
+  <news>Новости</news>
+  <no>Нет</no>
+  <overview>Обзор</overview>
+  <page>Страница</page>
+  <pages>Страницы</pages>
+  <password>Пароль</password>
+  <registration>Регистрация</registration>
+  <reinstall>Переустановить</reinstall>
+  <repair>Починить</repair>
+  <reseller>Реселлер</reseller>
+  <root>Главный сервер</root>
+  <save>Сохранить</save>
+  <search>Поиск</search>
+  <server>Сервер</server>
+  <settings>Настройки</settings>
+  <shown>Результатов на странице</shown>
+  <start>Запустить</start>
+  <stats>Статистика</stats>
+  <status>Статус</status>
+  <status_crashed>Краш</status_crashed>
+  <status_inactive>Неактивный</status_inactive>
+  <status_ok>OK</status_ok>
+  <status_password>Пароль</status_password>
+  <status_server_tag>Имя бренда</status_server_tag>
+  <status_stop>Остановлен</status_stop>
+  <stop>Остановить</stop>
+  <subnets>Subnets</subnets>
+  <substitutes>Администраторы</substitutes>
+  <support2>Новый тикет</support2>
+  <support>Поддержка</support>
+  <sure>Вы уверены?</sure>
+  <sure_delete>Вы уверены? Все данные на сервере будут удалены!</sure_delete>
+  <system_check>Проверка системы</system_check>
+  <template>- Шаблоны</template>
+  <templates>Картинки/Шаблоны</templates>
+  <traffic>Траффик</traffic>
+  <update>Обновить</update>
+  <upload>Загрузить</upload>
+  <use>Использовать</use>
+  <used>Использовано</used>
+  <user>Пользователь</user>
+  <userImport>Импорт пользователей</userImport>
+  <virtual>Виртуальный сервер</virtual>
+  <versioncheck>Проверка обновлений</versioncheck>
+  <voiceserver>Голосовой сервер</voiceserver>
+  <vor>Вперёд</vor>
+  <webspace>Место для сайтов</webspace>
+  <welcome>Добро пожаловать: </welcome>
+  <yes>Да</yes>
+  <zurueck>Обратно</zurueck>
+</sprache>

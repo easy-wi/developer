@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <accounttype>Тип аккаунта</accounttype>
+    <accounttype_admin>Администратор</accounttype_admin>
+    <accounttype_reseller>Реселлер</accounttype_reseller>
+    <accounttype_user>Пользователь</accounttype_user>
+    <active>Активен</active>
+    <activeIn>Неактивен</activeIn>
+    <activeRegister>Ожидает регистрации</activeRegister>
+    <addon>Управление Аддон (пользователь)</addon>
+    <adresse>Адрес сервера</adresse>
+    <badlogins>Allowed number of bad logins reached!</badlogins>
+    <badloginsreset>Сбросить неудачные попытки:</badloginsreset>
+    <bear2>Изменение данных пользователя</bear2>
+    <bez>Оплата</bez>
+    <birthday>День рождения</birthday>
+    <creationTime>Создан</creationTime>
+    <country>Страна</country>
+    <einz>Automatic debit transfer system</einz>
+    <email>E-mail</email>
+    <error_cname>Ошибка: Bad username1</error_cname>
+    <error_id>Ни один пользователь не выбран:</error_id>
+    <error_in>Не все обязательные поля были заполнены; или недопустимые символы были использованы.</error_in>
+    <error_mail>Неправильный адрес электронной почты</error_mail>
+    <error_mail_exists>Данная почта используется другим пользователем.</error_mail_exists>
+    <error_pass>Ошибка: неверный пароль!</error_pass>
+    <error_passw_succ>Пароли не совпадают.</error_passw_succ>
+    <example>Пример:</example>
+    <fastdl2>Доступ к данным Fastdownload</fastdl2>
+    <fastdl>Использование Fastdownload</fastdl>
+    <fname>Фамилия</fname>
+    <freeips>Неиспользуемые IP-адреса</freeips>
+    <ftpaccess>FTP доступ</ftpaccess>
+    <ftppsw>FTP пароль</ftppsw>
+    <groupname>Название группы</groupname>
+    <gserver>Игровой сервер</gserver>
+    <han>Мобильный номер</han>
+    <heading_add>Доавбить пользователя</heading_add>
+    <heading_detail>Детали пользователя</heading_detail>
+    <heading_list>Обзор пользователя</heading_list>
+    <help_substitutes_list></help_substitutes_list>
+    <hnum>Номер дома</hnum>
+    <inst>Устанволено серверов</inst>
+    <ips>IPv4-адреса:</ips>
+    <ips_possible1>1.1.1.1</ips_possible1>
+    <ips_possible2>1.1.1.3/6</ips_possible2>
+    <mail_backup>Отправить по электронной почте, когда резервная копия будет создана / восстановлена.</mail_backup>
+    <mail_gsupdate>Отправить по электронной почте, когда главный сервер обновляется.</mail_gsupdate>
+    <mail_securitybreach>Отправить по электронной почте, когда файлы игры сервера изменены.</mail_securitybreach>
+    <mail_serverdown>Send e-mail when server cannot be reached.</mail_serverdown>
+    <mail_ticket>Send e-mail when new support ticket is written.</mail_ticket>
+    <mail_vserver>Send e-mail when VPS is created, or rescue is started.</mail_vserver>
+    <max>Максимум</max>
+    <miniroot>Root</miniroot>
+    <modfastdl>Изменить Fastdownload доступ данных</modfastdl>
+    <nickname>Никнейм</nickname>
+    <passw>Изменение пароля панели</passw>
+    <passw_1>Введите новый пароль</passw_1>
+    <passw_2>Повторите новый пароль</passw_2>
+    <passw_succ_ae>Пароль успешно изменён</passw_succ_ae>
+    <password>Пароль</password>
+    <paypal>PayPal</paypal>
+    <plz>Почтовый индекс</plz>
+    <rch>on account</rch>
+    <reset>Переустановка</reset>
+    <restart>Рестарт</restart>
+    <right>Изменение прав пользователей</right>
+    <root>Root</root>
+    <salutation>Пол</salutation>
+    <salutation2>Муж.</salutation2>
+    <salutation3>Жен.</salutation3>
+    <server>Сервер</server>
+    <serverdata>Установленные серверы</serverdata>
+    <settings>Настройки панели</settings>
+    <show_help_text>Показать помощь</show_help_text>
+    <shown>Результатов на странице:</shown>
+    <socialConnect> Подключение с помощью</socialConnect>
+    <socialRemove>Разорвать соединение с</socialRemove>
+    <socialSignin>Войти в систему</socialSignin>
+    <stadt>Город</stadt>
+    <str>Улица</str>
+    <switch>Переключить на пользователя</switch>
+    <tel>Номер телефона</tel>
+    <tickets>Поддержка</tickets>
+    <updateTime>Обновлено</updateTime>
+    <user>Имя пользователя</user>
+    <user_users>User adminstration</user_users>
+    <user_admins>Admin adminstration</user_admins>
+    <userdata>Данные пользователя</userdata>
+    <usersettings>Настройки пользвоателя</usersettings>
+    <usertickets>Поддержка</usertickets>
+    <user_create>Пользователь был успешно создан</user_create>
+    <user_server>Игровой сервер будет удален:</user_server>
+    <vname>Имя</vname>
+    <wipsw>Интерфейс веб-пароль</wipsw>
+</sprache>

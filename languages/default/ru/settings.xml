@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <brandname>Server tag:</brandname>
+    <confirm_change>Save modifications?</confirm_change>
+    <eachday>Each X days:</eachday>
+    <email2>This e-mail address will be used when sending data to the users.</email2>
+    <email>E-mail:</email>
+    <emaildown>Could not reach server.</emaildown>
+    <emaildownrestart>Server is down and could not be restarted.</emaildownrestart>
+    <emailfooter2>This text is inserted into the footer of an e-mail sent by the panel, for example, you can add your legal information here.</emailfooter2>
+    <emailfooter>E-mail footer:</emailfooter>
+    <emailnewticket>New support ticket received.</emailnewticket>
+    <emailpasswordrecovery>Password recovery</emailpasswordrecovery>
+    <emailregards2>This text is inserted at the end of an e-mail sent by the panel, for example: "Kind regards,".</emailregards2>
+    <emailregards>E-mail greeting:</emailregards>
+    <emailsecuritybreach>Server manipulation has been detected</emailsecuritybreach>
+    <emailvrescue>Rescue system started</emailvrescue>
+    <faillogins>Possible failed logins in a row</faillogins>
+    <header>Settings</header>
+    <image_server2>If a master installation is not set up, the data will be downloaded from this server.</image_server2>
+    <image_server3>Use an image server:</image_server3>
+    <image_server>Image server:</image_server>
+    <language>Default language:</language>
+    <lastCronWarnStatus>statuscheck.php warning</lastCronWarnStatus>
+    <lastCronWarnReboot>reboot.php warning</lastCronWarnReboot>
+    <lastCronWarnUpdates>startupdates.php warning</lastCronWarnUpdates>
+    <lastCronWarnJobs>jobs.php warning</lastCronWarnJobs>
+    <lastCronWarnCloud>cloud.php warning</lastCronWarnCloud>
+    <maxbackups>Maximum backup amount:</maxbackups>
+    <nopassword>Password removed</nopassword>
+    <noservertag>Server tag removed</noservertag>
+    <password>Password</password>
+    <prefix1>Define usernames:</prefix1>
+    <prefix2>Unique user IDs will be appended to their associated usernames. If you define usernames, only small letters and numbers are allowed. Example: customer will be customer2 and counting</prefix2>
+    <prefix3>Default user name:</prefix3>
+    <protocol>Protocol</protocol>
+    <shutdown>Shut down server</shutdown>
+    <supportnumber>Support phone number:</supportnumber>
+    <timezone>Timezone:</timezone>
+    <tohighslots>Slots manipulated</tohighslots>
+    <warn>Warn user</warn>
+    <down_checks>Offline checks</down_checks>
+</sprache>

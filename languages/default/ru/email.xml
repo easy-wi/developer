@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <topic>Тема</topic>
+    <id>ID пользователя</id>
+    <creationTime>Дата создание</creationTime>
+    <active>Y=активно или N=не активно</active>
+    <salutation>Приветствие</salutation>
+    <cname>Логин</cname>
+    <fullname>Ф.И.О</fullname>
+    <name>Фамилия</name>
+    <vname>Имя</vname>
+    <birthday>Дата рождения</birthday>
+    <mail>E-Mail адресс</mail>
+    <phone>Телефон</phone>
+    <fax>Факс</fax>
+    <handy>Мобильный</handy>
+    <country>Страна</country>
+    <city>Город</city>
+    <cityn>PLZ</cityn>
+    <street>Улица</street>
+    <streetn>Дом</streetn>
+    <language>Язык</language>
+    <lastlogin>Дата последней авторизации</lastlogin>
+    <urlhost>Ссылка на login.php</urlhost>
+    <password>Пароль</password>
+    <date>Дата письма</date>
+    <ip>IP адресс сервера</ip>
+    <port>Порт 1</port>
+    <port2>Порт 1</port2>
+    <port3>Порт 1</port3>
+    <port4>Порт 1</port4>
+    <ports>Порт 1</ports>
+    <variable>Переменная</variable>
+    <variabledesc>Описание</variabledesc>
+    <templatename>Название шаблона</templatename>
+    <copycc>Copy CC</copycc>
+    <copybcc>Copy BCC</copybcc>
+    <attachments>прикрепленные файлы</attachments>
+    <back>Назад</back>
+    <templatesettinghead>Настройки E-Mail шаблонов</templatesettinghead>
+</sprache>

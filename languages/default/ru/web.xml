@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <aRecordMissing>A record for domain %domain% not configured to %ip%</aRecordMissing>
+    <blocksize>Blocksize</blocksize>
+    <defaultdns>Default Domain</defaultdns>
+    <dirHttpd>Htdocs Folder</dirHttpd>
+    <dirLogs>Logs Folder</dirLogs>
+    <defaultDns>Default Domain</defaultDns>
+    <dns>Domain</dns>
+    <domainNotUsed>Skipped not allowed domain %domain%</domainNotUsed>
+    <error_password_not_match>FTP passwords does not match</error_password_not_match>
+    <error_password_not_set>FTP password not allowed, not set, or not repeated.</error_password_not_set>
+    <fdlInfo>FastDL Info</fdlInfo>
+    <ftpIP>FTP Address</ftpIP>
+    <ftpPassword>FTP Password</ftpPassword>
+    <ftpPasswordChanged>Change FTP Password</ftpPasswordChanged>
+    <ftpPasswordRepeat>Repeat FTP Password</ftpPasswordRepeat>
+    <ftpPort>FTP Port</ftpPort>
+    <hdd>Diskspace</hdd>
+    <hddOverbook>HDD Overbooking</hddOverbook>
+    <hddUsage>Used Diskspace</hddUsage>
+    <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
+    <help_default_dns>This (sub) domain can be entered at domains. In case it is removed at the domain management, this default one is deactivated.</help_default_dns>
+    <help_fdl_attention>Warning! Recommended method is to create a subfolder for each game. Naming could be like cod4, cstrike, css, etc.</help_fdl_attention>
+    <help_fdl_hl>Half-Life 1 (CS 1.6, TFC, DOD, etc.) and Half-Life 2 (CSS, CSGO, DODS, L4D2, TF2, etc.) based servers need entries like this at the server.cfg</help_fdl_hl>
+	<help_fdl_ut>UnrealEngine based servers (UT GOTY, UT2004) need entries like this at the server.ini</help_fdl_ut>
+    <help_fdl_cod>Call of Duty Server require eintries like this at the server.cfg</help_fdl_cod>
+    <help_inode_block_ratio>Most systems have a ratio of 4. This means 4 blocks have one inode.</help_inode_block_ratio>
+    <help_web_master>Warning, we recommend to use the host for fast download only. Other panels and software can cause issues or can be affected by the fastdownload. Typical fastdownload behaviour is to create traffic and load spikes which will create lags on other server deamons.</help_web_master>
+    <httpdCmd>HTTPD Start/Reload Command</httpdCmd>
+    <inodeBlockRatio>Block/Inode Ratio</inodeBlockRatio>
+    <installedHDD>Assigned HDD</installedHDD>
+    <installedVhost>Installed Vhosts</installedVhost>
+    <maxHDD>Existing disk space</maxHDD>
+    <maxVhost>Maximum Vhosts</maxVhost>
+    <optional>(optional)</optional>
+    <other>Other</other>
+    <overbookPercent>Overbook</overbookPercent>
+    <ownVhost>Own Vhost Template</ownVhost>
+    <path>Path</path>
+    <pathCorrected>Path belonging to domain %domain% corrected from %pathGiven% to %pathConverted%</pathCorrected>
+    <phpConfiguration>PHP Configuration</phpConfiguration>
+    <quotaActive>Activate Quotas</quotaActive>
+    <quotaCmd>Quota Command</quotaCmd>
+    <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>
+    <recreate>Recreate</recreate>
+    <repquotaCmd>Repquota Command</repquotaCmd>
+    <serverType>Servertype</serverType>
+    <usage>Usage</usage>
+    <usageType>Vhost Usage</usageType>
+    <userGroup>Webserver Group</userGroup>
+    <userAddCmd>Useradd Command</userAddCmd>
+    <userDelCmd>Userdel Command</userDelCmd>
+    <userModCmd>Usermod Command</userModCmd>
+    <vhostConfigPath>Vhost Config Storagepath</vhostConfigPath>
+    <vhostTemplate>Vhost Template</vhostTemplate>
+    <vhostStoragePath>Vhost Storagepath</vhostStoragePath>
+</sprache>

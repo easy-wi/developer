@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <active>Активировать Новости</active>
+    <displayContent>Читать далее...</displayContent>
+    <limitDisplay>Ограничение символов</limitDisplay>
+    <maxChars>Максимум символов</maxChars>
+    <maxKeep>Сколько хранить новости</maxKeep>
+    <merge>Объеденить новости</merge>
+    <newsAmount>Кол-во показанных новостей</newsAmount>
+    <pubDate>Написано</pubDate>
+    <orderBy>Автор:</orderBy>
+    <status>Статус</status>
+    <title>Название</title>
+    <updateMinutes>Проверять каждые X минут новые новости</updateMinutes>
+    <useLocal>Показывать локальные новости</useLocal>
+    <oauth_access_token>Oauth access token</oauth_access_token>
+    <oauth_access_token_secret>Oauth access token secret</oauth_access_token_secret>
+    <consumer_key>Consumer key</consumer_key>
+    <consumer_secret>Consumer secret</consumer_secret>
+    <twittersettings>Twitter Настройки</twittersettings>
+</sprache>

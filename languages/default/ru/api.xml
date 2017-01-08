@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <action>Действие</action>
+    <active>Активно</active>
+    <activeExternal>Включить внешнюю авторизацию</activeExternal>
+    <all>Все</all>
+    <chunkSize>User chunksize</chunkSize>
+    <date>Дата</date>
+    <domain>Домен</domain>
+    <fetchUpdates>Получить об</fetchUpdates>
+    <file>Файл</file>
+    <groupID>Группа Юзера</groupID>
+    <ipAdd>Добавить IP</ipAdd>
+    <ips>Разрешенные IP</ips>
+    <lastCheck>Последняя проверка</lastCheck>
+    <lastExternalID>Последний внешний ID</lastExternalID>
+    <name>Название</name>
+    <pwd>Пароль</pwd>
+    <ssl>SSL</ssl>
+    <status>Статус</status>
+    <type>Тип</type>
+    <user>Пользователь</user>
+</sprache>

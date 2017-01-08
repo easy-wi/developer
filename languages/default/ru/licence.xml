@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <contract>Contract type</contract>
+    <contractTime>Contract lifetime until</contractTime>
+    <B>Buy</B>
+    <g>Commercial</g>
+    <installed>Installed</installed>
+    <l>Light</l>
+    <licenceAmount>Licence usage</licenceAmount>
+    <R>Rent</R>
+    <p>Private</p>
+    <type>Licence type</type>
+    <unlimited>Unlimited</unlimited>
+    <updates>Updates until</updates>
+</sprache>

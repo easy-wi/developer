@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <active>Активный</active>
+  <activeGS>Активировать тестовый игровой сервер для</activeGS>
+  <activeVS>Активировать тестовый голосовой сервер для</activeVS>
+  <all>Каждый</all>
+  <anonymous>Анонимный</anonymous>
+  <available>доступен</available>
+  <free>Доступные в</free>
+  <ftpupload>Разрешить загрузку демо</ftpupload>
+  <ftpuploadpath>Демо FTP</ftpuploadpath>
+  <ipblock>Кто-то с Вашим IP-адресом уже получил сервер!</ipblock>
+  <lend>Тест</lend>
+  <lendaccess>Тест через</lendaccess>
+  <lendhostip>WebhostIP if XML</lendhostip>
+  <lendhostkey>Key if XML</lendhostkey>
+  <maxplayer>Максимальное количество слотов</maxplayer>
+  <maxtime>Максимальный период тестового периода (минуты)</maxtime>
+  <minplayer>Минимальные слоты</minplayer>
+  <mintime>Минимальный период тестового периода (минуты)</mintime>
+  <minutes>Минуты</minutes>
+  <nextcheck>Следующая проверка состояния</nextcheck>
+  <nextfree>Согласно плану, следующий игровой сервер освободится в</nextfree>
+  <nextfreevo>Согласно плану, следующий голосовой сервер свободен в</nextfreevo>
+  <playersteps>Шаг слотов</playersteps>
+  <ready>Готов</ready>
+  <registered>Зарегистрирован</registered>
+  <settingsGsAnonymous>Настройки Игрового сервера для анонимного пользователя</settingsGsAnonymous>
+  <settingsGsGeneral>Общие настройки игрового сервера</settingsGsGeneral>
+  <settingsGsRegistered>Настройки Игрового сервер для зарегистрированного пользователя</settingsGsRegistered>
+  <settingsVsAnonymous>Настройки голосового сервера анонимный пользователь</settingsVsAnonymous>
+  <settingsVsGeneral>Общие настройки голосовой сервер</settingsVsGeneral>
+  <settingsVsRegistered>Настройки голосовой сервер зарегистрированный пользователь</settingsVsRegistered>
+  <shutdownempty>Выключать пустой сервер</shutdownempty>
+  <shutdownemptytime>Минимальное время автономной работы (мин)</shutdownemptytime>
+  <timesteps>Шаги минут</timesteps>
+  <timeleft>Оставшееся время</timeleft>
+  <used>Использованный</used>
+  <usedserver>Использованный сервер</usedserver>
+</sprache>

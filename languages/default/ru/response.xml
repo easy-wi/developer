@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <notFound>404: No entry for this ID found or access forbidden!</notFound>
+    <error_name>Error: Name is not allowed or exists already.</error_name>
+    <error_server>Error: Could not establish a connection to the server!</error_server>
+    <error_table2>Error: Adding the data to the database failed!</error_table2>
+    <error_table>Error: Updating the database failed, or no new data had been entered!</error_table>
+    <error_ts_query>Error: Sending commands to the TS 3 server failed. Error message is: </error_ts_query>
+    <error_ts_query_connect>Error: Could not connect to TS3 server query. Error message is: </error_ts_query_connect>
+    <error_username>Error: User name is not allowed or exists already.</error_username>
+    <reinstall_success>Reinstall successfully started</reinstall_success>
+    <table_add>Successfully added the data to the database.</table_add>
+    <table_del>Successfully removed the data from the database.</table_del>
+    <token>Error: CSFR protection token timed out or does not match.</token>
+    <ts_query_success>TS3 server query successful. TS3 query reply is: </ts_query_success>
+    <ts_query_error>TS3 Serverquery fail.</ts_query_error>
+</sprache>

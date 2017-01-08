@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <abkuerz>Сократить</abkuerz>
+  <action>Действие</action>
+  <active>Активировать</active>
+  <all>Выбрать все игры</all>
+  <anticheat>Античит</anticheat>
+  <authkey_info><![CDATA[Your personal web API authorization key which is required for downloading Steam maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">here</a>.]]></authkey_info>
+  <backup_create>Бэкап будет сделан.</backup_create>
+  <backup_recover>Бэкап будет восстановлен.</backup_recover>
+  <belegt2>Существующие папки</belegt2>
+  <belegt>Использованные порты</belegt>
+  <beschr>Описание</beschr>
+  <bin>Бинарный файл</bin>
+  <bin_folder>Бинарная папка (orangebox например)</bin_folder>
+  <brandname>Тэг сервера</brandname>
+  <cant_install>Не удалось запустить установку на сервере</cant_install>
+  <collection_info><![CDATA[Workshop collection ID used for downloading maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">here</a>.]]></collection_info>
+  <config>Конфиги сервера</config>
+  <confirm_change>Сохранить изменения?</confirm_change>
+  <confirm_delete>Удалить сервер?</confirm_delete>
+  <confirm_restart>(Пере)запустить сервер?</confirm_restart>
+  <confirm_stop>Остановить сервер?</confirm_stop>
+  <coreBind>CPU ядра</coreBind>
+  <create>Созать</create>
+  <delete_server>Сервера на удаление:</delete_server>
+  <details>Расширенные опции сервера</details>
+  <easy>Легкий</easy>
+  <error_folder>Ошибка: Пользователь уже имеет этот тип сервера на указанном порту.</error_folder>
+  <error_id>Ошибка: сервер не может быть найден.</error_id>
+  <error_md>Ошибка: Сервер не может быть изменен.</error_md>
+  <error_notinstalled>Ошибка: Вы должны установить главный сервер для этой игры на корневом сервере.</error_notinstalled>
+  <error_port>Ошибка: Сервер с указанным портом уже существует на этом сервере.</error_port>
+  <error_server_install>Ошибка: Не удалось запустить установку на сервере.</error_server_install>
+  <error_user>Ошибка: Не удалось добавить пользователя.</error_user>
+  <failed>Ошибка: Не удалось установить соединение с сервером.</failed>
+  <folder>Папка сервера</folder>
+  <fps>FPS сервера</fps>
+  <friday>Пятница</friday>
+  <ftp_adresse>FTP адресс</ftp_adresse>
+  <ftp_link>FTP ссылка</ftp_link>
+  <ftp_password>FTP пароль</ftp_password>
+  <ftp_path>FTP пусть</ftp_path>
+  <ftp_port>FTP порт</ftp_port>
+  <ftp_user>FTP логин</ftp_user>
+  <full>Полный</full>
+  <game>Игра</game>
+  <games>Игры</games>
+  <gameswitch>Выберите тип игры</gameswitch>
+  <gs_add2>Добавить сервер, шаг 2: сведения о сервере</gs_add2>
+  <gs_add>Добавить сервер, шаг 1: пользователь, корневой сервер, игра</gs_add>
+  <hdd>Дисковое пространство (Mб)</hdd>
+  <hddinstalled>Присвоенные харддиски</hddinstalled>
+  <heading_delete>Удалить игровой сервер</heading_delete>
+  <heading_template>Обзор Игрового сервера</heading_template>
+  <help_calendar><![CDATA[
+	You can define game server restarts at the top of every hour with our restart planner.<br />
+	This feature is helpful if you want to switch the game or the template at a given time.
+    ]]></help_calendar>
+  <help_config><![CDATA[
+	Our web interface allows you to edit the most important config files for your game server. Config files belonging to plugins will be added once they have been installed with the web interface.<br />
+	<br />
+    It might be that you cannot see the config file in the web interface, in this case you can edit it via FTP even so.
+    ]]></help_config>
+  <help_md><![CDATA[
+	On this site you can change games at any time. Specifically, our <em>Template</em> feature allows you to maintain multiple game configurations.
+	]]></help_md>
+  <help_list><![CDATA[
+	This overview lists detailed game server information, for example, the active template, FTP data, etc. The submenus will allow you to do extensive configuration changes.<br />
+	Games and templates can be defined at <em>Settings</em>. The <em>Server configs</em> area will allow you to manage game and addon settings. If you want to automatically change a game or template, the <em>Restart planner</em> will be of great use for you. Troubleshooting can be done with the <em>Logs</em>.
+    ]]></help_list>
+  <help_reinstall><![CDATA[
+	<em>Resynchronization</em> will add missing files without altering existing ones. You could benefit from this feature when you have deleted files by accident or new update files are absent.<br />
+    <br />
+	<em>Reinstall</em> will result in a complete reset. All data will be lost, and the server will be reset to factory defaults.<br />
+    <br />
+	Both actions are started with the <em>Execute</em> button and usually completed within a few minutes.
+    ]]></help_reinstall>
+  <homeDir>Домашняя папка</homeDir>
+  <hour>Час</hour>
+  <import_corrected>Является ли найденный путь правильным?</import_corrected>
+  <import_destination>Сервер назначения, игра и шаблон импорта</import_destination>
+  <import_source>Источник данных, которые будут импортированы</import_source>
+  <import_start>Миграционная служба начата. Этот процесс займет некоторое время!</import_start>
+  <installAll>Все игры</installAll>
+  <installGames>Предустановка игры</installGames>
+  <ip>IP игрового сервера</ip>
+  <lendserver>Сжимаемый сервер</lendserver>
+  <primary>Первичная игра</primary>
+  <map>Карта</map>
+  <mod>Папка модов (например, cstrike)</mod>
+  <monday>Понедельник</monday>
+  <nameremoved>Тег сервера удален</nameremoved>
+  <never>Никогда</never>
+  <no_game>Ни одна игра не была выбрана.</no_game>
+  <no_server_left>Серверов не осталось для этого пользователя. Удаление пользователя из корневого сервера.</no_server_left>
+  <off2>Выклбючен</off2>
+  <off>Сервер выключен</off>
+  <on>Включен</on>
+  <password>Пароль</password>
+  <player>Игрок</player>
+  <port>Порт</port>
+  <port_gs>Порт Игрового сервера</port_gs>
+  <premoved>Пароль сервера удален</premoved>
+  <protect>Режим защиты</protect>
+  <ramMax>Максимум RAM</ramMax>
+  <ramMin>Минимум RAM</ramMin>
+  <raminstalled>Выделено памяти</raminstalled>
+  <rcon>Удаленный пароль (RCON)</rcon>
+  <recover>Восстановление</recover>
+  <reinstall>Переустановить</reinstall>
+  <restart_all>Перезапустить все серверы</restart_all>
+  <restarts>Перезагрузка сервера</restarts>
+  <restarttime>Планировщик перезагрузок</restarttime>
+  <resync>Ресинхронизация</resync>
+  <root>Корневой сервер</root>
+  <saturday>Суббота</saturday>
+  <server>Адрес сервера</server>
+  <serverinstalled>Установленные серверы</serverinstalled>
+  <servername>Имя сервера</servername>
+  <serverrestart>(Пере)запуск сервера</serverrestart>
+  <serverstop>Остановка сервера</serverstop>
+  <servertype>Тип сервера</servertype>
+  <server_details>Детали для</server_details>
+  <server_installed>Успешно начата ресинхронизация/переустановка на сервере.</server_installed>
+  <server_ud>Обновление данных сервера</server_ud>
+  <since>С</since>
+  <slots>Слоты</slots>
+  <slotsinstalled>Установленные слоты</slotsinstalled>
+  <slotsused>Используемые слоты</slotsused>
+  <start>Команда запуска</start>
+  <startmap>Карта</startmap>
+  <startmapgroup>Группа карт</startmapgroup>
+  <start_own>Собственная команда запуска</start_own>
+  <stop>Остановка сервера</stop>
+  <sunday>Воскресенье</sunday>
+  <switch>Переключить на пользователя</switch>
+  <thursday>Четверг</thursday>
+  <tick>Тикрейт</tick>
+  <tuesday>Вторник</tuesday>
+  <tv>TV разрешено</tv>
+  <tvport>SourceTV</tvport>
+  <tvuploadstart>SourceTV upload started</tvuploadstart>
+  <type>Тип установки</type>
+  <updated>Конфигурационный был успешно изменен.</updated>
+  <updatetime>Статус в</updatetime>
+  <usage>Распределение сервера</usage>
+  <usedports>Используемые порты</usedports>
+  <user>Имя пользователя</user>
+  <useredit>редактируемое пользователем</useredit>
+  <user_add>Успешное добавление пользователя на корневом сервере.</user_add>
+  <war>Приватный сервер</war>
+  <webFtp>Файловый менеджер</webFtp>
+  <wednesday>Среда</wednesday>
+</sprache>

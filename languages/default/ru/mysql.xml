@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <active>Активный</active>
+  <dbSize>Размер базы данных</dbSize>
+  <interface>phpMyAdmin</interface>
+  <ips>Разрешенные IP-адреса</ips>
+  <dbname>Имя базы данных</dbname>
+  <description>Описание</description>
+  <reinstall>Переустановить</reinstall>
+  <standards>Значения по умолчанию для пользователя базы данных</standards>
+  <manage_host_table>Редактируется таблица хостов</manage_host_table>
+  <max_databases>Максимум баз данных</max_databases>
+  <max_queries_per_hour>Максимальное количество запросов в час</max_queries_per_hour>
+  <max_updates_per_hour>Максимальное количество обновлений в час</max_updates_per_hour>
+  <max_connections_per_hour>Максимальное число подключений в час</max_connections_per_hour>
+  <max_userconnections_per_hour>Максимальное число подключений пользователей в час</max_userconnections_per_hour>
+  <password>Пароль</password>
+  <table>Таблица</table>
+  <usage>Использовано</usage>
+  <user>Имя пользователя</user>
+</sprache>

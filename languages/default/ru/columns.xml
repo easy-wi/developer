@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <int>Номер</int>
+    <item>Столбец для for</item>
+    <length>Длина</length>
+    <menuname>Название меню</menuname>
+    <name>Название</name>
+    <type>Тип</type>
+    <var>Строка</var>
+</sprache>

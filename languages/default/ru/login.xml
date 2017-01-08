@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <bad_ca>Введенные данные не совпадают с капчей.</bad_ca>
+  <bad_up>Пользователь не существует или неверный пароль.</bad_up>
+  <back>Назад</back>
+  <banned>Слишком много неуспешных попыток входа. Пожалуйста, запросите новый пароль или свяжитесь с нами.</banned>
+  <captcha>Captcha</captcha>
+  <email>Электронная почта или имя пользователя</email>
+  <exp>Срок действия лицензии истек.</exp>
+  <heading>Логин пользователя</heading>
+  <ipBad>Неправильный IP:</ipBad>
+  <ipOK>Разрешенные IP-адреса -</ipOK>
+  <linkexpired>Ссылка истекла.</linkexpired>
+  <multipleHeader>Несколько пользователей найдено</multipleHeader>
+  <multipleHelper>Несколько юзеров было найдено для r %sp%. Выберите, пожалуйста, одного.</multipleHelper>
+  <multipleHelperEndpoint>Usually you will have to register an app at the service provider. During creating you will be provided with a key and access token. Both need to be entered at Easy-Wi. At the app you need to configure an endpoint. The endpoint for Easy-Wi is %url%</multipleHelperEndpoint>
+  <nouser>Нет пользователя с таким именем или адресом электронной почты.</nouser>
+  <password>Пароль</password>
+  <passwdlost>Я забыл свой пароль</passwdlost>
+  <passwordr>Восстановление пароля</passwordr>
+  <passwordrepeat>Повторите пароль</passwordrepeat>
+  <passwordreset>Сбросить пароль</passwordreset>
+  <passwordreseted>Пароль был обновлен.</passwordreseted>
+  <pwnomatch>Пароли не совпадают.</pwnomatch>
+  <send>Письмо с кодом активации было отправлено Вам на почту.</send>
+  <sus>Ваш аккаунт заблокирован. Пожалуйста, обратитесь к хосту.</sus>
+  <sus_heading>Внимание!</sus_heading>
+  <user>Имя пользователя</user>
+  <urlBad>Неправильный адрес используется:</urlBad>
+  <urlOK>Правильный URL -</urlOK>
+</sprache>

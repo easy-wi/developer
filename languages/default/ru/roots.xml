@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <abkuerz>Shorten</abkuerz>
+    <active>Activate</active>
+    <all>All</all>
+    <all_games>Select all games</all_games>
+    <all_roots>Select all root servers</all_roots>
+    <blocksize>Blocksize</blocksize>
+    <cfgdir>Config folder</cfgdir>
+    <configBadFiles>Bad files</configBadFiles>
+    <configBadTime>Remove bad files after N days</configBadTime>
+    <configBinaries>Server binaries</configBinaries>
+    <configDemoTime>Remove demos after N days</configDemoTime>
+    <configFiles>Link config files</configFiles>
+    <configIonice>Use ionice</configIonice>
+    <configLogTime>Logs after N days</configLogTime>
+    <configUserID>UserIDs starting at</configUserID>
+    <configZtmpTime>Remove ZTMP files after N days</configZtmpTime>
+    <confirm1>Start update(s)?</confirm1>
+    <desc>Description</desc>
+    <error_root_db>Error: Could not delete the root server from the database!</error_root_db>
+    <error_root_dbmasterdel>Error: Could not delete the master server from the database!</error_root_dbmasterdel>
+    <error_root_install>Error: Could not start the following installation!</error_root_install>
+    <error_root_masterdel2>Error: Could not delete the files from the server!</error_root_masterdel2>
+    <error_root_masterdel>Error: The master server has already been deleted!</error_root_masterdel>
+    <error_root_noselect>Error: No servers have been selected.</error_root_noselect>
+    <error_root_updatemaster>Error: Could not start the update at the IP!</error_root_updatemaster>
+    <ftp_port>FTP port</ftp_port>
+    <haupt_ip>Main and SSH2 IP</haupt_ip>
+    <header_add>Add master server(s)</header_add>
+    <header_del>Delete master server(s)</header_del>
+    <header_update>Update master server(s)</header_update>
+    <help_blocksize>Most filesystems are configured with a blocksize of 4096. This means one block contains 4096 Byte data.</help_blocksize>
+    <help_inode_block_ratio>Most systems have a ratio of 4. This means 4 blocks have one inode.</help_inode_block_ratio>
+    <inodeBlockRatio>Block/Inode Ratio</inodeBlockRatio>
+    <installed>Installed master server(s)</installed>
+    <installeds>Installed slots</installeds>
+    <installPaths>Install paths</installPaths>
+    <ips>IPs</ips>
+    <keyname>Public key file name</keyname>
+    <keyuse>Use public key file</keyuse>
+    <master_update>The servers with following IP addresses have been updated successfully</master_update>
+    <maxserver2>Maximum servers</maxserver2>
+    <maxserver>Servers installed</maxserver>
+    <maxslots>Maximum slots</maxslots>
+    <os>Operating system</os>
+    <os_bit>Bit-version</os_bit>
+    <password>Password</password>
+    <quotaActive>Activate Quotas</quotaActive>
+    <quotaCmd>Quota Command</quotaCmd>
+    <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>
+    <repquotaCmd>Repquota Command</repquotaCmd>
+    <resellerAssign>Assign to reseller</resellerAssign>
+    <root_masterdel>Successfully started the removal process.</root_masterdel>
+    <root_masterinstall>The master server has been added to the database and is currently in the installation process.</root_masterinstall>
+    <root_updatemaster>Successfully started updating</root_updatemaster>
+    <show>Show</show>
+    <showg>Only servers with the game</showg>
+    <showt>Only servers with the server type</showt>
+    <spiele>Games</spiele>
+    <ssh_pass>SSH2 password</ssh_pass>
+    <ssh_port>SSH2 port</ssh_port>
+    <ssh_user>SSH2 username</ssh_user>
+    <steam>Steam game</steam>
+    <steamWarning>Warning! If you enter any data here, it will overwrite the login data given at the gameserver templates!</steamWarning>
+    <updateMinute>Hourly update at minute</updateMinute>
+    <useds>Used slots:</useds>
+    <zusatz_ip>Additional IPs</zusatz_ip>
+</sprache>

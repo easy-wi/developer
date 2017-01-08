@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <about>О нас</about>
+  <active>Активный</active>
+  <admin>Администратор</admin>
+  <author>Автор</author>
+  <categories>Категории</categories>
+  <commentMinLength>Комментарий: Минимальная длина</commentMinLength>
+  <commentsModerated>Комментарий: Модерируемый</commentsModerated>
+  <contact>Связаться</contact>
+  <date>Дата</date>
+  <defaultpage>Страница по умолчанию</defaultpage>
+  <gallery>Галерея</gallery>
+  <intern>Intern</intern>
+  <keyword>Ключевое слово</keyword>
+  <keywords>Ключевые слова</keywords>
+  <languages>Языки</languages>
+  <mailRequired>Комментарий: Требуется электронная почта </mailRequired>
+  <mailSend>Письмо было отправлено.</mailSend>
+  <maxnews>Показать последние Х новостных сообщений </maxnews>
+  <message>Сообщение</message>
+  <MSIE>Internet Explorer still does not accept the W3C specifications. Due to this the display of the page can be corrupted. Please use a different browser.</MSIE>
+  <moderate>Требуется Модерация:</moderate>
+  <name>Имя</name>
+  <naviDisplay>Показывать на навигации</naviDisplay>
+  <newer>Новее</newer>
+  <news_add>Добавить новость</news_add>
+  <newssidebar_textlength>Длина текста в новостях на боковой панели</newssidebar_textlength>
+  <older>Старее</older>
+  <pages>Страницы с</pages>
+  <page_add>Добавить новую страницу</page_add>
+  <page_dl>Удалить страницу</page_dl>
+  <page_mod>Редактировать страницу</page_mod>
+  <posted>Автор</posted>
+  <preview>Предварительный просмотр</preview>
+  <protectioncheck>Проверка защиты</protectioncheck>
+  <public>Общественный</public>
+  <register>Регистрация</register>
+  <registerAccountOK>Ваша учетная запись была создана.</registerAccountOK>
+  <registerActivated>Учетная запись была активирована.</registerActivated>
+  <registerAdmin>Регистрация прошла успешно. Администратор должен активировать Ваш аккаунт.</registerAdmin>
+  <registerBlockIPs>Предотвращение IP-адреса от регистрации</registerBlockIPs>
+  <registerBlockMails>Предотвращение электронной почты от регистрации</registerBlockMails>
+  <registerByMailActivation>Активация почты</registerByMailActivation>
+  <registerByMailAdminActivation>Активация администратора</registerByMailAdminActivation>
+  <registerDirectActive>Прямая</registerDirectActive>
+  <registerErrorActivatedFailed>Ни один аккаунт не может быть найден для активации.</registerErrorActivatedFailed>
+  <registerErrorBot>Пожалуйста, включите JavaScript.</registerErrorBot>
+  <registerErrorCname>Пожалуйста, используйте другой ник.</registerErrorCname>
+  <registerErrorCookies>Пожалуйста, включите cookie</registerErrorCookies>
+  <registerErrorMail>Пожалуйста, используйте другой адрес электронной почты.</registerErrorMail>
+  <registerErrorTou>Пожалуйста, примите условия использования!</registerErrorTou>
+  <registerErrorPassword>Пароли не совпадают.</registerErrorPassword>
+  <registerErrorPassword2>Пожалуйста, используйте безопасный пароль с не менее 8 символами, содержащий в верхнем и нижнем регистре букв, цифр и специальных символов. Примером хорошего пароля: "Аха% asLsdh12".</registerErrorPassword2>
+  <registerErrorPassword3>Пожалуйста, введите пароль.</registerErrorPassword3>
+  <registerErrorUnknown>Произошла неизвестная ошибка. Пожалуйста, попробуйте еще раз.</registerErrorUnknown>
+  <registerMailSend>Регистрация прошла успешно. Вы должны получить по электронной почте письмо в ближайшее время.</registerMailSend>
+  <registerQuestions>Защита от ботов</registerQuestions>
+  <release>Опубликовать</release>
+  <released>Опубликован</released>
+  <rssfeed>Activate RSS feed</rssfeed>
+  <search>Поиск</search>
+  <seo>Rewrite URLs für SEO</seo>
+  <sitemap>Карта сайта</sitemap>
+  <spamBlockLinks>Links in comments</spamBlockLinks>
+  <spamBlockWords>Word blacklist</spamBlockWords>
+  <spamFilter>Спам-фильтр</spamFilter>
+  <spamLanguageFilter>Языковой фильтр</spamLanguageFilter>
+  <subpage>Подстраница</subpage>
+  <tag>Тег</tag>
+  <title>Название</title>
+  <tou>Условия использования</tou>
+  <update>Обновить</update>
+  <upload>Загрузить</upload>
+  <rssfeed_fulltext>Complete text at the RSS feed</rssfeed_fulltext>
+  <rssfeed_textlength>RSS feed length</rssfeed_textlength>
+  <sort>Сортировка</sort>
+  <sort_new>Сортировать новые</sort_new>
+</sprache>

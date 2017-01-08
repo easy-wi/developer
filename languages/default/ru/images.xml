@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<sprache>
+  <abkuerz>Сокращенно</abkuerz>
+  <active>Активировать</active>
+  <addon2>Название меню</addon2>
+  <addon>Имя папки в "masteraddons/mastermaps"</addon>
+  <addons_maps>Пакты карта</addons_maps>
+  <addons_tools>Инструменты сервера</addons_tools>
+  <addon_add>Аддон успешно добавлен</addon_add>
+  <addon_del>Удаление аддона</addon_del>
+  <addon_del_from>Аддон удален с сервера:</addon_del_from>
+  <addon_del_from_fail>Не удалось удалить аддон с сервера:</addon_del_from_fail>
+  <addon_inst>Установка аддона</addon_inst>
+  <addon_ud>Аддон успешно обновлен</addon_ud>
+  <add_addon>Создать аддон</add_addon>
+  <all>ВСЕ</all>
+  <aname>Имя Аддона</aname>
+  <bin>Бинарный файл</bin>
+  <bin_folder>Бинарная папка (например, orangebox)</bin_folder>
+  <configs>Пользовательские редактируемые конфиги</configs>
+  <configedit>Переменные, которые пользователь не должен изменять</configedit>
+  <copyStartBinary>Копировать Binary</copyStartBinary>
+  <del_temp>Удалить шаблон</del_temp>
+  <description>Описание</description>
+  <error_exist>Ошибка: Аддон уже существует.</error_exist>
+  <error_id>Ошибка: ни один сервер не выбран!</error_id>
+  <failed>Ошибка: Не удалось подключиться к серверу.</failed>
+  <folder>Папка сервера</folder>
+  <folders>Папки будут удалены при удалении.</folders>
+  <fps>FPS сервера</fps>
+  <ftpAccess>Доступ к FTP</ftpAccess>
+  <game2>Игра или тип игры</game2>
+  <game>Название игры</game>
+  <heading_addons>Аддоны игрового сервера</heading_addons>
+  <heading_template>Шаблоны Игрового сервера</heading_template>
+  <help_addons>С помощью нашего веб-интерфейса Вы можете легко управлять плагинами, аддонами, конфигами и картами для Вашего игрового сервера. Мы будем держать все обновленными, таким образом, Ваши усилия сводятся к минимуму.</help_addons>
+  <ip>IP-адрес сервера</ip>
+  <iptables>IP tables</iptables>
+  <liveConsole>Консоль</liveConsole>
+  <map>Пакет карт</map>
+  <maps>Пакеты карта</maps>
+  <mod>Папка модов (например, CStrike или DoD)</mod>
+  <modcmds>Команды, касающиеся игровых модов</modcmds>
+  <mods2>Мод для игры</mods2>
+  <mods>Модификация</mods>
+  <multi>Платформа</multi>
+  <password>Пароль</password>
+  <port>Порт Игрового сервера</port>
+  <portMax>Количество портов</portMax>
+  <portStep>Порт интервал к следующему серверу</portStep>
+  <protect>Режим защиты</protect>
+  <protectedSaveCFGs>Файлы, которые хранятся при переключении в режим защиты</protectedSaveCFGs>
+  <ramLimited>Лимитирование ОЗУ</ramLimited>
+  <rcon>Удаленный пароль (RCON)</rcon>
+  <requires>Требуется</requires>
+  <rmcmd>Удалить из команды пуска</rmcmd>
+  <servername>Имя сервера</servername>
+  <showg>Показать аддоны для</showg>
+  <shown>Результаты на странице</shown>
+  <single>Игра</single>
+  <slots>Слоты сервера</slots>
+  <start>Команда запуска</start>
+  <startmap>Карта</startmap>
+  <startmapgroup>Группа карт</startmapgroup>
+  <steam>Steam игра</steam>
+  <steamGameserverToken>Steam Server Token</steamGameserverToken>
+  <sure2>Внимание! Если пользователь установил этот аддон, он будет удален от аккаунт пользователя!</sure2>
+  <sure3>Внимание! Пользовательский сервер также будет удален!</sure3>
+  <tick>Тикрейт</tick>
+  <tool>Инструмент сервера</tool>
+  <tools>Инструменты сервера, аддоны, пакеты конфигурации</tools>
+  <tvport>SourceTV port</tvport>
+  <type2>Аддон для</type2>
+  <type>Карта, или инструмент сервера</type>
+  <useQueryPort>Query порт</useQueryPort>
+</sprache>
