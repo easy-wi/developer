@@ -183,8 +183,11 @@ function processFileUploads(e,isDrop,isFolder,globalFiles) {
 			
 				// Count files to upload
 				globalFileUploadPreCount=0;
+
 				for (var i=0; i<items.length; i++) {
+
 					var item = items[i].webkitGetAsEntry();
+
 					traverseFileTree(item,"");
 				}
 				
@@ -525,9 +528,6 @@ function fileUploader(globalFiles,filePath,rowID,isFolder,isDrop) {
 				progressBar = document.getElementById('progress'+rowID);
 				progressBar.value = (e.loaded / e.total) * 100;
 				
-				// Set the progress bar
-				//progressBar.innerHTML = Math.round(progressBar.value)+'%'; // Display % for unsupported browsers
-				
 				// Display %age complete
 				document.getElementById('percent'+rowID).innerHTML = Math.round(progressBar.value) + '%';
 			}
@@ -540,7 +540,6 @@ function fileUploader(globalFiles,filePath,rowID,isFolder,isDrop) {
 		xmlhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 		xmlhttp.setRequestHeader("X-File-Size", file.size);
 		xmlhttp.setRequestHeader("X-File-Type", file.type);
-		xmlhttp.setRequestHeader("Content-Type", "multipart/form-data");
 		xmlhttp.send(file);
 	}
 }
