@@ -87,9 +87,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $os = $ui->w('os', 1, 'post');
     $bit = $ui->id('bit', 2, 'post');
     $desc = $ui->description('desc', 'post');
-    $ram = $ui->id('ram', 7, 'post');
     $updates = $ui->id('updates', 1, 'post');
 
+    $ram = ($ui->id('ram', 7, 'post')) ? $ui->id('ram', 7, 'post') : 4096;
     $ownerID = ($ui->active('assignToReseller', 'post') == 'Y' and $ui->id('ownerID', 10, 'post')) ? $ui->id('ownerID', 10, 'post') : 0;
     $publickey = ($ui->w('publickey', 1, 'post')) ? $ui->w('publickey', 1, 'post') : 'N';
     $assignToReseller = ($ui->active('assignToReseller', 'post')) ? $ui->active('assignToReseller', 'post') : 'N';
