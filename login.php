@@ -103,7 +103,7 @@ if ($ui->st('w', 'get') == 'lo') {
     } else {
         session_unset();
         session_destroy();
-        redirect($page_url . '/' . $ewInstallPath);
+        redirect($pageurl . '/' . $ewInstallPath);
     }
 
 } else if ($ui->st('w', 'get') == 'ba') {
@@ -284,9 +284,7 @@ if ($ui->st('w', 'get') == 'lo') {
                 $resellerid = $row['resellerID'];
 
                 $passwordCorrect = true;
-
             }
-
         }
 
         unset($_SESSION['loginSubstitutesAllowed']);
@@ -466,7 +464,6 @@ if ($ui->st('w', 'get') == 'lo') {
                 $query->execute(array($halfhour, $loguserip));
 
                 redirect('login.php?w=ca&r=lo');
-
             }
         }
 

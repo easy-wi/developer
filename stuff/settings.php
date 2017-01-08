@@ -123,7 +123,7 @@ if ($dbConnect['timezone'] != $timezoneDefined) {
     date_default_timezone_set($dbConnect['timezone']);
 }
 
-$page_url = ($ui->escaped ('HTTPS', 'server')) ? 'https://' . $ui->domain('HTTP_HOST', 'server') : 'http://' . $ui->domain('HTTP_HOST', 'server');
+$page_url = ($ui->escaped ('HTTPS', 'server')) ? 'https://' . $ui->domain('HTTP_HOST', 'server') : 'http://' . ($ui->domain('HTTP_HOST', 'server') ? $ui->domain('HTTP_HOST', 'server') : $ui->ip4('HTTP_HOST', 'server'));
 
 if ($loguserip != 'localhost') {
 
