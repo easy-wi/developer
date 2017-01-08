@@ -595,7 +595,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             session_unset();
             session_destroy();
-            session_set_cookie_params($sessionCookieParameter['lifetime'], $sessionCookieParameter['path'], $sessionCookieParameter['domain'], true, ($ui->escaped('HTTPS', 'server') == 'on'));
+            session_set_cookie_params($sessionCookieParameter['lifetime'], $sessionCookieParameter['path'], $sessionCookieParameter['domain'], ($ui->escaped('HTTPS', 'server') == 'on'), true);
             session_start();
 
             # https://github.com/easy-wi/developer/issues/2

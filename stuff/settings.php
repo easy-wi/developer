@@ -128,7 +128,7 @@ $page_url = ($ui->escaped ('HTTPS', 'server')) ? 'https://' . $ui->domain('HTTP_
 if ($loguserip != 'localhost') {
 
     $sessionCookieParameter = session_get_cookie_params();
-    session_set_cookie_params($sessionCookieParameter['lifetime'], $sessionCookieParameter['path'], $sessionCookieParameter['domain'], true, ($ui->escaped('HTTPS', 'server') == 'on'));
+    session_set_cookie_params($sessionCookieParameter['lifetime'], $sessionCookieParameter['path'], $sessionCookieParameter['domain'], ($ui->escaped('HTTPS', 'server') == 'on'), true);
     session_start();
 
     if (isset($_SESSION['userid']) and is_numeric($_SESSION['userid']) and isset($_SESSION['adminid']) and is_numeric($_SESSION['adminid'])) {
