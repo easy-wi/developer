@@ -275,8 +275,8 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
 
                     $query = $sql->prepare("UPDATE `jobs` SET `status`='2' WHERE `type`='vo' AND (`status` IS NULL OR `status`='1') AND `affectedID`=? and `resellerID`=?");
                     $query->execute(array($localID, $resellerID));
-                    $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'ad',?)");
-                    $query->execute(array($hostID, $resellerID, $localID, $localUserLookupID, $ip . ':' . $port, $resellerID));
+                    $query = $sql->prepare("INSERT INTO `jobs` (`api`,`type`,`hostID`,`invoicedByID`,`affectedID`,`userID`,`name`,`status`,`date`,`action`,`extraData`,`resellerid`) VALUES ('A','vo',?,?,?,?,?,NULL,NOW(),'ad',?,?)");
+                    $query->execute(array($hostID, $resellerID, $localID, $localUserLookupID, $ip . ':' . $port, json_encode(array('serverToken' => ((isset($data['serverToken']) and isToken($data['serverToken'])) ? $data['serverToken'] : ''))), $resellerID));
 
                 } else {
                     $success['false'][] = 'Could not write voice server to database: ' . $errorString;

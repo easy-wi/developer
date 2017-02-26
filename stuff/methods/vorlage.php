@@ -131,7 +131,7 @@ function phone($value) {
 function isid($value,$count){
     return (!is_array($value) and strlen($value) <= $count and is_numeric($value)) ? $value : false;
 }
-function isDate ($value) {
+function isDate($value) {
     return (is_string($value) and @strtotime($value)) ? $value : false;
 }
 function gamestring($value){
@@ -139,4 +139,7 @@ function gamestring($value){
 }
 function isExternalID($value) {
     return (preg_match('/^[\w\:]{0,255}+$/', $value)) ? $value : '';
+}
+function isToken($value) {
+    return (preg_match('/^[\\\w\/\+]{4,50}+$/', $value)) ? $value : '';
 }

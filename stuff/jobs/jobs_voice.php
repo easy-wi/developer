@@ -171,7 +171,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
                     } else {
 
-                        $virtualserver_id = $connection->AddServer($slots, $ip, $port, $initialpassword, $name, array('Y', $welcome), $max_download_total_bandwidth, $max_upload_total_bandwidth, array('Y', $hostbanner_url), $hostbanner_gfx_url, array('Y', $hostbutton_url), $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations);
+                        $virtualserver_id = $connection->AddServer($slots, $ip, $port, $initialpassword, $name, array('Y', $welcome), $max_download_total_bandwidth, $max_upload_total_bandwidth, array('Y', $hostbanner_url), $hostbanner_gfx_url, array('Y', $hostbutton_url), $hostbutton_gfx_url, $hostbutton_tooltip, $customConfigurations, property_exists($extraData, 'serverToken') ? $extraData->serverToken : '');
 
                         if (isid($virtualserver_id, 19)) {
 

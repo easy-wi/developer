@@ -189,20 +189,19 @@ class TS3 {
     private function UseServer ($virtualserver_id) {
 
         $useReturn = $this->ReplaceFromTS3($this->SendCommand('use ' . $virtualserver_id));
-        $this->SendCommand("clientupdate client_nickname=" . $this->ReplaceToTS3("Easy-WI"));
+        $this->SendCommand('clientupdate client_nickname=' . $this->ReplaceToTS3('Easy-WI'));
         return $useReturn;
     }
 
     private function iniLineToCommand($line) {
-        return ' ' . $this->ReplaceToTS3(preg_replace('/\s{1,}/', "=", $line, 1));
+        return ' ' . $this->ReplaceToTS3(preg_replace('/\s{1,}/', '=', $line, 1));
     }
 
-    public function AddServer ($maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $customConfigurations = array()) {
+    public function AddServer ($maxclients, $ip, $port, $password, $name, $message, $download, $upload, $banner_url, $banner_gfx, $button_url, $button_gfx, $tooltip, $customConfigurations = array(), $tokenValue = '') {
 
-        #." virtualserver_ip=".$ip
-        $addcommand="servercreate virtualserver_maxclients=".$maxclients." virtualserver_port=".$port." virtualserver_password=".$password." virtualserver_name=".$this->ReplaceToTS3($name)." virtualserver_welcomemessage=".$this->ReplaceToTS3($message[1]);
-        $addcommand .=" virtualserver_max_download_total_bandwidth=".$download." virtualserver_max_upload_total_bandwidth=".$upload." virtualserver_hostbanner_url=".$banner_url[1]." virtualserver_hostbanner_gfx_url=".$banner_gfx;
-        $addcommand .=" virtualserver_hostbutton_url=".$button_url[1]." virtualserver_hostbutton_gfx_url=".$button_gfx." virtualserver_hostbutton_tooltip=".$this->ReplaceToTS3($tooltip);
+        $addcommand = 'servercreate virtualserver_maxclients=' . $maxclients . ' virtualserver_port=' . $port . ' virtualserver_password=' . $password. ' virtualserver_name=' . $this->ReplaceToTS3($name) . ' virtualserver_welcomemessage=' . $this->ReplaceToTS3($message[1]);
+        $addcommand .= ' virtualserver_max_download_total_bandwidth=' . $download. ' virtualserver_max_upload_total_bandwidth=' . $upload. ' virtualserver_hostbanner_url=' . $banner_url[1]. ' virtualserver_hostbanner_gfx_url=' . $banner_gfx;
+        $addcommand .= ' virtualserver_hostbutton_url=' . $button_url[1] . ' virtualserver_hostbutton_gfx_url=' . $button_gfx . ' virtualserver_hostbutton_tooltip=' . $this->ReplaceToTS3($tooltip) . (($tokenValue != '') ? ' token=' . $this->ReplaceToTS3($tokenValue) : '');
 
         foreach ($customConfigurations as $config) {
             $addcommand .= $this->iniLineToCommand($config);
@@ -233,25 +232,25 @@ class TS3 {
                 );
 
                 if ($message[0] == 'Y') {
-                    $remove[]="b_virtualserver_modify_welcomemessage";
-                    $remove[]="i_needed_modify_power_virtualserver_modify_welcomemessage";
+                    $remove[]='b_virtualserver_modify_welcomemessage';
+                    $remove[]='i_needed_modify_power_virtualserver_modify_welcomemessage';
                 }
 
                 if ($banner_url[0] == 'Y') {
-                    $remove[]="b_virtualserver_modify_hostbanner";
-                    $remove[]="i_needed_modify_power_virtualserver_modify_hostbanner";
+                    $remove[]='b_virtualserver_modify_hostbanner';
+                    $remove[]='i_needed_modify_power_virtualserver_modify_hostbanner';
                 }
 
                 if ($button_url[0] == 'Y') {
-                    $remove[]="b_virtualserver_modify_hostbutton";
-                    $remove[]="i_needed_modify_power_virtualserver_modify_hostbutton";
+                    $remove[]='b_virtualserver_modify_hostbutton';
+                    $remove[]='i_needed_modify_power_virtualserver_modify_hostbutton';
                 }
 
                 $servergroups = $this->SendCommand('servergrouplist');
 
                 foreach ($servergroups as $servegroup) {
                     if ($servegroup['type'] == 1) {
-                        $delcommand = "servergroupdelperm sgid=" . $servegroup['sgid']." permsid=" . implode('|permsid=', $remove);
+                        $delcommand = 'servergroupdelperm sgid=' . $servegroup['sgid'] . ' permsid=' . implode('|permsid=', $remove);
                         $this->SendCommand($delcommand);
                     }
                 }
@@ -273,7 +272,7 @@ class TS3 {
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
 
-            $this->SendCommand("serveredit virtualserver_autostart=0");
+            $this->SendCommand('serveredit virtualserver_autostart=0');
 
             $response = $this->SendCommand('serverstop sid=' . $virtualserver_id);
 
@@ -292,7 +291,7 @@ class TS3 {
         $useserver = $this->UseServer($virtualserver_id);
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
-            $this->SendCommand("serveredit virtualserver_autostart=1");
+            $this->SendCommand('serveredit virtualserver_autostart=1');
         }
 
         return $response;
@@ -315,7 +314,6 @@ class TS3 {
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
 
-            #." virtualserver_ip=".$this->ReplaceToTS3($ip);
             $modcommand = 'serveredit virtualserver_maxclients=' . $maxclients . ' virtualserver_port=' . $port . ' virtualserver_password=' . $this->ReplaceToTS3($password) . ' virtualserver_name=' . $this->ReplaceToTS3($name) . ' virtualserver_welcomemessage=' . $this->ReplaceToTS3($message);
             $modcommand  .= ' virtualserver_max_download_total_bandwidth=' . $download . ' virtualserver_max_upload_total_bandwidth=' . $upload;
 
@@ -389,7 +387,6 @@ class TS3 {
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
 
-            #." virtualserver_ip=".$ip
             $modcommand = 'serveredit virtualserver_maxclients=' . $maxclients . ' virtualserver_port=' . $port;
 
             foreach ($array as $key => $value) {
@@ -581,7 +578,7 @@ class TS3 {
         }
 
         if ($this->debug == true){
-            print "ServerList:";
+            print 'ServerList:';
             print_r($serverdetails);
             print "\r\n";
         }
@@ -648,7 +645,7 @@ class TS3 {
                     'connection_bytes_sent_total' => $serverdetails_query[0]['connection_bytes_sent_total'],
                     'connection_bytes_received_total' => $serverdetails_query[0]['connection_bytes_received_total'],
 
-                    # Ticket https://github.com/easy-wi/developer/issues/13 "Bearbeiten von TS3 Servern im Usermodul erweitern"
+                    # Ticket https://github.com/easy-wi/developer/issues/13 'Bearbeiten von TS3 Servern im Usermodul erweitern'
                     'virtualserver_reserved_slots' => $serverdetails_query[0]['virtualserver_reserved_slots'],
                     'virtualserver_needed_identity_security_level' => $serverdetails_query[0]['virtualserver_needed_identity_security_level'],
                     'virtualserver_hostmessage_mode' => $serverdetails_query[0]['virtualserver_hostmessage_mode'],
@@ -660,14 +657,14 @@ class TS3 {
             }
 
             if ($this->debug == true){
-                print "Serverdetails:";
+                print 'Serverdetails:';
                 print_r($serverdetails);
                 print "\r\n";
             }
 
         } else if ($this->debug == true) {
 
-            print "Userserver at serverdetails failed:";
+            print 'Userserver at serverdetails failed:';
             print_r($useserver);
             print "\r\n";
 
@@ -807,12 +804,12 @@ class TS3 {
 
     }
 
-    public function AddKey ($virtualserver_id, $group) {
+    public function AddKey ($virtualserver_id, $group, $tokenValue = '') {
 
         $useserver = $this->UseServer($virtualserver_id);
 
         if (isset($useserver[0]['msg']) and strtolower($useserver[0]['msg']) == 'ok') {
-            return $this->SendCommand('privilegekeyadd tokentype=0 tokenid1=' . $group . ' tokenid2=0');
+            return $this->SendCommand('privilegekeyadd tokentype=0 tokenid1=' . $group . ' tokenid2=0' . (($tokenValue != '') ? ' token=' . $this->ReplaceToTS3($tokenValue) : ''));
         }
 
         return false;
