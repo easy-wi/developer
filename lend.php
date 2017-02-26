@@ -277,9 +277,9 @@ $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `gsswitch` WHERE `le
 $query->execute(array($reseller_id));
 $gscount = $query->fetchColumn();
 
-if ($activeGS == 'Y' and ($w == 'gs' or $d == 'gs' or $ui->st('w', 'post') == 'gs' or (isset($page_name) and $page_name == strtolower(str_replace(' ', '-', $gsprache->gameserver))))) {
+if ($activeGS == 'Y' and ($ui->st('d', 'get') == 'gs' or $ui->st('w', 'post') == 'gs' or (isset($page_name) and $page_name == strtolower(str_replace(' ', '-', $gsprache->gameserver))))) {
     $servertype = 'g';
-} else if ($activeVS == 'Y' and ($w == 'vo' or $d == 'vo' or $ui->st('w', 'post') == 'vo' or (isset($page_name) and $page_name == strtolower(str_replace(' ', '-', $gsprache->voiceserver))))) {
+} else if ($activeVS == 'Y' and ($ui->st('d', 'get') == 'vo' or $ui->st('w', 'post') == 'vo' or (isset($page_name) and $page_name == strtolower(str_replace(' ', '-', $gsprache->voiceserver))))) {
     $servertype = 'v';
 }
 
