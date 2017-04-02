@@ -440,12 +440,12 @@ class AppServer {
         $this->shellScripts['user'] .=  'if [ "$USER" != "" -a $USER -eq $USER 2> /dev/null ]; then CONFIGUSERID=$USER; fi' . "\n";
         $this->shellScripts['user'] .=  'USERID=`getent passwd | cut -f3 -d: | sort -un | awk \'BEGIN { id=\'${CONFIGUSERID}\' } $1 == id { id++ } $1 > id { print id; exit }\'`' . "\n";
         $this->shellScripts['user'] .=  'if [ "`ls -la /var/run/screen | awk \'{print $3}\' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then' . "\n";
-        $this->shellScripts['user'] .=  'sudo /usr/sbin/useradd -m -p `perl -e \'print crypt("\'' . $password . '\'","Sa")\'` -d ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $userNameHome) . ' -g ' . $this->appMasterServerDetails['ssh2User'] . ' -s /bin/bash -u $USERID ' . $userName . ' 2>/dev/null' . "\n";
+        $this->shellScripts['user'] .=  'sudo /usr/sbin/useradd -m -p `perl -e \'print crypt("\'' . $password . '\'","Sa")\'` -d ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $userNameHome) . ' -g ' . $this->appMasterServerDetails['ssh2User'] . ' -s /bin/false -u $USERID ' . $userName . ' 2>/dev/null' . "\n";
         $this->shellScripts['user'] .=  'else' . "\n";
         $this->shellScripts['user'] .=  'while [ "`ls -la /var/run/screen | awk \'{print $3}\' | grep $USERID`" != "" -o "`grep \"x:$USERID:\" /etc/passwd`" != "" ]; do' . "\n";
         $this->shellScripts['user'] .=  'USERID=$[USERID+1]' . "\n";
         $this->shellScripts['user'] .=  'if [ "`ls -la /var/run/screen | awk \'{print $3}\' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then' . "\n";
-        $this->shellScripts['user'] .=  'sudo /usr/sbin/useradd -m -p `perl -e \'print crypt("\'' . $password . '\'","Sa")\'` -m -d ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $userNameHome) . ' -g ' . $this->appMasterServerDetails['ssh2User'] . ' -s /bin/bash -u $USERID ' . $userName . ' 2>/dev/null' . "\n";
+        $this->shellScripts['user'] .=  'sudo /usr/sbin/useradd -m -p `perl -e \'print crypt("\'' . $password . '\'","Sa")\'` -m -d ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $userNameHome) . ' -g ' . $this->appMasterServerDetails['ssh2User'] . ' -s /bin/false -u $USERID ' . $userName . ' 2>/dev/null' . "\n";
         $this->shellScripts['user'] .=  'fi' . "\n";
         $this->shellScripts['user'] .=  'done' . "\n";
         $this->shellScripts['user'] .=  'fi' . "\n";
@@ -981,12 +981,15 @@ class AppServer {
 
         foreach ($parsedConfig as $key => $value) {
 
-            if (is_array($value) or is_object($value)) {
+            if (is_object($value)) {
 
-                // Skip empty ones
-                if (count($value) != 0) {
-//TODO
+                foreach ($value->attributes() as $k => $v) {
+                    $value->attributes()->$k = $this->replaceValue($customColumns, $replaceSettings, (string) $v);
                 }
+
+            } else if (is_array($value)) {
+
+                $parsedConfig[$key] = $this->protectedXML($replaceSettings, $value);
 
             } else {
                 $parsedConfig[$key] = $this->replaceValue($customColumns, $replaceSettings, $value);
@@ -1011,7 +1014,7 @@ class AppServer {
         }
     }
 
-    private function protectedSettingsToArray () {
+    private function protectedSettingsToArray() {
 
         $protectedString = '';
         $cvarProtectArray = array();
@@ -1053,7 +1056,7 @@ class AppServer {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
-                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml','xml'))) {
+                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml'))) {
 
                     $protectedString .= $line . "\r\n";
 
@@ -1106,9 +1109,9 @@ class AppServer {
         if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
             if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
                 $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
-            }/* else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
+            } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
                 $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedXML($replaceSettings, $this->xmlStringToObject($protectedString));
-            }*/
+            }
         }
 
         if ($this->appServerDetails['lendServer'] == 'Y') {
@@ -1296,6 +1299,16 @@ class AppServer {
         return Yaml::dump($this->replaceArray($stored, $replacements), 2, 4);
     }
 
+    //TODO: Replace XML objects
+    private function replaceXML($stored, $replacements) {
+
+        if (!$stored) {
+            $stored = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>');
+        }
+
+        return $stored->asXML();
+    }
+
     private function replaceJSON($stored, $replacements) {
         return json_encode($this->replaceArray($stored, $replacements), JSON_PRETTY_PRINT);
     }
@@ -1347,6 +1360,10 @@ class AppServer {
                     } else if ($values['type'] === 'yml' or $values['type'] === 'Yaml' or $values['type'] === 'yaml') {
 
                         $ftpObect->writeContentToTemp($this->replaceYaml(Yaml::parse($configFileContent), $values['cvars']));
+
+                    } else if ($values['type'] === 'xml') {
+
+                        $ftpObect->writeContentToTemp($this->replaceXML(new SimpleXMLElement($configFileContent), $values['cvars']));
 
                     } else if ($values['type'] == 'json') {
 
