@@ -493,13 +493,6 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                     $loguseraction .= ', %del%: ' . implode(', ', $gamesToBeRemoved);
                 }
 
-                // Admin has changed the ip or the main port. Now we need to move the server. Can only happen during server edit.
-                // Should be done after possible deletes and before we add additional data
-                if ($ui->st('action', 'post') == 'md' and  ($ip != $oldIp or $port != $oldPort)) {
-                    $appServer->moveServerLocal($oldIp, $oldPort);
-                }
-
-
                 if ($gamesAmount > 0) {
 
                     $loguseraction .= ', %add%: ' . implode(', ', $gamesToBeInstalled);

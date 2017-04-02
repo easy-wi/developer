@@ -187,13 +187,13 @@ class AppServer {
 
             $serverTemplateDir = $this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'];
             $serverTemplateDir .= ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/pserver/' : '/server/';
-            $this->appServerDetails['absolutePath'] = $this->removeSlashes($serverTemplateDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'] . '/');
-            $this->appServerDetails['absoluteTemplatePath'] = $this->removeSlashes($serverTemplateDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+            $this->appServerDetails['absolutePath'] = $this->removeSlashes($serverTemplateDir . '/' . $this->appServerDetails['app']['templateChoosen'] . '/');
+            $this->appServerDetails['absoluteTemplatePath'] = $this->removeSlashes($serverTemplateDir);
 
             // For protected users the pserver/ directory is the home folder
             // We deliberately let admins that failed to setup a chrooted FTP environment run into errors
             $absoluteFTPPath = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/' : '/server/';
-            $absoluteFTPPath .= $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $this->appServerDetails['app']['templateChoosen'];
+            $absoluteFTPPath .= $this->appServerDetails['app']['templateChoosen'];
 
             if ($this->getGameType() == 'hl2') {
                 $absoluteFTPPath .= '/' . $this->appServerDetails['template']['binarydir'];
@@ -554,30 +554,6 @@ class AppServer {
         $this->shellScripts['server']["{$scriptName}"] = $script;
     }
 
-    // Usecase: IP or port was changed for a server. Now the files need to be moved locally
-    private function linuxMoveServerLocal ($oldIP, $oldPort) {
-
-        $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/move-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '-' . $oldIP . '-' . $oldPort . '.sh');
-        $script = $this->shellScriptHeader;
-        $script .= 'rm -f ' . $scriptName . "\n";
-        $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server') . "\n";
-        $script .= 'if [ -d "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']. '" ]; then rm -rf "' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '"; fi' . "\n";
-        $script .= 'mv ' . $oldIP . '_' . $oldPort . ' ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
-
-        $this->addLinuxScript($scriptName, $script);
-
-        $this->addLogline('app_server.log', 'moved app from ' . $oldIP . '_' . $oldPort . ' to ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
-    }
-
-    public function moveServerLocal ($oldIP, $oldPort) {
-
-        if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'L') {
-            $this->linuxMoveServerLocal($oldIP, $oldPort);
-        } else if ($this->appServerDetails and $this->appMasterServerDetails['os'] == 'W') {
-
-        }
-    }
-
     private function copyStartFile($sourcePath, $targetPath) {
 
         $targetPath = $this->removeSlashes($targetPath . $this->appServerDetails['template']['binarydir']);
@@ -605,7 +581,7 @@ class AppServer {
         }
 
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
-        $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port']);
+        $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir);
 
         $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml', 'yaml');
 
@@ -618,9 +594,15 @@ class AppServer {
 
         $script .= "PATTERN='(/valve|/overviews/|/scripts/|/media/|/particles/|/sound/|/hl2/|/overviews/|/resource/|/sprites/|gameinfo.txt|steam.inf|steam_appid.txt)'" . "\n";
 
+        // Migrate old folder structure with ip_port as sub folder to structure without
+        $script .= 'if [ -d ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ]; then' . "\n";
+        $script .= 'mv ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/* ' . $absolutePath . "\n";
+        $script .= '${IONICE}nice -n +19 rm -rf ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
+        $script .= 'fi' . "\n";
+
         foreach ($templates as $template) {
 
-            $absoluteTargetTemplatePath = $this->removeSlashes($absolutePath . '/' . $template . '/');
+            $absoluteTargetTemplatePath = $this->removeSlashes($absolutePath . $template . '/');
             $sourceTemplate = (substr($template, -2) == '-2' or substr($template, -2) == '-3') ? substr($template, 0, (strlen($template) -2)) : $template;
             $absoluteSourceTemplatePath = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/masterserver/' . $sourceTemplate . '/');
 
@@ -650,15 +632,15 @@ class AppServer {
             $dirChmod = 750;
             $fileChmod = 640;
         }
-        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
 
         if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
-            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         } else {
-            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . '/ -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . ' -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         }
 
-        $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . '/ -type l -delete' . "\n";
+        $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . ' -type l -delete' . "\n";
 
         if ($standalone and isset($scriptName)) {
             $this->addLinuxScript($scriptName, $script);
@@ -760,7 +742,7 @@ class AppServer {
 
         $script = $this->shellScriptHeader;
         $script .= 'rm -f ' . $scriptName . "\n";
-        $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/') . "\n";
+        $script .= 'cd ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir) . "\n";
 
         foreach ($templates as $template) {
 
@@ -1028,7 +1010,7 @@ class AppServer {
 
             $line = str_replace(array("\r"), '', $line);
 
-            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (ini|cfg|lua|json|ddot|yml|Yaml|yaml))$/', $line)) {
+            if (preg_match('/^(\[[\w\/\.\-\_]{1,}\]|\[[\w\/\.\-\_]{1,}\] (xml|ini|cfg|lua|json|ddot|yml|Yaml|yaml))$/', $line)) {
 
                 if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
                     if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
@@ -1055,8 +1037,8 @@ class AppServer {
                 if ($cvarProtectArray[$configPathAndFile]['type'] == 'cfg') {
 
                     $splitLine = preg_split("/\s+/", $line, -1, PREG_SPLIT_NO_EMPTY);
-
-                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml'))) {
+                    //TODO
+                } else if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml','yaml','Yaml'/*,'xml'*/))) {
 
                     $protectedString .= $line . "\r\n";
 
@@ -1068,6 +1050,7 @@ class AppServer {
 
                     $splitLine = preg_split("/:/", $line, -1, PREG_SPLIT_NO_EMPTY);
 
+                    //TODO
                 // In case of XML configs the splitting is more complicated
                 } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
 
@@ -1109,9 +1092,10 @@ class AppServer {
         if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
             if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
                 $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
-            } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
+                //TODO
+            }/* else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
                 $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedXML($replaceSettings, $this->xmlStringToObject($protectedString));
-            }
+            }*/
         }
 
         if ($this->appServerDetails['lendServer'] == 'Y') {
@@ -1360,11 +1344,11 @@ class AppServer {
                     } else if ($values['type'] === 'yml' or $values['type'] === 'Yaml' or $values['type'] === 'yaml') {
 
                         $ftpObect->writeContentToTemp($this->replaceYaml(Yaml::parse($configFileContent), $values['cvars']));
-
-                    } else if ($values['type'] === 'xml') {
+                        //TODO
+/*                    } else if ($values['type'] === 'xml') {
 
                         $ftpObect->writeContentToTemp($this->replaceXML(new SimpleXMLElement($configFileContent), $values['cvars']));
-
+*/
                     } else if ($values['type'] == 'json') {
 
                         $ftpObect->writeContentToTemp($this->replaceJSON(@parse_ini_string(@json_decode($configFileContent), false, INI_SCANNER_RAW), $values['cvars']));
@@ -1645,7 +1629,7 @@ class AppServer {
 
         } else {
             $shellCommand = ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] : '';
-            $shellCommand .= ' screen -A -m -d -L -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand;
+            $shellCommand .= 'screen -A -m -d -L -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand;
         }
 
         return $shellCommand;
@@ -1681,7 +1665,7 @@ class AppServer {
         $serverDir = $this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'];
         $serverDir .= ($this->appServerDetails['protectionModeStarted'] == 'Y') ? '/pserver/' : '/server/';
         $serverDir = $this->removeSlashes($serverDir);
-        $serverTemplateDir = $this->removeSlashes($serverDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+        $serverTemplateDir = $this->removeSlashes($serverDir . '/');
 
         $script = $this->shellScriptHeader;
         $script .= 'rm -f ' . $scriptName . "\n";
@@ -1710,8 +1694,15 @@ class AppServer {
                 $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
             }
 
-            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 2 -maxdepth 3 \( -type f -or -type l \)';
-            $script .= ' ! -name "*.tar.bz2" ! -name "steamclient.so" ! -path "' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . '/backup/*" -delete' . "\n";
+            // Remove files where they do not belong
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -mindepth 1 -maxdepth 1 \( -type f -or -type l \) -delete' . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 \( -type f -or -type l \)';
+            $script .= ' ! -name ".profile" ! -name ".bashrc" ! -name ".bash_logout" -delete' . "\n";
+
+            // Remove folders where they do not belong
+            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 -type d';
+            $script .= ' ! -name ".steam" ! -name "pserver" ! -name "backup" ! -name "fdl_data" -delete' . "\n";
+
             $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name "*.bz2" -delete' . "\n";
         }
 
@@ -2191,7 +2182,7 @@ class AppServer {
 
     private function linuxMigrateServer ($sourceFTP, $targetTemplate, $modFolder) {
 
-        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/' . $targetTemplate . '/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/server/' . '/' . $targetTemplate . '/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/migrate-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
@@ -2365,7 +2356,7 @@ class AppServer {
 
         $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/backup/');
         $backUpFile = $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-$GAMETEMPLATE.tar.bz2');
-        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] .'/' . $this->appServerDetails['userName'] . '/server/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-create-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 
@@ -2403,7 +2394,7 @@ class AppServer {
         global $resellerLockupID;
 
         $backupDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/backup/');
-        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/');
+        $serverDir = $this->removeSlashes($this->appServerDetails['homeDir'] . $this->appServerDetails['userName'] . '/server/');
 
         $scriptName = $this->removeSlashes('/home/' . $this->appMasterServerDetails['ssh2User'] . '/temp/backup-deploy-' . $this->appServerDetails['userName'] . '-' . $this->appServerDetails['serverIP'] . '-' . $this->appServerDetails['port'] . '.sh');
 

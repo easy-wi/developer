@@ -146,10 +146,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     $newIP = (isset($extraData->newIP) and strlen($extraData->newIP) > 0) ? $extraData->newIP : $gsIP;
 
                     if ($port != $newPort or $gsIP != $newIP) {
-
                         $query7->execute(array($newIP, $newPort, $row2['affectedID']));
-
-                        $appServer->moveServerLocal($row3['serverip'], $row3['port']);
                     }
 
                     $command = $gsprache->mod . ' gsswitchID: ' . $row2['affectedID'] . ' name: ' . $row2['name'] . ' gsswitchID:' . $row2['affectedID'];
