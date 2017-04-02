@@ -1611,6 +1611,13 @@ $(function() {
 
     }
 
+    function getNumberNull($postKey) {
+
+        global $ui;
+
+        return $ui->port($postKey, 'post') ? $ui->port($postKey, 'post') : null;
+    }
+
     function getUserList ($resellerID) {
 
         $table = array();
