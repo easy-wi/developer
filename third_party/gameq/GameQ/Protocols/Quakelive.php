@@ -16,43 +16,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Filters;
-
-use GameQ\Server;
+namespace GameQ\Protocols;
 
 /**
- * Abstract base class which all filters must inherit
+ * Class Quake Live
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-abstract class Base
+class Quakelive extends Source
 {
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'quakelive';
 
     /**
-     * Holds the options for this instance of the filter
+     * Longer string name of this protocol class
      *
-     * @type array
+     * @type string
      */
-    protected $options = [];
-
-    /**
-     * Construct
-     *
-     * @param array $options
-     */
-    public function __construct($options = [])
-    {
-
-        $this->options = $options;
-    }
-
-    /**
-     * Apply the filter to the data
-     *
-     * @param array         $data
-     * @param \GameQ\Server $server
-     *
-     * @return mixed
-     */
-    abstract public function apply(array $data, Server $server);
+    protected $name_long = "Quake Live";
 }

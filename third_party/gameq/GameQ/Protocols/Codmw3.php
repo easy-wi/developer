@@ -16,43 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Filters;
-
-use GameQ\Server;
+namespace GameQ\Protocols;
 
 /**
- * Abstract base class which all filters must inherit
+ * Class Codmw3
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-abstract class Base
+class Codmw3 extends Source
 {
 
     /**
-     * Holds the options for this instance of the filter
+     * String name of this protocol class
      *
-     * @type array
+     * @type string
      */
-    protected $options = [];
+    protected $name = 'codmw3';
 
     /**
-     * Construct
+     * Longer string name of this protocol class
      *
-     * @param array $options
+     * @type string
      */
-    public function __construct($options = [])
-    {
-
-        $this->options = $options;
-    }
+    protected $name_long = "Call of Duty: Modern Warfare 3";
 
     /**
-     * Apply the filter to the data
+     * query_port = client_port + 2
      *
-     * @param array         $data
-     * @param \GameQ\Server $server
-     *
-     * @return mixed
+     * @type int
      */
-    abstract public function apply(array $data, Server $server);
+    protected $port_diff = 2;
 }

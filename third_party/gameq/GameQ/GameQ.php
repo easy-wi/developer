@@ -44,11 +44,6 @@ class GameQ
      * Constants
      */
 
-    /**
-     * Current version
-     */
-    const VERSION = '3.0.0-alpha2';
-
     /* Static Section */
 
     /**
@@ -389,7 +384,6 @@ class GameQ
                         'server_id' => $server_id,
                         'socket'    => $socket,
                     ];
-
                 } catch (QueryException $e) {
                     // Check to see if we are in debug, if so bubble up the exception
                     if ($this->debug) {

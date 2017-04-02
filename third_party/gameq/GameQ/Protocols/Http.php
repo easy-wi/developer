@@ -16,43 +16,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Filters;
+namespace GameQ\Protocols;
 
-use GameQ\Server;
+use GameQ\Protocol;
 
 /**
- * Abstract base class which all filters must inherit
+ * Class Http
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * Generic HTTP protocol class.  Useful for making http based requests
+ *
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-abstract class Base
+abstract class Http extends Protocol
 {
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'http';
 
     /**
-     * Holds the options for this instance of the filter
+     * String name of this protocol class
      *
-     * @type array
+     * @type string
      */
-    protected $options = [];
+    protected $name = 'http';
 
     /**
-     * Construct
+     * Longer string name of this protocol class
      *
-     * @param array $options
+     * @type string
      */
-    public function __construct($options = [])
-    {
-
-        $this->options = $options;
-    }
+    protected $name_long = "Generic HTTP protocol";
 
     /**
-     * Apply the filter to the data
+     * Http protocol is TCP
      *
-     * @param array         $data
-     * @param \GameQ\Server $server
-     *
-     * @return mixed
+     * @var string
      */
-    abstract public function apply(array $data, Server $server);
+    protected $transport = self::TRANSPORT_TCP;
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
 }

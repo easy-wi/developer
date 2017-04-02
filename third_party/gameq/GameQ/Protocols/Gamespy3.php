@@ -107,7 +107,7 @@ class Gamespy3 extends Protocol
     {
 
         // Holds the processed packets
-        $processed = [ ];
+        $processed = [];
 
         // Iterate over the packets
         foreach ($this->packets_response as $response) {
@@ -141,8 +141,14 @@ class Gamespy3 extends Protocol
         // Offload cleaning up the packets if they happen to be split
         $packets = $this->cleanPackets(array_values($processed));
 
+        /*
+         * Fix: when server name contains string "\u0000" - query fails. "\u0000" also separates properties from
+         * server, so we are replacing double "\u0000" in server response.
+         */
+        $packets = preg_replace("/(\\x00){2,}gametype/", "\x00gametype", implode('', $packets));
+
         // Create a new buffer
-        $buffer = new Buffer(implode('', $packets), Buffer::NUMBER_TYPE_BIGENDIAN);
+        $buffer = new Buffer($packets, Buffer::NUMBER_TYPE_BIGENDIAN);
 
         // Create a new result
         $result = new Result();
@@ -169,7 +175,7 @@ class Gamespy3 extends Protocol
      *
      * @return array
      */
-    protected function cleanPackets(array $packets = [ ])
+    protected function cleanPackets(array $packets = [])
     {
 
         // Get the number of packets
@@ -289,7 +295,7 @@ class Gamespy3 extends Protocol
                 // Set the item group
                 $item_group = 'teams';
                 // Set the item type, rip off any trailing stuff and bad chars
-                $item_type = rtrim(str_replace([ "\x00", "\x02" ], '', $item), '_t');
+                $item_type = rtrim(str_replace(["\x00", "\x02"], '', $item), '_t');
             } else {
                 // We can assume it is data belonging to a previously defined item
 

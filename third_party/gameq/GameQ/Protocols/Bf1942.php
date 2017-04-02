@@ -19,12 +19,12 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Battlefield 2
+ * Class Battlefield 1942
  *
  * @package GameQ\Protocols
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Bf2 extends Gamespy3
+class Bf1942 extends Gamespy
 {
 
     /**
@@ -32,38 +32,29 @@ class Bf2 extends Gamespy3
      *
      * @type string
      */
-    protected $name = 'bf2';
+    protected $name = 'bf1942';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Battlefield 2";
+    protected $name_long = "Battlefield 1942";
 
     /**
      * query_port = client_port + 8433
-     * 29900 = 16567 + 13333
+     * 23000 = 14567 + 8433
      *
      * @type int
      */
-    protected $port_diff = 13333;
+    protected $port_diff = 8433;
 
     /**
      * The client join link
      *
      * @type string
      */
-    protected $join_link = "bf2://%s:%d";
-
-    /**
-     * BF2 has a different query packet to send than "normal" Gamespy 3
-     *
-     * @var array
-     */
-    protected $packets = [
-        self::PACKET_ALL => "\xFE\xFD\x00\x10\x20\x30\x40\xFF\xFF\xFF\x01",
-    ];
+    protected $join_link = "bf1942://%s:%d";
 
     /**
      * Normalize settings for this protocol
@@ -84,15 +75,14 @@ class Bf2 extends Gamespy3
         ],
         // Individual
         'player'  => [
-            'name'   => 'player',
-            'kills'  => 'score',
+            'name'   => 'playername',
+            'kills'  => 'kills',
             'deaths' => 'deaths',
             'ping'   => 'ping',
             'score'  => 'score',
         ],
         'team'    => [
-            'name'  => 'team',
-            'score' => 'score',
+            'name' => 'teamname',
         ],
     ];
 }

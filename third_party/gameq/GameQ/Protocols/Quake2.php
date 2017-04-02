@@ -9,13 +9,13 @@ use GameQ\Result;
 use GameQ\Exception\Protocol as Exception;
 
 /**
- * Quake3 Protocol Class
+ * Quake2 Protocol Class
  *
  * Handles processing Quake 3 servers
  *
  * @package GameQ\Protocols
  */
-class Quake3 extends Protocol
+class Quake2 extends Protocol
 {
     /**
      * Array of packets we want to look up.
@@ -24,7 +24,7 @@ class Quake3 extends Protocol
      * @type array
      */
     protected $packets = [
-        self::PACKET_STATUS => "\xFF\xFF\xFF\xFF\x67\x65\x74\x73\x74\x61\x74\x75\x73\x0A",
+        self::PACKET_STATUS => "\xFF\xFF\xFF\xFFstatus\x00",
     ];
 
     /**
@@ -33,7 +33,7 @@ class Quake3 extends Protocol
      * @type array
      */
     protected $responses = [
-        "\xFF\xFF\xFF\xFFstatusResponse" => 'processStatus',
+        "\xFF\xFF\xFF\xFF\x70\x72\x69\x6e\x74" => 'processStatus',
     ];
 
     /**
@@ -41,21 +41,21 @@ class Quake3 extends Protocol
      *
      * @type string
      */
-    protected $protocol = 'quake3';
+    protected $protocol = 'quake2';
 
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'quake3';
+    protected $name = 'quake2';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Quake 3 Server";
+    protected $name_long = "Quake 2 Server";
 
     /**
      * The client join link
@@ -74,12 +74,12 @@ class Quake3 extends Protocol
         'general' => [
             // target       => source
             'gametype'   => 'gamename',
-            'hostname'   => 'sv_hostname',
+            'hostname'   => 'hostname',
             'mapname'    => 'mapname',
-            'maxplayers' => 'sv_maxclients',
+            'maxplayers' => 'maxclients',
             'mod'        => 'g_gametype',
             'numplayers' => 'clients',
-            'password'   => ['g_needpass', 'pswrd'],
+            'password'   => 'password',
         ],
         // Individual
         'player'  => [
@@ -111,6 +111,13 @@ class Quake3 extends Protocol
         return call_user_func_array([$this, $this->responses[$header]], [$buffer]);
     }
 
+    /**
+     * Process the status response
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
     protected function processStatus(Buffer $buffer)
     {
         // We need to split the data and offload
@@ -151,6 +158,9 @@ class Quake3 extends Protocol
             );
         }
 
+        $result->add('password', 0);
+        $result->add('mod', 0);
+
         unset($buffer);
 
         return $result->fetch();
@@ -185,6 +195,12 @@ class Quake3 extends Protocol
 
             // Add player name, encoded
             $result->addPlayer('name', utf8_encode(trim(($playerInfo->readString('"')))));
+
+            // Skip first "
+            $playerInfo->skip(2);
+
+            // Add address
+            $result->addPlayer('address', trim($playerInfo->readString('"')));
 
             // Increment
             $playerCount++;

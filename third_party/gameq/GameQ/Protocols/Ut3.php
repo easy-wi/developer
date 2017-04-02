@@ -18,9 +18,6 @@
 
 namespace GameQ\Protocols;
 
-use GameQ\Buffer;
-use GameQ\Result;
-
 /**
  * Unreal Tournament 3 Protocol Class
  *
@@ -64,7 +61,7 @@ class Ut3 extends Gamespy3
     /**
      * Overload the response process so we can make some changes
      *
-     * @return \GameQ\Result
+     * @return array
      */
     public function processResponse()
     {

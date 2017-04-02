@@ -16,43 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Filters;
-
-use GameQ\Server;
+namespace GameQ\Protocols;
 
 /**
- * Abstract base class which all filters must inherit
+ * Class Terraria
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ *
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-abstract class Base
+class Terraria extends Tshock
 {
 
     /**
-     * Holds the options for this instance of the filter
+     * String name of this protocol class
      *
-     * @type array
+     * @type string
      */
-    protected $options = [];
+    protected $name = 'terraria';
 
     /**
-     * Construct
+     * Longer string name of this protocol class
      *
-     * @param array $options
+     * @type string
      */
-    public function __construct($options = [])
-    {
-
-        $this->options = $options;
-    }
+    protected $name_long = "Terraria";
 
     /**
-     * Apply the filter to the data
+     * query_port = client_port + 101
+     * 7878 = 7777 + 101
      *
-     * @param array         $data
-     * @param \GameQ\Server $server
-     *
-     * @return mixed
+     * @type int
      */
-    abstract public function apply(array $data, Server $server);
+    protected $port_diff = 101;
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "steam://connect/%s:%d/";
 }

@@ -16,43 +16,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Filters;
-
-use GameQ\Server;
+namespace GameQ\Protocols;
 
 /**
- * Abstract base class which all filters must inherit
+ * Class Projectrealitybf2
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * Based off of BF2
+ *
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-abstract class Base
+class Projectrealitybf2 extends Bf2
 {
 
     /**
-     * Holds the options for this instance of the filter
+     * String name of this protocol class
      *
-     * @type array
+     * @type string
      */
-    protected $options = [];
+    protected $name = 'projectrealitybf2';
 
     /**
-     * Construct
+     * Longer string name of this protocol class
      *
-     * @param array $options
+     * @type string
      */
-    public function __construct($options = [])
-    {
-
-        $this->options = $options;
-    }
-
-    /**
-     * Apply the filter to the data
-     *
-     * @param array         $data
-     * @param \GameQ\Server $server
-     *
-     * @return mixed
-     */
-    abstract public function apply(array $data, Server $server);
+    protected $name_long = "Project Reality: Battlefield 2";
 }

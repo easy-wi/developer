@@ -16,43 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace GameQ\Filters;
-
-use GameQ\Server;
+namespace GameQ\Protocols;
 
 /**
- * Abstract base class which all filters must inherit
+ * Class 7 Days to Die
  *
+ * @package GameQ\Protocols
  * @author Austin Bischoff <austin@codebeard.com>
  */
-abstract class Base
+class Sevendaystodie extends Source
 {
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'sevendaystodie';
 
     /**
-     * Holds the options for this instance of the filter
+     * Longer string name of this protocol class
      *
-     * @type array
+     * @type string
      */
-    protected $options = [];
+    protected $name_long = "7 Days to Die";
 
     /**
-     * Construct
+     * query_port = client_port + 1
      *
-     * @param array $options
+     * @type int
      */
-    public function __construct($options = [])
-    {
-
-        $this->options = $options;
-    }
-
-    /**
-     * Apply the filter to the data
-     *
-     * @param array         $data
-     * @param \GameQ\Server $server
-     *
-     * @return mixed
-     */
-    abstract public function apply(array $data, Server $server);
+    protected $port_diff = 1;
 }
