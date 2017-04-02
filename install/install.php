@@ -59,6 +59,8 @@ require_once(EASYWIDIR . '/stuff/methods/functions.php');
 require_once(EASYWIDIR . '/stuff/methods/vorlage.php');
 
 $currentStep = (isset($_GET['step']) and $_GET['step'] > 0 and $_GET['step'] < 10) ? (int) $_GET['step'] : 0;
+$developer = (isset($_GET['developer']) and $_GET['developer'] == 'Y') ? 'Y' : 'N';
+$developerGetParameter = '&amp;developer=' . $developer;
 $progressPercent = (100 / 9) * $currentStep ;
 $acceptLanguage = strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0 , 2));
 $fallbackLanguage = (file_exists(EASYWIDIR . '/install/' . $acceptLanguage . '.xml')) ? $acceptLanguage : 'en';
@@ -69,16 +71,18 @@ $languageObject = simplexml_load_file(EASYWIDIR . '/install/' . $menuLanguage . 
 $displayToUser = '';
 $systemCheckOk = array();
 $systemCheckError = array();
+$easyWiVersion = ($developer == 'Y') ? '5.41' : '5.30';
 
 if ($currentStep == 0) {
 
-    $apiResponse = webhostRequest('api.github.com', $_SERVER['HTTP_HOST'], '/repos/easy-wi/developer/releases/latest', null, 443);
+    $apiResponse = webhostRequest('api.github.com', $_SERVER['HTTP_HOST'], '/repos/easy-wi/developer/' . (($developer == 'Y') ? 'tags' : 'releases/latest'), null, 443);
     $json = @json_decode($apiResponse);
 
-    if (!$json or !is_object($json) or !property_exists($json, 'tag_name') or '5.30' == $json->tag_name) {
+    if (!$json or ($developer == 'N' and !is_object($json)) or ($developer == 'N' and property_exists($json, 'tag_name') or $easyWiVersion == $json->tag_name) or ($developer == 'Y' and !is_array($json)) or ($developer == 'Y' and is_object($json[0]) and property_exists($json[0], 'name') and $easyWiVersion == $json[0]->name )) {
         $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
     } else {
-        $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://github.com/easy-wi/developer/releases/tag/{$json->tag_name}' target='_blank'>{$json->tag_name}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
+        $apiVersion = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
+        $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://github.com/easy-wi/developer/releases/tag/{$apiVersion}' target='_blank'>{$json->tag_name}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
     }
 
 } else {
@@ -742,8 +746,8 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
             $query->execute(array($_POST['installUrl']));
 
-            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`cronjob_ips`,`imageserver`,`resellerid`) VALUES (1,'default',?,?,?,?,?,'','ew-image.fvip.de::easy-wi',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`),`imageserver`=VALUES(`imageserver`)");
-            $query->execute(array($_POST['language'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname']));
+            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`developer`,`cronjob_ips`,`imageserver`,`resellerid`) VALUES (1,'default',?,?,?,?,?,'','ew-image.fvip.de::easy-wi',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`),`developer`=VALUES(`developer`),`imageserver`=VALUES(`imageserver`)");
+            $query->execute(array($_POST['language'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname'], $developer));
 
             $query = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (0,'email',?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
             $query->execute(array($_POST['email']));
@@ -757,7 +761,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `traffic_settings` (`id`,`type`) VALUES (1,'mysql') ON DUPLICATE KEY UPDATE `type`=`type`");
             $query->execute();
 
-            $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'5.30','','') ON DUPLICATE KEY UPDATE `id`=`id`");
+            $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'${easyWiVersion}','','') ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
 
             $query = $sql->prepare("INSERT INTO `page_pages` (`id`,`authorid`,`type`) VALUES (1,0,'about') ON DUPLICATE KEY UPDATE `id`=`id`");
@@ -1112,7 +1116,7 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
 </head>
 
 <body>
-
+t
 <div class="container">
     <div class="header">
         <ul class="nav nav-pills pull-right">
@@ -1120,26 +1124,30 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
             <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Github</a></li>
             <li><a href="https://easy-wi.com/forum/" target="_blank" title="easy-wi.com forum"><i class="fa fa-comments fa-fw"></i> Forum</a></li>
             <li><a href="https://easy-wi.com/wiki/" target="_blank" title="easy-wi.com wiki"><i class="fa fa-question-circle fa-fw"></i> Wiki</a></li>
-            <li><a href="?step=<?php echo $currentStep;?>&amp;language=de"><img src="../images/flags/de.png"></a></li>
-            <li><a href="?step=<?php echo $currentStep;?>&amp;language=en"><img src="../images/flags/uk.png"></a></li>
-            <li><a href="?step=<?php echo $currentStep;?>&amp;language=dk"><img src="../images/flags/dk.png"></a></li>
+            <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=de"><img src="../images/flags/de.png"></a></li>
+            <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=en"><img src="../images/flags/uk.png"></a></li>
+            <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=dk"><img src="../images/flags/dk.png"></a></li>
         </ul>
         <h3 class="text-muted">Easy-WI.com Installer</h3>
+        <select onChange="window.location = '?step=<?php echo $currentStep . $languageGetParameter;?>&amp;developer=' + this.value">
+            <option value="N">Stable</option>
+            <option value="Y">Developer</option>
+        </select>
     </div>
 
     <div class="row">
         <div class="col-md-3">
             <ul class="nav nav-pills nav-stacked">
-                <li <?php if ($currentStep == 0) echo 'class="active"'; ?>><a href="?step=0<?php echo $languageGetParameter;?>"><i class="fa fa-info-circle fa-fw"></i> <?php echo $languageObject->menu_welcome;?></a></li>
-                <li <?php if ($currentStep == 1) echo 'class="active"'; ?>><a href="?step=1<?php echo $languageGetParameter;?>"><i class="fa fa-stethoscope fa-fw"></i> <?php echo $languageObject->menu_system;?></a></li>
-                <li <?php if ($currentStep == 2) echo 'class="active"'; ?>><a href="?step=2<?php echo $languageGetParameter;?>"><i class="fa fa-key fa-fw"></i> <?php echo $languageObject->menu_db_access;?></a></li>
-                <li <?php if ($currentStep == 3) echo 'class="active"'; ?>><a href="?step=3<?php echo $languageGetParameter;?>"><i class="fa fa-stethoscope fa-fw"></i> <?php echo $languageObject->menu_db_access_check;?></a></li>
-                <li <?php if ($currentStep == 4) echo 'class="active"'; ?>><a href="?step=4<?php echo $languageGetParameter;?>"><i class="fa fa-tasks fa-fw"></i> <?php echo $languageObject->menu_db_add;?></a></li>
-                <li <?php if ($currentStep == 5) echo 'class="active"'; ?>><a href="?step=5<?php echo $languageGetParameter;?>"><i class="fa fa-eye fa-fw"></i> <?php echo $languageObject->menu_db_check;?></a></li>
-                <li <?php if ($currentStep == 6) echo 'class="active"'; ?>><a href="?step=6<?php echo $languageGetParameter;?>"><i class="fa fa-user fa-fw"></i> <?php echo $languageObject->menu_admin_add;?></a></li>
-                <li <?php if ($currentStep == 7) echo 'class="active"'; ?>><a href="?step=7<?php echo $languageGetParameter;?>"><i class="fa fa-cogs fa-fw"></i> <?php echo $languageObject->menu_page_data;?></a></li>
-                <li <?php if ($currentStep == 8) echo 'class="active"'; ?>><a href="?step=8<?php echo $languageGetParameter;?>"><i class="fa fa-upload fa-fw"></i> <?php echo $languageObject->menu_gamedata_add;?></a></li>
-                <li <?php if ($currentStep == 9) echo 'class="active"'; ?>><a href="?step=9<?php echo $languageGetParameter;?>"><i class="fa fa-smile-o fa-fw"></i> <?php echo $languageObject->menu_finish;?></a></li>
+                <li <?php if ($currentStep == 0) echo 'class="active"'; ?>><a href="?step=0<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-info-circle fa-fw"></i> <?php echo $languageObject->menu_welcome;?></a></li>
+                <li <?php if ($currentStep == 1) echo 'class="active"'; ?>><a href="?step=1<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-stethoscope fa-fw"></i> <?php echo $languageObject->menu_system;?></a></li>
+                <li <?php if ($currentStep == 2) echo 'class="active"'; ?>><a href="?step=2<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-key fa-fw"></i> <?php echo $languageObject->menu_db_access;?></a></li>
+                <li <?php if ($currentStep == 3) echo 'class="active"'; ?>><a href="?step=3<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-stethoscope fa-fw"></i> <?php echo $languageObject->menu_db_access_check;?></a></li>
+                <li <?php if ($currentStep == 4) echo 'class="active"'; ?>><a href="?step=4<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-tasks fa-fw"></i> <?php echo $languageObject->menu_db_add;?></a></li>
+                <li <?php if ($currentStep == 5) echo 'class="active"'; ?>><a href="?step=5<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-eye fa-fw"></i> <?php echo $languageObject->menu_db_check;?></a></li>
+                <li <?php if ($currentStep == 6) echo 'class="active"'; ?>><a href="?step=6<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-user fa-fw"></i> <?php echo $languageObject->menu_admin_add;?></a></li>
+                <li <?php if ($currentStep == 7) echo 'class="active"'; ?>><a href="?step=7<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-cogs fa-fw"></i> <?php echo $languageObject->menu_page_data;?></a></li>
+                <li <?php if ($currentStep == 8) echo 'class="active"'; ?>><a href="?step=8<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-upload fa-fw"></i> <?php echo $languageObject->menu_gamedata_add;?></a></li>
+                <li <?php if ($currentStep == 9) echo 'class="active"'; ?>><a href="?step=9<?php echo $languageGetParameter . $developerGetParameter;?>"><i class="fa fa-smile-o fa-fw"></i> <?php echo $languageObject->menu_finish;?></a></li>
             </ul>
         </div>
 
