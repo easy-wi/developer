@@ -39,7 +39,7 @@
 
 $defined['settings'] = array(
     'id' => array("Type"=>"int(10) unsigned","Null"=>"NO","Key"=>"PRI","Default"=>"","Extra"=>"auto_increment"),
-    'version' => array("Type"=>"varchar(10)","Null"=>"YES","Key"=>"","Default"=>"5.30","Extra"=>""),
+    'version' => array("Type"=>"varchar(10)","Null"=>"YES","Key"=>"","Default"=>"5.41","Extra"=>""),
     'favicon' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"images/favicon.ico","Extra"=>""),
     'header_icon' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"logo_180px.png","Extra"=>""),
     'header_text' => array("Type"=>"varchar(100)","Null"=>"YES","Key"=>"","Default"=>"Easy-Wi","Extra"=>""),
