@@ -75,14 +75,34 @@ $easyWiVersion = ($developer == 'Y') ? '5.41' : '5.30';
 
 if ($currentStep == 0) {
 
+    $selectedDeveloper = ($developer == 'Y') ? "selected='selected'" : '';
+
     $apiResponse = webhostRequest('api.github.com', $_SERVER['HTTP_HOST'], '/repos/easy-wi/developer/' . (($developer == 'Y') ? 'tags' : 'releases/latest'), null, 443);
     $json = @json_decode($apiResponse);
 
-    if (!$json or ($developer == 'N' and !is_object($json)) or ($developer == 'N' and property_exists($json, 'tag_name') or $easyWiVersion == $json->tag_name) or ($developer == 'Y' and !is_array($json)) or ($developer == 'Y' and is_object($json[0]) and property_exists($json[0], 'name') and $easyWiVersion == $json[0]->name )) {
-        $displayToUser = "<div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
+    $displayToUser = "
+<div class='col-md-9'>
+<form class='form-horizontal' role='form' action='install.php' method='get'>
+  <input type='hidden' name='step' value='0' />
+  <input type='hidden' name='language' value='${menuLanguage}' />
+  <div class='form-group'>
+    <label for='inputVersion' class='col-sm-2 control-label'>Version</label>
+    <div class='col-sm-10'>
+      <select class='form-control' name='developer' onChange='this.form.submit()'>
+        <option value='N'>Stable</option>
+        <option value='Y' ${selectedDeveloper}>Developer</option>
+      </select>
+    </div>
+  </div>
+</form>
+</div>
+";
+
+    if (!$json or ($developer == 'N' and !is_object($json)) or ($developer == 'Y' and !is_array($json)) or ($developer == 'N' and property_exists($json, 'tag_name') and $easyWiVersion == $json->tag_name) or ($developer == 'Y' and is_object($json[0]) and property_exists($json[0], 'name') and $easyWiVersion == $json[0]->name )) {
+        $displayToUser .= "<div class='col-md-12'><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div></div>";
     } else {
         $apiVersion = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
-        $displayToUser = "<div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://github.com/easy-wi/developer/releases/tag/{$apiVersion}' target='_blank'>{$json->tag_name}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div>";
+        $displayToUser .= "<div class='col-md-12'><div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://github.com/easy-wi/developer/releases/tag/{$apiVersion}' target='_blank'>{$apiVersion}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div></div>";
     }
 
 } else {
@@ -746,7 +766,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `page_settings` (`id`,`pageurl`,`resellerid`) VALUES (1,?,0) ON DUPLICATE KEY UPDATE `pageurl`=VALUES(`pageurl`)");
             $query->execute(array($_POST['installUrl']));
 
-            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`developer`,`cronjob_ips`,`imageserver`,`resellerid`) VALUES (1,'default',?,?,?,?,?,'','ew-image.fvip.de::easy-wi',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`),`developer`=VALUES(`developer`),`imageserver`=VALUES(`imageserver`)");
+            $query = $sql->prepare("INSERT INTO `settings` (`id`,`template`,`language`,`prefix1`,`prefix2`,`faillogins`,`brandname`,`developer`,`cronjob_ips`,`imageserver`,`resellerid`) VALUES (1,'default',?,?,?,?,?,?,'','ew-image.fvip.de::easy-wi',0) ON DUPLICATE KEY UPDATE `language`=VALUES(`language`),`prefix1`=VALUES(`prefix1`),`prefix2`=VALUES(`prefix2`),`faillogins`=VALUES(`faillogins`),`brandname`=VALUES(`brandname`),`developer`=VALUES(`developer`),`imageserver`=VALUES(`imageserver`)");
             $query->execute(array($_POST['language'], $_POST['prefix1'], $_POST['prefix2'], $_POST['faillogins'], $_POST['brandname'], $developer));
 
             $query = $sql->prepare("INSERT INTO `settings_email` (`reseller_id`,`email_setting_name`,`email_setting_value`) VALUES (0,'email',?) ON DUPLICATE KEY UPDATE `email_setting_value`=VALUES(`email_setting_value`)");
@@ -1048,7 +1068,7 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Easy-WI Installer">
+    <meta name="description" content="Easy-WI Installer <?php echo $easyWiVersion;?>">
     <meta name="author" content="Ulrich Block">
 
     <title>Easy-WI Installer</title>
@@ -1128,11 +1148,7 @@ t
             <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=en"><img src="../images/flags/uk.png"></a></li>
             <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=dk"><img src="../images/flags/dk.png"></a></li>
         </ul>
-        <h3 class="text-muted">Easy-WI.com Installer</h3>
-        <select onChange="window.location = '?step=<?php echo $currentStep . $languageGetParameter;?>&amp;developer=' + this.value">
-            <option value="N">Stable</option>
-            <option value="Y">Developer</option>
-        </select>
+        <h3 class="text-muted">Easy-WI.com Installer <?php echo $easyWiVersion;?></h3>
     </div>
 
     <div class="row">
