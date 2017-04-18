@@ -77,7 +77,7 @@
                         <dt><?php echo $sprache->ftp_link;?></dt>
                         <dd><a href="<?php echo $table_row['ftpdata'];?>"><?php echo $table_row['ftpdata'];?></a></dd>
                         <dt><?php echo $sprache->ftp_adresse;?></dt>
-                        <dd>ftp://<?php echo $table_row['ip'].":".$table_row['ftpport'].$pserver.$table_row['ip'].'_'.$table_row['port']."/".$table_row['shorten'];?></dd>
+                        <dd>ftp://<?php echo $table_row['ip'].":".$table_row['ftpport'].$pserver.$table_row['shorten'];?></dd>
                         <dt><?php echo $sprache->ftp_user;?></dt>
                         <dd><?php echo $table_row['cname'];?></dd>
                         <dt><?php echo $sprache->ftp_password;?></dt>
