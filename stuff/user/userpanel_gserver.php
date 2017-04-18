@@ -1049,7 +1049,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 $query2->execute(array($rootid));
                 $ftpport = $query2->fetchColumn();
-                $ftpdata = 'ftp://' . $cname . ':' . $cftppass . '@' . $ip . ':' . $ftpport . $pserver . '/' . $currentTemplate;
+                $ftpdata = 'ftp://' . $cname . ':' . $cftppass . '@' . $ip . ':' . $ftpport . $pserver . $currentTemplate;
             } else {
                 $cftppass = '';
                 $ftpport = '';
