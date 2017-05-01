@@ -77,7 +77,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
         $ftpConnect = new EasyWiFTP($row['ftp_ip'], $row['ftpport'], $username, $ftppass);
 
-        $downloadChrooted = $ftpConnect->removeSlashes($pserver . $row['serverip'] . '_' . $row['port'] . '/' . $shorten . '/' . $row['binarydir'] . '/screenlog.0');
+        $downloadChrooted = $ftpConnect->removeSlashes($pserver . '/' . $shorten . '/' . $row['binarydir'] . '/screenlog.0');
 
         if ($ftpConnect->ftpConnection) {
 
