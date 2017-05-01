@@ -19,48 +19,27 @@
 namespace GameQ\Protocols;
 
 /**
- * Minecraft Protocol Class
- *
- * Thanks to https://github.com/xPaw/PHP-Minecraft-Query for helping me realize this is
- * Gamespy 3 Protocol.  Make sure you enable the items below for it to work.
- *
- * Information from original author:
- * Instructions
- *
- * Before using this class, you need to make sure that your server is running GS4 status listener.
- *
- * Look for those settings in server.properties:
- *
- *    enable-query=true
- *    query.port=25565
+ * Medal of honor: Allied Assault Protocol Class
  *
  * @package GameQ\Protocols
- *
+ * @author  Bram <https://github.com/Stormyy>
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Minecraft extends Gamespy3
+class Mohaa extends Gamespy
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'minecraft';
+    protected $name = 'mohaa';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Minecraft";
-
-    /**
-     * The client join link
-     *
-     * @type string
-     */
-    protected $join_link = "minecraft://%s:%d/";
+    protected $name_long = "Medal of honor: Allied Assault";
 
     /**
      * Normalize settings for this protocol
@@ -68,20 +47,33 @@ class Minecraft extends Gamespy3
      * @type array
      */
     protected $normalize = [
-        // General
         'general' => [
             // target       => source
             'dedicated'  => 'dedicated',
-            'gametype'   => 'game_id',
+            'gametype'   => 'gametype',
             'hostname'   => 'hostname',
-            'mapname'    => 'map',
+            'mapname'    => 'mapname',
             'maxplayers' => 'maxplayers',
             'numplayers' => 'numplayers',
             'password'   => 'password',
         ],
         // Individual
         'player'  => [
-            'name' => 'player',
+            'name'  => 'player',
+            'score' => 'frags',
+            'ping'  => 'ping',
         ],
     ];
+
+    /**
+     * Query port is always the client port + 97 in MOHAA
+     *
+     * @param int $clientPort
+     *
+     * @return int
+     */
+    public function findQueryPort($clientPort)
+    {
+        return $clientPort+97;
+    }
 }
