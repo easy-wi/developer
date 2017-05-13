@@ -26,7 +26,6 @@ class OAuth2Client
   //--
 
   public $sign_token_name          = "access_token";
-  public $decode_json              = true;
   public $curl_time_out            = 30;
   public $curl_connect_time_out    = 30;
   public $curl_ssl_verifypeer      = false;
@@ -127,7 +126,7 @@ class OAuth2Client
   /**
   * Format and sign an oauth for provider api
   */
-  public function api( $url, $method = "GET", $parameters = array() )
+  public function api( $url, $method = "GET", $parameters = array(), $decode_json = true )
   {
     if ( strrpos($url, 'http://') !== 0 && strrpos($url, 'https://') !== 0 ) {
       $url = $this->api_base_url . $url;
@@ -139,9 +138,11 @@ class OAuth2Client
     switch( $method ){
       case 'GET'  : $response = $this->request( $url, $parameters, "GET"  ); break;
       case 'POST' : $response = $this->request( $url, $parameters, "POST" ); break;
+      case 'DELETE' : $response = $this->request( $url, $parameters, "DELETE" ); break;
+      case 'PATCH'  : $response = $this->request( $url, $parameters, "PATCH" ); break;
     }
 
-    if( $response && $this->decode_json ){
+    if( $response && $decode_json ){
       return $this->response = json_decode( $response );
     }
 
@@ -161,17 +162,17 @@ class OAuth2Client
   /**
   * GET wrapper for provider apis request
   */
-  function get( $url, $parameters = array() )
+  function get( $url, $parameters = array(), $decode_json = true )
   {
-    return $this->api( $url, 'GET', $parameters );
+    return $this->api( $url, 'GET', $parameters, $decode_json );
   }
 
   /**
   * POST wrapper for provider apis request
   */
-  function post( $url, $parameters = array() )
+  function post( $url, $parameters = array(), $decode_json = true )
   {
-    return $this->api( $url, 'POST', $parameters );
+    return $this->api( $url, 'POST', $parameters, $decode_json );
   }
 
   // -- tokens
@@ -206,8 +207,10 @@ class OAuth2Client
     Hybrid_Logger::info( "Enter OAuth2Client::request( $url )" );
     Hybrid_Logger::debug( "OAuth2Client::request(). dump request params: ", serialize( $params ) );
 
+	$urlEncodedParams = http_build_query($params, '', '&');
+
     if( $type == "GET" ){
-      $url = $url . ( strpos( $url, '?' ) ? '&' : '?' ) . http_build_query($params, '', '&');
+      $url = $url . ( strpos( $url, '?' ) ? '&' : '?' ) . $urlEncodedParams;
     }
 
     $this->http_info = array();
@@ -230,11 +233,30 @@ class OAuth2Client
       curl_setopt( $ch, CURLOPT_PROXY        , $this->curl_proxy);
     }
 
-    if( $type == "POST" ){
+    if ($type == "POST") {
       curl_setopt($ch, CURLOPT_POST, 1);
-      if($params) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
+
+      // If request body exists then encode it for "application/json".
+      if (isset($params['body'])) {
+        $urlEncodedParams = json_encode($params['body']);
+      }
+
+      // Using URL encoded params here instead of a more convenient array
+      // cURL will set a wrong HTTP Content-Type header if using an array (cf. http://www.php.net/manual/en/function.curl-setopt.php, Notes section for "CURLOPT_POSTFIELDS")
+      // OAuth requires application/x-www-form-urlencoded Content-Type (cf. https://tools.ietf.org/html/rfc6749#section-2.3.1)
+      if ($params) {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $urlEncodedParams);
+      }
     }
 
+    if( $type == "DELETE" ){
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+    }
+    if( $type == "PATCH" ){
+      curl_setopt($ch, CURLOPT_POST, 1);
+      if($params) curl_setopt( $ch, CURLOPT_POSTFIELDS, $params );
+      curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PATCH");
+    }
     $response = curl_exec($ch);
     if( $response === false ) {
         Hybrid_Logger::error( "OAuth2Client::request(). curl_exec error: ", curl_error($ch) );
@@ -263,4 +285,18 @@ class OAuth2Client
 
     return $result;
   }
+  /**
+ * DELETE wrapper for provider apis request
+ */
+ function delete( $url, $parameters = array() )
+ {
+   return $this->api( $url, 'DELETE', $parameters );
+ }
+ /**
+ * PATCH wrapper for provider apis request
+ */
+ function patch( $url, $parameters = array() )
+ {
+    return $this->api( $url, 'PATCH', $parameters );
+ }
 }
