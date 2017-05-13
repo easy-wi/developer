@@ -1638,7 +1638,7 @@ class AppServer {
             $shellCommand = '';
 
         } else {
-            $shellCommand = ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] : '';
+            $shellCommand = ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] . ' ' : '';
             $shellCommand .= 'screen -A -m -d -L -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand;
         }
 
