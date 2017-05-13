@@ -996,6 +996,14 @@ class AppServer {
         }
     }
 
+    private function parseYML($string) {
+        try {
+            return Yaml::parse($string);
+        } catch (Exception $e) {
+            return new stdClass;
+        }
+    }
+
     private function protectedSettingsToArray() {
 
         $protectedString = '';
@@ -1014,7 +1022,7 @@ class AppServer {
 
                 if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
                     if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
-                        $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+                        $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, $this->parseYML($protectedString));
                     } else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
                         $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedXML($replaceSettings, $this->xmlStringToObject($protectedString));
                     }
@@ -1091,7 +1099,9 @@ class AppServer {
 
         if (strlen($protectedString) > 0 and isset($configPathAndFile) and !isset($cvarProtectArray[$configPathAndFile]['cvars'])) {
             if (in_array($cvarProtectArray[$configPathAndFile]['type'], array('yml', 'yaml', 'Yaml'))) {
-                $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, Yaml::parse($protectedString));
+
+                $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedYaml($replaceSettings, $this->parseYML($protectedString));
+
                 //TODO
             }/* else if ($cvarProtectArray[$configPathAndFile]['type'] == 'xml') {
                 $cvarProtectArray[$configPathAndFile]['cvars'] = $this->protectedXML($replaceSettings, $this->xmlStringToObject($protectedString));
@@ -1343,7 +1353,7 @@ class AppServer {
 
                     } else if ($values['type'] === 'yml' or $values['type'] === 'Yaml' or $values['type'] === 'yaml') {
 
-                        $ftpObect->writeContentToTemp($this->replaceYaml(Yaml::parse($configFileContent), $values['cvars']));
+                        $ftpObect->writeContentToTemp($this->replaceYaml($this->parseYML($configFileContent), $values['cvars']));
                         //TODO
 /*                    } else if ($values['type'] === 'xml') {
 
