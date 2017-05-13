@@ -112,6 +112,7 @@ if (isset($page_active) and $page_active == 'Y') {
     $query->execute(array($user_language));
 
     if ($seo == 'Y') {
+
         $page_data->SetMenu($gsprache->news, $gsprache->news,'news');
 
         if ($protectioncheck == 'Y') {

@@ -10,6 +10,8 @@
     <contact>Contact</contact>
     <date>Date</date>
     <defaultpage>Default page</defaultpage>
+    <external>External</external>
+    <externalURL>External URL</externalURL>
     <gallery>Gallery</gallery>
     <intern>Intern</intern>
     <keyword>Keyword</keyword>

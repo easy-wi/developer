@@ -22,9 +22,24 @@
                     <div class="box-body">
 
                         <div class="form-group">
+                            <label for="inputExternal"><?php echo $sprache->external;?></label>
+                            <div class="controls">
+                                <select id="inputExternal" class="form-control" name="external" onchange="SwitchShowHideRows(this.value,'externalSwitch');">
+                                    <option value="N"><?php echo $gsprache->no;?></option>
+                                    <option value="Y" <?php if ($external=='Y') echo 'selected="selected"';?>><?php echo $gsprache->yes;?></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="Y externalSwitch form-group<?php if($external=='N') echo ' display_none';?>">
+                            <label for="inputExternalURL"><?php echo $sprache->externalURL;?></label>
+                            <div class="controls"><input id="inputExternalURL" class="form-control" type="text" name="externalURL" value="<?php echo $externalURL;?>"></div>
+                        </div>
+
+                        <div class="N externalSwitch form-group<?php if($external=='Y') echo ' display_none';?>">
                             <label for="inputUpload"><?php echo $sprache->upload;?></label>
                             <div class="controls">
-                                <input id="inputUpload" type="file" name="upload" required>
+                                <input id="inputUpload" type="file" name="upload">
                             </div>
                         </div>
 

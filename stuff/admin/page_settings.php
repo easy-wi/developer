@@ -40,6 +40,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['cms_setting
     header('Location: admin.php');
     die('No Access');
 }
+
 $sprache = getlanguagefile('page',$user_language,$reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
@@ -47,6 +48,7 @@ $logusertype = 'admin';
 $logreseller = 0;
 $logsubuser = 0;
 $logsubuser = 0;
+
 if ($ui->w('action', 4, 'post') and !token(true)) {
     $template_file = $spracheResponse->token;
 } else if ($ui->smallletters('action',2, 'post') == 'md' and $ui->id('maxnews',19, 'post')) {
