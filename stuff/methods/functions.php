@@ -168,8 +168,10 @@ if (!function_exists('passwordgenerate')) {
         $value = removeDoubleSlashes($value);
 
         if ($value == 'login.php') {
-            session_unset();
-            session_destroy();
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_unset();
+                session_destroy();
+            }
         }
 
         if ($sendHTTP301 == true) {
