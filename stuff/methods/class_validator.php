@@ -435,6 +435,19 @@ class ValidateUserinput {
         return false;
     }
 
+    function ftpPassword ($value, $length, $type, $object = false) {
+
+        $check = $this->if_obj_or_str($value, $type, $object);
+
+        if ($check and is_string($check) and preg_match('/^((?![\.\(\)\,])[\w\S]){6,' . $length . '}$/', trim($check))) {
+            return trim($check);
+        } else if ($check) {
+            return $this->loop($check, 'ftpPassword', $type, $length);
+        }
+
+        return false;
+    }
+
     function captcha ($value, $type, $object = false) {
 
         $check = $this->if_obj_or_str($value, $type, $object);
