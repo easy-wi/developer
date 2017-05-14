@@ -63,7 +63,7 @@ if (isset($include) and $include == true) {
     $query = $sql->prepare("SELECT `id`,`appID`,`shorten` FROM `servertypes` WHERE `appID` IS NOT NULL AND `serverID` IS NULL");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $query->execute(array(workAroundForValveChaos($row['appID'], $row['shorten'], true), $row['id']));
+        $query2->execute(array(workAroundForValveChaos($row['appID'], $row['shorten'], true), $row['id']));
     }
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
