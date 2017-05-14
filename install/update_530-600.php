@@ -45,10 +45,15 @@ if (isset($include) and $include == true) {
 
     $response->add('Action: Update to new skin color template system');
 
+    $serverIDMissing = true;
+
     $query = $sql->prepare("SHOW COLUMNS FROM `settings` WHERE `Field`='serverID'");
     $query->execute();
+    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+        $serverIDMissing = false;
+    }
 
-    if ($query->rowCount() == 0) {
+    if ($serverIDMissing) {
         $query = $sql->prepare("ALTER TABLE `settings` ADD `serverID` INT(10) UNSIGNED");
         $query->execute();
         $query->closecursor();
