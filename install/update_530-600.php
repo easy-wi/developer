@@ -39,6 +39,10 @@
 
 if (isset($include) and $include == true) {
 
+    if (!function_exists('workAroundForValveChaos')) {
+        include(EASYWIDIR . '/stuff/methods/functions.php');
+    }
+
     $response->add('Action: Update to new skin color template system');
 
     $query = $sql->prepare("SHOW COLUMNS FROM `settings` WHERE `Field`='serverID'");
