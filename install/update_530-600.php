@@ -47,14 +47,14 @@ if (isset($include) and $include == true) {
 
     $serverIDMissing = true;
 
-    $query = $sql->prepare("SHOW COLUMNS FROM `settings` WHERE `Field`='serverID'");
+    $query = $sql->prepare("SHOW COLUMNS FROM `servertypes` WHERE `Field`='serverID'");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $serverIDMissing = false;
     }
 
     if ($serverIDMissing) {
-        $query = $sql->prepare("ALTER TABLE `settings` ADD `serverID` INT(10) UNSIGNED");
+        $query = $sql->prepare("ALTER TABLE `servertypes` ADD `serverID` INT(10) UNSIGNED");
         $query->execute();
         $query->closecursor();
     }
