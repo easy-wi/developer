@@ -97,7 +97,7 @@ function versioncheck ($current, $new ,$file ,$response, $developer = false) {
         $devVersion = $new;
     }
 
-    if ($current < $new) {
+    if (version_compare($new, $current) == 1) {
 
         $response->add("Upgrading Database from $current to $new<br />");
 
@@ -187,6 +187,9 @@ if (versioncheck($version, '5.22', 'update_521-522.php', $response)) {
 if (versioncheck($version, '5.30', 'update_522-530.php', $response)) {
     $version = '5.30';
 }
+if (versioncheck($version, '6.0.0', 'update_530-600.php', $response)) {
+    $version = '6.0.0';
+}
 
 try {
 
@@ -195,7 +198,7 @@ try {
 
     if ($query->fetchColumn() == 'Y') {
 
-        $devVersion = '5.41';
+        $devVersion = '6.0.0';
 
         if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
             $version = $devVersion;
