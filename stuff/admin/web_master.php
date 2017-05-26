@@ -237,7 +237,7 @@ allow_url_include=Off
 
         $vhostTemplate = '<VirtualHost *:80>
     ServerName www.%domain%
-    ServerName Redirect 301 / http://%domain%/
+    Redirect 301 / http://%domain%/
 </VirtualHost>
 ';
 
