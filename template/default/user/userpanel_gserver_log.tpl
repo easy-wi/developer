@@ -23,6 +23,7 @@
                         <input id="inputCommand" type="text" class="form-control" name="command" value="" onkeydown="enterUsed(event)">
                         <span class="input-group-btn">
                             <button class="btn btn-primary btn-flat" type="button" onclick="submitForm()"><i class="fa fa-play-circle"></i></button>
+                            <button class="btn btn-primary btn-flat" type="button" onclick="getLog()"><i class="fa fa-refresh"></i></button>
                         </span>
                     </div>
                     <?php } ?>
@@ -35,6 +36,8 @@
 
     var lastLog = 0;
     var getRequestStarted = false;
+    var errorft = true; //ft means first time
+    var boxBody = $('#boxBody');
 
     function enterUsed(event) {
         if (event.keyCode === 13) {
@@ -77,16 +80,34 @@
 
                 var jsonParsed = JSON.parse(jsonReturn);
 
+
+
                 if (jsonParsed.error) {
 
-                    alert(jsonParsed.error);
+                  if (errorft){
+                  boxBody.css( "background-color","rgba(255, 0, 0, 0.30)" );
+                  boxBody.parent().css( "border-top-color","rgba(210, 0, 0, 1)" );
+
+                  boxBody.html('<h1 id="errorcde" style="text-align: center; padding-top: 9%" >' + jsonParsed.error + "</h1>");
+
+                  }
+                  errorft = false;
 
                 } else {
+
+                  if (!errorft){
+                    //rimuovere error code (id errorcde)
+                    $("#errorcde").remove();
+                    errorft = true;
+                  }
+
+                    boxBody.css( "background-color","rgba(0, 250, 136, 0.08)" );
+                    boxBody.parent().css( "border-top-color","#00a65a" );
+
 
                     lastLog = jsonParsed.lastLog;
 
                     if (jsonParsed.log.length > 0) {
-                        var boxBody = $('#boxBody');
                         boxBody.append(jsonParsed.log);
                         boxBody.scrollTop(boxBody.prop("scrollHeight"));
                     }
