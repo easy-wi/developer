@@ -90,7 +90,7 @@ function loadServerSettings (serverType, usageType) {
         /* Add redirect from www. -> non www. */
         defaultVhostTemplate = '<VirtualHost *:80>\r\n';
         defaultVhostTemplate += '    ServerName www.%domain%\r\n';
-        defaultVhostTemplate += '    ServerName Redirect 301 / http://%domain%/\r\n';
+        defaultVhostTemplate += '    Redirect 301 / http://%domain%/\r\n';
         defaultVhostTemplate += '</VirtualHost>\r\n';
 
         defaultVhostTemplate += '<VirtualHost *:80>\r\n';
