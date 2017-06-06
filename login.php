@@ -103,7 +103,7 @@ if ($ui->st('w', 'get') == 'lo') {
     } else {
         session_unset();
         session_destroy();
-        redirect($pageurl . '/' . $ewInstallPath);
+        redirect((isset($pageurl)) ? $pageurl . '/' . $ewInstallPath : $ewInstallPath);
     }
 
 } else if ($ui->st('w', 'get') == 'ba') {

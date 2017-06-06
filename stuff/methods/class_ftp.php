@@ -44,7 +44,7 @@ class EasyWiFTP {
 
     function __construct($ip, $port, $user, $pwd, $ssl = 'N') {
 
-        $this->ftpConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 5) :  @ftp_ssl_connect($ip, $port, 5);
+        $this->ftpConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 10) :  @ftp_ssl_connect($ip, $port, 5);
 
         if ($this->ftpConnection) {
 
@@ -69,7 +69,7 @@ class EasyWiFTP {
 
     public function createSecondFTPConnect ($ip, $port, $user, $pwd, $ssl = 'N') {
 
-        $this->ftpSecondConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 5) :  @ftp_ssl_connect($ip, $port, 5);
+        $this->ftpSecondConnection = ($ssl == 'N') ? @ftp_connect($ip, $port, 10) :  @ftp_ssl_connect($ip, $port, 5);
 
         if ($this->ftpSecondConnection) {
             $ftpLogin = @ftp_login($this->ftpSecondConnection, $user, $pwd);

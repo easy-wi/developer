@@ -63,6 +63,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action',2, 'post')) {
 
         $foundlanguages = array();
+        $options = array();
 
         foreach (getlanguages($template_to_use) as $row) {
 

@@ -511,9 +511,14 @@ class Monsta {
             $year="";
 
             // Split up array into values
-            $ff = preg_split("/[\s]+/",$ff,9);
+            $ff = preg_split("/[\s]+/", $ff, 9);
 
             $perms = $ff[0];
+
+            if (!isset($ff[2])) {
+                continue;
+            }
+
             $user = $ff[2];
             $group = $ff[3];
             $size = $ff[4];
@@ -522,9 +527,11 @@ class Monsta {
             $file = $ff[8];
 
             // Check if file starts with a dot
-            $dot_prefix=0;
-            if (preg_match("/^\.+/",$file) && $_SESSION["monstaftp"][$this->serverID]["interface"] == "bas")
-                $dot_prefix=1;
+            $dot_prefix = 0;
+
+            if (preg_match("/^\.+/",$file) && $_SESSION["monstaftp"][$this->serverID]["interface"] == "bas") {
+                $dot_prefix = 1;
+            }
 
             if ($file != "." && $file != ".." && $dot_prefix == 0) {
 
