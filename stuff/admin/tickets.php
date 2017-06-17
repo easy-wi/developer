@@ -60,7 +60,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'at') {
 
-    if (!$ui->smallletters('action',2, 'post')) {
+    if (!$ui->smallletters('action', 2, 'post')) {
 
         $foundlanguages = array();
         $options = array();
@@ -103,13 +103,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $template_file = "admin_ticket_topic_add.tpl";
 
-    } else if ($ui->smallletters('action',2, 'post') == "ad") {
+    } else if ($ui->smallletters('action', 2, 'post') == "ad") {
 
         if ($ui->description('maintopic', 'post')){
 
             $topic_name = $ui->description('topic_name', 'post');
-            $priority = isid($ui->post['priority'],1);
             $maintopic = $ui->description('maintopic', 'post');
+            $priority = ($ui->id('priority', 1, 'post')) ? $ui->id('priority', 1, 'post') : 1;
 
             $query = $sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `topic`=? AND `maintopic`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($topic_name, $maintopic, $resellerLockupID));
@@ -207,7 +207,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if ($ui->st('d', 'get') == 'mt') {
 
-    if (!$ui->smallletters('action',2, 'post') and $ui->id('id', 10, 'get')) {
+    if (!$ui->smallletters('action', 2, 'post') and $ui->id('id', 10, 'get')) {
 
         $id = $ui->id('id', 10, 'get');
 
@@ -218,7 +218,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $topic = $row['topic'];
             $priority = $row['priority'];
 
-            if ($id==$row['maintopic']) {
+            if ($id == $row['maintopic']) {
                 $maintopic = '';
             } else {
                 $maintopic = $row['maintopic'];
@@ -280,19 +280,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $template_file = "admin_ticket_topic_md.tpl";
 
-    } else if ($ui->smallletters('action',2, 'post') == 'md' and $ui->id('id',19, 'get')){
+    } else if ($ui->smallletters('action', 2, 'post') == 'md' and $ui->id('id',19, 'get')){
         $id = $ui->id('id',19, 'get');
         if ($ui->description('maintopic', 'post')){
+
             $topic_name = $ui->description('topic_name', 'post');
-            $priority = isid($ui->post['priority'], "1");
+            $priority = ($ui->id('priority', 1, 'post')) ? $ui->id('priority', 1, 'post') : 1;
             $maintopic = $ui->description('maintopic', 'post');
-            if ($maintopic=="none") {
+
+            if ($maintopic == "none") {
                 $maintopic = $id;
-                $priority = '';
+                $priority = 0;
             }
+
             $query = $sql->prepare("UPDATE `ticket_topics` SET `topic`=:topic,`maintopic`=:maintopic,`priority`=:priority WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
             $query->execute(array(':topic' => $topic_name, ':maintopic' => $maintopic, ':priority' => $priority, ':id' => $id, ':reseller_id' => $resellerLockupID));
+
             if (isset($ui->post['language'])) {
+
                 $query = $sql->prepare("INSERT INTO `translations` (`type`,`transID`,`lang`,`text`,`resellerID`) VALUES ('ti',?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
                 foreach($ui->post['language'] as $language) {
                     if (small_letters_check($language, '2')) {
@@ -300,6 +305,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $query->execute(array($id,$language,$subject,$resellerLockupID));
                     }
                 }
+
                 $query = $sql->prepare("SELECT `lang` FROM `translations` WHERE `type`='ti' AND `transID`=? AND `resellerID`=?");
                 $query->execute(array($id,$resellerLockupID));
                 $query2 = $sql->prepare("DELETE FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=?");
@@ -323,11 +329,15 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $table = array();
 
+        $query3 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`id`=?  AND t.`resellerid`=? LIMIT 1");
         $query2 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`resellerid`=? ORDER BY t.`id` ASC");
-        $query2->execute(array($user_language,$rSA['language'],$resellerLockupID));
+        $query2->execute(array($user_language, $rSA['language'], $resellerLockupID));
         while ($row2 = $query2->fetch(PDO::FETCH_ASSOC)) {
-            $priority = '';
+
+            $priority = 1;
             $topic = '';
+            $mTopic = '';
+
             if ($row2['priority']==1) {
                 $priority = $sprache->priority_low;
             } else if ($row2['priority']==2) {
@@ -337,6 +347,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else if ($row2['priority']==4) {
                 $priority = $sprache->priority_highest;
             }
+
             if ($row2['text'] != null and $row2['text'] != '') {
                 $topic = $row2['text'];
             } else if ($row2['defaultsubject'] != null or $row2['defaultsubject'] != '') {
@@ -344,12 +355,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else {
                 $topic = $row2['topic'];
             }
+
             if ($row2['id'] == $row2['maintopic']) {
+
                 $maintopic = '';
-                $mTopic = '';
+
             } else {
-                $query3 = $sql->prepare("SELECT t.*,l.`text`,d.`text` AS `defaultsubject` FROM `ticket_topics` t LEFT JOIN `translations` l ON t.`id`=l.`transID` AND l.`type`='ti' AND l.`lang`=? LEFT JOIN `translations` d ON t.`id`=d.`transID` AND d.`type`='ti' AND d.`lang`=? WHERE t.`id`=?  AND t.`resellerid`=? LIMIT 1");
-                $query3->execute(array($user_language,$rSA['language'], $row2['maintopic'],$resellerLockupID));
+
+                $query3->execute(array($user_language, $rSA['language'], $row2['maintopic'], $resellerLockupID));
                 while ($row3 = $query3->fetch(PDO::FETCH_ASSOC)) {
                     if ($row3['text'] != null and $row3['text'] != '') {
                         $mTopic = $row3['text'];
@@ -359,9 +372,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                         $mTopic = $row3['topic'];
                     }
                 }
+
                 $maintopic=' - ';
             }
-            $table[] = array('id' => $row2['id'], 'topic' => $topic,'maintopic' => $maintopic,'mTopic' => $mTopic,'priority' => $priority);
+
+            $table[] = array('id' => $row2['id'], 'topic' => $topic,'maintopic' => $maintopic, 'mTopic' => $mTopic, 'priority' => $priority);
         }
 
         configureDateTables('-1', '1, "asc"');
@@ -370,9 +385,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     }
 } else if ($ui->st('d', 'get') == 'md' and $ui->id('id',19, 'get')) {
     $id = $ui->id('id',19, 'get');
-    if (!$ui->smallletters('action',2, 'post') or $ui->smallletters('action',2, 'get') == 'md') {
+    if (!$ui->smallletters('action', 2, 'post') or $ui->smallletters('action', 2, 'get') == 'md') {
         $supporterList = array();
-        if (!$ui->smallletters('action',2, 'post')) {
+        if (!$ui->smallletters('action', 2, 'post')) {
             $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='a' ORDER BY `id` DESC");
             $query->execute(array($resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -435,12 +450,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         }
 
         if (isset($priority)) {
-            $template_file = ($ui->smallletters('action',2, 'get') == 'md') ? 'admin_tickets_md.tpl' : 'admin_tickets_view.tpl';
+            $template_file = ($ui->smallletters('action', 2, 'get') == 'md') ? 'admin_tickets_md.tpl' : 'admin_tickets_view.tpl';
         } else {
             $template_file = 'admin_404.tpl';
         }
 
-    } else if ($ui->smallletters('action',2, 'post') == 'wr') {
+    } else if ($ui->smallletters('action', 2, 'post') == 'wr') {
 
         $query = $sql->prepare("SELECT `userid`,`state` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$resellerLockupID));
