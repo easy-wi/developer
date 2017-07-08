@@ -38,6 +38,7 @@
 
 
 if (isset($page_include)) {
+
     $reseller_id = 0;
 
 } else {
@@ -123,7 +124,7 @@ $slotselect = array();
 $votimeselect = array();
 $voslotselect = array();
 
-$query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=5 LIMIT 1");
+$query = $sql->prepare("SELECT `active` FROM `modules` WHERE `sub`='le' LIMIT 1");
 $query->execute();
 $active = $query->fetchColumn();
 $active = (active_check($active)) ? $active : 'Y';

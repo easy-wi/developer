@@ -88,22 +88,32 @@ if (isset($page_active) and $page_active == 'Y') {
         $what_to_be_included_array['imprint'] = 'imprint.php';
     }
 
+    // The module itself is active
     if ($easywiModules['le'] === true) {
-        $what_to_be_included_array['lendserver'] = 'lend.php';
+
+        // Check if the module is configured in a way that prevents direct access via CMS
+        $query = $sql->prepare("SELECT `activeGS`,`activeVS`,`lendaccess` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
+        $query->execute();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            if ($row['lendaccess'] == 3) {
+                $easywiModules['le'] = false;
+            } else {
+                $page_data->SetData('lendactiveGS', $row['activeGS']);
+                $page_data->SetData('lendactiveVS', $row['activeVS']);
+            }
+        }
+
+        if ($easywiModules['le'] === true) {
+            $what_to_be_included_array['lendserver'] = 'lend.php';
+        }
     }
 
-    $query = $sql->prepare("SELECT `activeGS`,`activeVS` FROM `lendsettings` WHERE `resellerid`=0 LIMIT 1");
-    $query->execute();
-    while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        $page_data->SetData('lendactiveGS', $row['activeGS']);
-        $page_data->SetData('lendactiveVS', $row['activeVS']);
-    }
-
-    $query = $sql->prepare("SELECT `active` FROM `modules` WHERE `id`=5 LIMIT 1");
-    $query->execute();
-    $lendActive = $query->fetchColumn();
-    $lendActive = (active_check($lendActive)) ? $lendActive : 'Y';
+    // Var needed for legacy checks
+    $lendActive = ($easywiModules['le']) ? 'Y' : 'N';
     $page_data->SetData('lendactive', $lendActive);
+
+    $protectioncheck = (!isset($protectioncheck)) ? 'N' : $protectioncheck;
 
     $page_data->SetData('protectioncheck', $protectioncheck);
     $page_data->SetData('title', $title);
@@ -175,9 +185,16 @@ if (isset($page_active) and $page_active == 'Y') {
         }
 
         if ($page_data->lendactive == 'Y') {
+
             $page_data->SetMenu($gsprache->lendserver, array('site' => 'lendserver'), 'lendserver');
-            $page_data->SetMenu($gsprache->gameserver, array('site' => 'lendserver', 'd' => 'gs'), 'lendservergs');
-            $page_data->SetMenu($gsprache->voiceserver, array('site' => 'lendserver', 'd' => 'vo'), 'lendservervoice');
+
+            if ($page_data->lendactiveGS != 'N') {
+                $page_data->SetMenu($gsprache->gameserver, array('site' => 'lendserver', 'd' => 'gs'), 'lendservergs');
+            }
+
+            if ($page_data->lendactiveVS != 'N') {
+                $page_data->SetMenu($gsprache->voiceserver, array('site' => 'lendserver', 'd' => 'vo'), 'lendservervoice');
+            }
         }
 
         if ($easywiModules['ip'] === true) {
