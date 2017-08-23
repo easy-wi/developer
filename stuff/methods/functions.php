@@ -165,6 +165,8 @@ if (!function_exists('passwordgenerate')) {
 
     function redirect($value, $sendHTTP301 = false) {
 
+        ob_start();
+
         $value = removeDoubleSlashes($value);
 
         if ($value == 'login.php') {
