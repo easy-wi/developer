@@ -583,7 +583,7 @@ class AppServer {
         $serverDir = ($this->appServerDetails['protectionModeStarted'] == 'Y') ? 'pserver/' : 'server/';
         $absolutePath = $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName'] . '/' . $serverDir);
 
-        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'yml', 'yaml', 'csv');
+        $copyFileExtensions = array('xml', 'vdf', 'cfg', 'con', 'conf', 'config', 'ini', 'gam', 'txt', 'log', 'smx', 'sp', 'db', 'lang', 'lua', 'props', 'properties', 'json', 'example', 'html', 'htm', 'css', 'js', 'yml', 'yaml', 'csv', 'txd', 'dff', 'col', 'png', 'jpg', 'jpeg', 'map', 'edf', 'mp3');
 
         if ($standalone and isset($scriptName)) {
             $script = $this->shellScriptHeader;
