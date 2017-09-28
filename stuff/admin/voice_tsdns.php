@@ -234,7 +234,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                     $maxRequests = @ini_get('suhosin.request.max_vars');
                     $i = 0;
                     $max = ($maxRequests and $maxPost and $maxPost<$maxRequests) ? $maxPost : $maxRequests;
-                    $max = (empty($max)) ? ($max-10)/7 : count($dnsarray);
+                    $max = (empty($max)) ? count($dnsarray) : ($max-10)/7;
 
                     $dnsarray = tsdns('li', $ssh2ip, $ssh2port, $ssh2user, $publickey, $keyname, $ssh2password, 'N', $serverdir, $bit, array(''), array(''), array(''), $reseller_id);
 
@@ -305,7 +305,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
                 $maxRequests = @ini_get('suhosin.request.max_vars');
                 $i = 0;
                 $max = ($maxRequests and $maxPost and $maxPost<$maxRequests) ? $maxPost : $maxRequests;
-                $max = (empty($max)) ? ($max-10)/7 : count($dnsarray);
+                $max = (empty($max)) ? count($dnsarray) : ($max-10)/7;
 
                 $query = $sql->prepare("SELECT `id`,`cname`,`vname`,`name` FROM `userdata` WHERE `resellerid`=? AND `accounttype`='u' ORDER BY `id` DESC");
                 $query->execute(array($reseller_id));
