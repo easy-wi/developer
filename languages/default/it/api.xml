@@ -4,10 +4,10 @@
     <active>Attivo</active>
     <activeExternal>Attiva autenticazione esterna</activeExternal>
     <all>Tutti</all>
-    <chunkSize>User chunksize</chunkSize>
+    <chunkSize>Dimensioni chunksizeUtente</chunkSize>
     <date>Data</date>
     <domain>Dominio</domain>
-    <fetchUpdates>Fetch updates</fetchUpdates>
+    <fetchUpdates>Recupera aggiornamenti</fetchUpdates>
     <file>File</file>
     <groupID>Gruppo utente</groupID>
     <ipAdd>Aggiungi IP</ipAdd>

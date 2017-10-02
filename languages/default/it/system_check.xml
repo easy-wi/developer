@@ -9,7 +9,7 @@
     <error_system_fopen>fopen function cannot be used. please enable it.</error_system_fopen>
     <error_system_gd>L'estensione gd non è attualmente installata. Sei pregato di installarla.</error_system_gd>
     <error_system_hash>L'estensione hash non è attualmente installata. Sei pregato di installarla.</error_system_hash>
-    <error_system_php_version>At least PHP 5.4 is required. Your PHP version is to old: </error_system_php_version>
+    <error_system_php_version>È richiesto almeno PHP 5.4. La tua versione di PHP è troppo vecchia: </error_system_php_version>
     <error_system_json>L'estensione json non è attualmente installata. Sei pregato di installarla.</error_system_json>
     <error_system_openssl>L'estensione openssl non è attualmente installata. Sei pregato di installarla.</error_system_openssl>
     <error_system_PDO>L'estensione PDO non è attualmente installata. Sei pregato di installarla.</error_system_PDO>
@@ -17,7 +17,7 @@
     <error_system_php_version>È richiesta una versione di PHP pari o superiore alla 5.4. L'attuale versione di PHP è troppo vecchia: </error_system_php_version>
     <error_system_SimpleXML>L'estensione SimpleXML non è attualmente installata. Sei pregato di installarla.</error_system_SimpleXML>
     <system_ok_curl>L'estensione curl è installata.</system_ok_curl>
-    <system_ok_fopen>fopen function can be used.</system_ok_fopen>
+    <system_ok_fopen>La funzione fopen può essere usata.</system_ok_fopen>
     <system_ok_ftp>L'estensione ftp è installata.</system_ok_ftp>
     <system_ok_gd>L'estensione gd è installata.</system_ok_gd>
     <system_ok_hash>L'estensione hash è installata.</system_ok_hash>

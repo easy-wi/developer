@@ -21,7 +21,7 @@
 	<confirm_delete>Eliminare il server?</confirm_delete>
 	<confirm_restart>(Ri)avviare il server?</confirm_restart>
 	<confirm_stop>Fermare il server?</confirm_stop>
-    <coreBind>CPU cores</coreBind>
+    <coreBind>Cores CPU</coreBind>
 	<create>Crea</create>
     <delete_server>I seguenti server(s) verranno eliminati</delete_server>
     <details>Opzioni aggiuntive del server</details>

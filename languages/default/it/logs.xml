@@ -9,7 +9,7 @@
     <help_logs>Tutte le azioni importanti sono registrate. In questo modo, si avrà la cronologia completa. Anche i nomi utenti saranno registrati.</help_logs>
     <hostname>Host name</hostname>
 	<ip>IP</ip>
-	<shown>Amount</shown>
+	<shown>Importo</shown>
 	<subuser>Sottoutente</subuser>
 	<topic>Argomento</topic>
 	<user>Utente</user>
