@@ -16,7 +16,7 @@
     <handy>Numero di cellulare</handy>
     <country>Paese</country>
     <city>Città</city>
-    <cityn>PLZ</cityn>
+    <cityn>Codice postale</cityn>
     <street>Indirizzo</street>
     <streetn>Numero civico</streetn>
     <language>Codice della lingua (Ex. it)</language>
@@ -30,7 +30,7 @@
     <port3>Porta 1</port3>
     <port4>Porta 1</port4>
     <ports>Porta 1</ports>
-    <variable>Variable</variable>
+    <variable>Variabile</variable>
     <variabledesc>Descrizione</variabledesc>
     <templatename>Nome del modello</templatename>
     <copycc>Copia CC</copycc>
