@@ -549,6 +549,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 }
 
                 if ($notified > 0) {
+
+                    $notified = 0;
+
                     $query = $sql->prepare("UPDATE `gsswitch` SET `notified`=0 WHERE `id`=? LIMIT 1");
                     $query->execute(array($switchID));
                 }
