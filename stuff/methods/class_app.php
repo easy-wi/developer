@@ -620,7 +620,7 @@ class AppServer {
             $script .= 'if [ -f "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" ]; then find "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" -maxdepth 1 -type l -delete; fi' . "\n";
             $script .= 'if [ ! -f "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" ]; then ${IONICE}cp "' . $absoluteSourceTemplatePath . '$FILTEREDFILES" "' . $absoluteTargetTemplatePath . '$FILTEREDFILES"; fi' . "\n";
             $script .= 'done' . "\n";
-            $script .= 'cp -sr ' . $absoluteSourceTemplatePath . '* ' . $absoluteTargetTemplatePath . ' > /dev/null 2>&1 ' . "\n";
+            $script .= 'cp -sr ' . $absoluteSourceTemplatePath . '* ' . $absoluteTargetTemplatePath . ' > /dev/null 2>&1' . "\n";
 
             $this->addLogline('app_server.log', 'Server template ' . $absoluteTargetTemplatePath . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' added/synced');
         }
@@ -1324,21 +1324,20 @@ class AppServer {
                 foreach ($protectedConfigs as $config => $values) {
 
                     $fileWithPath = $this->appServerDetails['absoluteFTPPath'] . '/' . $config;
-
                     $fileAndPath = $this->getFileAndPathName($fileWithPath);
-
-                    $path = $fileAndPath['path'];
-                    $fileName = $fileAndPath['file'];
 
                     if (!$ftpObect->downloadToTemp($fileWithPath)) {
 
-                        $fileWithPath = $this->appServerDetails['absoluteFTPPathNoChroot'] . '/' . $config;
+                        $noChrootfileWithPath = $this->appServerDetails['absoluteFTPPathNoChroot'] . '/' . $config;
+                        $noChrootfileAndPath = $this->getFileAndPathName($noChrootfileWithPath);
 
-                        $fileAndPath = $this->getFileAndPathName($fileWithPath);
-
-                        $path = $fileAndPath['path'];
-                        $fileName = $fileAndPath['file'];
+                        if ($ftpObect->downloadToTemp($noChrootfileAndPath)) {
+                            $fileAndPath = $noChrootfileAndPath;
+                        }
                     }
+
+                    $path = $fileAndPath['path'];
+                    $fileName = $fileAndPath['file'];
 
                     $configFileContent = $ftpObect->getTempFileContent();
 
@@ -1638,8 +1637,11 @@ class AppServer {
             $shellCommand = '';
 
         } else {
-            $shellCommand = ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] . ' ' : '';
-            $shellCommand .= 'screen -A -m -d -L -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand;
+            $shellCommand = 'if [ "`screen -v | awk \'{split($3, a, "."); print a[2]}\'`" == "05" ]; then' . "\n";
+            $shellCommand .= 'SCREENLOG="screenlog.0"' . "\n";
+            $shellCommand .= 'fi' . "\n";
+            $shellCommand .= ($this->appServerDetails['useTaskSet'] == 'Y' and strlen($this->appServerDetails['cores']) > 0) ? 'taskset -c ' . $this->appServerDetails['cores'] . ' ' : '';
+            $shellCommand .= 'screen -A -m -d -L $SCREENLOG -S ' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ' . $startCommand . "\n";
         }
 
         return $shellCommand;
@@ -1711,7 +1713,7 @@ class AppServer {
 
             // Remove folders where they do not belong
             $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 -type d';
-            $script .= ' ! -name ".steam" ! -name "pserver" ! -name "backup" ! -name "fdl_data" -delete' . "\n";
+            $script .= ' ! -name ".steam" ! -name "pserver" ! -name "backup" ! -name "fdl_data" ! -name "server" -print0 | xargs -0 rm -rf' . "\n";
 
             $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name "*.bz2" -delete' . "\n";
         }
