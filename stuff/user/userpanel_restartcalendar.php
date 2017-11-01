@@ -124,7 +124,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
         $hlds_6 = $row['hlds_6'];
     }
 
-    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`gameq`,t.`gamebinary`,t.`mapGroup`,t.`protected` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
+    $query = $sql->prepare("SELECT s.`upload`,t.`shorten`,t.`description`,t.`gameq`,t.`gamebinary`,t.`mapGroup`,t.`protected` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
     $query->execute(array($id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $shorten = $row['shorten'];
@@ -328,7 +328,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
         $i++;
     }
 
-    $query = $sql->prepare("SELECT t.`shorten`,t.`gameq`,t.`gamebinary` FROM `serverlist` s LEFT JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=? GROUP BY t.`shorten`");
+    $query = $sql->prepare("SELECT t.`shorten`,t.`gameq`,t.`gamebinary` FROM `serverlist` s INNER JOIN `servertypes` t ON s.`servertype`=t.`id` WHERE s.`switchID`=? AND s.`resellerid`=?");
     $query->execute(array($id, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $shorten = $row['shorten'];
@@ -396,7 +396,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
 
         if ($restart == 'Y') {
             $restarts[$hour][$day]['restart'] = $gsprache->yes;
-            $restarts[$hour][$day]['template'] = $shorten.$template;
+            $restarts[$hour][$day]['template'] = $shorten . $template;
             $restarts[$hour][$day]['map'] = $row['map'];
 
             if ($pallowed == 'Y') {
@@ -410,8 +410,7 @@ if ($ui->smallletters('edit',4, 'post') == 'edit' and isset($serverip) and isset
             else {
                 $restarts[$hour][$day]['protected'] = '';
             }
-        }
-        else {
+        } else {
             $restarts[$hour][$day]['restart'] = $gsprache->no;
             $restarts[$hour][$day]['template'] = '';
             $restarts[$hour][$day]['map'] = '';
