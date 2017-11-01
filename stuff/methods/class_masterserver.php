@@ -358,7 +358,7 @@ class masterServer {
             $this->shellScript .= 'if [ -f "' . $updateLog . '" ]; then' . "\n";
 
             // Check for sync
-            $this->shellScript .= 'if [ "`grep ' . $row['appID'] . ' \"' . $updateLog . '\" | grep \'Success!\' | grep \'fully installed!\'`" != "" ]; then' . "\n";
+            $this->shellScript .= 'if [ "`grep ' . $row['appID'] . ' \"' . $updateLog . '\" | grep \'Success\' | grep \'fully installed\'`" != "" ]; then' . "\n";
             $this->shellScript .= 'SENDUPDATE="YES"' . "\n";
             $this->shellScript .= 'fi' . "\n";
 
@@ -523,8 +523,10 @@ class masterServer {
                     $this->shellScript .= '$SYNCCMD/' . $addonMasterFolder . '/' . $row['addon'] . "\n";
                     $this->shellScript .= 'find ' . $absoluteAddonPath . ' -name .listing -delete' . "\n";
                     $this->shellScript .= 'fi' . "\n";
+                    $this->shellScript .= 'if [ -d "' . $absoluteAddonPath . '" ]; then' . "\n";
                     $this->shellScript .= 'find ' . $absoluteAddonPath . ' -type d -exec chmod 750 {} \;' . "\n";
                     $this->shellScript .= 'find ' . $absoluteAddonPath . ' -type f -exec chmod 640 {} \;' . "\n";
+                    $this->shellScript .= 'fi' . "\n";
 
                 } else {
 
