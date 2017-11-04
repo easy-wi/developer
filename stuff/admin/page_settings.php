@@ -41,7 +41,7 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['cms_setting
     die('No Access');
 }
 
-$sprache = getlanguagefile('page',$user_language,$reseller_id);
+$sprache = getlanguagefile('page', $user_language, $reseller_id);
 $loguserid = $admin_id;
 $logusername = getusername($admin_id);
 $logusertype = 'admin';
@@ -67,22 +67,24 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $posted_languages = array();
     $posted_touLanguages = array();
 
-    foreach(explode("\r\n",$ui->escaped('registrationBadEmail', 'post')) as $row) {
+    foreach(explode("\r\n", $ui->escaped('registrationBadEmail', 'post')) as $row) {
         if (preg_match("/^[a-z0-9@\_\-\.]+$/",strtolower($row))) {
             $registerBlockMails .= strtolower($row) . "\r\n";
         }
     }
 
-    foreach(explode("\r\n",$ui->escaped('registrationBadIP', 'post')) as $row) {
+    foreach(explode("\r\n", $ui->escaped('registrationBadIP', 'post')) as $row) {
         if (isips($row)) {
             $registrationBadIP .= strtolower($row)."\r\n";
         }
     }
 
     $registration = (in_array($ui->escaped('registration', 'post'), array('N','A','M','D'))) ? $ui->escaped('registration', 'post') : 'N';
+    $rssfeedTextlength = $ui->id('rssfeed_textlength', 11, 'post') ? $ui->id('rssfeed_textlength', 11, 'post') : 0;
+    $maxNews = $ui->id('maxnews', 30, 'post') ? $ui->id('maxnews', 30, 'post') : 1;
 
     $query = $sql->prepare("UPDATE `page_settings` SET `registration`=?,`registrationBadIP`=?,`registrationBadEmail`=?,`seo`=?,`rssfeed`=?,`rssfeed_fulltext`=?,`rssfeed_textlength`=?,`maxnews`=?,`defaultpage`=?,`protectioncheck`=?,`maxnews_sidebar`=?,`newssidebar_textlength`=?,`spamFilter`=?,`languageFilter`=?,`blockLinks`=?,`blockWords`=?,`mailRequired`=?,`commentMinLength`=?,`commentsModerated`=?,`honeyPotKey`=?,`dnsbl`=?,`pageurl`=? WHERE `resellerid`=? LIMIT 1");
-    $query->execute(array($registration,$registrationBadIP,$registerBlockMails,$ui->active('seo', 'post'),$ui->active('rssfeed', 'post'),$ui->active('rssfeed_fulltext', 'post'),$ui->id('rssfeed_textlength',11, 'post'),$ui->id('maxnews',30, 'post'),$defaultpage,$ui->active('protectioncheck', 'post'),$ui->id('maxnews_sidebar',11, 'post'),$ui->id('newssidebar_textlength',11, 'post'),$ui->active('spamFilter', 'post'),$ui->active('languageFilter', 'post'),$ui->active('blockLinks', 'post'),$ui->escaped('blockWords', 'post'),$ui->active('mailRequired', 'post'),$ui->id('commentMinLength',11, 'post'),$ui->active('commentsModerated', 'post'),$ui->w('honeyPotKey',255, 'post'),$ui->active('dnsbl', 'post'),$ui->url('pageurl', 'post'),$reseller_id));
+    $query->execute(array($registration, $registrationBadIP, $registerBlockMails, yesNo('seo'), yesNo('rssfeed'), yesNo('rssfeed_fulltext'), $rssfeedTextlength, $maxNews, $defaultpage, yesNo('protectioncheck'), $ui->id('maxnews_sidebar', 11, 'post'), $ui->id('newssidebar_textlength', 11, 'post'), yesNo('spamFilter'), yesNo('languageFilter'), yesNo('blockLinks'), $ui->escaped('blockWords', 'post'), yesNo('mailRequired'), $ui->id('commentMinLength', 11, 'post'), yesNo('commentsModerated'), $ui->w('honeyPotKey',255, 'post'), yesNo('dnsbl'), $ui->url('pageurl', 'post'), $reseller_id));
     $queryAffected += $query->rowCount();
 
     if (is_object($ui->st('language', 'post'))) {
@@ -102,7 +104,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($about_id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-            if (!in_array($row['language'],$posted_languages)) {
+            if (!in_array($row['language'], $posted_languages)) {
                 $query2->execute(array($about_id, $row['language'], $reseller_id));
                 $queryAffected += $query3->rowCount();
             }
@@ -116,7 +118,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else {
         $query = $sql->prepare("DELETE FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
-        $query->execute(array($about_id,$reseller_id));
+        $query->execute(array($about_id, $reseller_id));
         $queryAffected += $query->rowCount();
     }
 
@@ -132,11 +134,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $lang_exist = array();
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $lang_exist[] = $row['lang'];
-            if (in_array($row['lang'],$posted_touLanguages)) {
-                $query2->execute(array($ui->escaped('tou', 'post', $row['lang']), $row['lang'],$reseller_id));
+            if (in_array($row['lang'], $posted_touLanguages)) {
+                $query2->execute(array($ui->escaped('tou', 'post', $row['lang']), $row['lang'], $reseller_id));
                 $queryAffected += $query2->rowCount();
             } else {
-                $query3->execute(array($row['lang'],$reseller_id));
+                $query3->execute(array($row['lang'], $reseller_id));
                 $queryAffected += $query3->rowCount();
             }
         }
@@ -145,8 +147,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query = $sql->prepare("INSERT INTO `translations` (`transID`,`type`,`lang`,`text`,`resellerID`) VALUES (1,'to',?,?,?)");
         $queryAffected += $query->rowCount();
         foreach ($posted_touLanguages as $lg) {
-            if (!in_array($lg,$lang_exist)) {
-                $query->execute(array($lg,$ui->escaped('tou', 'post',$lg),$reseller_id));
+            if (!in_array($lg, $lang_exist)) {
+                $query->execute(array($lg, $ui->escaped('tou', 'post', $lg), $reseller_id));
             }
         }
     } else {
@@ -193,16 +195,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query->execute(array($reseller_id));
     $about_id = $query->fetchColumn();
     $query = $sql->prepare("SELECT `language`,`text` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=?");
-    $query->execute(array($about_id,$reseller_id));
+    $query->execute(array($about_id, $reseller_id));
     foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) $about_text[$row['language']] = $row['text'];
     $subpage = array();
     $query = $sql->prepare("SELECT p.`id`,t.`title` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`resellerid`=? AND p.`type`='page' ORDER BY t.`title`");
     $query2 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
-    $query->execute(array($user_language,$reseller_id));
+    $query->execute(array($user_language, $reseller_id));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $page_title = $row['title'];
         if ($row['title'] == null or $row['title'] == '') {
-            $query2->execute(array($row['id'],$reseller_id));
+            $query2->execute(array($row['id'], $reseller_id));
             foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row2) $page_title = $row2['title'];
         }
         $subpage[$row['id']] = $page_title;
@@ -212,7 +214,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $query = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='to' AND `transID`=? AND `lang`=? AND `resellerID`=? LIMIT 1");
     foreach ($languages as $row) {
         if (small_letters_check($row,2)) {
-            $query->execute(array(1, $row,$reseller_id));
+            $query->execute(array(1, $row, $reseller_id));
             $tous[$row] = $query->fetchColumn();
         }
     }
