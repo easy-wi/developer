@@ -597,7 +597,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $template_file = $spracheResponse->table_del;
 
-            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
+            if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1 and in_array($ui->w('safeDelete', 1, 'post'), array('S', 'D'))) {
                 $template_file .= '<br><pre>' . implode("\r\n", $appServer->debug()) . '</pre>';
             }
 
