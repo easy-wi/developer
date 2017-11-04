@@ -79,7 +79,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
     if (isset($ui->server['HTTP_REFERER'])) {
         $refstring = explode('/', substr(str_replace(array('http://' . $ui->domain('HTTP_HOST', 'server'), 'https://' . $ui->domain('HTTP_HOST', 'server'), '//'), array('', '', '/'), strtolower($ui->server['HTTP_REFERER'])), strlen($ewInstallPath)));
-        $referrer = (isset($refstring[1])) ? explode('?',$refstring[1]) : '';
+        $referrer = (isset($refstring[1])) ? explode('?', $refstring[1]) : '';
     } else {
         $referrer[0] = 'login.php';
     }
@@ -101,9 +101,12 @@ if ($ui->st('w', 'get') == 'lo') {
         redirect('admin.php');
 
     } else {
+        $target = (isset($pageurl)) ? $pageurl . '/' . $ewInstallPath : $ewInstallPath;
+        $target .= (empty($target)) ? 'login.php' : '/login.php';
+
         session_unset();
         session_destroy();
-        redirect((isset($pageurl)) ? $pageurl . '/' . $ewInstallPath : $ewInstallPath);
+        redirect($target);
     }
 
 } else if ($ui->st('w', 'get') == 'ba') {

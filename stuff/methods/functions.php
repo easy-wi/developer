@@ -165,21 +165,17 @@ if (!function_exists('passwordgenerate')) {
 
     function redirect($value, $sendHTTP301 = false) {
 
-        $value = removeDoubleSlashes($value);
+        $target = removeDoubleSlashes($value);
 
-        if ($value == 'login.php') {
+        if (substr($target, -9) == 'login.php') {
             if (session_status() === PHP_SESSION_ACTIVE) {
                 session_unset();
                 session_destroy();
             }
         }
 
-        if ($sendHTTP301 == true) {
-            header('HTTP/1.1 301 Moved Permanently');
-        }
-
-        header ('Location: ' . $value);
-        die('Please allow redirection settings');
+        header ('Location: ' . $target, true, ($sendHTTP301 == true) ? 301 : 302);
+        die('Please allow redirection or manually navigate to ' . $value);
     }
 
     function listDirs ($dir) {
