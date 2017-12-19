@@ -296,6 +296,8 @@ if (isset($page_active) and $page_active == 'Y') {
                 $cssIcon = 'google-plus';
             } else if ($cssIcon == 'live') {
                 $cssIcon = 'windows';
+            } else if ($cssIcon == 'twitchtv') {
+                $cssIcon = 'twitch';
             }
 
             $serviceProviders[$row['filename']] = strtolower($cssIcon);
