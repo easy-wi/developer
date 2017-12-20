@@ -30,12 +30,12 @@
 
                             <div class="controls">
                                 <?php if (strlen($sp['spUserId'])==0){ ?>
-                                <a class="btn btn-block btn-social btn-<?php echo strtolower($sp['sp']);?> span10" href="login.php?serviceProvider=<?php echo $sp['sp'];?>" id="sp<?php echo $sp['sp'];?>">
-                                    <i class="fa fa-<?php echo strtolower($sp['sp']);?>"></i> <?php echo $sprache->socialConnect.' '.$sp['sp'];?>
+                                <a class="btn btn-block btn-social btn-<?php echo str_replace('twitchtv', 'twitch', strtolower($sp['sp']));?> span10" href="login.php?serviceProvider=<?php echo $sp['sp'];?>" id="sp<?php echo $sp['sp'];?>">
+                                    <i class="fa fa-<?php echo str_replace('twitchtv', 'twitch', strtolower($sp['sp']));?>"></i> <?php echo $sprache->socialConnect.' '.$sp['sp'];?>
                                 </a>
                                 <?php } else { ?>
-                                <a class="btn btn-block btn-social btn-<?php echo strtolower($sp['sp']);?> span10" href="admin.php?w=su&amp;spUser=<?php echo $sp['spUserId'];?>&amp;spId=<?php echo $sp['spId'];?>&amp;r=su" id="sp<?php echo $sp['sp'];?>">
-                                    <i class="fa fa-<?php echo strtolower($sp['sp']);?>"></i> <?php echo $sprache->socialRemove.' '.$sp['sp'];?>
+                                <a class="btn btn-block btn-social btn-<?php echo str_replace('twitchtv', 'twitch', strtolower($sp['sp']));?> span10" href="admin.php?w=su&amp;spUser=<?php echo $sp['spUserId'];?>&amp;spId=<?php echo $sp['spId'];?>&amp;r=su" id="sp<?php echo $sp['sp'];?>">
+                                    <i class="fa fa-<?php echo str_replace('twitchtv', 'twitch', strtolower($sp['sp']));?>"></i> <?php echo $sprache->socialRemove.' '.$sp['sp'];?>
                                 </a>
                                 <?php } ?>
                             </div>
