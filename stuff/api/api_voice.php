@@ -143,7 +143,7 @@ if (!isset($success['false']) and array_value_exists('action','add', $data) and 
 
             } else if (isset($externalMasterIDsArray) and count($externalMasterIDsArray) > 0) {
 
-                $inSQLArray = 'm.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
+                $inSQLArray = 'm.`externalID` IN (\'' . implode('\', \'', $externalMasterIDsArray) . '\') AND';
             }
 
             $iniConfiguration = array();
