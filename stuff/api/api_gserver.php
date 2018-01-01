@@ -218,7 +218,7 @@ if (!isset($success['false']) and array_value_exists('action', 'add', $data) and
 
                 } else if (isset($externalMasterIDsArray) and count($externalMasterIDsArray) > 0) {
 
-                    $inSQLArray = 'r.`externalID` IN (' . implode(',', "'" . $externalMasterIDsArray . "'") . ') AND';
+                    $inSQLArray = 'r.`externalID` IN (\'' . implode('\', \'', $externalMasterIDsArray ) . '\') AND';
                 }
 
                 $query = $sql->prepare("SELECT r.`id`,r.`quota_active`,r.`install_paths`,r.`hyperthreading`,r.`cores`,r.`externalID`,r.`connect_ip_only`,r.`ip`,r.`altips`,r.`maxslots`,r.`maxserver`,r.`active` AS `hostactive`,r.`resellerid` AS `resellerid`,(r.`maxserver`-(SELECT COUNT(`id`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id` )) AS `freeserver`,(r.`maxslots`-(SELECT SUM(g.`slots`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `leftslots`,(r.`ram`-(SELECT SUM(g.`maxram`) FROM `gsswitch` AS g WHERE g.`rootID`=r.`id`)) AS `free_ram`,(SELECT COUNT(m.`id`) FROM `rservermasterg` AS m WHERE m.`serverid`=r.`id` AND $implodedQuery) `mastercount` FROM `rserverdata` AS r GROUP BY r.`id` HAVING ($inSQLArray `hostactive`='Y' AND r.`resellerid`=? AND (`freeserver`>0 OR `freeserver` IS NULL) AND (`leftslots`>? OR `leftslots` IS NULL) AND (`free_ram`>? OR `free_ram` IS NULL) AND `mastercount`=?) ORDER BY `freeserver` DESC LIMIT 1");
