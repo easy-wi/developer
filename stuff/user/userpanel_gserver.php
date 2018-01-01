@@ -100,12 +100,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     $id = $ui->id('id', 10, 'get');
 
-    $query = $sql->prepare("SELECT g.`serverip`,g.`port`,t.`liveConsole` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
+    $query = $sql->prepare("SELECT g.`serverip`,g.`port`,g.`id`,g.`stopped`,t.`liveConsole` FROM `gsswitch` AS g INNER JOIN `serverlist` AS s ON g.`serverid`=s.`id` INNER JOIN `servertypes` AS t ON s.`servertype`=t.`id` WHERE g.`id`=? AND g.`userid`=? AND g.`resellerid`=? LIMIT 1");
     $query->execute(array($id, $user_id, $resellerLockupID));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         $serverIp = $row['serverip'];
         $port = $row['port'];
         $liveConsole = $row['liveConsole'];
+        $id = $row['id'];
+        $stopped = $row['stopped'];
     }
 
     if ($query->rowCount() > 0) {
