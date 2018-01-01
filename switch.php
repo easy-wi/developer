@@ -70,7 +70,7 @@ if ($ui->id('id', 19, 'get')) {
 
         $sql = null;
 
-        if ($row['accounttype'] == 'u') {
+	if ($row['accounttype'] == 'u' && $row['resellerid'] == $reseller_id) {
 
             $_SESSION['userid'] = $ui->id('id', 19, 'get');
 
