@@ -13,7 +13,7 @@
         <div class="col-md-12">
             <div class="box box-success">
 
-                <form role="form" action="admin.php?w=ug&amp;d=ad&amp;id=<?php echo $id;?>&amp;r=ug" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
+                <form role="form" action="admin.php?w=ug&amp;d=ad&amp;r=ug" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 
                     <input type="hidden" name="token" value="<?php echo token();?>">
                     <input type="hidden" name="action" value="ad">

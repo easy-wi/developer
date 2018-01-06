@@ -69,6 +69,66 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
 } else if (in_array($ui->st('d', 'get'), array('md', 'ad'))){
 
+    $active = 'N';
+    $root = 'N';
+    $user = 'N';
+    $user_users = 'N';
+    $log = 'N';
+    $settings = 'N';
+    $cms_comments = 'N';
+    $cms_settings = 'N';
+    $cms_pages = 'N';
+    $cms_news = 'N';
+    $gserver = 'N';
+    $addons = 'N';
+    $gimages = 'N';
+    $roots = 'N';
+    $restart = 'N';
+    $miniroot = 'N';
+    $fastdl = 'N';
+    $modfastdl = 'N';
+    $useraddons = 'N';
+    $usersettings = 'N';
+    $ftpaccess = 'N';
+    $addvserver = 'N';
+    $modvserver = 'N';
+    $delvserver = 'N';
+    $usevserver = 'N';
+    $vserversettings = 'N';
+    $pxeServer = 'N';
+    $dhcpServer = 'N';
+    $dedicatedServer = 'N';
+    $vserverhost = 'N';
+    $voicemasterserver = 'N';
+    $voiceserver = 'N';
+    $resellertemplates = 'N';
+    $ftpbackup = 'N';
+    $traffic = 'N';
+    $mysql_settings = 'N';
+    $mysql = 'N';
+    $trafficsettings = 'N';
+    $lendserver = 'N';
+    $tickets = 'N';
+    $usertickets = 'N';
+    $voiceserverSettings = 'N';
+    $voiceserverStats = 'N';
+    $lendserverSettings = 'N';
+    $reset = 'N';
+    $eac = 'N';
+    $masterServer = 'N';
+    $userGroups = 'N';
+    $userPassword = 'N';
+    $apiSettings = 'N';
+    $jobs = 'N';
+    $updateEW = 'N';
+    $ipBans = 'N';
+    $webmaster = 'N';
+    $webvhost = 'N';
+    $active = yesNo('active');
+
+    $grouptype = ($ui->smallletters('grouptype', 1, 'post')) ? $ui->smallletters('grouptype', 1, 'post') : 'u';
+    $groupname = $ui->names('groupname', 255, 'post');
+
     if (!in_array($ui->smallletters('action', 2, 'post'), array('md', 'ad')) and $ui->st('d', 'get') == 'md') {
 
         $id = $ui->id('id', 10, 'get');
@@ -146,13 +206,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $error = array();
 
-        if (!$ui->active('active', 'post')) {
-            $error[] = 'Active';
-        }
-        if (!$ui->smallletters('grouptype', 1, 'post')) {
-            $error[] = 'Grouptype';
-        }
-        if (!$ui->names('groupname', 255, 'post')) {
+        if (!$groupname) {
             $error[] = 'Groupname';
         }
 
@@ -162,63 +216,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         } else {
 
-            $active = 'N';
-            $root = 'N';
-            $user = 'N';
-            $user_users = 'N';
-            $log = 'N';
-            $settings = 'N';
-            $cms_comments = 'N';
-            $cms_settings = 'N';
-            $cms_pages = 'N';
-            $cms_news = 'N';
-            $gserver = 'N';
-            $addons = 'N';
-            $gimages = 'N';
-            $roots = 'N';
-            $restart = 'N';
-            $miniroot = 'N';
-            $fastdl = 'N';
-            $modfastdl = 'N';
-            $useraddons = 'N';
-            $usersettings = 'N';
-            $ftpaccess = 'N';
-            $addvserver = 'N';
-            $modvserver = 'N';
-            $delvserver = 'N';
-            $usevserver = 'N';
-            $vserversettings = 'N';
-            $pxeServer = 'N';
-            $dhcpServer = 'N';
-            $dedicatedServer = 'N';
-            $vserverhost = 'N';
-            $voicemasterserver = 'N';
-            $voiceserver = 'N';
-            $resellertemplates = 'N';
-            $ftpbackup = 'N';
-            $traffic = 'N';
-            $mysql_settings = 'N';
-            $mysql = 'N';
-            $trafficsettings = 'N';
-            $lendserver = 'N';
-            $tickets = 'N';
-            $usertickets = 'N';
-            $voiceserverSettings = 'N';
-            $voiceserverStats = 'N';
-            $lendserverSettings = 'N';
-            $reset = 'N';
-            $eac = 'N';
-            $masterServer = 'N';
-            $userGroups = 'N';
-            $userPassword = 'N';
-            $apiSettings = 'N';
-            $jobs = 'N';
-            $updateEW = 'N';
-            $ipBans = 'N';
-            $webmaster = 'N';
-            $webvhost = 'N';
-
-            if ($ui->smallletters('grouptype', 1, 'post') == 'a') {
+            if ($grouptype == 'a') {
 
                 $root = yesNo('root');
                 $user = yesNo('user');
@@ -265,7 +263,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $webmaster = yesNo('webmaster');
                 $webvhost = yesNo('webvhost');
 
-            } else if ($ui->smallletters('grouptype', 1, 'post') == 'u') {
+            } else if ($grouptype == 'u') {
 
                 $log = yesNo('ulog');
                 $restart = yesNo('restart');
@@ -286,7 +284,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $fastdl = yesNo('ufastdl');
                 $webvhost = yesNo('uwebvhost');
 
-            } else if ($ui->smallletters('grouptype', 1, 'post') == 'r') {
+            } else if ($grouptype == 'r') {
 
                 $user = yesNo('ruser');
                 $user_users = yesNo('ruser_users');
@@ -332,13 +330,13 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if ($defaultgroup == 'Y') {
                     $query = $sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `id`!=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($ui->smallletters('grouptype', 1, 'post'), $id, $lookIpID));
+                    $query->execute(array($grouptype, $id, $lookIpID));
                 }
 
                 $query = $sql->prepare("UPDATE `usergroups` SET `webmaster`=?,`webvhost`=?,`active`=?,`defaultgroup`=?,`name`=?,`root`=?,`user`=?,`user_users`=?,`log`=?,`settings`=?,`cms_comments`=?,`cms_settings`=?,`cms_pages`=?,`cms_news`=?,`gserver`=?,`addons`=?,`gimages`=?,`roots`=?,`restart`=?,`gsResetting`=?,`miniroot`=?,`fastdl`=?,`modfastdl`=?,`useraddons`=?,`usersettings`=?,`ftpaccess`=?,`addvserver`=?,`modvserver`=?,`delvserver`=?,`usevserver`=?,`vserversettings`=?,`vserverhost`=?,`voicemasterserver`=?,`voiceserver`=?,`resellertemplates`=?,`ftpbackup`=?,`traffic`=?,`trafficsettings`=?,`lendserver`=?,`voiceserverSettings`=?,`voiceserverStats`=?,`lendserverSettings`=?,`pxeServer`=?,`dhcpServer`=?,`dedicatedServer`=?,`eac`=?,`masterServer`=?,`userGroups`=?,`userPassword`=?,`apiSettings`=?,`jobs`=?,`updateEW`=?,`ipBans`=?,`mysql`=?,`mysql_settings`=?,`tickets`=?,`usertickets`=? WHERE `id`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($webmaster, $webvhost, $ui->active('active', 'post'), $defaultgroup, $ui->names('groupname', 255, 'post'), $root, $user, $user_users, $log, $settings, $cms_comments, $cms_settings, $cms_pages, $cms_news, $gserver, $addons, $gimages, $roots, $restart, $reset, $miniroot, $fastdl, $modfastdl, $useraddons, $usersettings, $ftpaccess, $addvserver, $modvserver, $delvserver, $usevserver, $vserversettings, $vserverhost, $voicemasterserver, $voiceserver, $resellertemplates, $ftpbackup, $traffic, $trafficsettings, $lendserver, $voiceserverSettings, $voiceserverStats, $lendserverSettings, $pxeServer, $dhcpServer, $dedicatedServer, $eac, $masterServer, $userGroups, $userPassword, $apiSettings, $jobs, $updateEW, $ipBans, $mysql, $mysql_settings, $tickets, $usertickets, $id, $lookIpID));
+                $query->execute(array($webmaster, $webvhost, $ui->active('active', 'post'), $defaultgroup, $groupname, $root, $user, $user_users, $log, $settings, $cms_comments, $cms_settings, $cms_pages, $cms_news, $gserver, $addons, $gimages, $roots, $restart, $reset, $miniroot, $fastdl, $modfastdl, $useraddons, $usersettings, $ftpaccess, $addvserver, $modvserver, $delvserver, $usevserver, $vserversettings, $vserverhost, $voicemasterserver, $voiceserver, $resellertemplates, $ftpbackup, $traffic, $trafficsettings, $lendserver, $voiceserverSettings, $voiceserverStats, $lendserverSettings, $pxeServer, $dhcpServer, $dedicatedServer, $eac, $masterServer, $userGroups, $userPassword, $apiSettings, $jobs, $updateEW, $ipBans, $mysql, $mysql_settings, $tickets, $usertickets, $id, $lookIpID));
 
-                $loguseraction = '%mod% %group% ' . $ui->names('groupname', 255, 'post');
+                $loguseraction = '%mod% %group% ' . $groupname;
 
             } else if ($ui->st('d', 'get') == 'ad') {
 
@@ -346,11 +344,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if ($defaultgroup == 'Y') {
                     $query = $sql->prepare("UPDATE `usergroups` SET `defaultgroup`='N' WHERE `grouptype`=? AND `resellerid`=? LIMIT 1");
-                    $query->execute(array($ui->smallletters('grouptype', 1, 'post'), $lookIpID));
+                    $query->execute(array($grouptype, $lookIpID));
                 }
 
                 $query = $sql->prepare("SELECT `id` FROM `usergroups` WHERE `name`=? AND `resellerid`=? LIMIT 1");
-                $query->execute(array($ui->names('groupname', 255, 'post'), $lookIpID));
+                $query->execute(array($groupname, $lookIpID));
 
                 if ($query->rowCount() > 0) {
 
@@ -358,10 +356,10 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 } else {
                     $query = $sql->prepare("INSERT INTO `usergroups` (`active`,`defaultgroup`,`grouptype`,`name`,`root`,`user`,`user_users`,`log`,`settings`,`cms_comments`,`cms_settings`,`cms_pages`,`cms_news`,`gserver`,`addons`,`gimages`,`roots`,`restart`,`gsResetting`,`miniroot`,`fastdl`,`modfastdl`,`useraddons`,`usersettings`,`ftpaccess`,`addvserver`,`modvserver`,`delvserver`,`usevserver`,`vserversettings`,`vserverhost`,`voicemasterserver`,`voiceserver`,`resellertemplates`,`ftpbackup`,`traffic`,`trafficsettings`,`lendserver`,`tickets`,`usertickets`,`voiceserverSettings`,`voiceserverStats`,`lendserverSettings`,`pxeServer`,`dhcpServer`,`dedicatedServer`,`eac`,`masterServer`,`userGroups`,`userPassword`,`apiSettings`,`jobs`,`updateEW`,`ipBans`,`mysql`,`mysql_settings`,`webmaster`,`webvhost`,`resellerid`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
-                    $query->execute(array($ui->active('active', 'post'), $defaultgroup, $ui->smallletters('grouptype', 1, 'post'), $ui->names('groupname', 255, 'post'), $root, $user, $user_users, $log, $settings, $cms_comments, $cms_settings, $cms_pages, $cms_news, $gserver, $addons, $gimages, $roots, $restart, $reset, $miniroot, $fastdl, $modfastdl, $useraddons, $usersettings, $ftpaccess, $addvserver, $modvserver, $delvserver, $usevserver, $vserversettings, $vserverhost, $voicemasterserver, $voiceserver, $resellertemplates, $ftpbackup, $traffic, $trafficsettings, $lendserver, $tickets, $usertickets, $voiceserverSettings, $voiceserverStats, $lendserverSettings, $pxeServer, $dhcpServer, $dedicatedServer, $eac, $masterServer, $userGroups, $userPassword, $apiSettings, $jobs, $updateEW, $ipBans, $mysql, $mysql_settings, $webmaster, $webvhost, $lookIpID));
+                    $query->execute(array($ui->active('active', 'post'), $defaultgroup, $grouptype, $groupname, $root, $user, $user_users, $log, $settings, $cms_comments, $cms_settings, $cms_pages, $cms_news, $gserver, $addons, $gimages, $roots, $restart, $reset, $miniroot, $fastdl, $modfastdl, $useraddons, $usersettings, $ftpaccess, $addvserver, $modvserver, $delvserver, $usevserver, $vserversettings, $vserverhost, $voicemasterserver, $voiceserver, $resellertemplates, $ftpbackup, $traffic, $trafficsettings, $lendserver, $tickets, $usertickets, $voiceserverSettings, $voiceserverStats, $lendserverSettings, $pxeServer, $dhcpServer, $dedicatedServer, $eac, $masterServer, $userGroups, $userPassword, $apiSettings, $jobs, $updateEW, $ipBans, $mysql, $mysql_settings, $webmaster, $webvhost, $lookIpID));
                 }
 
-                $loguseraction = '%add% %group% ' . $ui->names('groupname', 255, 'post');
+                $loguseraction = '%add% %group% ' . $groupname;
 
             } else {
                 $template_file = 'admin_404.tpl';
