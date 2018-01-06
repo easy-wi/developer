@@ -1009,7 +1009,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $address = $ip . ':' . $port;
             $map = (in_array($row['queryMap'], array(false, null, ''))) ? 'Unknown' : $row['queryMap'];
-            $updatetime = ($user_language == 'de') ? ($row['queryUpdatetime'] != '') ? date('d.m.Y H:m:s',strtotime($row['queryUpdatetime'])) : $sprache->never : $row['queryUpdatetime'];
+            $updatetime = ($user_language == 'de') ? (($row['queryUpdatetime'] != '') ? date('d.m.Y H:i:s', strtotime($row['queryUpdatetime'])) : $sprache->never) : $row['queryUpdatetime'];
             $upload = ($row['upload'] > 1 and $row['upload'] < 4) ? true : false;
             $currentTemplate = (($protected == 'N' or $tprotected == 'N') and $servertemplate > 1) ? $row['shorten'] . '-' . $servertemplate : $row['shorten'];
             $ce = explode(',', $row['cores']);
