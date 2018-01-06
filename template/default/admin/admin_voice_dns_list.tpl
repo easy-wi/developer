@@ -1,5 +1,5 @@
 <section class="content-header">
-    <h1>TSDNS <?php echo $gsprache->master;?></h1>
+    <h1>TSDNS <?php echo $gsprache->overview;?></h1>
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="admin.php?w=vo"><i class="fa fa-microphone"></i> <?php echo $gsprache->voiceserver;?></a></li>
