@@ -509,7 +509,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     $query->execute(array($resellerLockupID));
     $seo = $query->fetchColumn();
 
-    $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`released`,p.`subpage`,p.`authorid`,p.`authorname`,p.`sort`,t.`title`,t.`shortlink`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='page' AND p.`resellerid`=? GROUP BY p.`id`");
+    $query = $sql->prepare("SELECT p.`id`,p.`date`,p.`released`,p.`subpage`,p.`authorid`,p.`authorname`,p.`sort`,t.`title`,t.`shortlink`,t.`language` FROM `page_pages` p LEFT JOIN `page_pages_text` t ON p.`id`=t.`pageid` AND t.`language`=? WHERE p.`type`='page' AND p.`resellerid`=?");
     $query2 = $sql->prepare("SELECT `cname`,`name`,`vname` FROM `userdata` WHERE `id`=? AND `resellerid`=? LIMIT 1");
     $query3 = $sql->prepare("SELECT `language` FROM `page_pages_text` WHERE `pageid`=? AND `resellerid`=? ORDER BY `language`");
     $query4 = $sql->prepare("SELECT `title` FROM `page_pages_text` WHERE `pageid`=? AND `language`=? AND `resellerid`=? ORDER BY `language` LIMIT 1");
