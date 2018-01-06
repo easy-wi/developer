@@ -1,5 +1,8 @@
 <section class="content-header">
     <h1><?php echo $imageSprache->liveConsole;?></h1>
+    <br>
+	<a href="userpanel.php?w=gs&amp;d=rs&amp;id=<?php echo $id;?>&amp;r=gs" onclick="return confirm('<?php echo $serverIp.':'.$port;?>: <?php echo $sprache->confirm_restart;?>');"><button class="btn btn-sm btn-success inline"><i class="icon-white icon-play"></i> <?php echo $sprache->restarts;?></button></a>
+    <?php if($stopped=='N'){ ?><a href="userpanel.php?w=gs&amp;d=st&amp;id=<?php echo $id;?>&amp;r=gs" onclick="return confirm('<?php echo $serverIp.':'.$port;?>: <?php echo $sprache->confirm_stop;?>');"><button class="btn btn-sm btn-danger"><i class="fa fa-power-off"></i> <?php echo $sprache->stop;?></button></a><?php } ?>
     <ol class="breadcrumb">
         <li><a href="userpanel.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="userpanel.php?w=gs"><i class="fa fa-gamepad"></i> <?php echo $gsprache->gameserver;?></a></li>

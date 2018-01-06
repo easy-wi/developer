@@ -54,6 +54,8 @@ function getServiceProviders () {
             $cssIcon = 'google-plus';
         } else if ($cssIcon == 'live') {
             $cssIcon = 'windows';
+        } else if ($cssIcon == 'twitchtv') {
+            $cssIcon = 'twitch';
         }
 
         $serviceProviders[$row['filename']] = strtolower($cssIcon);

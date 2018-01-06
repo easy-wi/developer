@@ -1,5 +1,5 @@
 /* Background colors */
-.btn-facebook,.btn-github,.btn-google,.btn-linkedin,.btn-live,.btn-windows,.btn-mailru,.btn-openid,.btn-steam,.btn-twitchtv,.btn-twitter,.btn-xing,.btn-yandex {
+.btn-facebook,.btn-github,.btn-google,.btn-linkedin,.btn-live,.btn-windows,.btn-mailru,.btn-openid,.btn-steam,.btn-twitch,.btn-twitter,.btn-xing,.btn-yandex {
     color: #f9f9f9 !important;
 }
 .btn-facebook {
@@ -29,7 +29,7 @@
 .btn-steam {
     background-color: #000000 !important;
 }
-.btn-twitchtv {
+.btn-twitch {
     background-color: #6441a5 !important;
 }
 .btn-twitter {
