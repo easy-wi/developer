@@ -276,7 +276,7 @@ class HttpdManagement {
 
                 $this->sftpObject->put($this->vhostData['vhostConfigFile'], $this->vhostData['templateFileContent']);
 
-                if ($this->vhostData['fpmFileContent'] != '') {
+                if (array_key_exists('fpmFileContent', $this->vhostData) and $this->vhostData['fpmFileContent'] != '') {
                     $this->sftpObject->put($this->vhostData['fpmConfigPath'], $this->vhostData['fpmFileContent']);
                 }
             }
