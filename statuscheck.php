@@ -371,7 +371,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $shutdownemptytime = 0;
             $notified = 0;
 
-            $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`description`,t.`gamebinary`,l.`id` AS `lend_id`,l.`started` AS `lend_started`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` AS l ON l.`serverid`=s.`id` WHERE g.`id`=? LIMIT 1");
+            $query = $sql->prepare("SELECT s.`id` AS `serverID`,t.`id` AS `templateID`,t.`description` AS `templateDescription`,t.`gamebinary`,l.`id` AS `lend_id`,l.`started` AS `lend_started`,g.* FROM `gsswitch` g INNER JOIN `serverlist` s ON g.`serverid`=s.`id` INNER JOIN `servertypes` t ON s.`servertype`=t.`id` LEFT JOIN `lendedserver` AS l ON l.`serverid`=s.`id` WHERE g.`id`=? LIMIT 1");
             $query->execute(array($switchID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
@@ -379,7 +379,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 $autoRestart = $row['autoRestart'];
                 $port = $row['port'];
                 $address = $row['serverip'] . ':' . $row['port'];
-                $gametype = $row['description'];
+                $gametype = $row['templateDescription'];
                 $notified = $row['notified'];
                 $secnotified = $row['secnotified'];
                 $lendserver = $row['lendserver'];
