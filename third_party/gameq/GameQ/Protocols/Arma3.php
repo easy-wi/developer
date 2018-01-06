@@ -38,7 +38,11 @@ class Arma3 extends Source
     const DLC_KARTS = 1,
         DLC_MARKSMEN = 2,
         DLC_HELICOPTERS = 4,
-        DLC_APEX = 16;
+        DLC_APEX = 16,
+        DLC_JETS = 32,
+        DLC_LAWS = 64,
+        DLC_TACOPS = 128,
+        DLC_TANKS = 256;
 
     /**
      * Defines the names for the specific game DLCs
@@ -50,8 +54,11 @@ class Arma3 extends Source
         self::DLC_MARKSMEN    => 'Marksmen',
         self::DLC_HELICOPTERS => 'Helicopters',
         self::DLC_APEX        => 'Apex',
+        self::DLC_JETS        => 'Jets',
+        self::DLC_LAWS        => 'Laws of War',
+        self::DLC_TACOPS      => 'Tac-Ops',
+        self::DLC_TANKS       => 'Tanks'
     ];
-
 
     /**
      * String name of this protocol class
@@ -133,7 +140,7 @@ class Arma3 extends Source
         // Next are the dlc bits so loop over the dlcBit so we can determine which DLC's are running
         for ($x = 1; $x <= $dlcBit; $x *= 2) {
             // Enabled, add it to the list
-            if ($x & $dlcBit) {
+            if ($x & $dlcBit && array_key_exists($x, $this->dlcNames)) {
                 $result->addSub('dlcs', 'name', $this->dlcNames[$x]);
                 $result->addSub('dlcs', 'hash', dechex($responseBuffer->readInt32()));
             }
