@@ -49,15 +49,16 @@ if (!isset($admin_id) or !isset($reseller_id)) {
 $pa = User_Permissions($admin_id);
 
 if (!$pa['user'] and !$pa['gserver'] and !$pa['root']) {
-	die('No access');
+    die('No access');
 }
 
-if ($reseller_id != 0 and isset($admin_id) and $admin_id != $reseller_id) {
-	$reseller_id = $admin_id;
+if (isset($reseller_id) and $reseller_id != 0 and isset($admin_id) and $admin_id != $reseller_id) {
+    $reseller_id = $admin_id;
 }
 
 if ($ui->id('id', 19, 'get')) {
-	$referrer = explode('/', str_replace(array('http://','https://'), '', strtolower($ui->escaped('HTTP_REFERER', 'server'))));
+
+    $referrer = explode('/', str_replace(array('http://','https://'), '', strtolower($ui->escaped('HTTP_REFERER', 'server'))));
     $refstring = explode('?', $referrer[1]);
 
     if (isset($refstring[1])) {
@@ -70,7 +71,7 @@ if ($ui->id('id', 19, 'get')) {
 
         $sql = null;
 
-	if ($row['accounttype'] == 'u' && $row['resellerid'] == $reseller_id) {
+        if ($row['accounttype'] == 'u' and $row['resellerid'] == $reseller_id) {
 
             $_SESSION['userid'] = $ui->id('id', 19, 'get');
 
@@ -102,5 +103,7 @@ if ($ui->id('id', 19, 'get')) {
 
     }
 }
+
 $sql = null;
+
 redirect('login.php');
