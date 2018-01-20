@@ -87,7 +87,7 @@ if ($ui->smallletters('w', 2, 'get') == 'da' or (!$ui->smallletters('w', 2, 'get
 
     $statsArray['gameserverActivePercent'] = ($statsArray['gameserverInstalled'] > 0) ? round($statsArray['gameserverActive'] / ($statsArray['gameserverInstalled'] / 100), 2) : 0;
     $statsArray['gameserverSlotsUsedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverSlotsUsed'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
-    $statsArray['gameserverCrashedPercent'] = ($statsArray['gameserverSlotsActive'] > 0) ? round($statsArray['gameserverNotRunning'] / ($statsArray['gameserverSlotsActive'] / 100), 2) : 0;
+    $statsArray['gameserverCrashedPercent'] = ($statsArray['gameserverActive'] > 0) ? round($statsArray['gameserverNotRunning'] / ($statsArray['gameserverActive'] / 100), 2) : 0;
     $statsArray['gameserverRuleBreakPercent'] = ($statsArray['gameserverActive'] > 0) ? round(($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']) / ($statsArray['gameserverActive'] / 100), 2) : 0;
 
     $statsArray['voiceserverActivePercent'] = ($statsArray['voiceserverInstalled'] > 0) ? round($statsArray['voiceserverActive'] / ($statsArray['voiceserverInstalled'] / 100), 2) : 0;
