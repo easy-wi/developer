@@ -4,18 +4,19 @@
     <cron_run>Cronjobs zuletzt ausgeführt um:</cron_run>
     <cron_text>Die empfohlende Methode sind interne Cronjobs. Falls keine Internen Cronjobs möglich sind, können die Dateien auch von extern aufgerufen werden. In diesem Fall muss man die aufrufende IP noch in den Easy-Wi Einstellungen erlauben.</cron_text>
     <cron_internal>Interne Cronjobs</cron_internal>
-    <error_system_curl>curl Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_curl>
-    <error_system_ftp>ftp Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_ftp>
+    <error_system_curl>curl Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_curl>
+    <error_system_ftp>ftp Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_ftp>
     <error_system_fopen>fopen Funktion kann nicht verwendet werden.</error_system_fopen>
-    <error_system_gd>gd Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_gd>
-    <error_system_hash>hash Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_hash>
+    <error_system_gd>gd Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_gd>
+    <error_system_hash>hash Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_hash>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
-    <error_system_json>json Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_json>
-    <error_system_openssl>openssl Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_openssl>
-    <error_system_PDO>PDO Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_PDO>
-    <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_pdo_mysql>
+    <error_system_json>json Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_json>
+    <error_system_openssl>openssl Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_openssl>
+    <error_system_PDO>PDO Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_PDO>
+    <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_pdo_mysql>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
-    <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_SimpleXML>
+    <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_SimpleXML>
+    <error_system_zip>zip Extension ist nicht installiert. Bitte installiere sie zuerst.</error_system_zip>
     <system_ok_curl>curl Extension ist installiert.</system_ok_curl>
     <system_ok_fopen>fopen function can be used.</system_ok_fopen>
     <system_ok_ftp>ftp Extension ist installiert.</system_ok_ftp>
@@ -27,4 +28,5 @@
     <system_ok_pdo_mysql>pdo_mysql Extension ist installiert.</system_ok_pdo_mysql>
     <system_ok_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version neu genug: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
+    <system_ok_zip>zip Extension ist installiert.</system_ok_zip>
 </sprache>

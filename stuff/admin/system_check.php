@@ -52,64 +52,28 @@ if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
     $systemCheckError['php'] = $sprache->error_system_php_version . PHP_VERSION;
 }
 
-if (extension_loaded('openssl')) {
-    $systemCheckOk['openssl'] = $sprache->system_ok_openssl;
-} else {
-    $systemCheckError['openssl'] = $sprache->error_system_openssl;
+$modules = array('openssl', 'json', 'hash', 'ftp', 'SimpleXML', 'curl', 'gd', 'PDO', 'pdo_mysql', 'zip');
+
+foreach ($modules as $module) {
+    if (extension_loaded($module)) {
+        $okField = "system_ok_$module";
+        $systemCheckOk[$module] = $sprache->$okField;
+    } else {
+        $errorField = "error_system_$module";
+        $systemCheckError[$module] = $sprache->$errorField;
+    }
 }
 
-if (extension_loaded('json')) {
-    $systemCheckOk['json'] = $sprache->system_ok_json;
-} else {
-    $systemCheckError['json'] = $sprache->error_system_json;
-}
+$functions = array('fopen');
 
-if (extension_loaded('hash')) {
-    $systemCheckOk['hash'] = $sprache->system_ok_hash;
-} else {
-    $systemCheckError['hash'] = $sprache->error_system_hash;
-}
-
-if (extension_loaded('ftp')) {
-    $systemCheckOk['ftp'] = $sprache->system_ok_ftp;
-} else {
-    $systemCheckError['ftp'] = $sprache->error_system_ftp;
-}
-
-if (extension_loaded('SimpleXML')) {
-    $systemCheckOk['SimpleXML'] = $sprache->system_ok_SimpleXML;
-} else {
-    $systemCheckError['SimpleXML'] = $sprache->error_system_SimpleXML;
-}
-
-if (extension_loaded('curl')) {
-    $systemCheckOk['curl'] = $sprache->system_ok_curl;
-} else {
-    $systemCheckError['curl'] = $sprache->error_system_curl;
-}
-
-if (extension_loaded('gd')) {
-    $systemCheckOk['gd'] = $sprache->system_ok_gd;
-} else {
-    $systemCheckError['gd'] = $sprache->error_system_gd;
-}
-
-if (extension_loaded('PDO')) {
-    $systemCheckOk['PDO'] = $sprache->system_ok_PDO;
-} else {
-    $systemCheckError['PDO'] = $sprache->error_system_PDO;
-}
-
-if (extension_loaded('pdo_mysql')) {
-    $systemCheckOk['pdo_mysql'] = $sprache->system_ok_pdo_mysql;
-} else {
-    $systemCheckError['pdo_mysql'] = $sprache->error_system_pdo_mysql;
-}
-
-if (function_exists('fopen')) {
-    $systemCheckOk['fopen'] = $sprache->system_ok_fopen;
-} else {
-    $systemCheckError['fopen'] = $sprache->error_system_fopen;
+foreach ($functions as $function) {
+    if (function_exists($function)) {
+        $okField = "system_ok_$function";
+        $systemCheckOk[$function] = $function->$okField;
+    } else {
+        $errorField = "error_system_$function";
+        $systemCheckError[$function] = $sprache->$errorField;
+    }
 }
 
 $folderArray = array(
