@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="2012 - <?php echo date('Y'); ?> Ulrich Block">
 
-    <link rel="shortcut icon" type="image/x-icon" href="<?php echo (isset($rSA['favicon'])) ? $rSA['favicon'] : 'images/favicon.ico';?>" />
+    <link rel="shortcut icon" type="image/x-icon" href="<?php echo (isset($rSA['favicon']) and !empty($rSA['favicon'])) ? $rSA['favicon'] : 'images/favicon.ico';?>" />
 
     <link rel="canonical" href="<?php echo $page_data->canurl;?>" />
     <link href="<?php echo $page_data->getDefaultUrl();?>" hreflang="x-default" rel="alternate">
