@@ -1,0 +1,11 @@
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <int>Número</int>
+    <item>Coluna para</item>
+    <length>Comprimento</length>
+    <menuname>Nome do menu</menuname>
+    <name>Nome Técnico</name>
+    <type>Tipo</type>
+    <var>String</var>
+</sprache>
