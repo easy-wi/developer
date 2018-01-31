@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <topic>Assunto</topic>
+    <id>ID do usuário</id>
+    <creationTime>Data de criação</creationTime>
+    <active>Y = ativo ou N = não ativo</active>
+    <salutation>Cabeçalho</salutation>
+    <cname>Username</cname>
+    <fullname>Nome de usuário</fullname>
+    <name>Nome</name>
+    <vname>Sobrenome</vname>
+    <birthday>Data de Nascimento</birthday>
+    <mail>E-mail</mail>
+    <phone>Número de telefone</phone>
+    <fax>Número de fax</fax>
+    <handy>Número de celular</handy>
+    <country>País</country>
+    <city>Cidade</city>
+    <cityn>Código postal</cityn>
+    <street>Endereço</street>
+    <streetn>Número da rua</streetn>
+    <language>Código de idioma (Ex. pt)</language>
+    <lastlogin>Última data de acesso</lastlogin>
+    <urlhost>URL para login.php</urlhost>
+    <password>Senha</password>
+    <date>Data de E-mail</date>
+    <ip>IP do Servidor</ip>
+    <port>Porta 1</port>
+    <port2>Porta 1</port2>
+    <port3>Porta 1</port3>
+    <port4>Porta 1</port4>
+    <ports>Porta 1</ports>
+    <variable>Variável</variable>
+    <variabledesc>Descrição</variabledesc>
+    <templatename>Nome do modelo</templatename>
+    <copycc>Copiar CC</copycc>
+    <copybcc>Copiar BCC</copybcc>
+    <attachments>Anexos</attachments>
+    <back>Voltar</back>
+    <templatesettinghead>Configuraçãoes do modelo de E-mail</templatesettinghead>
+</sprache>
