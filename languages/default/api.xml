@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+    <action>Ação</action>
+    <active>Ativo</active>
+    <activeExternal>Ativar Autenticação Externa</activeExternal>
+    <all>Todos</all>
+    <chunkSiz>Tamanho usuário </chunkSize>
+    <date>Data</date>
+    <domain>Dominio</domain>
+    <fetchUpdates>Busca de atualizações</fetchUpdates>
+    <file>Arquivo</file>
+    <groupID>Grupo do Usuário</groupID>
+    <ipAdd>Adicionar IP</ipAdd>
+    <ips>IPs permitidos</ips>
+    <lastCheck>Última verificação</lastCheck>
+    <lastExternalID>Última ID externa</lastExternalID>
+    <name>Nome</name>
+    <pwd>Senha</pwd>
+    <ssl>SSL</ssl>
+    <status>Status</status>
+    <type>Tipo</type>
+    <user>Usuário</user>
+</sprache>
