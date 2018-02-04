@@ -1003,7 +1003,7 @@ class TS3 {
 
                 foreach ($rawReturn as $r) {
                     if (isset($r['banid'])) {
-                        $return[$r['banid']] = array('ip' => $r['ip'], 'name' => $this->ReplaceFromTS3($r['name']), 'lastnickname' => $this->ReplaceFromTS3($r['lastnickname']), 'blocked' => $r['enforcements'], 'duration' => $r['duration'], 'ends' => date('Y-m-d H:m:s', ($r['created'] + $r['duration'])));
+                        $return[$r['banid']] = array('ip' => $r['ip'], 'name' => $this->ReplaceFromTS3($r['name']), 'lastnickname' => $this->ReplaceFromTS3($r['lastnickname']), 'blocked' => $r['enforcements'], 'duration' => $r['duration'], 'ends' => date('Y-m-d H:i:s', ($r['created'] + $r['duration'])));
                     }
                 }
 
