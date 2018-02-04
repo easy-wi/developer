@@ -121,4 +121,8 @@
     <virtualserver_needed_identity_security_level>Benötigte Sicherheitsstufe</virtualserver_needed_identity_security_level>
     <virtualserver_reserved_slots>Reservierte Slots</virtualserver_reserved_slots>
 	<welcome>Wilkommensnachicht</welcome>
+    <reason>Grund</reason>
+    <creator>Ersteller</creator>
+    <created>Erstellt</created>
+    <UserID>Name/IP/UID</UserID>
 </sprache>

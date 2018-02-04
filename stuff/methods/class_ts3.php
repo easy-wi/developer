@@ -1003,7 +1003,38 @@ class TS3 {
 
                 foreach ($rawReturn as $r) {
                     if (isset($r['banid'])) {
-                        $return[$r['banid']] = array('ip' => $r['ip'], 'name' => $this->ReplaceFromTS3($r['name']), 'lastnickname' => $this->ReplaceFromTS3($r['lastnickname']), 'blocked' => $r['enforcements'], 'duration' => $r['duration'], 'ends' => date('Y-m-d H:i:s', ($r['created'] + $r['duration'])));
+                        
+                        
+                        if ($r['ip'] != "") {
+                            $v_name = "ip=" . $this->ReplaceFromTS3($r['ip']) . " ";
+                        }
+                        
+                        if ($r['name'] != "") {
+                            $v_name .=  "name=" . $this->ReplaceFromTS3($r['name']) . " ";
+                        }
+                        
+                        if ($r['uid'] != "") {
+                            $v_name .= "uid=" . $this->ReplaceFromTS3($r['uid']) . " ";
+                        }
+                        
+                        if ($r['lastnickname'] != "") {
+                            $v_name .= "(" . $this->ReplaceFromTS3($r['lastnickname']) . ")";
+                        }
+                        
+                        if ($r['duration'] == 0) {
+                            $v_dur = "never";
+                        } else {
+                            $v_dur = date('Y-m-d H:i:s', ($r['created'] + $r['duration']));
+                        }
+                        
+                        $return[$r['banid']] = array('usr_id' => $v_name,
+                                                     'blocked' => $r['enforcements'], 
+                                                     'duration' => $r['duration'], 
+                                                     'ends' => $v_dur,
+                                                     'created' => date('Y-m-d H:i:s', $r['created']),
+                                                     'creator' => $this->ReplaceFromTS3($r['invokername']),
+                                                     'reason' => $this->ReplaceFromTS3($r['reason']));
+                        unset($v_name, $v_dur);
                     }
                 }
 
