@@ -107,4 +107,8 @@
     <virtualserver_needed_identity_security_level>Minimum klient identitet sikkerhedsniveau der kræves for at forbinde</virtualserver_needed_identity_security_level>
     <virtualserver_reserved_slots>Reserverede slots</virtualserver_reserved_slots>
 	<welcome>Velkommen besked</welcome>
+    <reason>Reason</reason>
+    <creator>Creator</creator>
+    <created>Created</created>
+    <UserID>Name/IP/UID</UserID>
 </sprache>
