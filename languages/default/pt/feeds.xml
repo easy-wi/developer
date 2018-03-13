@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <active>Activate Feeds</active>
-    <displayContent>Show full text</displayContent>
-    <limitDisplay>Limit characters</limitDisplay>
-    <maxChars>Maximum Characters</maxChars>
-    <maxKeep>Maximum news feeds stored</maxKeep>
-    <merge>Merge Feeds</merge>
-    <newsAmount>Amount of feeds shown</newsAmount>
-    <pubDate>Released</pubDate>
-    <orderBy>Order by</orderBy>
+    <active>Ativar feeds</active>
+    <displayContent>Mostrar texto completo</displayContent>
+    <limitDisplay>Limitar caracteres</limitDisplay>
+    <maxChars>Máximo de Caracteres</maxChars>
+    <maxKeep>Máximo de feeds de notícias armazenadas</maxKeep>
+    <merge>Combinar feeds</merge>
+    <newsAmount>Quantidade de feeds mostrada</newsAmount>
+    <pubDate>Data da publicação</pubDate>
+    <orderBy>Ordenar por</orderBy>
     <status>Status</status>
-    <title>Title</title>
-    <updateMinutes>Check every X minutes for new feeds</updateMinutes>
-    <useLocal>Show local news</useLocal>
-    <oauth_access_token>Oauth access token</oauth_access_token>
-    <oauth_access_token_secret>Oauth access token secret</oauth_access_token_secret>
-    <consumer_key>Consumer key</consumer_key>
-    <consumer_secret>Consumer secret</consumer_secret>
-    <twittersettings>Twitter Settings</twittersettings>
+    <title>Titulo</title>
+    <updateMinutes>Verifique cada X minutos para novos feeds</updateMinutes>
+    <useLocal>Mostrar notícias locais</useLocal>
+    <oauth_access_token>Token de acesso Oauth</oauth_access_token>
+    <oauth_access_token_secret>Segredo token de acesso Oauth</oauth_access_token_secret>
+    <consumer_key>Chave do Usuário</consumer_key>
+    <consumer_secret>Usuário Secreto</consumer_secret>
+    <twittersettings>Configurações do Twitter</twittersettings>
 </sprache>
