@@ -48,7 +48,7 @@
                         <span class="time"><i class="fa fa-clock-o"></i> <?php echo $table_row['writeTime'];?></span>
                         <h3 class="timeline-header"><?php echo $sprache->writer.': '.$table_row['writer'];?> ...</h3>
                         <div class="timeline-body">
-                            <?php echo $table_row['ticket'];?>
+                            <?php echo html_entity_decode($table_row['ticket']);?>
                         </div>
                     </div>
                 </li>
