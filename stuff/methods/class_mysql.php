@@ -462,7 +462,7 @@ class ExternalSQL {
 
         try {
 
-            $sql = "DROP USER IF EXISTS ?@?";
+            $sql = "DROP USER ?@?";
             $query = $this->remotesql->prepare($sql);
 
             foreach ($this->getUsersHostList($username) as $host) {
