@@ -238,10 +238,10 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             $table = getUserList($resellerLockupID);
             $table2 = array();
 
-            $query = $sql->prepare("SELECT s.`id`,s.`ip`,(s.`max_databases`/100)*COUNT(d.`id`) AS `usedpercent` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`id`,s.`ip` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC");
+            $query = $sql->prepare("SELECT s.`id`,s.`ip`,s.`description`(s.`max_databases`/100)*COUNT(d.`id`) AS `usedpercent` FROM `mysql_external_servers` s LEFT JOIN `mysql_external_dbs` d ON s.`id`=d.`sid` WHERE s.`active`='Y' AND s.`resellerid`=? GROUP BY s.`id`,s.`ip` HAVING `usedpercent`<100 ORDER BY `usedpercent` ASC");
             $query->execute(array($reseller_id));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                $table2[$row['id']] = $row['ip'];
+                $table2[$row['id']] = ($row['description'] != null and $row['description'] != '') ? $row['ip'] . ' ' . $row['description'] : $row['ip'];
             }
 
             $template_file = 'admin_mysql_db_add.tpl';
