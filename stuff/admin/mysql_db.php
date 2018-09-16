@@ -249,21 +249,22 @@ if ($ui->st('d', 'get') == 'ad' or $ui->st('d', 'get') == 'md') {
             // Gather data for modding in case we have an ID and define mod template
         } else if ($ui->st('d', 'get') == 'md' and $id) {
 
-            $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `mysql_external_dbs` AS e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
+            $query = $sql->prepare("SELECT e.*,AES_DECRYPT(e.`password`,?) AS `decryptedpassword`,s.`ip`,s.`description` AS `descriptionmserver`,u.`cname`,CONCAT(u.`vname`,' ',u.`name`) AS `full_name` FROM `mysql_external_dbs` AS e LEFT JOIN `mysql_external_servers` s ON e.`sid`=s.`id` LEFT JOIN `userdata` u ON e.`uid`=u.`id` WHERE e.`id`=? AND e.`resellerid`=? LIMIT 1");
             $query->execute(array($aeskey, $id, $resellerLockupID));
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-                $externalID = $row['externalID'];
-                $ip = $row['ip'];
-                $manage_host_table = $row['manage_host_table'];
-                $ips = $row['ips'];
-                $active = $row['active'];
-                $description = $row['description'];
-                $dbName = $row['dbname'];
-                $password = $row['decryptedpassword'];
+	            $externalID = $row['externalID'];
+	            $ip = $row['ip'];
+	            $manage_host_table = $row['manage_host_table'];
+	            $ips = $row['ips'];
+	            $active = $row['active'];
+	            $description = $row['description'];
+	            $descriptionmserver = $row['descriptionmserver'];
+	            $dbName = $row['dbname'];
+	            $password = $row['decryptedpassword'];
 
-                $userName = trim($row['cname'] . ' ' . $row['full_name']);
-                $table2[$row['sid']] = $row['ip'];
+	            $userName = trim($row['cname'] . ' ' . $row['full_name']);
+	            $table2[$row['sid']] = ($row['descriptionmserver'] != null and $row['descriptionmserver'] != '') ? $row['ip'] . ' ' . $row['descriptionmserver'] : $row['ip'];
             }
 
             // Check if database entry exists and if not display 404 page
