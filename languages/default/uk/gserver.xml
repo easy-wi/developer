@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<abkuerz>Shorten</abkuerz>
+	<abkuerz>Minimize</abkuerz>
     <action>Action</action>
 	<active>Activate</active>
 	<all>Select all games</all>
     <anticheat>Anti-cheat</anticheat>
-    <authkey_info><![CDATA[Your personal web API authorization key which is required for downloading Steam maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">here</a>.]]></authkey_info>
+    <authkey_info><![CDATA[Your personal web API authorization key which is required for downloading Steam maps. It can be found here <a href="https://steamcommunity.com/dev/apikey">here</a>.]]></authkey_info>
     <backup_create>Backup will be created.</backup_create>
     <backup_recover>Backup will be recovered.</backup_recover>
     <belegt2>Existing folders</belegt2>
@@ -14,10 +14,10 @@
 	<bin>Binary</bin>
     <bin_folder>Binary folder (e.g. orangebox)</bin_folder>
     <brandname>Server tag</brandname>
-    <cant_install>Could not start installation on the server</cant_install>
-    <collection_info><![CDATA[Workshop collection ID used for downloading maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">here</a>.]]></collection_info>
+    <cant_install>Could not start installation</cant_install>
+    <collection_info><![CDATA[Workshop collection ID used for downloading maps. Additional information can be found at <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">here</a>.]]></collection_info>
 	<config>Server configs</config>
-	<confirm_change>Save changes?</confirm_change>
+	<confirm_change>Are you sure you want to save changes?</confirm_change>
 	<confirm_delete>Delete server?</confirm_delete>
 	<confirm_restart>(Re)start server?</confirm_restart>
 	<confirm_stop>Stop server?</confirm_stop>
@@ -50,12 +50,12 @@
     <gs_add2>Add server step 2: server details</gs_add2>
     <gs_add>Add server step 1: user, root server, games</gs_add>
     <hdd>Disk space (MB)</hdd>
-    <hddinstalled>Assigned harddisk(s)</hddinstalled>
+    <hddinstalled>Assigned harddrive(s)</hddinstalled>
     <heading_delete>Delete game server</heading_delete>
     <heading_template>Game server overview</heading_template>
     <help_calendar>
     <![CDATA[
-	You can define game server restarts at the top of every hour with our restart planner.<br />
+	You can set server restarts at the top of every hour with our restart planner.<br />
 	This feature is helpful if you want to switch the game or the template at a given time.
     ]]>
     </help_calendar>
@@ -63,23 +63,23 @@
     <![CDATA[
 	Our web interface allows you to edit the most important config files for your game server. Config files belonging to plugins will be added once they have been installed with the web interface.<br />
 	<br />
-    It might be that you cannot see the config file in the web interface, in this case you can edit it via FTP even so.
+    If you can't see files then you must edit them via FTP.
     ]]>
     </help_config>
     <help_md>
     <![CDATA[
-	On this site you can change games at any time. Specifically, our <em>Template</em> feature allows you to maintain multiple game configurations.
+	On this page you can change games at any time. Specifically, our <em>Template</em> feature allows you to maintain multiple game configurations.
 	]]>
     </help_md>
     <help_list>
     <![CDATA[
 	This overview lists detailed game server information, for example, the active template, FTP data, etc. The submenus will allow you to do extensive configuration changes.<br />
-	Games and templates can be defined at <em>Settings</em>. The <em>Server configs</em> area will allow you to manage game and addon settings. If you want to automatically change a game or template, the <em>Restart planner</em> will be of great use for you. Troubleshooting can be done with the <em>Logs</em>.
+	Games and templates can be defined at <em>Settings</em>. The <em>Server configs</em> area will allow you to manage game and addon settings. If you want to automatically change a game or template, the <em>Restart planner</em> can be useful. Troubleshooting can be done with the <em>Logs</em>.
     ]]>
     </help_list>
     <help_reinstall>
     <![CDATA[
-	<em>Resynchronization</em> will add missing files without altering existing ones. You could benefit from this feature when you have deleted files by accident or new update files are absent.<br />
+	<em>Resynchronization</em> will add missing files without altering existing ones. This is useful of you've deleted files by accident or new update files are absent.<br />
     <br />
 	<em>Reinstall</em> will result in a complete reset. All data will be lost, and the server will be reset to factory defaults.<br />
     <br />
@@ -88,10 +88,10 @@
     </help_reinstall>
     <homeDir>Home dir</homeDir>
     <hour>Hour</hour>
-    <import_corrected>Is the found path correct?</import_corrected>
+    <import_corrected>Is this path correct?</import_corrected>
     <import_destination>Destination server, game and template of import</import_destination>
     <import_source>Data source to be imported</import_source>
-    <import_start>Migration service started. This process will take some time!</import_start>
+    <import_start>Migration service started. This process may take some time!</import_start>
     <installAll>All games</installAll>
     <installGames>Preinstall games</installGames>
     <ip>Game server IP address</ip>
@@ -128,7 +128,7 @@
     <server>Server address</server>
     <serverinstalled>Installed servers</serverinstalled>
     <servername>Server name</servername>
-    <serverrestart>(Re)starting server</serverrestart>
+    <serverrestart>Restarting server</serverrestart>
     <serverstop>Stopping server</serverstop>
     <servertype>Server type</servertype>
     <server_details>Details for</server_details>
@@ -136,7 +136,7 @@
     <server_ud>Updated server data</server_ud>
     <since>Since</since>
     <slots>Player slots</slots>
-    <slotsinstalled>Installed slots</slotsinstalled>
+    <slotsinstalled>Allocated slots</slotsinstalled>
     <slotsused>Used slots</slotsused>
     <start>Start command</start>
     <startmap>Start map</startmap>
@@ -152,7 +152,7 @@
     <tvport>SourceTV</tvport>
     <tvuploadstart>SourceTV upload started</tvuploadstart>
     <type>Installation type</type>
-    <updated>The config has been edited successfully.</updated>
+    <updated>The config has been successfully edited.</updated>
     <updatetime>Status at</updatetime>
     <usage>Server allocation</usage>
     <usedports>Used ports</usedports>

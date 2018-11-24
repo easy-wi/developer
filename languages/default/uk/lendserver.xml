@@ -20,8 +20,8 @@
     <mintime>Minimal lending period (minutes)</mintime>
     <minutes>Minutes</minutes>
     <nextcheck>Next status check</nextcheck>
-    <nextfree>According to plan, next game server is free in</nextfree>
-    <nextfreevo>According to plan, next voice server is free in</nextfreevo>
+    <nextfree>Next game server is free in</nextfree>
+    <nextfreevo>Next voice server is free in</nextfreevo>
     <playersteps>Slot steps</playersteps>
     <ready>Ready</ready>
     <registered>Registered</registered>

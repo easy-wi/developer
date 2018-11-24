@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <hint>Name/IP/PORT/IP:PORT/ID/External ID</hint>
-    <name>Name/Adresse</name>
+    <name>Name/Address</name>
     <search>Search</search>
     <type>Type</type>
 </sprache>

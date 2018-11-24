@@ -18,7 +18,7 @@
     <country>Country</country>
     <einz>Automatic debit transfer system</einz>
     <email>E-mail</email>
-    <error_cname>Error: Bad username1</error_cname>
+    <error_cname>Error: Bad username!</error_cname>
     <error_id>No user selected:</error_id>
     <error_in>Not all required fields have been filled out; or illegal characters have been used.</error_in>
     <error_mail>Bad e-mail address</error_mail>
@@ -39,17 +39,17 @@
     <heading_detail>User details</heading_detail>
     <heading_list>User overview</heading_list>
     <help_substitutes_list></help_substitutes_list>
-    <hnum>House number</hnum>
+    <hnum>House Number</hnum>
     <inst>Installed server</inst>
     <ips>IPv4 addresses:</ips>
     <ips_possible1>1.1.1.1</ips_possible1>
     <ips_possible2>1.1.1.3/6</ips_possible2>
-    <mail_backup>Send e-mail when backup is created/restored.</mail_backup>
-    <mail_gsupdate>Send e-mail when master server is updated.</mail_gsupdate>
-    <mail_securitybreach>Send e-mail when game server files are manipulated.</mail_securitybreach>
-    <mail_serverdown>Send e-mail when server cannot be reached.</mail_serverdown>
-    <mail_ticket>Send e-mail when new support ticket is written.</mail_ticket>
-    <mail_vserver>Send e-mail when VPS is created, or rescue is started.</mail_vserver>
+    <mail_backup>Send an e-mail when backup is created/restored.</mail_backup>
+    <mail_gsupdate>Send an e-mail when master server is updated.</mail_gsupdate>
+    <mail_securitybreach>Send an e-mail when game server files are manipulated.</mail_securitybreach>
+    <mail_serverdown>Send an e-mail when server cannot be reached.</mail_serverdown>
+    <mail_ticket>Send an e-mail when new support ticket is created.</mail_ticket>
+    <mail_vserver>Send an e-mail when VPS is created, or rescue is started.</mail_vserver>
     <max>Maximum</max>
     <miniroot>Root</miniroot>
     <modfastdl>Edit Fastdownload access data</modfastdl>

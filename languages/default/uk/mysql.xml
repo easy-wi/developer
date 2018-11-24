@@ -8,7 +8,7 @@
     <description>Description</description>
     <reinstall>Reinstall</reinstall>
     <standards>Default values for the database user</standards>
-    <manage_host_table>Hosttable editable</manage_host_table>
+    <manage_host_table>Hostable editable</manage_host_table>
     <max_databases>Maximum databases</max_databases>
     <max_queries_per_hour>Maximum queries per hour</max_queries_per_hour>
     <max_updates_per_hour>Maximum updates per hour</max_updates_per_hour>

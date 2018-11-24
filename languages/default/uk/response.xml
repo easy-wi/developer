@@ -5,7 +5,7 @@
     <error_server>Error: Could not establish a connection to the server!</error_server>
     <error_table2>Error: Adding the data to the database failed!</error_table2>
     <error_table>Error: Updating the database failed, or no new data had been entered!</error_table>
-    <error_ts_query>Error: Sending commands to the TS 3 server failed. Error message is: </error_ts_query>
+    <error_ts_query>Error: Sending commands to the TS3 server failed. Error message is: </error_ts_query>
     <error_ts_query_connect>Error: Could not connect to TS3 server query. Error message is: </error_ts_query_connect>
     <error_username>Error: User name is not allowed or exists already.</error_username>
     <reinstall_success>Reinstall successfully started</reinstall_success>
