@@ -38,6 +38,7 @@
     <error_system_pdo_mysql>L'estensione pdo_mysql non è installata, si é pregati di installarla.</error_system_pdo_mysql>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>L'estensione SimpleXML non è installata, si é pregati di installarla.</error_system_SimpleXML>
+    <error_system_zip>L'estensione zip non è installata, si é pregati di installarla.</error_system_zip>
     <faillogins>Login falliti</faillogins>
 	<faillogins2>Possibili login falliti in serie</faillogins2>
 	<finished>L'installazione é stata completata. Perfavore eliminila la cartella "install".</finished>
@@ -87,6 +88,7 @@
     <system_ok_pdo_mysql>L'estensione pdo_mysql é installata.</system_ok_pdo_mysql>
     <system_ok_php_version>é richiesta almeno la versione di PHP 5.4. La tua versione é OK: </system_ok_php_version>
     <system_ok_SimpleXML>L'estensione SimpleXML é installata.</system_ok_SimpleXML>
+    <system_ok_zip>L'estensione zip é installata.</system_ok_zip>
     <timezone>Zona oraria</timezone>
 	<title>Titolo della homepage</title>
 	<user>Utente del database</user>

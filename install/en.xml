@@ -38,6 +38,7 @@
     <error_system_pdo_mysql>pdo_mysql extension is not installed, please install it.</error_system_pdo_mysql>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML extension is not installed, please install it.</error_system_SimpleXML>
+    <error_system_zip>zip extension is not installed, please install it.</error_system_zip>
     <faillogins>Failed logins</faillogins>
 	<faillogins2>Possible failed Logins in a row</faillogins2>
 	<finished>The installation has been completed. Please remove the "install" directory.</finished>
@@ -87,6 +88,7 @@
     <system_ok_pdo_mysql>pdo_mysql extension is installed.</system_ok_pdo_mysql>
     <system_ok_php_version>At least PHP 5.4 is required. Your PHP version is ok: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXML is installed.</system_ok_SimpleXML>
+    <system_ok_zip>zip Extension is installed.</system_ok_zip>
     <timezone>Timezone</timezone>
 	<title>Homepage title</title>
 	<user>Databaseuser</user>
