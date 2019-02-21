@@ -38,6 +38,7 @@
     <error_system_pdo_mysql>pdo_mysql udvidelse er ikke installeret, venligt installere den.</error_system_pdo_mysql>
     <error_system_php_version>PHP 5,3 er påkrævet. PHP-version for gammel: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML udvidelse er ikke installeret, venligt installere den.</error_system_SimpleXML>
+    <error_system_zip>zip udvidelse er ikke installeret, venligt installere den.</error_system_zip>
     <faillogins>Mislykkede logins</faillogins>
 	<faillogins2>Mulige fejllogin i træk</faillogins2>
 	<finished>Installationen er fuldført. Fjern venligst "install" mappen.</finished>
@@ -87,6 +88,7 @@
     <system_ok_pdo_mysql>pdo_mysql udvidelse er installeret.</system_ok_pdo_mysql>
     <system_ok_php_version>Mindst er PHP 5,3 påkrævet. Din PHP version er ok: </system_ok_php_version>
     <system_ok_SimpleXML>SimpleXML udvidelse er installeret.</system_ok_SimpleXML>
+    <system_ok_zip>zip udvidelse er installeret.</system_ok_zip>
     <timezone>Tidszone</timezone>
 	<title>Hjemmeside overskrift</title>
 	<user>DatabaseBruger</user>

@@ -38,6 +38,7 @@
     <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_pdo_mysql>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_SimpleXML>
+    <error_system_zip>zip Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_zip>
     <faillogins>Fehlerhafte Logins</faillogins>
 	<faillogins2>Anzahl von erlaubten fehlerhaften Logins am Stück</faillogins2>
 	<finished>Die Installation ist abgeschlossen, bitte entfernen Sie den "install" Ordner.</finished>
@@ -77,7 +78,7 @@
 	<prefix2>Wird der Benutzername vorgegeben, wird beim Anlegen neuer Benutzer an den vorgegebenen Namen nur noch eine fortzählende Nummer angehängt.Es dürfen nur kleine Buchstaben und Zahlen benutzt werden.</prefix2>
 	<prefix3>Benutzername</prefix3>
     <system_ok_curl>curl Extension ist installiert.</system_ok_curl>
-    <system_ok_fopen>fopen function can be used.</system_ok_fopen>
+    <system_ok_fopen>fopen Funktion kann verwendet werden.</system_ok_fopen>
     <system_ok_ftp>ftp Extension ist installiert.</system_ok_ftp>
     <system_ok_gd>gd Extension ist installiert.</system_ok_gd>
     <system_ok_hash>hash Extension ist installiert.</system_ok_hash>
@@ -86,7 +87,8 @@
     <system_ok_PDO>PDO Extension ist installiert.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql Extension ist installiert.</system_ok_pdo_mysql>
     <system_ok_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version neu genug: </system_ok_php_version>
-    <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
+    <system_ok_SimpleXML>SimpleXML Extension ist installiert.</system_ok_SimpleXML>
+    <system_ok_zip>zip Extension ist installiert.</system_ok_zip>
     <timezone>Zeitzone</timezone>
 	<title>Homepage Titel</title>
 	<user>Databankuser</user>
