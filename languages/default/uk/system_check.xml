@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <cron_external>External cronjobs</cron_external>
-    <cron_run>The Cronjob was last run at:</cron_run>
+    <cron_run>Cronjob last started at:</cron_run>
     <cron_internal>Internal Cronjobs</cron_internal>
     <cron_text>The recommended method is to use internal cronjobs. In case you cannot make use of internal cronjobs, the same files can be called with an external cronjob. If you want to make use of this you need to whitelist the calling IP(s) at the Easy-Wi settings.</cron_text>
     <error_system_curl>curl extension is not installed, please install it.</error_system_curl>
@@ -14,7 +14,9 @@
     <error_system_openssl>openssl extension is not installed, please install it.</error_system_openssl>
     <error_system_PDO>PDO extension is not installed, please install it.</error_system_PDO>
     <error_system_pdo_mysql>pdo_mysql extension is not installed, please install it.</error_system_pdo_mysql>
+    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML extension is not installed, please install it.</error_system_SimpleXML>
+    <error_system_zip>zip extension is not installed, please install it.</error_system_zip>
     <system_ok_curl>curl extension is installed.</system_ok_curl>
     <system_ok_fopen>fopen function can be used.</system_ok_fopen>
     <system_ok_ftp>ftp extension is installed.</system_ok_ftp>
@@ -24,6 +26,7 @@
     <system_ok_openssl>openssl extension is installed.</system_ok_openssl>
     <system_ok_PDO>PDO extension is installed.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql extension is installed.</system_ok_pdo_mysql>
-    <system_ok_php_version>You have the minimum PHP version installed (5.4): </system_ok_php_version>
+    <system_ok_php_version>At least PHP 5.4 is required. Your PHP version is ok: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXMLis installed.</system_ok_SimpleXML>
+    <system_ok_zip>Extension zipis installed.</system_ok_zip>
 </sprache>

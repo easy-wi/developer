@@ -33,7 +33,7 @@
     <dedicated>Dedicated</dedicated>
 	<del>Delete</del>
     <delSafe>Safe delete</delSafe>
-    <delAny>Force delete</delAny>
+    <delAny>Delete in any case</delAny>
     <delDB>Remove from database</delDB>
     <description>Description</description>
     <domains>Domains</domains>
@@ -53,14 +53,14 @@
     <gameserver>Game Server</gameserver>
     <gameroot>Game root server</gameroot>
     <generalsettings>General settings</generalsettings>
-    <greating_home>Welcome to the %name% panel!</greating_home>
+    <greating_home>Welcome to the %name% web interface!</greating_home>
     <groups>Groups</groups>
     <help_home>
     <![CDATA[
-	On your <em>Dashboard</em> you can find the overview of your game and voice servers. You can also see the latest news for Valve games (Counter-Strike, Team Fortress, ...). Please note that the listed status information is updated every %n% minutes. A recently restarted game server might be shown as offline even if it is back online.
+	On your <em>Dashboard</em> you can find the status overview of your game and voice servers. Also, you can see the latest news for Valve games (Counter-Strike, Team Fortress, ...). Please note that the listed status information is updated every %n% minutes. For this reason a recently restarted game server might be shown as offline for a while even if it is back online already.
 	]]>
     </help_home>
-    <help_sidebar>Status info is gathered every %n% minutes.</help_sidebar>
+    <help_sidebar>The status information are gathered every %n% minutes.</help_sidebar>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
     <inactive>Inactive</inactive>
@@ -70,7 +70,7 @@
     <jobPending>Job pending</jobPending>
 	<last>Your last login was: </last>
 	<lendserver>Test/Lend server</lendserver>
-	<licence>Licence maximum has been reached.</licence>
+	<licence>Licencemaximum has been reached.</licence>
     <licence_version>You are not allowed to run this version!</licence_version>
 	<logs>Logs</logs>
 	<master>Master</master>
@@ -107,11 +107,11 @@
     <status_stop>Stopped</status_stop>
     <stop>Stop</stop>
     <subnets>Subnets</subnets>
-    <substitutes>Subusers</substitutes>
+    <substitutes>Substitutes</substitutes>
 	<support2>New support ticket</support2>
 	<support>Support</support>
 	<sure>Are you sure?</sure>
-    <sure_delete>Are you sure? All the data on the server will be deleted!</sure_delete>
+    <sure_delete>Are you sure? All Data at the target server will be deleted!</sure_delete>
     <system_check>System Check</system_check>
 	<template>Template</template>
 	<templates>Images/Templates</templates>
@@ -122,7 +122,7 @@
     <used>Used</used>
 	<user>User</user>
     <userImport>User Import</userImport>
-	<virtual>Virtual Server</virtual>
+	<virtual>Virtuelle Server</virtual>
 	<versioncheck>Version Check</versioncheck>
 	<voiceserver>Voiceserver</voiceserver>
 	<vor>Forward</vor>

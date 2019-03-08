@@ -21,11 +21,11 @@
     <mailSend>The e-mail has been sent.</mailSend>
     <maxnews>Show the last X news messages</maxnews>
     <message>Message</message>
-    <MSIE>Internet Explorer is outdated and does not meet the minimum requirements to use this panel. The display of the page may be corrupted. Please use a different browser.</MSIE>
+    <MSIE>Internet Explorer still does not accept the W3C specifications. Due to this the display of the page can be corrupted. Please use a different browser.</MSIE>
     <moderate>Moderation required:</moderate>
     <name>Name</name>
     <naviDisplay>Display at navigation</naviDisplay>
-    <newer>Most recent</newer>
+    <newer>Newer</newer>
     <news_add>Add news</news_add>
     <newssidebar_textlength>Text length sidebar news</newssidebar_textlength>
     <older>Older</older>
@@ -53,7 +53,7 @@
     <registerErrorMail>Please use another e-mail address.</registerErrorMail>
     <registerErrorTou>Please accept the terms of use!</registerErrorTou>
     <registerErrorPassword>The passwords do not match.</registerErrorPassword>
-    <registerErrorPassword2>Please use a secure password with at least 8 characters containing lower and upper case letters, numbers, and special characters. An example for a good password: "AKha%asLsdh12".</registerErrorPassword2>
+    <registerErrorPassword2>Please use a secure password with at least 8 characters containing of lower and upper case letters, numbers, and special characters. An example for a good password: "AKha%asLsdh12".</registerErrorPassword2>
     <registerErrorPassword3>Please enter a password.</registerErrorPassword3>
     <registerErrorUnknown>An unknown error occurred. Please try again.</registerErrorUnknown>
     <registerMailSend>Registration successful. You should receive an e-mail soon.</registerMailSend>

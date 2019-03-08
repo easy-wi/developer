@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /**
  * File: update.php.
@@ -190,7 +190,7 @@ if (versioncheck($version, '5.30', 'update_522-530.php', $response)) {
 if (versioncheck($version, '6.0.0', 'update_530-600.php', $response)) {
     $version = '6.0.0';
 }
-if (versioncheck($version, '6.0.4', 'update_600-604.php', $response)) {
+if (versioncheck($version, '6.0.4', 'update_600-605.php', $response)) {
     $version = '6.0.4';
 }
 
@@ -201,7 +201,7 @@ try {
 
     if ($query->fetchColumn() == 'Y') {
 
-        $devVersion = '6.0.4';
+        $devVersion = '6.0.5';
 
         if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
             $version = $devVersion;

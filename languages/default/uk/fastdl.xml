@@ -2,24 +2,24 @@
 <sprache>
 	<chfdluser>Change the FTP access?</chfdluser>
 	<example>Example: ftp://Yourusername:Yourftppassword@Adresse/path</example>
-	<fdlfailed>FastDL sync matching failed</fdlfailed>
-	<fdlstarted>FastDL sync started</fdlstarted>
+	<fdlfailed>Fastdownload matching failed</fdlfailed>
+	<fdlstarted>Fastdownload matching started</fdlstarted>
 	<haupt>Default fastdownload server</haupt>
 	<haupt2>Use default fastdownload server?</haupt2>
     <help_fdl>
     <![CDATA[
-	Fastdownload allows the players to download server data such as sounds and maps at a much faster rate.<br />
+	Fastdownload allows the players to download server data such as sounds and maps much swifter.<br />
 	<br />
-	You can either use a <strong>default</strong> <em>Fastdownload server</em> which will be used for all game servers or you configure <strong>individual</strong> <em>Fastdownload servers</em> for each game servers.<br />
+	Either you define a <strong>default</strong> <em>Fastdownload server</em> which will be used for all game servers or you configure an <strong>individual</strong> <em>Fastdownload server</em> for each game server.<br />
 	<br />
-	Clicking the <em>Start FastDL Sync</em> button will initiate the FastDL sync process and automatically upload all required files to the Fastdownload server. Furthermore, you need to add the according HTTP URL in the server's server.cfg or dedicated.cfg file to activate Fastdownload.
+	Clicking the <em>Start matching</em> button will initiate our web interface to automatically upload all required files to the Fastdownload server. Furthermore, you need to add the according HTTP URL in the server's server.cfg or dedicated.cfg file to activate Fastdownload.
     ]]>
     </help_fdl>
 	<neben>FTP data used for the Fastdownload server</neben>
 	<noset>No FTP data available</noset>
 	<own>Use main FTP</own>
 	<own2>Own fastdownload server</own2>
-	<server>Single Server</server>
-	<startfdl>Start FastDL Sync</startfdl>
+	<server>Einzelne Server</server>
+	<startfdl>Start matching</startfdl>
 	<udsuc>Successfully changed the FTP data</udsuc>
 </sprache>

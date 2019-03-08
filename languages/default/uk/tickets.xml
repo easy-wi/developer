@@ -21,7 +21,7 @@
     <priority_low>low</priority_low>
     <priority_medium>medium</priority_medium>
     <priority_very_high>very high</priority_very_high>
-    <problem>Please write your issue below:</problem>
+    <problem>Symptoms</problem>
     <rating>Support rating</rating>
     <reopen>Reopen</reopen>
     <shown>Results per page</shown>
@@ -30,12 +30,12 @@
     <status_confirmed>Confirmed</status_confirmed>
     <status_done>Completed</status_done>
     <status_new>New</status_new>
-    <status_process>Processing</status_process>
-    <status_reopen>Staff Response</status_reopen>
+    <status_process>In process</status_process>
+    <status_reopen>For review</status_reopen>
     <subject>Topic</subject>
     <topic>Subcategory of</topic>
     <topic_name>Category</topic_name>
     <topic_name_sub>Subtopic</topic_name_sub>
     <username>Username</username>
-    <writer>Author</writer>
+    <writer>Writer</writer>
 </sprache>
