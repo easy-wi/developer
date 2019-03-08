@@ -48,11 +48,11 @@ if (isset($include) and $include == true) {
 <ul>
 <li>IPv6 Addressen k&ouml;nnen nun geloggt werden</li>
 <li>Diverse Verbesserungen im italienischen Sprachpacket</li>
-<li>Unterst&uuml;tzung f&uuml;r folgende Betriebssysteme:</li>
+<li>Unterst&uuml;tzung f&uuml;r folgende Betriebssysteme:
 <li>CentOS 7</li>
 <li>Debian 9</li>
 <li>Ubuntu 18.10</li>
-</ul></li>
+</ul></li></li>
 <li>Game Server
 <ul>
 <li>GameQ Query Libary aktualisiert</li>
@@ -96,11 +96,11 @@ if (isset($include) and $include == true) {
 <ul>
 <li>IPv6 adresses can be logged</li>
 <li>Multiple improvements at the Italian language package</li>
-<li>Add Support for the following Operating Systems:</li>
+<li>Add Support for the following Operating Systems:
 <li>CentOS 7</li>
 <li>Debian 9</li>
 <li>Ubuntu 18.10</li>
-</ul></li>
+</ul></li></li>
 <li>Game Server
 <ul>
 <li>GameQ Query library updated</li>
