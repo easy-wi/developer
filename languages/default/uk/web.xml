@@ -9,7 +9,7 @@
     <dns>Domain</dns>
     <domainNotUsed>Skipped not allowed domain %domain%</domainNotUsed>
     <error_password_not_match>FTP passwords does not match</error_password_not_match>
-    <error_password_not_set>FTP password not allowed, not set, or not repeated.</error_password_not_set>
+    <error_password_not_set>FTP password not allowed, not set, or repeated.</error_password_not_set>
     <fdlInfo>FastDL Info</fdlInfo>
     <fpmCmd>PHP FPM Start/Reload Command</fpmCmd>
     <fpmConfigPath>PHP FPM Config Path</fpmConfigPath>
@@ -46,7 +46,7 @@
     <phpConfiguration>PHP Configuration</phpConfiguration>
     <quotaActive>Activate Quotas</quotaActive>
     <quotaCmd>Quota Command</quotaCmd>
-    <quotaWarning>Warning! Whithout Quotas user can upload data until the disk is full!</quotaWarning>
+    <quotaWarning>Warning! Whithout Quotas users can upload data until the disk is full!</quotaWarning>
     <recreate>Recreate</recreate>
     <repquotaCmd>Repquota Command</repquotaCmd>
     <serverType>Servertype</serverType>

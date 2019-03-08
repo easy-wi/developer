@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <bad_ca>The entered data did not match with the captcha.</bad_ca>
+    <bad_ca>Bad captcha.</bad_ca>
     <bad_up>Either the user does not exist or the password is wrong.</bad_up>
     <back>Back</back>
     <banned>Too many bad login attemps. Please request a new password or contact us.</banned>
@@ -13,7 +13,7 @@
     <linkexpired>Link has expired.</linkexpired>
     <multipleHeader>Multiple users found</multipleHeader>
     <multipleHelper>Multiple users could be found connected to the login for %sp%. Please pick one.</multipleHelper>
-    <multipleHelperEndpoint>Usually you will have to register an app at the service provider. During creating you will be provided with a key and access token. Both need to be entered at Easy-Wi. At the app you need to configure an endpoint. The endpoint for Easy-Wi is %url%</multipleHelperEndpoint>
+    <multipleHelperEndpoint>Usually you will have to register an app at the service provider. During registration you will be provided with a key and access token. Both need to be entered at Easy-Wi. At the app you need to configure an endpoint. The endpoint for Easy-Wi is %url%</multipleHelperEndpoint>
     <nouser>There is no user with the name or e-mail address you have entered.</nouser>
     <password>Password</password>
     <passwdlost>I forgot my password</passwdlost>
@@ -23,7 +23,7 @@
     <passwordreseted>Password has been updated.</passwordreseted>
     <pwnomatch>Passwords do not match.</pwnomatch>
     <send>An e-mail with activation token has been sent to you in case an e-mail account exists.</send>
-    <sus>Your account is suspended. Please contact your host.</sus>
+    <sus>Your account is suspended. Please contact us.</sus>
     <sus_heading>Attention!</sus_heading>
     <user>User name</user>
     <urlBad>Incorrect URL in use:</urlBad>

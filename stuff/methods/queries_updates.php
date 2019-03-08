@@ -111,9 +111,9 @@ function getCraftBukkitVersion () {
 
 function getMinecraftVersion($release = 'release') {
 
-    $responseBody = webhostRequest('https://launchermeta.mojang.com', 'https://easy-wi.com', '/mc/game/version_manifest.json');
+    $responseBody = webhostRequest('s3.amazonaws.com', 'https://easy-wi.com', '/Minecraft.Download/versions/versions.json');
 
     $json = @json_decode(cleanFsockOpenRequest($responseBody, '{', '}'));
 
-    return ($json) ? array('version' => $json->latest->$release, 'downloadPath' => 'https://launcher.mojang.com/v1/objects/' . $json->sha1->$sha1 . '/server.jar') : array('version' => '', 'downloadPath' => '');
+    return ($json) ? array('version' => $json->latest->$release, 'downloadPath' => 'https://s3.amazonaws.com/Minecraft.Download/versions/' . $json->latest->$release . '/minecraft_server.' . $json->latest->$release . '.jar') : array('version' => '', 'downloadPath' => '');
 }

@@ -117,8 +117,4 @@
     <virtualserver_needed_identity_security_level>Minimum client identity security level required to connect</virtualserver_needed_identity_security_level>
     <virtualserver_reserved_slots>Reserved slots</virtualserver_reserved_slots>
     <welcome>Welcome message</welcome>
-    <reason>Reason</reason>
-    <creator>Creator</creator>
-    <created>Created</created>
-    <UserID>Name/IP/UID</UserID>
 </sprache>

@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <abkuerz>Shorten</abkuerz>
+    <abkuerz>Minimize</abkuerz>
     <action>Action</action>
     <active>Activate</active>
     <all>All</all>
-    <attention>Attention: If you reinstall, all data will be lost! Please continue only if you accept the data loss!</attention>
+    <attention>Attention: If you reinstall, all data will be lost! Please continue only if you are sure!</attention>
     <bitversion>Bit-version</bitversion>
     <core>Core</core>
     <cores>Cores</cores>
@@ -54,7 +54,7 @@
     <stop>Stop</stop>
     <stopped>Stopped</stopped>
     <unused_ips>Free IPs</unused_ips>
-    <user>User name</user>
+    <user>Username</user>
     <userAdd>Please add a user/reseller first!</userAdd>
     <wwwFolder>Autorun WWW folder</wwwFolder>
 </sprache>

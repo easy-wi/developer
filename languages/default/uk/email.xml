@@ -6,7 +6,7 @@
     <active>Y=active or N=not active</active>
     <salutation>Salutation</salutation>
     <cname>Username</cname>
-    <fullname>Firstname with lastname</fullname>
+    <fullname>Full Name</fullname>
     <name>Lastname</name>
     <vname>Firstname</vname>
     <birthday>Date of Birth</birthday>

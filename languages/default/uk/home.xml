@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <crashed>Crashed</crashed>
-    <gserver_crashed>potentially crashed game server</gserver_crashed>
+    <gserver_crashed>A Game server has crashed</gserver_crashed>
     <gserver_removed>game server with removed password</gserver_removed>
     <gserver_tag_removed>game server with removed server tag</gserver_tag_removed>
     <host_crashed>crashed hosts</host_crashed>

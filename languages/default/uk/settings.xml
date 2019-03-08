@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
     <brandname>Server tag:</brandname>
-    <confirm_change>Save modifications?</confirm_change>
+    <confirm_change>Save changes?</confirm_change>
     <eachday>Each X days:</eachday>
     <email2>This e-mail address will be used when sending data to the users.</email2>
     <email>E-mail:</email>

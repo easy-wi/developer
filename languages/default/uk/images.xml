@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <abkuerz>Shorten</abkuerz>
+    <abkuerz>Minimize</abkuerz>
     <active>Activate</active>
     <addon2>Menu name</addon2>
     <addon>Folder name in "masteraddons/mastermaps"</addon>
@@ -49,7 +49,7 @@
     <portMax>Port amount</portMax>
     <portStep>Port steps to the next server</portStep>
     <protect>Protection mode</protect>
-    <protectedSaveCFGs>Files to be kept while switching protection mode</protectedSaveCFGs>
+    <protectedSaveCFGs>Files to be kept while switching to protected mode</protectedSaveCFGs>
     <ramLimited>RAM limited</ramLimited>
     <rcon>Remote password (RCON)</rcon>
     <requires>Requires</requires>

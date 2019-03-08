@@ -7,7 +7,7 @@
     <get>GET Value</get>
     <name>Name</name>
     <sub>Menu</sub>
-    <type>Modul type</type>
+    <type>Module type</type>
     <type_admin>Admin panel</type_admin>
     <type_cms>CMS</type_cms>
     <type_core>Easy-Wi core</type_core>

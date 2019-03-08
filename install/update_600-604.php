@@ -41,17 +41,13 @@
 if (isset($include) and $include == true) {
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('6.0.5','<div align=\"right\">08.03.2019</div>
+('6.0.4','<div align=\"right\">06.01.2018</div>
 <b>&Auml;nderungen:</b><br/>
 <ul>
 <li>General
 <ul>
 <li>IPv6 Addressen k&ouml;nnen nun geloggt werden</li>
 <li>Diverse Verbesserungen im italienischen Sprachpacket</li>
-<li>Unterst&uuml;tzung f&uuml;r folgende Betriebssysteme:</li>
-<li>CentOS 7</li>
-<li>Debian 9</li>
-<li>Ubuntu 18.10</li>
 </ul></li>
 <li>Game Server
 <ul>
@@ -72,8 +68,6 @@ if (isset($include) and $include == true) {
 <li>Restart Planer funktioniert nicht mit neuestem MySQL auf Ubuntu 16.04</li>
 <li>ARK Template</li>
 <li>MTA:SA Template</li>
-<li>MC Forge Template</li>
-<li>Counter-Strike: Condition Zero</li>
 <li>Seiten Liste funktioniert nicht auf neuesten MySQL Server mit Ubuntu 16.04</li>
 <li>CMS Settings nicht immer editiertbar</li>
 <li>Geh&ouml;rt ein TS3 Masterserver einem Reseller wird der Status nicht korrekt abgepr&uuml;ft</li>
@@ -89,17 +83,13 @@ if (isset($include) and $include == true) {
 <li>\"Please allow redirection settings\" bei Logout und einigen Server Konfigurationen</li>
 <li>Ticket Kategorie kann auf neuesten MySQL Server mit Ubuntu 16.04 nicht angelegt werden</li>
 <li>Redirect im Default Apache2 Vhost Template</li>
-</ul>','<div align=\"right\">08.03.2019</div>
+</ul>','<div align=\"right\">01.06.2018</div>
 <b>Changes:</b><br/>
 <ul>
 <li>General
 <ul>
 <li>IPv6 adresses can be logged</li>
 <li>Multiple improvements at the Italian language package</li>
-<li>Add Support for the following Operating Systems:</li>
-<li>CentOS 7</li>
-<li>Debian 9</li>
-<li>Ubuntu 18.10</li>
 </ul></li>
 <li>Game Server
 <ul>
@@ -120,8 +110,6 @@ if (isset($include) and $include == true) {
 <li>Restart planer not working with latest MySQL on Ubuntu 16.04</li>
 <li>ARK Template</li>
 <li>MTA:SA Template</li>
-<li>MC Forge Template</li>
-<li>Counter-Strike: Condition Zero</li>
 <li>Page list not working with latest MySQL on Ubuntu 16.04</li>
 <li>CMS cannot be edited in some cases</li>
 <li>In case a TS3 master belongs to a reseller the instances are not checked properly by status check</li>
