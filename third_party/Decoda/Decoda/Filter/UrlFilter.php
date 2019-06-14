@@ -20,7 +20,7 @@ class UrlFilter extends AbstractFilter {
      * @type array
      */
     protected $_config = array(
-        'protocols' => array('http', 'https', 'ftp', 'irc', 'telnet'),
+        'protocols' => array('http', 'https', 'ftp', 'irc', 'telnet', 'mailto'),
         'defaultProtocol' => 'http'
     );
 
@@ -35,7 +35,8 @@ class UrlFilter extends AbstractFilter {
             'displayType' => Decoda::TYPE_INLINE,
             'allowedTypes' => Decoda::TYPE_INLINE,
             'attributes' => array(
-                'default' => true
+                'default' => true,
+                'target' => '/^(?:blank|parent|top)$/'
             ),
             'mapAttributes' => array(
                 'default' => 'href'
@@ -81,6 +82,10 @@ class UrlFilter extends AbstractFilter {
         }
 
         $tag['attributes']['href'] = $url;
+
+        if (!empty($tag['attributes']['target'])) {
+            $tag['attributes']['target'] = '_' . $tag['attributes']['target'];
+        }
 
         if ($this->getParser()->getConfig('shorthandLinks')) {
             $tag['content'] = $this->message('link');
