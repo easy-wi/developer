@@ -139,7 +139,7 @@ class VideoFilter extends AbstractFilter {
             'medium' => array(640, 360),
             'large' => array(853, 480),
             'player' => 'iframe',
-            'path' => '//youtube.com/embed/{id}'
+            'path' => '//youtube.com/embed/{id}?rel=0'
         ),
         'vimeo' => array(
             'small' => array(400, 225),
