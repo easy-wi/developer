@@ -15,15 +15,6 @@ use Decoda\Decoda;
 class BlockFilter extends AbstractFilter {
 
     /**
-     * Configuration.
-     *
-     * @type array
-     */
-    protected $_config = array(
-        'spoilerToggle' => "$('#spoiler-content-{id}').toggle();"
-    );
-
-    /**
      * Supported tags.
      *
      * @type array

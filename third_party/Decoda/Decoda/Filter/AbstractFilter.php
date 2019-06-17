@@ -182,7 +182,7 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
             // If content doesn't match the pattern, don't wrap in a tag
             if ($setup['contentPattern']) {
                 if (!preg_match($setup['contentPattern'], $content)) {
-                    return '';
+                    return sprintf('(Invalid %s)', $tag['tag']);
                 }
             }
 
@@ -242,6 +242,7 @@ abstract class AbstractFilter extends AbstractComponent implements Filter {
 
             return $parsed;
         }
+
         // Build HTML tag
         $html = $setup['htmlTag'];
 

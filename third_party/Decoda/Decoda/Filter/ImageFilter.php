@@ -17,7 +17,7 @@ class ImageFilter extends AbstractFilter {
     /**
      * Regex pattern.
      */
-    const IMAGE_PATTERN = '/^((?:https?:\/)?(?:\.){0,2}\/)((?:.*?)\.(jpg|jpeg|png|gif|bmp))(\?[^#]+)?(#[\-\w]+)?$/is';
+    const IMAGE_PATTERN = '/^((?:https?:\/)?(?:\.){0,2}\/)((?:.*?)\.(jpg|jpeg|png|gif|bmp|svg))(\?[^#]+)?(#[\-\w]+)?$/is';
     const WIDTH_HEIGHT = '/^([0-9%]{1,4}+)x([0-9%]{1,4}+)$/';
     const DIMENSION = '/^[0-9%]{1,4}+$/';
 
@@ -38,6 +38,9 @@ class ImageFilter extends AbstractFilter {
                 'width' => self::DIMENSION,
                 'height' => self::DIMENSION,
                 'alt' => self::WILDCARD
+            ),
+            'htmlAttributes' => array(
+                'class' => 'decoda-image'
             )
         ),
         'image' => array(

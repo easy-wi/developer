@@ -76,7 +76,7 @@ class EmoticonHook extends AbstractHook {
      * @param string $content
      * @return string
      */
-    public function beforeContent($content) {
+    public function afterParse($content) {
         $smilies = $this->getSmilies();
 
         // Build the smilies regex
@@ -84,10 +84,10 @@ class EmoticonHook extends AbstractHook {
             return preg_quote($smile, '/');
         }, $smilies));
 
-        $pattern = sprintf('/(?P<left>^|\n|\s)(?:%s)(?P<right>\n|\s|$)/is', $smiliesRegex);
-
-        // Make two passes to accept that one delimiter can use two smilies
+        $pattern = sprintf('/(?:(?<=[\s.;>:)])|^)(%s)/', $smiliesRegex);
         $content = preg_replace_callback($pattern, array($this, '_emoticonCallback'), $content);
+
+        $pattern = sprintf('/(%s)(?:(?=[\s.&<:(])|$)/', $smiliesRegex);
         $content = preg_replace_callback($pattern, array($this, '_emoticonCallback'), $content);
 
         return $content;
@@ -139,9 +139,9 @@ class EmoticonHook extends AbstractHook {
             $this->getConfig('extension'));
 
         if ($isXhtml) {
-            $tpl = '<img src="%s" alt="" />';
+            $tpl = '<img class="decoda-emoticon" src="%s" alt="" />';
         } else {
-            $tpl = '<img src="%s" alt="">';
+            $tpl = '<img class="decoda-emoticon" src="%s" alt="">';
         }
 
         return sprintf($tpl, $path);
@@ -160,10 +160,7 @@ class EmoticonHook extends AbstractHook {
             return $matches[0];
         }
 
-        $l = isset($matches['left']) ? $matches['left'] : '';
-        $r = isset($matches['right']) ? $matches['right'] : '';
-
-        return $l . $this->render($smiley, $this->getParser()->getConfig('xhtmlOutput')) . $r;
+        return $this->render($smiley, $this->getParser()->getConfig('xhtmlOutput'));
     }
 
 }
