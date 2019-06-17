@@ -70,11 +70,10 @@
                         <li class="divider"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li>';?>
                         <li class="divider"></li>
-                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> About</a></li>
+                        <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> Easy-WI Homepage</a></li>
                         <li><a href="https://discord.gg/quJvvfF" target="_blank"><i class="fa fa-question-circle fa-fw"></i> Easy-WI @ Discord</a></li>
-                        <li><a href="https://www.facebook.com/easywi" target="_blank"><i class="fa fa-facebook-square fa-fw"></i> Easy-WI @ Facebook</a></li>
-                        <li><a href="https://twitter.com/EasyWI" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
                         <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Github</a></li>
+                        <li><a href="https://steamcommunity.com/groups/Easy-Wi" target="_blank"><i class="fa fa-info-circle fa-fw"></i> Easy-WI @ Steam</a></li>
                         <li><a href="https://github.com/ValveSoftware/steam-for-linux/issues" target="_blank"><i class="fa fa-bug fa-fw"></i> Steam Bugtracker</a></li>
                     </ul>
                  </li>
