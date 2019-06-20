@@ -296,9 +296,9 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
 " . '$user' . " = '" . addcslashes($_POST['user'], "'") . "';
 " . '$db' . " = '" . addcslashes($_POST['db'], "'") . "';
 " . '$pwd' . " = '" . addcslashes($_POST['pwd'], "'") . "';
-" . '$captcha' . " = 0;
+" . '$captcha' . " = '0';
 " . '$title' . " = '';
-" . '$debug' . " = 0;
+" . '$debug' . " = '0';
 " . '$timezone' . " = 'Europe/Berlin';
 ";
 
@@ -785,7 +785,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 " . '$pwd' . " = '" . $pwd . "';
 " . '$captcha' . " = '" . $_POST['captcha'] . "';
 " . '$title' . " = '" . $_POST['title'] . "';
-" . '$debug' . " = 0;
+" . '$debug' . " = '0';
 " . '$timezone' . " = '" . $_POST['timezone'] . "';
 ";
 
