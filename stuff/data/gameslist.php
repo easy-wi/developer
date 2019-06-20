@@ -1612,7 +1612,7 @@ $gameImages = array(
         ':slots' => 12,
         ':map' => null,
         ':cmd' => 'java -Xincgc -Xmx%maxram%M -Xms%minram%M -jar %binary% -h %ip% -p %port% -s %slots% --log-append false --log-limit 50000',
-        ':modcmds' => "[Onlinemode On = default]\r\n-o true\r\n\r\n[Onlinemode Off]\r\n-o false",
+        ':modcmds' => null,
         ':tic' => null,
         ':gameq' => 'minecraft',
         ':gamemod' => 'N',
