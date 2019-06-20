@@ -110,10 +110,11 @@ function getCraftBukkitVersion () {
 }
 
 function getMinecraftVersion($release = 'release') {
-
+/*
     $responseBody = webhostRequest('s3.amazonaws.com', 'https://easy-wi.com', '/Minecraft.Download/versions/versions.json');
 
     $json = @json_decode(cleanFsockOpenRequest($responseBody, '{', '}'));
 
     return ($json) ? array('version' => $json->latest->$release, 'downloadPath' => 'https://s3.amazonaws.com/Minecraft.Download/versions/' . $json->latest->$release . '/minecraft_server.' . $json->latest->$release . '.jar') : array('version' => '', 'downloadPath' => '');
+*/
 }
