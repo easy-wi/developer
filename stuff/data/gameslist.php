@@ -814,7 +814,7 @@ $gameImages = array(
         ':slots' => 12,
         ':map' => null,
         ':cmd' => 'java -Xmx%maxram%M -Xms%minram%M -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalPacing -XX:ParallelGCThreads=%maxcores% -XX:+AggressiveOpts -jar %binary% nogui',
-        ':modcmds' => "[Onlinemode On = default]\r\n-o true\r\n\r\n[Onlinemode Off]\r\n-o false",
+        ':modcmds' => null,
         ':tic' => null,
         ':gameq' => 'minecraft',
         ':gamemod' => 'N',
