@@ -493,7 +493,7 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
     if ($url === null) {
 
         // Currently there are two mirrors.
-        $urls = array('http://dl.4players.de/ts/releases/');
+        $urls = array('https://files.teamspeak-services.com/releases/server/');
 
         // Use random value from urls array. Autocheck how many entries and fit the mt_rand parameters accordingly
         $url = $urls[mt_rand(0, (count($urls) -1))];
