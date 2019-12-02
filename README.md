@@ -1,7 +1,7 @@
 # Easy-WI.com Links
 - The stable build at [GitHub](https://github.com/easy-wi/developer/releases/latest)
 - The developer builds at [Github](https://github.com/easy-wi/developer/tags)
-- Developers ChatRoom: [![Join the chat at https://gitter.im/easy-wi](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/easy-wi/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) or [Discord](https://discord.gg/quJvvfF)
+- Developers ChatRoom: [Discord](https://discord.gg/quJvvfF)
 - Issue Tracking at [GitHub](https://github.com/easy-wi/developer/issues)
 - [Installer](https://github.com/easy-wi/installer/)
 - [Optional Server Side Scripts](https://github.com/easy-wi/server/)
