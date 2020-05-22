@@ -479,7 +479,7 @@ class AppServer {
     }
 
     private function linuxDeleteUserGenerate ($userName) {
-
+	$this->shellScripts['user'] .= 'sudo pkill -u ' . $userName . "\n";
         $this->shellScripts['user'] .=  'if [ "`id ' . $userName . ' 2>/dev/null`" != "" ]; then' . "\n";
         $this->shellScripts['user'] .=  '${IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ' . $userName . ' > /dev/null 2>&1 ' . "\n";
         $this->addLogline('user.log', 'User ' . $userName . ' deleted');
@@ -912,7 +912,7 @@ class AppServer {
 
         $script .= 'crontab -r' . "\n";
         $script .= 'screen -wipe > /dev/null 2>&1' . "\n";
-        $script .= 'pkill -u `whoami`' . "\n";
+        //$script .= 'pkill -u `whoami`' . "\n";
 
         $this->addLinuxScript($scriptName, $script, $userName);
         $this->addLogline('app_server.log', 'Hard stop for user ' . $userName);
