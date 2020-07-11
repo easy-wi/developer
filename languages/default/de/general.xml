@@ -101,6 +101,11 @@
     <status_password>Passwort</status_password>
     <status_server_tag>Servertag</status_server_tag>
     <status_stop>Gestopt</status_stop>
+    <status_space>Speicher</status_space>
+    <status_space_mount>Eingehangen: </status_space_mount>
+    <status_space_size>Größe: </status_space_size>
+    <status_space_used>Benutzt: </status_space_used>
+    <status_space_free>Frei: </status_space_free>
     <stop>Stoppen</stop>
     <subnets>Subnets</subnets>
     <substitutes>Vertreter</substitutes>

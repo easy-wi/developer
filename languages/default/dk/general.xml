@@ -83,6 +83,11 @@
     <status_server_tag></status_server_tag>
     <status_stop></status_stop>
     <stop>Stop</stop>
+    <status_space>Opbevaring</status_space>
+    <status_space_mount>Monteret: </status_space_mount>
+    <status_space_size>Størrelse: </status_space_size>
+    <status_space_used>Brugt: </status_space_used>
+    <status_space_free>Ledig: </status_space_free>
     <subnets>Subnets</subnets>
     <substitutes>Suppleanter</substitutes>
 	<support2>Ny Support Billet</support2>
