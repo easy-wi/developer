@@ -181,7 +181,8 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     }
 
     if($space->mount == "unknown"){
-        $spacedata = "unknown";
+        $spacedata = '<a href="javascript:void(0);"><span class="btn btn-danger btn-sm">unknown</span></a>';
+
     }else{
         $perc = substr($space->perc, 0, -1);
         if($perc <= 50){
