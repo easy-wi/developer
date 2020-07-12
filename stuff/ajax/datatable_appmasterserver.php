@@ -158,7 +158,43 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         foreach ($sshcheck as $shorten) {
             $statusList[$shorten] = false;
         }
+
+
     }
 
-    $array['aaData'][] = array($row['ip'], $row['id'], $description, returnButton($template_to_use, 'ajax_admin_master_list.tpl', $statusList, '', '', ''), returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ma', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_add.tpl', 'ma', 'ad', $row['id'], $gsprache->add));
+    // Add Server space data - Nexus633
+    $space = null;
+    $homespace = $rootServer->getDiskSpace("/home");
+    if (strlen($homespace) > 0){
+        $space = json_decode($homespace);
+    }else{
+        $rootspace = $rootServer->getDiskSpace("/");
+        if (strlen($rootspace) > 0){
+            $space = json_decode($rootspace);
+        }else{
+            $space = new stdClass();
+            $space->mount = "unknown";
+            $space->avil = "";
+            $space->used = "";
+            $space->size = "";
+        }
+    }
+
+    if($space->mount == "unknown"){
+        $spacedata = '<a href="javascript:void(0);"><span class="btn btn-danger btn-sm">unknown</span></a>';
+
+    }else{
+        $perc = substr($space->perc, 0, -1);
+        if($perc <= 50){
+            $btn = "btn-success";
+        }else if($perc > 50 && $perc <= 80){
+            $btn = "btn-warning";
+        }else{
+            $btn = "btn-danger";
+        }
+        $spacedata = '<a href="javascript:void(0);"><span class="btn ' . $btn . ' btn-sm"> ' . $gsprache->status_space_used . ' ' . $space->perc . ' - ' . $space->mount . '</span></a>';
+        $spacedata .= ' <a href="javascript:void(0);"><span class="btn ' . $btn . ' btn-sm">' . $gsprache->status_space_size . '' .$space->size . ' / ' . $gsprache->status_space_free . ' ' . $space->avil . '</span></a>';
+    }
+
+    $array['aaData'][] = array($row['ip'], $row['id'], $description, returnButton($template_to_use, 'ajax_admin_master_list.tpl', $statusList, '', '', ''), returnButton($template_to_use, 'ajax_admin_buttons_dl.tpl', 'ma', 'dl', $row['id'], $gsprache->del) . ' ' . returnButton($template_to_use, 'ajax_admin_buttons_add.tpl', 'ma', 'ad', $row['id'], $gsprache->add), $spacedata);
 }

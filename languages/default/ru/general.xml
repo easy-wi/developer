@@ -104,6 +104,11 @@
   <status_server_tag>Имя бренда</status_server_tag>
   <status_stop>Остановлен</status_stop>
   <stop>Остановить</stop>
+  <status_space>Место хранения</status_space>
+  <status_space_mount>смонтированный: </status_space_mount>
+  <status_space_size>размер: </status_space_size>
+  <status_space_used>Используемый: </status_space_used>
+  <status_space_free>Свободно: </status_space_free>
   <subnets>Subnets</subnets>
   <substitutes>Администраторы</substitutes>
   <support2>Новый тикет</support2>

@@ -805,6 +805,17 @@ class masterServer {
         return $this->sshConnectAndExecute (false, true);
     }
 
+    // Add Server space data - Nexus633
+    public function getDiskSpace($path){
+        if ($this->os == 'L') {
+            $this->shellScript .= 'df -h | grep -w "' . $path . '" | awk \'{print "{\n  \"mount\":\"' . $path . '\",\n  \"filesystem\":\"" $1 "\",\n  \"size\":\"" $2 "\",\n  \"used\":\"" $3 "\",\n  \"avil\":\"" $4 "\",\n  \"perc\":\"" $5 "\"\n}"}\'' . "\n";
+        } else {
+
+        }
+
+        return $this->sshConnectAndExecute (false, true);
+    }
+
     private function linuxMasterRemove ($shorten) {
         $this->shellScript .= 'if [ -d "' . $this->masterserverDir . $shorten . '" ]; then rm -rf "' . $this->masterserverDir . $shorten . '"; fi' . "\n";
     }
