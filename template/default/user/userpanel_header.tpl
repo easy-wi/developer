@@ -114,8 +114,8 @@
                         <li class="hidden-xs"><a href="#"><?php echo $gsprache->last.'<br />'.$great_last;?></a></li>
                         <li class="divider hidden-xs"></li>
                         <?php if ($support_phonenumber!="") echo '<li><a href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a></li><li class="divider"></li>';?>
-                        <li><a href="admin.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
-                        <li><a href="admin.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
+                        <li><a href="userpanel.php?w=su&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a></li>
+                        <li><a href="userpanel.php?w=su"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                         <li class="divider  hidden-xs"></li>
                         <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-info-circle fa-fw"></i> Easy-WI Homepage</a></li>
                         <li><a href="https://discord.gg/quJvvfF" target="_blank"><i class="fa fa-question-circle fa-fw"></i> Easy-WI @ Discord</a></li>
