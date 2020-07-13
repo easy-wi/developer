@@ -1,0 +1,1 @@
+<?php echo $installed."/".$max_databases.' '.$gsprache->databases;?>

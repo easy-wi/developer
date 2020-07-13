@@ -1,0 +1,1 @@
+<input type="hidden" name="ids[<?php echo $id;?>][id]" value="<?php echo $id;?>">
