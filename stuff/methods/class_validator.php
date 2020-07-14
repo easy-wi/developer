@@ -251,7 +251,10 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
-        if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
+
+        if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_DOMAIN)){
+            return $check;
+        } else if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
             return $check;
         } else if ($check) {
             return $this->loop($check, 'ip4', $type);
@@ -277,7 +280,10 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
-        if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_IP)){
+        // check if is Hostname
+        if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_DOMAIN)){
+            return $check;
+        } else if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_IP)){
             return $check;
         } else if ($check) {
             return $this->loop($check, 'ip', $type);
