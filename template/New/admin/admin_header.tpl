@@ -48,7 +48,7 @@
       <!-- Sidebar - Brand -->
       
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?php echo $rSA['header_href'];?>">
-        <img src="images/<?php echo $rSA['header_icon'];?>" title="<?php echo $rSA['header_text'];?>" width="32">
+        <img src="images/logo_180px_AE.png" title="<?php echo $rSA['header_text'];?>" width="32">
         <div class="sidebar-brand-text "> <?php echo $rSA['header_text'];?></div>
       </a>
 
