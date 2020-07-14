@@ -1,0 +1,1 @@
+<input type="checkbox" name="ids[<?php echo $id;?>][dl]" value="Y">

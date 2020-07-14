@@ -71,7 +71,7 @@ $languageObject = simplexml_load_file(EASYWIDIR . '/install/' . $menuLanguage . 
 $displayToUser = '';
 $systemCheckOk = array();
 $systemCheckError = array();
-$easyWiVersion = ($developer == 'Y') ? '6.0.5' : '6.0.5';
+$easyWiVersion = ($developer == 'Y') ? '6.1.6' : '6.1.6';
 
 
 if ($currentStep == 0) {

@@ -1,0 +1,582 @@
+﻿
+ ul.pagination {
+    display: -ms-flexbox;
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: .25rem;
+}
+
+
+
+ul.pagination > li {
+    position: relative;
+    display: block;
+    padding: .5rem .75rem;
+    margin-left: -1px;
+    line-height: 1.25;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+
+ul.pagination > li.active {
+    background-color: rgba(0,0,0,0.1)!important;
+}
+
+.breadcrumb {
+    display: -ms-flexbox!important;
+    display: flex!important;
+    -ms-flex-wrap: wrap!important;
+    flex-wrap: wrap!important;
+    padding: 1rem 2rem!important;
+    margin-bottom: 1rem!important;
+    list-style: none!important;
+    background-color: #e9ecef!important;
+    border-radius: .5rem!important;
+}
+#dataTable_wrapper {
+    margin-left: 50px!important;
+}
+#dataTable_wrapper > div > .row{
+    padding-left:50px;
+}
+#dataTable_wrapper > div > .col-xs-6 {
+    margin-left: 20px;
+}
+div > .pagination > li{
+    margin-left: 20px;
+}
+
+.breadcrumb > li{
+    padding-left: 5px;
+} 
+.breadcrumb > li::after{
+    content: " //";
+}
+
+
+
+.restartbuttonde {
+    background:url(/images/icons//de/Restart.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.stopbuttonde {
+    background:url(/images/icons/de/stop.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.startbuttonde {
+    background:url(/images/icons/de/start.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cfgbuttonde {
+    background:url(/images/icons/de/cfg.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.modbuttonde {
+    background:url(/images/icons/de/addons.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cbackupsbuttonde {
+    background:url(/images/icons/de/createbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.rbackupsbuttonde {
+    background:url(/images/icons/de/recoverbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.ftpbuttonde {
+    background:url(/images/icons/de/ftp.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.restartplabuttonde {
+    background:url(/images/icons/de/restartplanner.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.consolebuttonde {
+    background:url(/images/icons/de/console.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.reinstallbuttonde {
+    background:url(/images/icons/de/reinstall.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.settingsbuttonde {
+    background:url(/images/icons/de/settings.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.content-header {
+    position: relative;
+    padding: 15px 15px 0 15px;
+}
+.restartbuttondk {
+    background:url(/images/icons/dk/Restart.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.stopbuttondk {
+    background:url(/images/icons/dk/stop.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.startbuttondk {
+    background:url(/images/icons/dk/start.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cfgbuttondk {
+    background:url(/images/icons/dk/cfg.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.modbuttondk {
+    background:url(/images/icons/dk/addons.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cbackupsbuttondk {
+    background:url(/images/icons/dk/createbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.rbackupsbuttondk {
+    background:url(/images/icons/dk/recoverbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.ftpbuttondk {
+    background:url(/images/icons/dk/ftp.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.restartplabuttondk {
+    background:url(/images/icons/dk/restartplanner.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.consolebuttondk {
+    background:url(/images/icons/dk/console.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.reinstallbuttondk {
+    background:url(/images/icons/dk/reinstall.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.settingsbuttondk {
+    background:url(/images/icons/dk/settings.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+
+
+.restartbuttonit {
+    background:url(/images/icons/it/Restart.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.stopbuttonit {
+    background:url(/images/icons/it/stop.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.startbuttonit {
+    background:url(/images/icons/it/start.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cfgbuttonit {
+    background:url(/images/icons/it/cfg.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.modbuttonit {
+    background:url(/images/icons/it/addons.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cbackupsbuttonit {
+    background:url(/images/icons/it/createbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.rbackupsbuttonit {
+    background:url(/images/icons/it/recoverbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.ftpbuttonit {
+    background:url(/images/icons/it/ftp.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.restartplabuttonit {
+    background:url(/images/icons/it/restartplanner.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.consolebuttonit {
+    background:url(/images/icons/it/console.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.reinstallbuttonit {
+    background:url(/images/icons/it/reinstall.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.settingsbuttonit {
+    background:url(/images/icons/it/settings.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+
+
+
+.restartbuttonpt {
+    background:url(/images/icons/pt/Restart.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.stopbuttonpt {
+    background:url(/images/icons/pt/stop.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.startbuttonpt {
+    background:url(/images/icons/pt/start.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cfgbuttonpt {
+    background:url(/images/icons/pt/cfg.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.modbuttonpt {
+    background:url(/images/icons/pt/addons.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cbackupsbuttonpt {
+    background:url(/images/icons/pt/createbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.rbackupsbuttonpt {
+    background:url(/images/icons/pt/recoverbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.ftpbuttonpt {
+    background:url(/images/icons/pt/ftp.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.restartplabuttonpt {
+    background:url(/images/icons/pt/restartplanner.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.consolebuttonpt {
+    background:url(/images/icons/pt/console.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.reinstallbuttonpt {
+    background:url(/images/icons/pt/reinstall.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.settingsbuttonpt {
+    background:url(/images/icons/pt/settings.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+
+
+
+.restartbuttonru {
+    background:url(/images/icons/ru/Restart.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.stopbuttonru {
+    background:url(/images/icons/ru/stop.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.startbuttonru {
+    background:url(/images/icons/ru/start.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cfgbuttonru {
+    background:url(/images/icons/ru/cfg.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.modbuttonru {
+    background:url(/images/icons/ru/addons.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cbackupsbuttonru {
+    background:url(/images/icons/ru/createbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.rbackupsbuttonru {
+    background:url(/images/icons/ru/recoverbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.ftpbuttonru {
+    background:url(/images/icons/ru/ftp.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.restartplabuttonru {
+    background:url(/images/icons/ru/restartplanner.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.consolebuttonru {
+    background:url(/images/icons/ru/console.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.reinstallbuttonru {
+    background:url(/images/icons/ru/reinstall.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.settingsbuttonru {
+    background:url(/images/icons/ru/settings.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+
+
+
+
+
+.restartbuttonuk {
+    background:url(/images/icons/uk/Restart.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.stopbuttonuk {
+    background:url(/images/icons/uk/stop.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.startbuttonuk {
+    background:url(/images/icons/uk/start.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cfgbuttonuk {
+    background:url(/images/icons/uk/cfg.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.modbuttonuk {
+    background:url(/images/icons/uk/addons.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.cbackupsbuttonuk {
+    background:url(/images/icons/uk/createbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.rbackupsbuttonuk {
+    background:url(/images/icons/uk/recoverbackups.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.ftpbuttonuk {
+    background:url(/images/icons/uk/ftp.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.restartplabuttonuk {
+    background:url(/images/icons/uk/restartplanner.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.consolebuttonuk {
+    background:url(/images/icons/uk/console.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.reinstallbuttonuk {
+    background:url(/images/icons/uk/reinstall.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+.settingsbuttonuk {
+    background:url(/images/icons/uk/settings.png) no-repeat;
+    cursor:pointer;
+    width: 100px;
+    height: 115px;
+    border: none;
+}
+

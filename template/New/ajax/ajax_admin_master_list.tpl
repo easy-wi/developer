@@ -1,0 +1,1 @@
+<?php $array = array(); foreach($what as $k=>$v){ $array[]= ($v==false) ? '<i class="fa fa-spinner fa-spin"></i>'.$k : $k; }; echo implode(', ', $array);?>

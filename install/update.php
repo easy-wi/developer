@@ -193,6 +193,9 @@ if (versioncheck($version, '6.0.0', 'update_530-600.php', $response)) {
 if (versioncheck($version, '6.0.5', 'update_600-605.php', $response)) {
     $version = '6.0.5';
 }
+if (versioncheck($version, '6.1.6', 'update_605-616.php', $response)) {
+    $version = '6.1.6';
+}
 
 try {
 
@@ -201,7 +204,7 @@ try {
 
     if ($query->fetchColumn() == 'Y') {
 
-        $devVersion = '6.0.6';
+        $devVersion = '6.1.6';
 
         if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
             $version = $devVersion;
