@@ -35,7 +35,7 @@
                             <label for="inputPriority"><?php echo $sprache->priority;?></label>
                             <div class="controls">
                                 <select class="form-control" id="inputPriority" name="priority">
-                                    <option value="1"><?php echo $sprache->priority_low;?></option>
+                                    <option value="1" <?php if($priority=="1") echo 'selected="selected"';?>><?php echo $sprache->priority_low;?></option>
                                     <option value="2" <?php if($priority=="2") echo 'selected="selected"';?>><?php echo $sprache->priority_medium;?></option>
                                     <option value="3" <?php if($priority=="3") echo 'selected="selected"';?>><?php echo $sprache->priority_high;?></option>
                                     <option value="4" <?php if($priority=="4") echo 'selected="selected"';?>><?php echo $sprache->priority_very_high;?></option>

@@ -109,7 +109,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $topic_name = $ui->description('topic_name', 'post');
             $maintopic = $ui->description('maintopic', 'post');
-            $priority = ($ui->id('priority', 1, 'post')) ? $ui->id('priority', 1, 'post') : 1;
+            $priority = ($ui->id('priority', 1, 'post') ? $ui->id('priority', 1, 'post') : 1);
 
             $query = $sql->prepare("SELECT `id` FROM `ticket_topics` WHERE `topic`=? AND `maintopic`=? AND `resellerid`=? LIMIT 1");
             $query->execute(array($topic_name, $maintopic, $resellerLockupID));
@@ -120,12 +120,16 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             } else {
 
+                $maintopic = ($maintopic == "none" ? 0 : $maintopic);
+
                 $query = $sql->prepare("INSERT INTO `ticket_topics` (`topic`,`maintopic`,`priority`,`resellerid`) VALUES (?,?,?,?)");
                 $query->execute(array($topic_name, $maintopic, $priority, $resellerLockupID));
                 $id = $sql->lastInsertId();
 
+                $maintopic = ($maintopic == 0 ? "none" : $maintopic);
+
                 if ($maintopic == "none") {
-                    $query = $sql->prepare("UPDATE `ticket_topics` SET `maintopic`=:id, priority='NULL' WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
+                    $query = $sql->prepare("UPDATE `ticket_topics` SET `maintopic`=:id WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
                     $query->execute(array(':id' => $id,':reseller_id' => $resellerLockupID));
                 }
 
@@ -229,7 +233,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         $query->execute(array($resellerLockupID));
 
         $query2 = $sql->prepare("SELECT `text` FROM `translations` WHERE `type`='ti' AND `lang`=? AND `transID`=? AND `resellerID`=? LIMIT 1");
-        foreach ($query2->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
 
             $topics = '';
             $query2->execute(array($user_language, $row['id'],$resellerLockupID));
@@ -285,12 +289,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
         if ($ui->description('maintopic', 'post')){
 
             $topic_name = $ui->description('topic_name', 'post');
-            $priority = ($ui->id('priority', 1, 'post')) ? $ui->id('priority', 1, 'post') : 1;
+            $priority = ($ui->id('priority', 1, 'post') ? $ui->id('priority', 1, 'post') : 1);
             $maintopic = $ui->description('maintopic', 'post');
 
             if ($maintopic == "none") {
                 $maintopic = $id;
-                $priority = 0;
             }
 
             $query = $sql->prepare("UPDATE `ticket_topics` SET `topic`=:topic,`maintopic`=:maintopic,`priority`=:priority WHERE `id`=:id AND `resellerid`=:reseller_id LIMIT 1");
@@ -345,7 +348,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             } else if ($row2['priority']==3) {
                 $priority = $sprache->priority_high;
             } else if ($row2['priority']==4) {
-                $priority = $sprache->priority_highest;
+                $priority = $sprache->priority_very_high;
+            } else if ($row2['priority']==5) {
+                $priority = $sprache->priority_critical;
             }
 
             if ($row2['text'] != null and $row2['text'] != '') {
