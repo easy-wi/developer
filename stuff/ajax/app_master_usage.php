@@ -71,7 +71,7 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     $installedRam = (int) $row['installedRam'];
     $quotaActive = $row['quota_active'];
 
-    if ($row['connect_ip_only'] != 'Y' and isip($row['ip'], 'ip4')) {
+    if ($row['connect_ip_only'] != 'Y' and isip($row['ip'], 'ip4') or $row['connect_ip_only'] != 'Y' and ishostname($row['ip'])) {
         $ips[] = $row['ip'];
     }
 

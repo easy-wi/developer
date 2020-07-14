@@ -73,7 +73,7 @@
 
                         <div class="form-group<?php if(isset($errors['ip'])) echo ' has-error';?>">
                             <label for="inputIP"><?php echo $sprache->haupt_ip;?></label>
-                            <div class="controls"><input class="form-control" id="inputIP" type="text" name="ip" value="<?php echo $ip?>" maxlength="15"></div>
+                            <div class="controls"><input class="form-control" id="inputIP" type="text" name="ip" value="<?php echo $ip?>" ></div>
                         </div>
 
                         <div class="form-group">

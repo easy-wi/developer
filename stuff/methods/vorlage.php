@@ -55,6 +55,10 @@ function isip($value, $ipx) {
     return false;
 }
 
+function ishostname($value){
+    return (filter_var($value, FILTER_VALIDATE_DOMAIN) !== false) ? $value : false;
+}
+
 function isips($value) {
     return (preg_match("/^[\r\n\.\/0-9]+$/", $value) !== false) ? $value : false;
 }
