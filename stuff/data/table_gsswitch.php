@@ -61,7 +61,7 @@ $defined['gsswitch'] = array(
     'ftppassword' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'ppassword' => array("Type"=>"blob","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
     'psince' => array("Type"=>"timestamp","Null"=>"YES","Key"=>"","Default"=>"","Extra"=>""),
-    'serverip' => array("Type"=>"varchar(15)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
+    'serverip' => array("Type"=>"varchar(255)","Null"=>"NO","Key"=>"","Default"=>"","Extra"=>""),
     'port' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"NULL","Extra"=>""),
     'port2' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"NULL","Extra"=>""),
     'port3' => array("Type"=>"smallint(5) unsigned","Null"=>"YES","Key"=>"","Default"=>"NULL","Extra"=>""),
