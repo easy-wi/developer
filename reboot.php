@@ -60,7 +60,7 @@ include(EASYWIDIR . '/stuff/methods/queries_updates.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
 if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
-    
+
     echo "Reboot and Updater started\r\n";    
 
     if (version_compare(PHP_VERSION,'5.3.0') >= 0){
@@ -74,7 +74,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $now = date('Y-m-d', strtotime('now'));
     $sprache = getlanguagefile('gserver', 'uk', 0);
 
-    echo "Fetch Easy-Wi version\r\n";
+    echo "<br>Fetch Easy-Wi version\r\n";
 
     licenceRequest();
 
@@ -86,7 +86,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
     if (version_compare($rSA['version'], $installedEasyWiVersion) == 1) {
 
-        echo "New Easy-Wi{$developerVersion} version available: {$rSA['version']}\r\n";
+        echo "<br><br>New Easy-Wi{$developerVersion} version available: {$rSA['version']}\r\n";
 
         if (date('G') == 5) {
 
@@ -96,18 +96,18 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             $query->execute();
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if (sendmail('easy-wi-update', $row['id'], $updateMail, 'Y')) {
-                    echo "Update notification send to user {$row['cname']} ({$row['mail']})\r\n";
+                    echo "<br>Update notification send to user {$row['cname']} ({$row['mail']})\r\n";
                 } else {
-                    echo "Sending update notification to user {$row['cname']} ({$row['mail']}) failed\r\n";
+                    echo "<br>Sending update notification to user {$row['cname']} ({$row['mail']}) failed\r\n";
                 }
             }
         }
 
     } else {
-        echo "You are running the latest Easy-Wi{$developerVersion} version: {$installedEasyWiVersion}.\r\n";
+        echo "<br>You are running the latest Easy-Wi{$developerVersion} version: {$installedEasyWiVersion}.\r\n";
     }
 
-    echo "Fetch version for Teamspeak 3 Server\r\n";
+    echo "<br><br>Fetch version for Teamspeak 3 Server\r\n";
 
     $query = $sql->prepare("UPDATE `voice_masterserver` SET `latest_version`=? WHERE `bitversion`=?");
 
@@ -121,22 +121,21 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query->execute(array($ts3MasterVersion64['version'], '64'));
     }
 
-    echo "Current versions for Teamspeak 3 Server are {$ts3MasterVersion32['version']} (32bit) and {$ts3MasterVersion64['version']} (64bit)\r\n";
+    echo "<br>Current versions for Teamspeak 3 Server are {$ts3MasterVersion32['version']} (32bit) and {$ts3MasterVersion64['version']} (64bit)\r\n";
 
-    echo "Fetch version for Minecraft and Bukkit Server\r\n";
+    echo "<br><br>Fetch version for Minecraft and Bukkit Server\r\n";
 
     $query = $sql->prepare("SELECT t.`shorten` FROM `servertypes` t LEFT JOIN `rservermasterg` r ON t.`id`=r.`servertypeid` WHERE r.`id` IS NOT NULL AND t.`gameq`='minecraft' GROUP BY t.`shorten` ORDER BY t.`shorten`");
     $query2 = $sql->prepare("UPDATE `servertypes` SET `steamVersion`=?,`downloadPath`=? WHERE `shorten`=?");
     $query->execute();
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        echo 'Retrieving Version for ' . $row['shorten'] . "\r\n";
+        echo '<br>Retrieving Version for ' . $row['shorten'] . "\r\n";
 
         $reply = ($row['shorten'] == 'bukkit') ? getCraftBukkitVersion() : getMinecraftVersion();
-
         if (is_array($reply)) {
 
-            echo 'Version for ' . $row['shorten'] . ' is: ' . $reply['version'] . "\r\n";
+            echo '<br>Version for ' . $row['shorten'] . ' is: ' . $reply['version'] . "\r\n";
 
             if (strlen($reply['version']) > 1) {
                 $query2->execute(array($reply['version'], $reply['downloadPath'], $row['shorten']));
@@ -144,7 +143,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         }
     }
 
-    echo "Fetch version for valves appIDs\r\n";
+    echo "<br><br>Fetch version for valves appIDs\r\n";
 
     $steamVersion = array();
 
@@ -166,10 +165,10 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     $query2->execute(array($version, $appID));
 
-                    echo 'Version for ARK with appID ' . $appID . ' is: ' . $version . "\r\n";
+                    echo '<br>Version for ARK with appID ' . $appID . ' is: ' . $version . "\r\n";
 
                 } else {
-                    echo 'Error for ARK with appID ' . $appID . ' is: Could not retrieve version string' . "\r\n";
+                    echo '<br>Error for ARK with appID ' . $appID . ' is: Could not retrieve version string' . "\r\n";
                 }
 
             } else {
@@ -182,12 +181,12 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                     $query2->execute(array($decoded->response->required_version, $appID));
 
-                    echo 'Version for appID ' . $appID . ' is: ' . $decoded->response->required_version . "\r\n";
+                    echo '<br>Version for appID ' . $appID . ' is: ' . $decoded->response->required_version . "\r\n";
 
                 } else if (isset($decoded->response->error)) {
-                    echo 'Error for appID ' . $appID . ' is: ' . $decoded->response->error . "\r\n";
+                    echo '<br>Error for appID ' . $appID . ' is: ' . $decoded->response->error . "\r\n";
                 } else {
-                    echo 'Error for appID ' . $appID . ' is: Could not retrieve JSON string' . "\r\n";
+                    echo '<br>Error for appID ' . $appID . ' is: Could not retrieve JSON string' . "\r\n";
                 }
             }
         }
@@ -274,7 +273,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     $connection->CloseConnection();
                     unset($connection);
                     $tsdown = true;
-                    print "TS3 Query Error: ".$errorcode."\r\n";
+                    print "<br><br>TS3 Query Error: ".$errorcode."\r\n";
                     $restartreturn="TS3";
                 }
 
@@ -287,7 +286,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     }
 
                     if (!is_resource($tsdnscheck)) {
-                        print "TSDNS Error: ".$errno.' ('.$errstr.")\r\n";
+                        print "<br><br>TSDNS Error: ".$errno.' ('.$errstr.")\r\n";
                         $tsdnsdown = true;
 
                         if (isset($restartreturn)) {
@@ -298,7 +297,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                     }
 
                 } else if ($row2['usedns'] == 'Y' and $tsdnsExternalActive == true) {
-                    print "Skip TSDNS since external is used\r\n";
+                    print "<br><br>Skip TSDNS since external is used\r\n";
                 }
 
                 $cmds = array();
@@ -349,7 +348,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         }
 
                     } else if ($autorestart == 'Y') {
-                        print "Do not restart TS3/TSDNS ${queryip} since failcount is only ${ts3masternotified} and ${down_checks} is required for restart \r\n";
+                        print "<br><br>Do not restart TS3/TSDNS ${queryip} since failcount is only ${ts3masternotified} and ${down_checks} is required for restart \r\n";
                     }
                 }
 
@@ -444,7 +443,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                                 $cmds[] ='cd '.$folders.' && function backup () { mkdir -p ' . $backupfolder . ' && nice -n +19 tar cfPj ' . $backupfolder . $row4['id'] . '.tar.bz2 ' . $filefolder . '; }; backup& ';
 
-                                print "Creating backup for ts3 server: " . $row3['ip'] . ':' . $row3['port'] . "\r\n";
+                                print "<br>Creating backup for ts3 server: " . $row3['ip'] . ':' . $row3['port'] . "\r\n";
                             }
 
                         }
@@ -454,9 +453,9 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                 if (count($cmds) > 0) {
 
                     if (ssh2_execute('vm', $ts3masterid, $cmds)) {
-                        print "Restarting: $restartreturn\r\n";
+                        print "<br>Restarting: $restartreturn\r\n";
                     } else {
-                        print "Failed restarting: $restartreturn\r\n";
+                        print "<br>Failed restarting: $restartreturn\r\n";
                     }
 
                     if (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) {
@@ -503,14 +502,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         $appServer->mcWorldSave();
 
-                        echo 'MC worldsave: ' . $row2['server'] . "\r\n";
+                        echo '<br>MC worldsave: ' . $row2['server'] . "\r\n";
                     }
 
                     if ($row3['restart'] == 'N' and $row3['upload'] == 'Y') {
 
                         $appServer->demoUpload();
 
-                        echo 'Demo upload for: ' . $row2['server'] . "\r\n";
+                        echo '<br>Demo upload for: ' . $row2['server'] . "\r\n";
                     }
 
                     if ($row3['restart'] == 'Y') {
@@ -528,14 +527,14 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                         $appServer->startApp();
 
-                        echo 'Restarting server: ' . $row2['server'] . "\r\n";
+                        echo '<br>Restarting server: ' . $row2['server'] . "\r\n";
                     }
 
                     if ($row3['backup'] == 'Y') {
 
                         $appServer->backupCreate($row2['backup']);
 
-                        echo 'Backup server: ' . $row2['server'] . "\r\n";
+                        echo '<br>Backup server: ' . $row2['server'] . "\r\n";
                     }
                 }
             }
@@ -550,13 +549,13 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     
     $newsInclude = true;
     $printToConsole = true;
-    print "Check for new news feeds\r\n";
+    print "<br><br>Check for new news feeds\r\n<br>";
     include(EASYWIDIR . '/stuff/methods/feeds_function.php');
     if (isset($template_file)) {
-        print $template_file."\r\n";
+        print "<br>". $template_file."\r\n";
     }
     
-    print "Cleaning Logs\r\n";
+    print "<br><br>Cleaning Logs\r\n";
     $query = $sql->prepare("DELETE FROM `userlog` WHERE DATEDIFF(NOW(),`logdate`)>31");
     $query->execute();
     $query = $sql->prepare("DELETE FROM `mail_log` WHERE DATEDIFF(NOW(),`date`)>31");
@@ -572,7 +571,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                 $serverName = (strlen($row['description']) == 0) ? $row['ssh2ip'] : $row['ssh2ip'] . ' ' . $row['description'];
 
-                print "Sending TS3 update information for server $serverName\r\n";
+                print "<br>Sending TS3 update information for server $serverName\r\n";
 
                 $query2 = $sql->prepare("SELECT `id` FROM `userdata` WHERE ((`resellerid`=? AND `accounttype`='a') OR (`id`=? AND `accounttype`='r')) AND `mail_gsupdate`='Y'");
                 $query2->execute(array($row['resellerid'], $row['resellerid']));
@@ -582,11 +581,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
             }
         }
 
-        print "Reparing tables\r\n";
+        print "<br>Reparing tables\r\n";
         $query = $sql->prepare("REPAIR TABLE `addons`,`addons_installed`,`api_external_auth`,`api_ips`,`api_settings`,`badips`,`dhcpdata`,`eac`,`easywi_version`,`gserver_restarts`,`gsstatus`,`gsswitch`,`imprints`,`jobs`,`lendedserver`,`lendsettings`,`lendstats`,`mail_log`,`mysql_external_dbs`,`mysql_external_servers`,`page_pages`,`page_pages_text`,`page_settings`,`page_terms`,`page_terms_used`,`resellerdata`,`resellerimages`,`rserverdata`,`rservermasterg`,`serverlist`,`servertypes`,`settings`,`test`,`tickets`,`ticket_topics`,`traffic_data`,`traffic_data_day`,`traffic_settings`,`userdata`,`usergroups`,`userlog`,`userpermissions`,`virtualcontainer`,`virtualhosts`,`voice_masterserver`,`voice_server`,`voice_server_backup`,`voice_server_stats`,`voice_stats_settings`");
         $query->execute();
 
-        print "Optimizing tables\r\n";
+        print "<br>Optimizing tables\r\n";
         $query = $sql->prepare("OPTIMIZE TABLE `addons`,`addons_installed`,`api_external_auth`,`api_ips`,`api_settings`,`badips`,`dhcpdata`,`eac`,`easywi_version`,`gserver_restarts`,`gsstatus`,`gsswitch`,`imprints`,`jobs`,`lendedserver`,`lendsettings`,`lendstats`,`mail_log`,`mysql_external_dbs`,`mysql_external_servers`,`page_pages`,`page_pages_text`,`page_settings`,`page_terms`,`page_terms_used`,`resellerdata`,`resellerimages`,`rserverdata`,`rservermasterg`,`serverlist`,`servertypes`,`settings`,`test`,`tickets`,`ticket_topics`,`traffic_data`,`traffic_data_day`,`traffic_settings`,`userdata`,`usergroups`,`userlog`,`userpermissions`,`virtualcontainer`,`virtualhosts`,`voice_masterserver`,`voice_server`,`voice_server_backup`,`voice_server_stats`,`voice_stats_settings`");
         $query->execute();
     }
