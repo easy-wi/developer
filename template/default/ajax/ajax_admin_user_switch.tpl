@@ -1,1 +1,1 @@
-<a href="switch.php?id=<?php echo $id;?>"><?php echo $what;?></a> <?php echo $do;?>
+<a href="switch.php?id=<?php echo $id;?>" target="_blank"><?php echo $what;?></a> <?php echo $do;?>
