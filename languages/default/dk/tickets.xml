@@ -9,7 +9,9 @@
 	<default>Standard</default>
 	<edit2>Redigeret af</edit2>
 	<edit>Redigeret</edit>
-    <error_topic></error_topic>
+    <error_topic>Fejl: Ingen underkategori valgt!</error_topic>
+	<error_no_topic>Ingen kategori tilgængelig</error_no_topic>
+	<error_no_topic2>Ingen underkategori tilgængelig</error_no_topic2>
 	<heading>Support Kategori</heading>
 	<name>Navn</name>
 	<new>Tilføj kategori</new>

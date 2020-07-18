@@ -10,6 +10,8 @@
     <edit2>Modificato da</edit2>
     <edit>Modificato</edit>
     <error_topic>Errore: Nessun sottoargomento selezionato!</error_topic>
+    <error_no_topic>Nessuna categoria disponibile</error_no_topic>
+    <error_no_topic2>Nessuna sottocategoria disponibile</error_no_topic2>
     <heading>Tipologia di supporto</heading>
     <name>Nome</name>
     <new>Aggiungi categoria</new>

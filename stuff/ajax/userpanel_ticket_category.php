@@ -62,7 +62,19 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
         }
     }
 
+
+
     $table[$row['id']] = $topic;
+}
+
+if (empty($table)) {
+    if (!defined('EASYWIDIR')) {
+        define('EASYWIDIR', dirname(__FILE__));
+    }
+    include(EASYWIDIR . '/stuff/methods/functions.php');
+    $sprache = getlanguagefile('tickets', $user_language, $reseller_id);
+    $table[0] = $sprache->error_no_topic2;
+    $topic_require = false;
 }
 
 require_once IncludeTemplate($template_to_use, 'ajax_userpanel_ticket_category.tpl', 'ajax');

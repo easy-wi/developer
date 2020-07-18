@@ -51,7 +51,7 @@
                                 <td><?php echo $table_row['priority'];?></td>
                                 <td><?php echo $table_row['userPriority'];?></td>
                                 <td><?php echo $table_row['supporter'];?></td>
-                                <td><a href="switch.php?id=<?php echo $table_row['user_id'];?>"><?php echo $table_row['user'];?></a></td>
+                                <td><a href="switch.php?id=<?php echo $table_row['user_id'];?>" target="_blank"><?php echo $table_row['user'];?></a></td>
                                 <td><?php echo $table_row['writedate'];?></td>
                                 <td><a href="admin.php?w=ti&amp;d=md&amp;id=<?php echo $table_row['id'];?>"><span class="btn btn-primary btn-sm"><i class="fa fa-pencil-square-o"></i> <?php echo $gsprache->mod;?></span></a></td>
                             </tr>

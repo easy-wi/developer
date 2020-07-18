@@ -33,20 +33,22 @@
                         <div class="form-group">
                             <label for="topic_maintopic"><?php echo $sprache->topic_name;?></label>
                             <select class="form-control" id="topic_maintopic" name="maintopic" required="required">
-                                <option></option>
-                                <?php foreach ($table as $table_row){ ?>
-                                <option value="<?php echo $table_row['id'];?>" ><?php echo $table_row['topic'];?></option>
-                                <?php } ?>
+                                <?php
+                                $i = 0;
+                                foreach ($table as $table_row){ ?>
+                                <option value="<?php echo $table_row['id'];?>" <?php if($i == 0) echo "selected"; ?>><?php echo $table_row['topic'];?></option>
+                                <?php $i++; } ?>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="topic_name_sub"><?php echo $sprache->topic_name_sub;?></label>
                             <select class="form-control" id="topic_name_sub" name="topic" required="required">
-                                <option></option>
-                                <?php foreach ($table2 as $table_row2){ ?>
-                                <option value="<?php echo $table_row2['id'];?>" ><?php echo $table_row2['topic'];?></option>>
-                                <?php } ?>
+                                <?php
+                                $i = 0;
+                                foreach ($table2 as $table_row2){ ?>
+                                <option value="<?php echo $table_row2['id'];?>" <?php if($i == 0) echo "selected"; ?>><?php echo $table_row2['topic'];?></option>
+                                <?php $i++; } ?>
                             </select>
                         </div>
 

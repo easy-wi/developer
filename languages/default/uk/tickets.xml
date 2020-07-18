@@ -10,6 +10,8 @@
     <edit2>Edited by</edit2>
     <edit>Edited</edit>
     <error_topic>Error: No Subtopic selected!</error_topic>
+    <error_no_topic>No category available</error_no_topic>
+    <error_no_topic2>No subcategory available</error_no_topic2>
     <heading>Support category</heading>
     <name>Name</name>
     <new>Add category</new>
