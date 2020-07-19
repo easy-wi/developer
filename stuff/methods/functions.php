@@ -38,6 +38,9 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 if (!defined('EASYWIDIR')) {
     define('EASYWIDIR', '');
 }
@@ -649,12 +652,17 @@ if (!function_exists('passwordgenerate')) {
             include(EASYWIDIR . '/stuff/keyphrasefile.php');
         }
         if (!class_exists('PHPMailer')) {
-            include(EASYWIDIR . '/third_party/phpmailer/PHPMailerAutoload.php');
+
+            include(EASYWIDIR . '/third_party/phpmailer6/Exception.php');
+            include(EASYWIDIR . '/third_party/phpmailer6/PHPMailer.php');
+            include(EASYWIDIR . '/third_party/phpmailer6/SMTP.php');
         }
 
         if ($template == 'emailnewticket') {
             $writerid = $shorten[1];
+            $topicid = $shorten[2];
             $shorten = $shorten[0];
+
         }
 
         //Load costomer
@@ -734,7 +742,17 @@ if (!function_exists('passwordgenerate')) {
                 $username = ($row['vname'] . ' ' . $row['name'] == ' ') ? $row['cname'] : $row['vname'] . ' ' . $row['name'];
             }
 
-            $topic = '#' . $shorten;
+            $query = $sql->prepare("SELECT `topic` FROM `ticket_topics` WHERE `id`=? LIMIT 1");
+            $query->execute(array($topicid));
+            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+                $topicname = $row['topic'];
+            }
+
+            if(isset($topicname)){
+                $topic = '#' . $shorten . ' | ' . $topicname;
+            }else{
+                $topic = '#' . $shorten;
+            }
 
 
         } else if (isset($dataTemplate['subject'])) {
@@ -886,7 +904,7 @@ if (!function_exists('passwordgenerate')) {
                     ));
 
                 } else {
-                    $smtpConnect = $mail->smtpConnect();
+                    $smtpConnect = true;
                 }
 
                 if ($smtpConnect and $mail->send()) {

@@ -462,11 +462,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else if ($ui->smallletters('action', 2, 'post') == 'wr') {
 
-        $query = $sql->prepare("SELECT `userid`,`state` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `userid`,`state`,`topic` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id,$resellerLockupID));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $userid = $row['userid'];
             $state = $row['state'];
+            $topicid = $row['topic'];
         }
 
         if (isset($state) and $state != 'C' and $ui->w('state',1, 'post') != 'C') {
@@ -495,7 +496,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query = $sql->prepare("SELECT `mail_ticket` FROM `userdata` WHERE `id`=? LIMIT 1");
                 $query->execute(array($userid));
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                    if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket',$userid,$ui->post['ticket'], array($id,$admin_id));
+                    if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket',$userid,$ui->post['ticket'], array($id,$admin_id,$topicid));
                 }
             }
         } else {

@@ -62,6 +62,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         $table = array();
         $table2 = array();
+        $topic_require = true;
 
         $i = 1;
 
@@ -83,6 +84,11 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             if (empty($topic)) {
                 $topic = $row['topic'];
+            }
+
+            if (empty($topic)) {
+                $row['id'] = 0;
+                $topic = $sprache->error_no_topic;
             }
 
             $table[] = array('id' => $row['id'], 'topic' => $topic);
@@ -108,18 +114,32 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                     $table2[] = array('id' => $row2['id'], 'topic' => $topic);
                 }
+
+                if(!isset($table2) || empty($table2)){
+                    $table2[] = array('id' => 0, 'topic' => $sprache->error_no_topic2);
+                    $topic_require = false;
+                }
             }
 
             $i++;
 
         }
 
+        if(!isset($table) || empty($table)){
+            $table[] = array('id' => 0, 'topic' => $sprache->error_no_topic);
+            $table2[] = array('id' => 0, 'topic' => $sprache->error_no_topic2);
+        }
+
         $template_file = 'userpanel_tickets_add.tpl';
 
     } else if ($ui->smallletters('action', 2, 'post') == 'ad') {
 
-        if ($ui->id('topic', 30, 'post')) {
-            $topic = $ui->id('topic', 30, 'post');
+        if ($ui->id('topic', 30, 'post') || $ui->post['topic'] == 0) {
+            if($ui->post['topic'] == 0){
+                $topic = $ui->post['maintopic'];
+            }else{
+                $topic = $ui->id('topic', 30, 'post');
+            }
             $userPriority = $ui->id('userPriority', 30, 'post');
             $ticketText = htmlentities($ui->post['ticket']);
 
@@ -143,7 +163,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
 
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket', $row['id'], $ticketText, array($lastID, $user_id));
+                if ($row['mail_ticket'] == 'Y') sendmail('emailnewticket', $row['id'], $ticketText, array($lastID, $user_id, $topic));
             }
 
             $template_file = $spracheResponse->table_add;
