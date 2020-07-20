@@ -225,7 +225,6 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="index.php"><i class="fas fa-sign-in-alt"></i> Frontend</a>
                         <?php if ($support_phonenumber!="") echo '<a class="dropdown-item" href="#"><i class="fa fa-phone fa-fw"></i> '.$gsprache->hotline.": ".$support_phonenumber.'</a>';?>
-                        <?php include 'template/AEON/config.php'; if ($mailkontakt!=""){ echo'<a class="dropdown-item" href="mailto:'.$mailkontakt.'"><i class="fas fa-envelope-open-text"></i> '. $mailkontakt.'</a>';} else { echo '';}?>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="userpanel.php?w=se&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a>
                         <a class="dropdown-item" href="userpanel.php?w=se"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a>
