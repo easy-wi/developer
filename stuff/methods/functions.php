@@ -39,7 +39,7 @@
  */
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+
 
 if (!defined('EASYWIDIR')) {
     define('EASYWIDIR', '');
@@ -653,7 +653,6 @@ if (!function_exists('passwordgenerate')) {
         }
         if (!class_exists('PHPMailer')) {
 
-            include(EASYWIDIR . '/third_party/phpmailer6/Exception.php');
             include(EASYWIDIR . '/third_party/phpmailer6/PHPMailer.php');
             include(EASYWIDIR . '/third_party/phpmailer6/SMTP.php');
         }
@@ -935,10 +934,14 @@ if (!function_exists('passwordgenerate')) {
             return EASYWIDIR . '/template/default/' . $location. '/' . $file;
 
         } else if (is_file(EASYWIDIR . '/template/default/'.$file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
-            return EASYWIDIR . '/template/default/'.$file;
+            return EASYWIDIR . '/template/default/' . $file;
+
+        } else if (is_file(EASYWIDIR . '/template/default/custom_modules'.$file) and preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
+            return EASYWIDIR . '/template/default/custom_modules'.$file;
 
         } else if (preg_match('/^(.*)\.[\w]{1,}$/', $file)) {
             return EASYWIDIR . '/template/' . $file;
+
         }
         return false;
     }

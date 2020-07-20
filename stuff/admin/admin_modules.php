@@ -60,10 +60,9 @@ $coreModules = array(
     4 => array('id' => 4, 'active' => 'Y', 'name' => $gsprache->voiceserver, 'sub' => 'vo', 'type' => $sprache->type_core),
     5 => array('id' => 5, 'active' => 'Y', 'name' => $gsprache->lendserver, 'sub' => 'le', 'type' => $sprache->type_core),
     6 => array('id' => 6, 'active' => 'Y', 'name' => $gsprache->support, 'sub' => 'ti', 'type' => $sprache->type_core),
-    7 => array('id' => 7, 'active' => 'Y', 'name' => 'Rootserver', 'sub' => 'ro', 'type' => $sprache->type_core),
-    8 => array('id' => 8, 'active' => 'Y', 'name' => $gsprache->imprint, 'sub' => 'ip', 'type' => $sprache->type_core),
-    9 => array('id' => 9, 'active' => 'Y', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core),
-    10 => array('id' => 10, 'active' => 'Y', 'name' => $gsprache->webspace, 'sub' => 'ws', 'type' => $sprache->type_core)
+    7 => array('id' => 7, 'active' => 'Y', 'name' => $gsprache->imprint, 'sub' => 'ip', 'type' => $sprache->type_core),
+    8 => array('id' => 8, 'active' => 'N', 'name' => 'CMS', 'sub' => 'pn', 'type' => $sprache->type_core),
+    9 => array('id' => 9, 'active' => 'Y', 'name' => $gsprache->webspace, 'sub' => 'ws', 'type' => $sprache->type_core),
 );
 
 $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `type`='C' AND `get`=? LIMIT 1");
@@ -88,6 +87,38 @@ foreach ($coreModules as $module) {
         $query3->execute(array($coreModuleID, $user_language, $module['name'], 0));
     }
 }
+
+$query4 = $sql->prepare("SELECT `id` FROM `modules` WHERE `type`='A' AND `get`=? LIMIT 1");
+$query4->execute(array('ex'));
+$modulesid = (int) $query4->fetchColumn();
+
+if($modulesid == 0){
+    $query5 = $sql->prepare("INSERT INTO `modules` (`get`,`file`,`sub`,`active`, `type`) VALUES(?,?,?,?,?) ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
+    $query5->execute(array('ex', 'example.php', 'mo', 'Y', 'A'));
+    $modulesid = $sql->lastInsertId();
+}
+
+$modullanguage = [
+    ["type" => "mo", "lang" => "de", "transID" => $modulesid, "resellerID" => 0, "text" => "Beispiel Modul"],
+    ["type" => "mo", "lang" => "dk", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+    ["type" => "mo", "lang" => "it", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+    ["type" => "mo", "lang" => "pt", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+    ["type" => "mo", "lang" => "ru", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+    ["type" => "mo", "lang" => "uk", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+];
+
+if($modulesid != 0){
+    $query6 = $sql->prepare("SELECT `id` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
+    $query7 = $sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `resellerID`, `text`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+    foreach ($modullanguage as $lang){
+        $query6->execute(array($lang["lang"], $modulesid));
+        $transID = (int)$query6->fetchColumn();
+        if($transID == 0){
+            $query7->execute(array($lang["type"], $lang["lang"], $lang["transID"], $lang["resellerID"], $lang["text"]));
+        }
+    }
+}
+
 
 if ($ui->st('action', 'post') and !token(true)) {
 
