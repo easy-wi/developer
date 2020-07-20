@@ -280,11 +280,12 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     } else if ($ui->smallletters('action', 2, 'post') == 'wr') {
 
-        $query = $sql->prepare("SELECT `supporter`,`state` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
+        $query = $sql->prepare("SELECT `supporter`,`state`,`topic` FROM `tickets` WHERE `id`=? AND `resellerid`=? LIMIT 1");
         $query->execute(array($id, $reseller_id));
         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
             $userid = $row['supporter'];
             $state = $row['state'];
+            $topicid = $row['topic'];
         }
 
         if (isset($state) and $state != 'C') {
@@ -315,7 +316,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($userid));
                 while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                     if ($row['mail_ticket'] == 'Y') {
-                        sendmail('emailnewticket', $userid, $ui->post['ticket'], array($id, $user_id));
+                        sendmail('emailnewticket', $userid, $ui->post['ticket'], array($id, $user_id, $topicid));
                     }
                 }
 
