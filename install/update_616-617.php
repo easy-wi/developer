@@ -116,11 +116,6 @@ if (isset($include) and $include == true) {
 
 
     $response->add('Action: insert_easywi_version done: ');
-    $query->closecursor();
-    $query2->closecursor();
-    $query3->closecursor();
-    $query4->closecursor();
-    $query5->closecursor();
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
