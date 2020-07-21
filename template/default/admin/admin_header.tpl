@@ -66,6 +66,15 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                    <?php if(isset($toooldversion)){ ?>
+                    <!-- Messages: style can be found in dropdown.less-->
+                    <li class="dropdown messages-menu hidden-xs">
+                        <a href="admin.php?w=vc" class="dropdown-toggle">
+                            <i class="fa fa-cloud"></i>
+                            <span class="label label-warning"><?php echo $rSA['version'];?></span>
+                        </a>
+                    </li>
+                    <?php } ?>
                     <?php if($statsArray['ticketsTotal']>0){ ?>
                     <!-- Messages: style can be found in dropdown.less-->
                     <li class="dropdown messages-menu hidden-xs">

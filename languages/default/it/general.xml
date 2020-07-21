@@ -122,6 +122,7 @@
 	<templates>Modelli</templates>
 	<traffic>Traffico</traffic>
 	<update>Aggiorna</update>
+    <update_easy>Easy-Wi Aggiorna</update_easy>
     <upload>Carica</upload>
     <use>Utilizza</use>
     <used>In uso</used>

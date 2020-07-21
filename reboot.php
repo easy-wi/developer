@@ -88,20 +88,19 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
         echo "<br><br>New Easy-Wi{$developerVersion} version available: {$rSA['version']}\r\n";
 
-        if (date('G') == 5) {
 
-            $updateMail = "A new Easy-Wi{$developerVersion} version is available. The version is {$rSA['version']}.\r\nYou can download it at https://github.com/easy-wi/developer/releases/tag/{$rSA['version']}";
+        $updateMail = "A new Easy-Wi{$developerVersion} version is available. The version is {$rSA['version']}.\r\nYou can download it at https://github.com/easy-wi/developer/releases/tag/{$rSA['version']}";
 
-            $query = $sql->prepare("SELECT `id`,`cname`,`mail` FROM `userdata` WHERE `accounttype`='a' AND `active`='Y'");
-            $query->execute();
-            while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-                if (sendmail('easy-wi-update', $row['id'], $updateMail, 'Y')) {
-                    echo "<br>Update notification send to user {$row['cname']} ({$row['mail']})\r\n";
-                } else {
-                    echo "<br>Sending update notification to user {$row['cname']} ({$row['mail']}) failed\r\n";
-                }
+        $query = $sql->prepare("SELECT `id`,`cname`,`mail` FROM `userdata` WHERE `accounttype`='a' AND `active`='Y'");
+        $query->execute();
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            if (sendmail('emaileasyupdate', $row['id'], $updateMail, 'Y')) {
+                echo "<br>Update notification send to user {$row['cname']} ({$row['mail']})\r\n";
+            } else {
+                echo "<br>Sending update notification to user {$row['cname']} ({$row['mail']}) failed\r\n";
             }
         }
+
 
     } else {
         echo "<br>You are running the latest Easy-Wi{$developerVersion} version: {$installedEasyWiVersion}.\r\n";

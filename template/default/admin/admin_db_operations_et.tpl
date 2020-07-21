@@ -124,6 +124,13 @@
 
                             <div class="checkbox">
                                 <label>
+                                    <input type="checkbox" id="inputTemplate-emaileasyupdate" name="templates[]" value="emaileasyupdate">
+                                    <?php echo $gsprache->update_easy;?>
+                                </label>
+                            </div>
+
+                            <div class="checkbox">
+                                <label>
                                     <input id="checkAll" type="checkbox"  value="yes" onclick="checkall(this.checked,'templates[]')">
                                     <?php echo $gsprache->all;?>
                                 </label>
