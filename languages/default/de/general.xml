@@ -118,6 +118,7 @@
 	<templates>Images/Templates</templates>
 	<traffic>Traffic</traffic>
 	<update>Aktualisieren</update>
+    <update_easy>Easy-Wi Update</update_easy>
     <upload>Upload</upload>
     <use>Anwenden</use>
     <used>Belegt</used>

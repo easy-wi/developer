@@ -661,7 +661,6 @@ if (!function_exists('passwordgenerate')) {
             $writerid = $shorten[1];
             $topicid = $shorten[2];
             $shorten = $shorten[0];
-
         }
 
         //Load costomer
@@ -1254,25 +1253,47 @@ if (!function_exists('passwordgenerate')) {
         return $return;
     }
 
-    function licenceRequest($return = false) {
-
+    function licenceRequest($return = false, $boolreturn = false) {
         global $sql, $ui, $rSA;
 
         $developer = (isset($rSA['developer'])) ? $rSA['developer'] : 'N';
+        $user_agent = isset($ui->server['HTTP_HOST']) ? $ui->server['HTTP_HOST'] : $rSA['paneldomain'];
+        $host = "https://api.github.com/repos/easy-wi/developer/" . (($developer == 'Y') ? 'tags' : 'releases/latest');
+        $header = [
+            "Accept: application/vnd.github.v3+json",
+            "User-Agent: " . $user_agent
+        ];
 
-        $apiResponse = webhostRequest('api.github.com', isset($ui->server['HTTP_HOST']) ? $ui->server['HTTP_HOST'] : $rSA['paneldomain'], '/repos/easy-wi/developer/' . (($developer == 'Y') ? 'tags' : 'releases/latest'), null, 443);
-        $json = @json_decode($apiResponse);
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $host);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+        $respones = curl_exec($curl);
+        $request_info = curl_getinfo($curl);
+        curl_close($curl);
 
-        if (($developer == 'N' and is_object($json) and property_exists($json, 'tag_name') or ($developer == 'Y' and is_array($json) and isset($json[0]) and is_object($json[0]) and property_exists($json[0], 'name')))) {
+        list($header, $content) = parseHeaders($respones);
+        if($request_info["http_code"] == 200){
+            $json = json_decode($content);
 
-            $version = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
-            $apiResponse = array('v' => $version);
+            if (($developer == 'N' and is_object($json) and property_exists($json, 'tag_name') or ($developer == 'Y' and is_array($json) and isset($json[0]) and is_object($json[0]) and property_exists($json[0], 'name')))) {
 
-            $query = $sql->prepare("UPDATE `settings` SET `version`=? WHERE `resellerid`=0 LIMIT 1");
-            $query->execute(array($version));
+                $version = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
+                $rSA['version'] = $version;
+                $apiResponse = array('v' => $version);
+
+                $query = $sql->prepare("UPDATE `settings` SET `version`=? WHERE `resellerid`=0 LIMIT 1");
+                $query->execute(array($version));
+            }
+
+
+            return ($return == true) ? $json : $boolreturn;
+
+        }else{
+            return false;
         }
-
-        return ($return == true) ? $apiResponse : false;
     }
 
     function token ($check = false) {
@@ -1659,5 +1680,26 @@ $(function() {
      */
     function getLoginHeader($valueOfTitle){
         return preg_replace('/(.+)[\s](.+)/i', '<b>${1}</b> $2', $valueOfTitle, -1, $count);
+    }
+
+    function parseHeaders($data)
+    {
+        list($header, $content) = explode("\r\n\r\n", $data);
+        $headers =  explode("\r\n", $header);
+
+        $head = array();
+        foreach( $headers as $k=>$v )
+        {
+            $t = explode( ':', $v, 2 );
+            if( isset( $t[1] ) )
+                $head[ trim($t[0]) ] = trim( $t[1] );
+            else
+            {
+                $head[] = $v;
+                if( preg_match( "#HTTP/[0-9\.]+\s+([0-9]+)#",$v, $out ) )
+                    $head['reponse_code'] = intval($out[1]);
+            }
+        }
+        return [$head, $content];
     }
 }

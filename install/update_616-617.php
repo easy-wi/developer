@@ -41,37 +41,40 @@
 if (isset($include) and $include == true) {
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('6.1.7','<div align=\"right\">19.07.2020</div>
+('6.1.7','<div align=\"right\">21.07.2020</div>
 <b>&Auml;nderungen:</b><br/>
 <ul>
 <li>General
 <ul>
+<li>Update Email-Template Hinzugefügt</li>
 <li>Beispiel Modul Hinzugefügt</li>
 <li>kosmetische Fehler behoben</li>
 <li>Ticketsystem überarbeitet</li>
 <li>Modul Liste geupdatet -> Example Modules</li>
 <li>PhpMailer auf version 6 geupdated</li>
-</ul></li></li></ul>
+</ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
+<li>Updater Bug Behoben</li>
 <li>Sendmail Bug Behoben</li>
 <li>Ticketsystem unterkategorie Bug behoben</li>
 <li>Masterapps MC update Bug Behoben</li>
 <li>DNS bei der Gameserver Anzeige Bug Behoben</li>
-</ul>','<div align=\"right\">19.07.2020</div>
+</ul>','<div align=\"right\">21.07.2020</div>
 <b>Changes:</b><br/>
 <ul>
 <li>General
 <ul>
+<li>Update Email-Template Added </li>
 <li>Exemple Module Added </li>
 <li>cosmetic errors fixed</li>
 <li>Ticketsystem upgraded</li>
 <li>Modul List Updated -> Example Modules</li>
 <li>Upgrade PhpMailer to version 6</li>
-<li>
-</ul></li></li>
+</ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
+<li>Updater Bug Fixed</li>
 <li>Sendmail Bug Fixed</li>
 <li>Supportsystem Subcategory Bug Fixed</li>
 <li>Masterapps Minecraft update Bug Fixed</li>
@@ -100,7 +103,7 @@ if (isset($include) and $include == true) {
     ];
 
     if($modulesid != 0){
-        $query4 = $sql->prepare("SELECT `id` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
+        $query4 = $sql->prepare("SELECT `transID` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
         $query5 = $sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `resellerID`, `text`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
         foreach ($modullanguage as $lang){
             $query4->execute(array($lang["lang"], $modulesid));

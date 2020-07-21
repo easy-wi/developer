@@ -98,6 +98,7 @@
 	<templates>Images/Templates</templates>
 	<traffic>Trafik</traffic>
 	<update>Opdater</update>
+    <update_easy>Easy-Wi Opdater</update_easy>
     <upload>Upload</upload>
     <use>Brug</use>
     <used></used>

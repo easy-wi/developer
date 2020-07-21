@@ -122,6 +122,7 @@
 	<templates>Images/Templates</templates>
 	<traffic>Traffic</traffic>
 	<update>Update</update>
+    <update_easy>Easy-Wi Update</update_easy>
     <upload>Upload</upload>
     <use>Use</use>
     <used>Used</used>
