@@ -108,7 +108,7 @@ $modullanguage = [
 ];
 
 if($modulesid != 0){
-    $query6 = $sql->prepare("SELECT `tranceID` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
+    $query6 = $sql->prepare("SELECT `transID` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
     $query7 = $sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `resellerID`, `text`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
     foreach ($modullanguage as $lang){
         $query6->execute(array($lang["lang"], $modulesid));
