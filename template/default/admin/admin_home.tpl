@@ -27,7 +27,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['gameMasterCrashedPercent'] > 0 ) { echo "bg-red";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-red" : ($statsArray['gameMasterCrashedPercent'] > 0 ? "bg-red" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->appRoot;?></span>
@@ -59,7 +59,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-aqua">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-yellow" : "bg-aqua" );?>">
                 <span class="info-box-icon"><i class="fa fa-signal"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->appRoot;?></span>
@@ -95,7 +95,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['gameserverCrashedPercent'] > 0 ) { echo "bg-red";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-red" : ($statsArray['gameserverCrashedPercent'] > 0 ? "bg-red" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->gameserver;?></span>
@@ -111,7 +111,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['gameserverRuleBreakPercent'] > 0 ) { echo "bg-yellow";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-aqua" : ($statsArray['gameserverRuleBreakPercent'] > 0 ? "bg-yellow" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-gavel"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->gameserver;?></span>
@@ -127,7 +127,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-aqua">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-yellow" : "bg-aqua");?>">
                 <span class="info-box-icon"><i class="fa fa-plug"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->gameserver;?></span>
@@ -163,7 +163,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['voiceMasterCrashedPercent'] > 0 ) { echo "bg-red";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-red" : ($statsArray['voiceMasterCrashedPercent'] > 0 ? "bg-red" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->voiceserver.' '.$gsprache->master;?></span>
@@ -195,7 +195,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-aqua">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-yellow" : "bg-aqua");?>">
                 <span class="info-box-icon"><i class="fa fa-signal"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->voiceserver.' '.$gsprache->master;?></span>
@@ -231,7 +231,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['voiceserverCrashedPercent'] > 0 ) { echo "bg-red";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-red" : ($statsArray['voiceserverCrashedPercent'] > 0 ? "bg-red" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->voiceserver;?></span>
@@ -263,7 +263,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box bg-aqua">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-yellow" : "bg-aqua");?>">
                 <span class="info-box-icon"><i class="fa fa-plug"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->voiceserver;?></span>
@@ -299,7 +299,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['webMasterCrashedPercent'] > 0 ) { echo "bg-red";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-red" : ($statsArray['webMasterCrashedPercent'] > 0 ? "bg-red" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo $gsprache->webspace.' '.$gsprache->master;?></span>
@@ -367,7 +367,7 @@
         </div>
 
         <div class="col-md-3 col-sm-6 col-xs-12">
-            <div class="info-box <?php if ($statsArray['mysqlMasterCrashedPercent'] > 0 ) { echo "bg-red";} else { echo "bg-aqua";} ?>">
+            <div class="info-box <?php echo (isset($coloreddashboard) && $coloreddashboard ? "bg-red" : ($statsArray['mysqlMasterCrashedPercent'] > 0 ? "bg-red" : "bg-aqua" ));?>">
                 <span class="info-box-icon"><i class="fa fa-heartbeat"></i></span>
                 <div class="info-box-content">
                     <span class="info-box-text"><?php echo 'MySQL '.$gsprache->master;?></span>
