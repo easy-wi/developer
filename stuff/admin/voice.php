@@ -273,7 +273,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
             $iniConfigurationMaster = array();
             $iniConfiguration = array();
             $customConfigurations = array();
-
+            $rowCount = 0;
             $iniConfigurationMaster = @parse_ini_string($masterServerData['iniConfiguration'], true, INI_SCANNER_RAW);
 
             foreach ($iniConfigurationMaster as $groupName => $array) {
@@ -308,7 +308,7 @@ if ($ui->st('d', 'get') == 'ad' and is_numeric($licenceDetails['lVo']) and $lice
                     $id = $sql->lastInsertId();
 
                 } else {
-                    $ts3ErrorCode = 'TS errorcode: ' . $localServerID;
+                    $ts3ErrorCode = 'TS errorcode: ' . $localServerID;;
                 }
 
                 $loguseraction = '%add% %voserver% ' . $ip . ':' . $port;

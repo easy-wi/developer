@@ -694,7 +694,7 @@ virtualserver_weblist_enabled 0 = Off';
 
                                 $adminList = $connection->AdminList($virtualserver_id);
 
-                                if (is_array($adminList)) {
+                                if (is_array($adminList) and count($adminList) > 0) {
                                     foreach ($adminList as $cldbid => $client_unique_identifier) {
                                         $userlist .= $cldbid . ':' . $client_unique_identifier . '|';
                                     }

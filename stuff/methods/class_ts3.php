@@ -534,10 +534,6 @@ class TS3 {
                     );
                 }
 
-                if ($server['virtualserver_status'] == 'offline') {
-                    $this->StopServer($virtualserver_id);
-                }
-
                 if (!isset($serverdetails[$virtualserver_id])) {
                     $virtualserver_ip = (isset($virtualserver_ip)) ? $virtualserver_ip :'';
                     $virtualserver_dns = (isset($virtualserver_dns)) ? $virtualserver_dns :'';
