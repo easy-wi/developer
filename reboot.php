@@ -59,7 +59,7 @@ include(EASYWIDIR . '/stuff/methods/class_ts3.php');
 include(EASYWIDIR . '/stuff/methods/queries_updates.php');
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 
-if (true or !isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
+if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip, ipstoarray($rSA['cronjob_ips']))) {
 
     echo "Reboot and Updater started\r\n";    
 

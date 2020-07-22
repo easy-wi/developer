@@ -779,7 +779,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
                 if (strlen($configfile) > 0) {
                     $configfile = str_replace(array("\0" , "\b" , "\r", "\Z"), '', $configfile);
-                    $lines = explode("\r\n", $configfile);
+                    $lines = explode(PHP_EOL, $configfile);
+                    $lines = array_filter($lines);
                 }
 
                 if (isset($ui->post['update']) and $ui->post['update'] == 1 and isset($lines)) {
