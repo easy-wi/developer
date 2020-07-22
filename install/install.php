@@ -300,6 +300,7 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
 " . '$title' . " = '';
 " . '$debug' . " = '0';
 " . '$timezone' . " = 'Europe/Berlin';
+" . '$coloreddashboard' . " = false;
 ";
 
                 @fwrite($configFp, $configdata);
