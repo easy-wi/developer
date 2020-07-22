@@ -1702,4 +1702,10 @@ $(function() {
         }
         return [$head, $content];
     }
+
+    function __debug($pre){
+        echo "<pre>";
+        print_r($pre);
+        echo "</pre>";
+    }
 }
