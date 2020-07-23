@@ -909,7 +909,11 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                         if ($serverVersion == $latestVersion) {
                             echo "TS3 server version is running up to date version $serverVersion\r\n";
                         } else {
-                            echo "TS3 server version is running outdated version $serverVersion. Latest is $latestVersion\r\n";
+                            if(is_null($latestVersion)){
+                                echo "TS3 server version is running version $serverVersion. Latest version is unknown\r\n";
+                            }else{
+                                echo "TS3 server version is running outdated version $serverVersion. Latest is $latestVersion\r\n";
+                            }
                         }
 
                         $pupdate = $sql->prepare("UPDATE `voice_masterserver` SET `local_version`=? WHERE `id`=? LIMIT 1");

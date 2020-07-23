@@ -496,7 +496,7 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
         $urls = array('https://files.teamspeak-services.com/releases/server/');
 
         // Use random value from urls array. Autocheck how many entries and fit the mt_rand parameters accordingly
-        $url = $urls[mt_rand(0, (count($urls) -1))];
+        $url = $urls[mt_rand(0, (count($urls) - 1))];
     }
 
     $subfolders = array();
@@ -505,13 +505,15 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
     $doc->loadHTMLFile($url);
     $links = $doc->getElementsByTagName('a');
 
-
     foreach ($links as $link) {
 
         $href = $link->getAttribute('href');
 
+        // Filter backfolder
+        if($href == "../") continue;
+
         // Filter for downloadfolders. Known old versions will be left out
-        if (!preg_match('/^0\.[0-9](\.[0-9\/]|\/)+$/', substr($href, 2, 6)) and preg_match('/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}(\.[0-9]{1,2}|)\/+$/', $href)) {
+        if (!preg_match('/^0\.[0-9](\.[0-9\/]|\/)+$/', substr($href, 2, 6)) and preg_match('/^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}+$/', $href)) {
 
             // As versioning does not follow the same pattern we need to normalize in order to be able to sort.
             $normalizedVersion = str_replace(array('.', '/'), '', $href);
@@ -524,9 +526,18 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
         }
     }
 
+    // FIX Teamspeak Version Update
     // As the array key is normalized based on version we can sort by key in descending order.
-    krsort($subfolders, SORT_NUMERIC);
+    usort($subfolders, function ($a, $b){
+        $a = str_replace(".", "", $a);
+        $b = str_replace(".", "", $b);
+        if($a == $b){
+            return 0;
+        }
 
+        return ($a > $b)  ? -1 : 1;
+
+    });
     // Now loop though all version subfolders and search for server files.
     foreach ($subfolders as $sub) {
 
@@ -560,7 +571,6 @@ function getTS3Version ($type = 'server', $os = 'linux', $bit = 64, $url = null)
 
             // get the href value from html anchor
             $href = $link->getAttribute('href');
-
             // check if we have a valid version and file. As we sorted and normalized some steps ago the first hit is the latest version.
             if (preg_match('/^' . $clientServer . $bitAndOS . '\-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}(\.[0-9]{1,2}|)\.' . $extension . '+$/', $href)) {
 
