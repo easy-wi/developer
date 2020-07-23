@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-
+ 
 $gameImages = array(
     array(
         ':steamgame' => 'S',
