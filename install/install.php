@@ -301,6 +301,7 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
 " . '$debug' . " = '0';
 " . '$timezone' . " = 'Europe/Berlin';
 " . '$coloreddashboard' . " = false;
+" . '$easywitweets' . " = true;
 ";
 
                 @fwrite($configFp, $configdata);
@@ -789,6 +790,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 " . '$debug' . " = '0';
 " . '$timezone' . " = '" . $_POST['timezone'] . "';
 " . '$coloreddashboard' . " = false;
+" . '$easywitweets' . " = true;
 ";
 
                 @fwrite($configFp, $configdata);

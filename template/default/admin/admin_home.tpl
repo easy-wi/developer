@@ -416,6 +416,17 @@
     </div>
     <?php }?>
 
+    <?php if(isset($easywitweets) && $easywitweets) { ?>
+    <hr>
+    <div class="row">
+        <div class="col-md-6" >
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a class="twitter-timeline" href="https://twitter.com/easy_wi?ref_src=twsrc^tfw">Tweets by easy_wi</a>
+        </div>
+    </div>
+
+    <?php } ?>
+
     <?php if(count($feedArray)>0) { ?>
     <hr>
 

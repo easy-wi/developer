@@ -180,7 +180,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 'vServer' => array('emailvrescue','emailvinstall'),
                 'Server' => array('emailbackup','emailbackuprestore','emailserverinstall','emailsecuritybreach','emaildown','emaildownrestart'),
                 'Ticket' => array('emailnewticket'),
-                'General' => array('emailfooter','emailregards','emailuseradd','emailpwrecovery','emailregister'),
+                'General' => array('emailfooter','emailregards','emailuseradd','emailpwrecovery','emailregister', 'emaileasyupdate'),
                 'VoiceServer' => array('emailvoicemasterold'),
                 'GameServer' => array('emailgserverupdate')
             );

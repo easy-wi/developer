@@ -806,8 +806,14 @@ if (!function_exists('passwordgenerate')) {
                 $noreply='(This is an automated mail. Please do not reply to it since the account is configured to send only.)';
                 $emailfooter ='';
                 $emailregards ='';
+                $ip = '';
+                $port = '';
+                if(isset($server)){
+                    list($ip, $port) = explode(":", $server);
+                }
+
                 $keys = array('%emailfooter%','%emailregards%','%noreply%','%topic%','%id%','%creationTime%','%active%','%salutation%','%cname%','%fullname%','%name%','%vname%','%birthday%','%mail%','%email%','%phone%','%fax%','%handy%','%country%','%city%','%cityn%','%street%','%streetn%','%language%','%lastlogin%','%urlhost%','%password%','%server%','%username%','%date%','%shorten%','%ip%','%port%','%port2%','%port3%','%port4%','%port5%','%ports%');
-                $replacements = array($emailfooter, $emailregards, $noreply, $topic, $email_id, $email_creationTime, $email_active, $salutation, $email_cname, $fullname, $email_name, $email_vname, $email_birthday, $email_mail, $email_mail, $email_phone, $email_fax, $email_handy, $email_country, $email_city, $email_cityn, $email_street, $email_streetn, $userLanguage, $email_lastlogin, $email_urlhost, $password, $server, $username, $maildate, $shorten);
+                $replacements = array($emailfooter, $emailregards, $noreply, $topic, $email_id, $email_creationTime, $email_active, $salutation, $email_cname, $fullname, $email_name, $email_vname, $email_birthday, $email_mail, $email_mail, $email_phone, $email_fax, $email_handy, $email_country, $email_city, $email_cityn, $email_street, $email_streetn, $userLanguage, $email_lastlogin, $email_urlhost, $password, $server, $username, $maildate, $shorten, $ip, $port);
 
                 //More IP Adress
                 if (is_array($connectInfo) and count($connectInfo) > 0 and isset($connectInfo['ip'])) {
