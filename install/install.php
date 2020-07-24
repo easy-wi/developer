@@ -788,6 +788,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 " . '$title' . " = '" . $_POST['title'] . "';
 " . '$debug' . " = '0';
 " . '$timezone' . " = '" . $_POST['timezone'] . "';
+" . '$coloreddashboard' . " = false;
 ";
 
                 @fwrite($configFp, $configdata);
@@ -915,19 +916,6 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 }
 
 if ($currentStep == 9 and count($systemCheckError) == 0) {
-
-    // Root module is not used at the moment and needs to be rewritten
-    $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `get`='ro' LIMIT 1");
-    $query->execute();
-    $rootModuleId = (int) $query->fetchColumn();
-
-    if ($rootModuleId > 0) {
-        $query = $sql->prepare("UPDATE `modules` SET `active`='N' WHERE `id`=? LIMIT 1");
-        $query->execute(array($rootModuleId));
-    } else {
-        $query = $sql->prepare("INSERT INTO `modules` (`get`,`sub`,`file`,`active`,`type`) VALUES ('ro','ro','','N','C')");
-        $query->execute();
-    }
 
     // Deactivate CMS module by default
     $query = $sql->prepare("SELECT `id` FROM `modules` WHERE `get`='pn' LIMIT 1");
