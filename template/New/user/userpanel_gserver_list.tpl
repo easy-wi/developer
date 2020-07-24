@@ -41,7 +41,7 @@
                   <?php echo $table_row['nameremoved'];?>
                </div>
                <?php } ?>
-               <section <?php if ($gsnavigation=='1' ){ echo 'style="padding-left: 20px"';} else { echo 'style="display:none!important"';} ?>>
+               <section>
                   <div class="form-group">
                      <a href="userpanel.php?w=gs&amp;d=rs&amp;id=<?php echo $table_row['id'];?>&amp;r=gs" onclick="return confirm('<?php echo $table_row['server'];?>: <?php echo $sprache->confirm_restart;?>');">
                      <button class="btn btn-outline-success inline"><i class="icon-white icon-play"></i>
@@ -131,15 +131,6 @@
                            <li class="list-group-item"><b>GameSwitch:</b>
                               <?php echo $table_row['shorten'];?>
                            </li>
-                           <li class="list-group-item"><b>Ping:</b>
-                              <?php 
-                                 $port = $table_row['port']; 
-                                 $host = $table_row['ip'].':'.++$port;
-                                 $host2 = $table_row['ip'];
-                                 if ($pingcfg == '1') { $pingTime = shell_exec('ping -W 3 -q -c 2 -s 21 ' . $host2 . ' | grep -o "... ms" '); 
-                                 echo "$pingTime"; } else {echo "ping function disabled";}
-                                 ?>
-                           </li>
                            <li class="list-group-item"><b>Location:</b>
                               <?php $host2 = $table_row['ip']; $xmlcu = simplexml_load_file("http://ip-api.com/xml/".$host2); echo "$xmlcu->country"; ?>
                            </li>
@@ -183,5 +174,6 @@
                      <li class="list-group-item"></li>
                      </ul>
                      </div>
-</div></section></section></div></div>
-            <?php }?>
+				   </div></section></section></div></div>
+<?php }?>
+	</div></div>
