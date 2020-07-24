@@ -37,7 +37,7 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
- 
+
 $gameImages = array(
     array(
         ':steamgame' => 'S',
@@ -270,14 +270,14 @@ $gameImages = array(
     array(
         ':steamgame' => 'S',
         ':appID' => 500,
-        ':serverID' => 222840,
+        ':serverID' => 510,
         ':updates' => 1,
         ':shorten' => 'left4dead',
         ':description' => 'Left 4 Dead',
         ':gamebinary' => 'srcds_run',
         ':gamebinaryWin' => 'srcds.exe',
         ':binarydir' => '',
-        ':modfolder' => 'left4dead',
+        ':modfolder' => 'l4d',
         ':fps' => null,
         ':slots' => 0,
         ':map' => 'l4d_airport01_greenhouse',
