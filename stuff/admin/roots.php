@@ -136,7 +136,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     if (!$ui->smallletters('action', 2, 'post')) {
 
         if ($ui->st('d', 'get') == 'ad' and $reseller_id == 0) {
-
+            $ssh2keys = array_diff(scandir(EASYWIDIR . '/keys/'), array('..', '.', "empty.txt"));
             $template_file = 'admin_roots_add.tpl';
 
         } else if ($ui->st('d', 'get') == 'md' and $id) {
@@ -205,7 +205,9 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $configFiles = $row['config_files'];
                 $configBadFiles = $row['config_bad_files'];
             }
+            ;
 
+            $ssh2keys = array_diff(scandir(EASYWIDIR . '/keys/'), array('..', '.', "empty.txt"));
             $template_file =  ($query->rowCount() > 0) ? 'admin_roots_md.tpl' : 'admin_404.tpl';
 
         } else {
@@ -321,6 +323,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             }
         } else {
             unset($header, $text);
+            $ssh2keys = array_diff(scandir(EASYWIDIR . '/keys/'), array('..', '.', "empty.txt"));
             $template_file = ($ui->st('d', 'get') == 'ad') ? 'admin_roots_add.tpl' : 'admin_roots_md.tpl';
         }
     }

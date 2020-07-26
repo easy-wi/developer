@@ -183,7 +183,7 @@ virtualserver_weblist_enabled 0 = Off';
     if (!$ui->w('action', 3, 'post') and $ui->st('d', 'get') != 'ri') {
 
         if ($ui->st('d', 'get') == 'ad') {
-
+            $ssh2keys = array_diff(scandir(EASYWIDIR . '/keys/'), array('..', '.', "empty.txt"));
             $template_file = 'admin_voicemasterserver_add.tpl';
 
         } else if ($ui->st('d', 'get') == 'md' and $id) {
@@ -240,7 +240,7 @@ virtualserver_weblist_enabled 0 = Off';
                     $root = $query2->fetchColumn();
                 }
             }
-
+            $ssh2keys = array_diff(scandir(EASYWIDIR . '/keys/'), array('..', '.', "empty.txt"));
             $template_file =  ($query->rowCount() > 0) ? 'admin_voicemasterserver_md.tpl' : 'admin_404.tpl';
 
         } else {

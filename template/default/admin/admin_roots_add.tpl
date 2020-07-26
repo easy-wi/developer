@@ -124,7 +124,14 @@
 
                         <div class="form-group<?php if(isset($errors['keyname'])) echo ' has-error';?>">
                             <label for="inputSSH2Key"><?php echo $sprache->keyname;?></label>
-                            <div class="controls"><input class="form-control" id="inputSSH2Key" type="text" name="keyname" maxlength="20" value="<?php echo $keyname;?>"/></div>
+                            <div class="controls">
+                                <select class="form-control" id="inputSSH2Key" name="keyname">
+                                    <option value=""></option>
+                                <?php foreach ($ssh2keys as $ssh2key) { ?>
+                                    <option value="<?php echo $ssh2key; ?>" <?php if ($ssh2key==$keyname) echo 'selected="selected"'; ?>><?php echo $ssh2key;?></option>
+                                <?php }?>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="form-group<?php if(isset($errors['os'])) echo ' has-error';?>">
