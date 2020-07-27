@@ -475,25 +475,26 @@
                     </li>
                     <?php } ?>
 
-                    <?php if($easywiModules['ro'] and (($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver'] or $pa['dedicatedServer'] or ($pa['vserverhost'] and $reseller_id==0)) or ($pa['resellertemplates'] and $reseller_id==0))) { ?>
-                    <li class="treeview <?php if(in_array($w,array('vs','rh','vh','ot')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
-                        <a href="#">
-                            <i class="fa fa-laptop fa-fw"></i>
-                            <span>Rootserver</span>
-                            <span class="pull-right-container">
+                    <!-- Rootmodul -->
+                    <?php /* if($easywiModules['ro'] and (($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver'] or $pa['dedicatedServer'] or ($pa['vserverhost'] and $reseller_id==0)) or ($pa['resellertemplates'] and $reseller_id==0))) { ?>
+                        <li class="treeview <?php if(in_array($w,array('vs','rh','vh','ot')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
+                            <a href="#">
+                                <i class="fa fa-laptop fa-fw"></i>
+                                <span>Rootserver</span>
+                                <span class="pull-right-container">
                               <i class="fa fa-angle-left pull-right"></i>
                             </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><i class="fa fa-cloud"></i> <?php echo $gsprache->virtual;?></a></li><?php } ?>
-                            <?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><i class="fa fa-laptop"></i> <?php echo $gsprache->dedicated;?></a></li><?php } ?>
-                            <?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh"><i class="fa fa-server"></i> ESX(I) Host</a></li><?php } ?>
-                            <?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->template;?></a></li><?php } ?>
-                            <?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
-                        </ul>
-                    </li>
+                            </a>
+                            <ul class="treeview-menu">
+                                <?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?><li <?php if($ui->smallletters('w',255,'get')=='vs') echo 'class="active"';?>><a href="admin.php?w=vs&amp;d=md"><i class="fa fa-cloud"></i> <?php echo $gsprache->virtual;?></a></li><?php } ?>
+                                <?php if($pa['dedicatedServer']) { ?><li <?php if($ui->smallletters('w',255,'get')=='rh') echo 'class="active"';?>><a href="admin.php?w=rh"><i class="fa fa-laptop"></i> <?php echo $gsprache->dedicated;?></a></li><?php } ?>
+                                <?php if($pa['vserverhost'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='vh') echo 'class="active"';?>><a href="admin.php?w=vh"><i class="fa fa-server"></i> ESX(I) Host</a></li><?php } ?>
+                                <?php if($pa['resellertemplates'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='ot') echo 'class="active"';?>><a href="admin.php?w=ot"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->template;?></a></li><?php } ?>
+                                <?php foreach ($customModules['ro'] as $k => $v) { echo '<li '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="active"' : ''; echo '><a href="admin.php?w='.$k.'">'.$v.'</a></li>'; }; ?>
+                            </ul>
+                        </li>
                     <?php } ?>
-
+                    <!-- Rootmodul Traffic/Subnet -->
                     <?php if($easywiModules['ro'] and ($pa['traffic'] or ($reseller_id=='0' and ($pa['trafficsettings'] or $pa['dhcpServer'] or $pa['pxeServer'] or $pa['root'])))) { ?>
                     <li class="treeview <?php if(in_array($w,array('tf','rd','rp','sn'))) echo 'active';?>">
                         <a href="#">
@@ -511,7 +512,7 @@
                             <?php if($pa['root'] and $reseller_id==0) { ?><li <?php if($ui->smallletters('w',255,'get')=='sn') echo 'class="active"';?>><a href="admin.php?w=sn"><i class="fa fa-sitemap"></i> <?php echo $gsprache->subnets;?></a></li><?php } ?>
                         </ul>
                     </li>
-                    <?php } ?>
+                    <?php } */?>
 
                     <?php if(count($customModules['mo'])>0) { ?>
                     <li class="treeview <?php if(isset($customModules['mo'][$ui->smallletters('w',255,'get')])) echo 'active';?>">
