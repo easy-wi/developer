@@ -251,8 +251,18 @@ class ValidateUserinput {
 
         $check = $this->if_obj_or_str($value, $type, $object);
 
+        // check if is Hostname
+        // FIX for PHP < 7.0.0 -> FILTER_VALIDATE_DOMAIN (Available as of PHP 7.0.0)
+        if(!defined("FILTER_VALIDATE_DOMAIN")){
+            $filter = FILTER_VALIDATE_IP;
+            if(is_string($check)){
+                $check = gethostbyname($check);
+            }
+        }else{
+            $filter = FILTER_VALIDATE_DOMAIN;
+        }
 
-        if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_DOMAIN)){
+        if ($check and is_string($check) and filter_var($check, $filter)){
             return $check;
         } else if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)){
             return $check;
@@ -281,7 +291,17 @@ class ValidateUserinput {
         $check = $this->if_obj_or_str($value, $type, $object);
 
         // check if is Hostname
-        if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_DOMAIN)){
+        // FIX for PHP < 7.0.0 -> FILTER_VALIDATE_DOMAIN (Available as of PHP 7.0.0)
+        if(!defined("FILTER_VALIDATE_DOMAIN")){
+            $filter = FILTER_VALIDATE_IP;
+            if(is_string($check)){
+                $check = gethostbyname($check);
+            }
+        }else{
+            $filter = FILTER_VALIDATE_DOMAIN;
+        }
+
+        if ($check and is_string($check) and filter_var($check, $filter)){
             return $check;
         } else if ($check and is_string($check) and filter_var($check, FILTER_VALIDATE_IP)){
             return $check;

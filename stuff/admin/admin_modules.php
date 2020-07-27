@@ -160,7 +160,7 @@ if ($ui->st('action', 'post') and !token(true)) {
 
             $coreModuleFound = false;
 
-            if (!$sub or !in_array($sub, array('gs', 'pa', 'mo', 'my', 'ro', 'ti', 'us', 'vo','ws')) ) {
+            if (!$sub or !in_array($sub, array('gs', 'pa', 'mo', 'my', 'ti', 'us', 'vo','ws')) ) {
                 $errors['sub'] = $sprache->sub;
             }
 

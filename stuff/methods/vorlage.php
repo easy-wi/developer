@@ -56,6 +56,10 @@ function isip($value, $ipx) {
 }
 
 function ishostname($value){
+    // FIX for PHP < 7.0.0 -> FILTER_VALIDATE_DOMAIN (Available as of PHP 7.0.0)
+    if(!defined("FILTER_VALIDATE_DOMAIN")){
+        return isdomain($value);
+    }
     return (filter_var($value, FILTER_VALIDATE_DOMAIN) !== false) ? $value : false;
 }
 
