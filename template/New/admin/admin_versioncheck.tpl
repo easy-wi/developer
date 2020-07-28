@@ -23,20 +23,27 @@
 
                     <ul class="timeline">
                         <?php foreach($table as $changelog) { ?>
-                        <li>
-                            <i class="fa fa-info bg-blue"></i>
-                            <div class="timeline-item">
-                                <h3 class="timeline-header"><?php echo $changelog['version'];?></h3>
-                                <div class="timeline-body">
-                                    <?php echo $changelog['text'];?>
-                                </div>
-                            </div>
-                        </li>
+						  <div class="row">
+							<div class="col-md-12">
+
+								<h3><?php echo $changelog['version'];?></h3>
+
+								<ul class="timeline">
+								<div class="card shadow mb-4">
+							        
+									<div class="card-body">
+									  <?php echo $changelog['text'];?>
+									</div>
+								  </div>
+								</ul>
+							</div>
+						</div>
+							
+						
+						
+          
                         <?php } ?>
 
-                        <li>
-                            <i class="fa fa-clock-o"></i>
-                        </li>
                     </ul>
                 </div>
             </div>
