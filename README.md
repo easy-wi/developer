@@ -2,11 +2,13 @@
 - The stable build at [GitHub](https://github.com/easy-wi/developer/releases/latest)
 - The developer builds at [Github](https://github.com/easy-wi/developer/tags)
 - Developers ChatRoom: [Discord](https://discord.gg/quJvvfF)
+- Twitter Account for News: [Easy_Wi](https://twitter.com/easy_wi)
 - Issue Tracking at [GitHub](https://github.com/easy-wi/developer/issues)
 - [Installer](https://github.com/easy-wi/installer/)
 - [Optional Server Side Scripts](https://github.com/easy-wi/server/)
 - [External PHP Scripst](https://github.com/easy-wi/external/)
 - [Easy-Wi WHMCS Addon](https://github.com/easy-wi/whmcs)
+
 
 # What is Easy-WI?
 First of all Easy-Wi is a Web-interface that allows you to manage server daemons like gameservers. In addition it provides you with a CMS which includes a fully automated game- and voiceserver lending service. 
