@@ -1031,8 +1031,8 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
 
     <!-- Bootstrap core CSS -->
     <link href="../css/default/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/default/font-awesome.min.css" rel="stylesheet">
-
+    <link href="../css/default/fontawesome-5.14.0/css/all.css" rel="stylesheet">
+    <link href="../css/default/fontawesome-5.14.0/css/v4-shims.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <style type="text/css">
             /* Space out content a bit */

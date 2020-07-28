@@ -17,7 +17,8 @@
     <link href="css/default/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link href="css/default/font-awesome.min.css" rel="stylesheet">
+    <link href="css/default/fontawesome-5.14.0/css/all.css" rel="stylesheet">
+    <link href="css/default/fontawesome-5.14.0/css/v4-shims.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
@@ -62,6 +63,7 @@
             <!-- Sidebar toggle button-->
             <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                 <span class="sr-only">Toggle navigation</span>
+                <i class="fa fa-bars" aria-hidden="true"></i>
             </a>
 
             <div class="navbar-custom-menu">

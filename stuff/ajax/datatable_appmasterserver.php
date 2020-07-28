@@ -163,20 +163,18 @@ while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
     }
 
     // Add Server space data - Nexus633
+    // Fix Json_decode error
     $space = null;
     $homespace = $rootServer->getDiskSpace("/home");
-    if (strlen($homespace) > 0){
-        $space = json_decode($homespace);
+    if($homespace){
+        $space = $homespace;
     }else{
         $rootspace = $rootServer->getDiskSpace("/");
-        if (strlen($rootspace) > 0){
-            $space = json_decode($rootspace);
+        if($rootspace){
+            $space = $rootspace;
         }else{
             $space = new stdClass();
             $space->mount = "unknown";
-            $space->avil = "";
-            $space->used = "";
-            $space->size = "";
         }
     }
 
