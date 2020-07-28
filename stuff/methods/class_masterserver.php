@@ -810,7 +810,7 @@ class masterServer {
     public function getDiskSpace($path){
         if ($this->os == 'L') {
             //$this->shellScript .= 'df -h | grep -w "' . $path . '" | awk \'{print "{\n  \"mount\":\"' . $path . '\",\n  \"filesystem\":\"" $1 "\",\n  \"size\":\"" $2 "\",\n  \"used\":\"" $3 "\",\n  \"avil\":\"" $4 "\",\n  \"perc\":\"" $5 "\"\n}"}\'' . "\n";
-            $this->shellScript .= 'df -h | grep -w "' . $path . '" | awk \'{print $1" "$2" "$3" "$4" "$5}\'';
+            $this->shellScript = 'df -h | grep -w "' . $path . '" | awk \'{print $1" "$2" "$3" "$4" "$5}\'';
         } else {
             return false;
         }
