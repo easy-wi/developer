@@ -806,14 +806,28 @@ class masterServer {
     }
 
     // Add Server space data - Nexus633
+    // Fix Json_decode error
     public function getDiskSpace($path){
         if ($this->os == 'L') {
-            $this->shellScript .= 'df -h | grep -w "' . $path . '" | awk \'{print "{\n  \"mount\":\"' . $path . '\",\n  \"filesystem\":\"" $1 "\",\n  \"size\":\"" $2 "\",\n  \"used\":\"" $3 "\",\n  \"avil\":\"" $4 "\",\n  \"perc\":\"" $5 "\"\n}"}\'' . "\n";
+            //$this->shellScript .= 'df -h | grep -w "' . $path . '" | awk \'{print "{\n  \"mount\":\"' . $path . '\",\n  \"filesystem\":\"" $1 "\",\n  \"size\":\"" $2 "\",\n  \"used\":\"" $3 "\",\n  \"avil\":\"" $4 "\",\n  \"perc\":\"" $5 "\"\n}"}\'' . "\n";
+            $this->shellScript .= 'df -h | grep -w "' . $path . '" | awk \'{print $1" "$2" "$3" "$4" "$5}\'';
         } else {
-
+            return false;
         }
+        $response = $this->sshConnectAndExecute (false, true);
+        if(isset($response) && strlen($response) > 0){
+            $data = explode(' ', $response);
+            $space = new stdClass();
+            $space->mount = $path;
+            $space->filesystem = trim($data[0]);
+            $space->size = trim($data[1]);
+            $space->used = trim($data[2]);
+            $space->avil = trim($data[3]);
+            $space->perc = trim($data[4]);
 
-        return $this->sshConnectAndExecute (false, true);
+            return $space;
+        }
+        return false;
     }
 
     private function linuxMasterRemove ($shorten) {

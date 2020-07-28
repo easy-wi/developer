@@ -48,7 +48,7 @@
       <!-- Sidebar - Brand -->
       
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?php echo $rSA['header_href'];?>">
-        <img src="images/logo_180px_AE.png" title="<?php echo $rSA['header_text'];?>" width="32">
+        <img src="images/<?php echo $rSA['header_icon'];?>" title="<?php echo $rSA['header_text'];?>" width="32">
         <div class="sidebar-brand-text "> <?php echo $rSA['header_text'];?></div>
       </a>
 
@@ -502,6 +502,8 @@
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars" aria-hidden="false"></i>
           </button>
+			 <a href="https://twitter.com/easy_wi?ref_src=twsrc%5Etfw" class="twitter-follow-button"  data-show-count="false">Follow @easy_wi</a>
+             <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">

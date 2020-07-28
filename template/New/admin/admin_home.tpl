@@ -492,6 +492,22 @@
     </div>
 </div>
     <?php }?>
+	
+	
+	<?php if(isset($easywitweets) && $easywitweets) { ?>
+	<div class="row">
+        <div class="col-md-8">
+           <ul class="timeline">
+                <div class="card shadow mb-4">
+                <div class="card-header py-3">
+					<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+				 <a style="width:100%" class="twitter-timeline" href="https://twitter.com/easy_wi?ref_src=twsrc^tfw">Tweets by easy_wi</a>
+                </div>            
+              	</div>
+            </ul>
+        </div>
+    </div>
+    <?php } ?>
      <?php if(count($feedArray)>0) { ?>
     <hr>
     <?php foreach ($feedArray as $url => $array) { ?>

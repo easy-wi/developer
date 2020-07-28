@@ -21,6 +21,7 @@
                             <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $gsprache->master;?></th>
                             <th><?php echo $gsprache->action;?></th>
+                            <th><?php echo $gsprache->status_space;?></th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -30,6 +31,7 @@
                             <th><?php echo $sprache->desc;?></th>
                             <th><?php echo $gsprache->master;?></th>
                             <th><?php echo $gsprache->action;?></th>
+                            <th><?php echo $gsprache->status_space;?></th>
                         </tr>
                         </tfoot>
                     </table>
