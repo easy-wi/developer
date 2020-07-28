@@ -46,14 +46,18 @@ if (isset($include) and $include == true) {
 <ul>
 <li>General
 <ul>
-<li>Twitter Timeline im Dashboard</li>
-<li>Twitter Follow Knopf im Admin Menu</li>
+<li>Twitter Timeline ins Dashboard Hinzugefügt</li>
+<li>Twitter Follow Knopf im Admin Menu Hinzugefügt</li>
 <li>Keyfile eingabe verbessert</li>
+<li>Update auf Font Awesome 5.14</li>
+<li>Speichernutzung im New Theme hinzugefügt</li>
 </ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
 <li>App/Master Server fehler behoben</li>
 <li>New Theme: allgemeine verbesserungen</li>
+<li>Mobile Navigation Fix</li>
+<li>Speichernutzung auf dem Masterserver Fix</li>
 </ul>
 <b>Zukunft:</b>
 <li>Vorbereitung um die V-Server / Netzwerkmodule zu entfernen</li>
@@ -65,11 +69,15 @@ if (isset($include) and $include == true) {
 <li>Twitter timeline added</li>
 <li>Twitter follow button added</li>
 <li>Enhanced Keyfile handling</li>
+<li>Update to Font Awesome 5.14</li>
+<li>Added Diskspace view in the new theme</li>
 </ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
 <li>App/Masterserver bug fixes</li>
 <li>New theme: general enhancements</li>
+<li>Mobile navigation buttons fixed</li>
+<li>Fixed Diskspace view on Masterserver</li>
 </ul>
 <b>Future:</b>
 <li>preparation to remove V-Server / Network modules</li>
