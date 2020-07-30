@@ -583,6 +583,24 @@
                   <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                   <?php echo $gsprache->password." ".$gsprache->change;?>
                 </a>
+				 <div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="https://easy-wi.com" target="_blank">
+					<i class="fa fa-home fa-fw mr-2 text-gray-400"></i> Easy-WI Homepage
+				</a>
+     			<a class="dropdown-item" href="https://discord.gg/quJvvfF" target="_blank">
+					<i class="fab fa-discord fa-fw mr-2 text-gray-400"></i> Easy-WI @ Discord
+				</a>
+				<a class="dropdown-item" href="https://twitter.com/easy_wi" target="_blank">
+					<i class="fa fa-twitter fa-fw mr-2 text-gray-400"></i> Easy-WI @ Twitter
+				</a>  
+				<a class="dropdown-item" href="https://github.com/easy-wi/developer" target="_blank">
+					<i class="fa fa-github fa-fw mr-2 text-gray-400"></i> Easy-WI @ Github
+				</a>                        
+				<a class="dropdown-item" href="https://steamcommunity.com/groups/easywi" target="_blank">
+					<i class="fa fa-steam fa-fw mr-2 text-gray-400"></i> Easy-WI @ Steam
+				</a>
+				  
+				 <div class="dropdown-divider"></div> 
                 <a class="dropdown-item ">
                     <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>Languages:<div class="text-center">
                     <?php foreach ($languages as $language){ echo '<a  href="admin.php?l='.$language.'"><img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a> ';} ?>

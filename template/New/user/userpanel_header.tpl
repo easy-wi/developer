@@ -229,6 +229,25 @@
                         <a class="dropdown-item" href="userpanel.php?w=se&amp;d=pw"><i class="fa fa-key fa-fw"></i> <?php echo $gsprache->password." ".$gsprache->change;?></a>
                         <a class="dropdown-item" href="userpanel.php?w=se"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a>
                         <div class="dropdown-divider"></div>
+						
+						
+						<a class="dropdown-item" href="https://easy-wi.com" target="_blank">
+							<i class="fa fa-home fa-fw"></i> Easy-WI Homepage
+						</a>
+						<a class="dropdown-item" href="https://discord.gg/quJvvfF" target="_blank">
+							<i class="fab fa-discord fa-fw"></i> Easy-WI @ Discord
+						</a>
+						<a class="dropdown-item" href="https://twitter.com/easy_wi" target="_blank">
+							<i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter
+						</a>  
+						<a class="dropdown-item" href="https://github.com/easy-wi/developer" target="_blank">
+							<i class="fa fa-github fa-fw"></i> Easy-WI @ Github
+						</a>                        
+						<a class="dropdown-item" href="https://steamcommunity.com/groups/easywi" target="_blank">
+							<i class="fa fa-steam fa-fw"></i> Easy-WI @ Steam
+						</a>
+						
+						<div class="dropdown-divider"></div>
                         <h5 class="dropdown-header">Languages:</h5>
                         <div class="dropdown-header">
                         <?php foreach ($languages as $language){ echo '<a style="align-content: center;" href="userpanel.php?l='.$language.'"> <img src="images/flags/'.$language.'.png" alt="Flag: '.$language.'.png."></a>     ';} ?>
