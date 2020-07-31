@@ -400,65 +400,6 @@
       </li>
 
 <?php } ?>
-<?php if($easywiModules['ro'] and (($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver'] or $pa['dedicatedServer'] or ($pa['vserverhost'] and $reseller_id==0)) or ($pa['resellertemplates'] and $reseller_id==0))) { ?>
-
-
-            <li class="<?php if(in_array($w,array('vs','rh','vh','ot')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'active';?> nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities14" aria-expanded="false" aria-controls="collapseUtilities14">
-          <i class="fa fa-laptop fa-fw"></i>
-                            <span>Rootserver</span>
-        </a>
-        <div id="collapseUtilities14" class="collapse <?php if(in_array($w,array('vs','rh','vh','ot')) or isset($customModules['ro'][$ui->smallletters('w',255,'get')])) echo 'show in';?>" aria-labelledby="headingUtilities14" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Rootserver</h6>
-             <?php if($pa['modvserver'] or $pa['delvserver'] or $pa['usevserver']) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='vs') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=vs&amp;d=md"><i class="fa fa-cloud"></i> <?php echo $gsprache->virtual;?>s</a>
-             <?php } ?>
-                            <?php if($pa['dedicatedServer']) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='rh') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=rh"><i class="fa fa-laptop"></i> <?php echo $gsprache->dedicated;?></a>
-            <?php } ?>
-                            <?php if($pa['vserverhost'] and $reseller_id==0) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='vh') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=vh"><i class="fa fa-server"></i> ESX(I) Host</a>
-            <?php } ?>
-                            <?php if($pa['resellertemplates'] and $reseller_id==0) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='ot') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=ot"><i class="fa fa-file-text-o"></i> <?php echo $gsprache->template;?></a>
-            <?php } ?>
-            <?php foreach ($customModules['ro'] as $k => $v) { echo '<a '; echo ($ui->smallletters('w',255,'get')==$k) ? 'class="collapse-item"' : ''; echo ' href="admin.php?w='.$k.'">'.$v.'</a>'; }; ?>
-          </div>
-        </div>
-      </li>
-<?php } ?>
-<?php if($easywiModules['ro'] and ($pa['traffic'] or ($reseller_id=='0' and ($pa['trafficsettings'] or $pa['dhcpServer'] or $pa['pxeServer'] or $pa['root'])))) { ?>
-
-
-
-            <li class="<?php if(in_array($w,array('tf','rd','rp','sn'))) echo 'active';?> nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities15" aria-expanded="false" aria-controls="collapseUtilities15">
-          <i class="fa fa-sitemap fa-fw"></i>
-                            <span><?php echo $gsprache->network;?></span>
-        </a>
-        <div id="collapseUtilities15" class="collapse <?php if(in_array($w,array('tf','rd','rp','sn'))) echo 'show in';?>" aria-labelledby="headingUtilities15" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header"><?php echo $gsprache->network;?></h6>
-             <?php if($pa['traffic']) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='tf' and $d!='se') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=tf"><i class="fa fa-area-chart"></i> <?php echo $gsprache->traffic;?></a>
-            <?php } ?>
-                            <?php if($reseller_id=='0' and $pa['trafficsettings']) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='tf' and $d=='se') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=tf&amp;d=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->traffic.' '.$gsprache->settings;?></a>
-            <?php } ?>
-                            <?php if($pa['dhcpServer'] and $reseller_id==0) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='rd') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=rd"><i class="fa fa-tty"></i> DHCP</a>
-            <?php } ?>
-                            <?php if($pa['pxeServer'] and $reseller_id==0) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='rp') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=rp"><i class="fa fa-folder-open-o"></i> PXE</a>
-            <?php } ?>
-                            <?php if($pa['root'] and $reseller_id==0) { ?>
-            <a <?php if($ui->smallletters('w',255,'get')=='sn') {echo 'class="active';} else {echo 'class="';}?> collapse-item" href="admin.php?w=sn"><i class="fa fa-sitemap"></i> <?php echo $gsprache->subnets;?></a>
-            <?php } ?>
-          </div>
-        </div>
-      </li>
-      <?php } ?>
 <?php if(count($customModules['mo'])>0) { ?>
 
 
