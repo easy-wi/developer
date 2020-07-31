@@ -17,7 +17,8 @@
     <link href="css/default/bootstrap.min.css" rel="stylesheet">
 
     <!-- Font Awesome -->
-    <link href="css/default/font-awesome.min.css" rel="stylesheet">
+    <link href="css/default/fontawesome-5.14.0/css/all.css" rel="stylesheet">
+    <link href="css/default/fontawesome-5.14.0/css/v4-shims.css" rel="stylesheet">
 
     <!-- Theme style -->
     <link href="css/default/AdminLTE.css" rel="stylesheet" type="text/css" />
@@ -118,7 +119,7 @@
                         <li><a href="userpanel.php?w=se"><i class="fa fa-cog fa-fw"></i> <?php echo $gsprache->settings;?></a></li>
                         <li class="divider  hidden-xs"></li>
                         <li><a href="https://easy-wi.com" target="_blank"><i class="fa fa-home fa-fw"></i> Easy-WI Homepage</a></li>
-                        <li><a href="https://discord.gg/quJvvfF" target="_blank"><i class="fa-info-circle fa-fw"></i> Easy-WI @ Discord</a></li>
+                        <li><a href="https://discord.gg/quJvvfF" target="_blank"><i class="fab fa-discord fa-fw mr10"></i> Easy-WI @ Discord</a></li>
                         <li><a href="https://twitter.com/easy_wi" target="_blank"><i class="fa fa-twitter fa-fw"></i> Easy-WI @ Twitter</a></li>
                         <li><a href="https://github.com/easy-wi/developer" target="_blank"><i class="fa fa-github fa-fw"></i> Easy-WI @ Github</a></li>
                         <li><a href="https://steamcommunity.com/groups/easywi" target="_blank"><i class="fa fa-steam fa-fw"></i> Easy-WI @ Steam</a></li>
