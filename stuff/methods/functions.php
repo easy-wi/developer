@@ -808,7 +808,7 @@ if (!function_exists('passwordgenerate')) {
                 $emailregards ='';
                 $ip = '';
                 $port = '';
-                if(isset($server)){
+                if(isset($server) && isip($server, "ip4")){
                     list($ip, $port) = explode(":", $server);
                 }
 
