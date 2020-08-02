@@ -206,6 +206,7 @@ if (versioncheck($version, '6.2.0', 'update_618-620.php', $response)) {
     $version = '6.2.0';
 }
 
+
 try {
 
     $query = $sql->prepare("SELECT `developer` FROM `settings` WHERE `resellerid`=0 LIMIT 1");
@@ -213,9 +214,14 @@ try {
 
     if ($query->fetchColumn() == 'Y') {
 
-        $devVersion = '6.2.0';
+        $devVersion = '6.2.0.1';
 
+        /*
         if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
+            $version = $devVersion;
+        }*/
+
+        if (versioncheck($version, $devVersion, 'update_dev_618-6201.php', $response, true)) {
             $version = $devVersion;
         }
     }

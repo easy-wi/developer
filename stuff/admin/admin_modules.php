@@ -88,37 +88,39 @@ foreach ($coreModules as $module) {
     }
 }
 
-$query4 = $sql->prepare("SELECT `id` FROM `modules` WHERE `type`='A' AND `get`=? LIMIT 1");
-$query4->execute(array('ex'));
-$modulesid = (int) $query4->fetchColumn();
 
-if($modulesid == 0){
-    $query5 = $sql->prepare("INSERT INTO `modules` (`get`,`file`,`sub`,`active`, `type`) VALUES(?,?,?,?,?) ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
-    $query5->execute(array('ex', 'example.php', 'mo', 'Y', 'A'));
-    $modulesid = $sql->lastInsertId();
-}
+if(isset($examplemodule) && $examplemodule){
+    $query4 = $sql->prepare("SELECT `id` FROM `modules` WHERE `type`='A' AND `get`=? LIMIT 1");
+    $query4->execute(array('ex'));
+    $modulesid = (int) $query4->fetchColumn();
 
-$modullanguage = [
-    ["type" => "mo", "lang" => "de", "transID" => $modulesid, "resellerID" => 0, "text" => "Beispiel Modul"],
-    ["type" => "mo", "lang" => "dk", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
-    ["type" => "mo", "lang" => "it", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
-    ["type" => "mo", "lang" => "pt", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
-    ["type" => "mo", "lang" => "ru", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
-    ["type" => "mo", "lang" => "uk", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
-];
+    if($modulesid == 0){
+        $query5 = $sql->prepare("INSERT INTO `modules` (`get`,`file`,`sub`,`active`, `type`) VALUES(?,?,?,?,?) ON DUPLICATE KEY UPDATE `active`=VALUES(`active`)");
+        $query5->execute(array('ex', 'example.php', 'mo', 'Y', 'A'));
+        $modulesid = $sql->lastInsertId();
+    }
 
-if($modulesid != 0){
-    $query6 = $sql->prepare("SELECT `transID` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
-    $query7 = $sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `resellerID`, `text`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
-    foreach ($modullanguage as $lang){
-        $query6->execute(array($lang["lang"], $modulesid));
-        $transID = (int)$query6->fetchColumn();
-        if($transID == 0){
-            $query7->execute(array($lang["type"], $lang["lang"], $lang["transID"], $lang["resellerID"], $lang["text"]));
+    $modullanguage = [
+        ["type" => "mo", "lang" => "de", "transID" => $modulesid, "resellerID" => 0, "text" => "Beispiel Modul"],
+        ["type" => "mo", "lang" => "dk", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+        ["type" => "mo", "lang" => "it", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+        ["type" => "mo", "lang" => "pt", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+        ["type" => "mo", "lang" => "ru", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+        ["type" => "mo", "lang" => "uk", "transID" => $modulesid, "resellerID" => 0, "text" => "Example Module"],
+    ];
+
+    if($modulesid != 0){
+        $query6 = $sql->prepare("SELECT `transID` FROM `translations` WHERE `type`='mo' AND `lang`=? And `transID`=? LIMIT 1");
+        $query7 = $sql->prepare("INSERT INTO `translations` (`type`, `lang`, `transID`, `resellerID`, `text`) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE `text`=VALUES(`text`)");
+        foreach ($modullanguage as $lang){
+            $query6->execute(array($lang["lang"], $modulesid));
+            $transID = (int)$query6->fetchColumn();
+            if($transID == 0){
+                $query7->execute(array($lang["type"], $lang["lang"], $lang["transID"], $lang["resellerID"], $lang["text"]));
+            }
         }
     }
 }
-
 
 if ($ui->st('action', 'post') and !token(true)) {
 

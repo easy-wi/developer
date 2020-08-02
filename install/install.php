@@ -71,7 +71,7 @@ $languageObject = simplexml_load_file(EASYWIDIR . '/install/' . $menuLanguage . 
 $displayToUser = '';
 $systemCheckOk = array();
 $systemCheckError = array();
-$easyWiVersion = ($developer == 'Y') ? '6.1.6' : '6.1.6';
+$easyWiVersion = ($developer == 'Y') ? '6.2.0.1' : '6.2.0';
 
 
 if ($currentStep == 0) {
@@ -302,6 +302,7 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
 " . '$timezone' . " = 'Europe/Berlin';
 " . '$coloreddashboard' . " = false;
 " . '$easywitweets' . " = true;
+" . '$examplemodule' . " = true;
 ";
 
                 @fwrite($configFp, $configdata);
@@ -791,6 +792,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
 " . '$timezone' . " = '" . $_POST['timezone'] . "';
 " . '$coloreddashboard' . " = false;
 " . '$easywitweets' . " = true;
+" . '$examplemodule' . " = true;
 ";
 
                 @fwrite($configFp, $configdata);
