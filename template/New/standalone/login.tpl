@@ -10,13 +10,13 @@
   <meta name="author" content="">
 
   <title>Login Page</title>
+		<link rel="shortcut icon" type="image/x-icon" href="<?php echo (isset($rSA['favicon']) and !empty($rSA['favicon'])) ? $rSA['favicon'] : 'images/favicon.ico';?>" />
     <link href="css/admin.css" rel="stylesheet">
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/04f8aba366.js" crossorigin="anonymous"></script>
-    <link href="css/ftnaws.min.css" rel="stylesheet" type="text/css">
     <link href="css/custom.css" rel="stylesheet" type="text/css">
         <!-- jQuery -->
     <script src="js/default/jquery.min.js" type="text/javascript"></script>
@@ -67,13 +67,25 @@
                     </div><hr><?php } ?>
                    <button type="submit" class="btn btn-primary btn-block btn-flat">Login</button><br>
                   </form>
+					 <?php if(count($serviceProviders)>0){ ?>
+               	<?php foreach($serviceProviders as $k=>$css){ ?>
+            	<a href="login.php?serviceProvider=<?php echo $k;?>" class="btn btn-secondary btn-block btn-flat btn-social btn-<?php echo $css;?>"><i class="fa fa-<?php echo $css;?>"></i> Sign in using <?php echo $k;?></a>
+            	<?php } ?>
+        		<?php } ?>
+					<br>
+					
                    
                   <a href="login.php?w=pr" class="btn btn-secondary btn-block btn-flat ">
                     <span class="icon text-white-50">
                       <i class="fas fa-arrow-right"></i>
                     </span>
                     <span class="text">password recovery</span>
-                  </a></div>
+                  </a>
+					
+					
+				
+				  
+				  </div>
                   <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">

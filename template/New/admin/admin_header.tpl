@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="<?php echo $user_language;?>">
-
-<head>
+<html dir="ltr" lang="<?php echo $user_language;?>"><head>
  <?php if(isset($header)) echo $header; ?>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +8,7 @@
   <meta name="author" content="">
 
   <title><?php if(isset($ewCfg['title'])) echo $ewCfg['title']; ?></title>
+	<link rel="shortcut icon" type="image/x-icon" href="<?php echo (isset($rSA['favicon']) and !empty($rSA['favicon'])) ? $rSA['favicon'] : 'images/favicon.ico';?>" />
 
     <link href="css/admin.css" rel="stylesheet">
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -17,7 +16,6 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/04f8aba366.js" crossorigin="anonymous"></script>
-    <link href="css/ftnaws.min.css" rel="stylesheet" type="text/css">
     <link href="css/custom.css" rel="stylesheet" type="text/css">
         <!-- jQuery -->
     <script src="js/default/jquery.min.js" type="text/javascript"></script>
@@ -443,9 +441,10 @@
             <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
             <i class="fa fa-bars" aria-hidden="false"></i>
           </button>
+			<?php if(isset($easywitweets) && $easywitweets) { ?>
 			 <a href="https://twitter.com/easy_wi?ref_src=twsrc%5Etfw" class="twitter-follow-button"  data-show-count="false">Follow @easy_wi</a>
              <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+			<?php } ?>
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 
