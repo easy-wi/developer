@@ -68,9 +68,11 @@
 
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+					<?php if(isset($easywitweets) && $easywitweets) { ?>
                     <li class="dropdown messages-menu hidden-xs twitter-button-margin">
                         <a href="https://twitter.com/easy_wi?ref_src=twsrc%5Etfw" class="twitter-follow-button"  data-show-count="false">Follow @easy_wi</a>
                         <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+						<?php } ?>
                     </li>
                     <?php if(isset($toooldversion)){ ?>
                     <!-- Messages: style can be found in dropdown.less-->

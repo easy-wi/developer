@@ -120,6 +120,8 @@
           <?php } ?>
           <?php foreach ($customModules['vo'] as $k => $v) { echo '<a class="dropdown-item"'; echo ($ui->smallletters('w',255,'get')==$k) ? '' : ''; echo '><i class="fa fa-angle-double-right"></i> <a  href="userpanel.php?w='.$k.'">'.$v.'</a></a>'; }; ?>
         </div>
+
+
       </li>
       <?php } ?>
 
@@ -207,11 +209,23 @@
 </ul>
 </div>
 </div>
-<?php } ?>
+	<?php } ?>
 
+<!--Workaround for Logout issues -->
+<style>
 
-    <div class="form-inline">
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+@media only screen and (max-device-width: 1000px) {
+	.mobileum {
+		height: 100%; 
+		max-height: 400px; 
+		width: 100%; 
+		overflow-y: scroll; 
+		-webkit-overflow-scrolling:touch;
+		
+		}
+}
+</style>
+    <div class="form-inline mobileum">
             <ul class="navbar-nav">
                 <li class="nav-item dropdown dropleft">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -266,7 +280,6 @@
                 </li>
             </ul>
         </div>
-    </div>
 </nav>
 <body <?php echo implode(' ',$htmlExtraInformation['body']);?>>
     <div class="row">
