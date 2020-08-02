@@ -1285,7 +1285,7 @@ if (!function_exists('passwordgenerate')) {
             $json = json_decode($content);
 
             if (($developer == 'N' and is_object($json) and property_exists($json, 'tag_name') or ($developer == 'Y' and is_array($json) and isset($json[0]) and is_object($json[0]) and property_exists($json[0], 'name')))) {
-
+                    echo $json[0]->name;
                 $version = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
                 $rSA['version'] = $version;
                 $apiResponse = array('v' => $version);
