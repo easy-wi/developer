@@ -207,7 +207,7 @@ if ($ui->st('w', 'get') == 'lo') {
     $serviceProviders = getServiceProviders();
     $serviceProvider = (string) $ui->w('serviceProvider', 255, 'get');
 
-    if ($serviceProvider and file_exists(EASYWIDIR . '/third_party/hybridauth/Hybrid/Providers/' . $serviceProvider . '.php')) {
+    if ($serviceProvider and file_exists(EASYWIDIR . '/third_party/hybridauth/Hybrid_v3/Provider/' . $serviceProvider . '.php')) {
         $_SERVER = $ui->server;
 
         $pageUrl = '';
@@ -221,7 +221,7 @@ if ($ui->st('w', 'get') == 'lo') {
         }
 
         $serviceProviderConfig = array(
-            'base_url' => removeDoubleSlashes($pageUrl . '/login.php?endpoint=1'),
+            'callback' => removeDoubleSlashes($pageUrl . '/login.php?endpoint=1'),
             'debug_mode' => (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) ? true : false,
             'debug_file' => EASYWIDIR . '/third_party/hybridauth/log/hybridauth.log',
             'providers' => array()
@@ -298,21 +298,35 @@ if ($ui->st('w', 'get') == 'lo') {
         $_GET = $ui->get;
         $_POST = $ui->post;
 
-        include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Auth.php');
+        // TODO prepare to Hyprid_v3 oAuth
+        $LogoutOrDisconnect = "";
+        if(isset($rSA["developer"]) && $rSA["developer"] == "Y"){
+            include(EASYWIDIR . '/third_party/hybridauth/Hybrid_v3/autoload.php');
+            $LogoutOrDisconnect = "disconnect";
+        }else{
+            include(EASYWIDIR . '/third_party/hybridauth/Hybrid/Auth.php');
+            $LogoutOrDisconnect = "logout";
+        }
 
         try{
+
 
             $connectedUsers = array();
             $connectedSubstitutes = array();
 
             // initialize Hybrid_Auth with a given file
-            $hybridauth = new Hybrid_Auth($serviceProviderConfig);
+
+            if(isset($rSA["developer"]) && $rSA["developer"] == "Y"){
+                $hybridauth = new Hybridauth\Hybridauth($serviceProviderConfig);
+            }else{
+                $hybridauth = new Hybrid_Auth($serviceProviderConfig);
+            }
 
             // try to authenticate with the selected provider
             $serviceProviderAdapter = $hybridauth->authenticate($serviceProvider);
-
             $userProfile = $serviceProviderAdapter->getUserProfile();
-            $serviceProviderAdapter->logout();
+
+            $serviceProviderAdapter->$LogoutOrDisconnect();
 
             // get all user for this identifier and service provider. User should be able to select the user he is going to logon to
             $serviceProviderID = $serviceProviderConfig['providers'][$serviceProvider]['internalID'];
@@ -432,8 +446,7 @@ if ($ui->st('w', 'get') == 'lo') {
 
             $include = 'login.tpl';
         }
-
-    } else if ($ui->escaped('endpoint', 'get')) {
+    }else if ($ui->escaped('endpoint', 'get')) {
 
         $_SERVER = $ui->server;
         $_GET = $ui->get;

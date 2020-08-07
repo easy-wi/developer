@@ -90,6 +90,9 @@ if (isset($include) and $include == true and isset($devVersion)) {
 </ul>')");
     $query->execute();
     $response->add('Action: insert_easywi_version done: ');
+
+    require_once(EASYWIDIR . '/stuff/config.php');
+
     @copy(EASYWIDIR . '/stuff/config.php',EASYWIDIR . '/tmp/config.php.bak');
     $configFp = @fopen(EASYWIDIR . '/stuff/config.php', "a");
     if ($configFp) {
