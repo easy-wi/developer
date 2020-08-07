@@ -207,7 +207,14 @@ if ($ui->st('w', 'get') == 'lo') {
     $serviceProviders = getServiceProviders();
     $serviceProvider = (string) $ui->w('serviceProvider', 255, 'get');
 
-    if ($serviceProvider and file_exists(EASYWIDIR . '/third_party/hybridauth/Hybrid_v3/Provider/' . $serviceProvider . '.php')) {
+    // TODO prepare to Hyprid_v3 oAuth
+    if(isset($rSA["developer"]) && $rSA["developer"] == "Y"){
+        $filepath = '/third_party/hybridauth/Hybrid_v3/Provider/';
+    }else{
+        $filepath = '/third_party/hybridauth/Hybrid/Providers/';
+    }
+
+    if ($serviceProvider and file_exists(EASYWIDIR . $filepath . $serviceProvider . '.php')) {
         $_SERVER = $ui->server;
 
         $pageUrl = '';
@@ -220,12 +227,23 @@ if ($ui->st('w', 'get') == 'lo') {
             $registration = $row['registration'];
         }
 
-        $serviceProviderConfig = array(
-            'callback' => removeDoubleSlashes($pageUrl . '/login.php?endpoint=1'),
-            'debug_mode' => (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) ? true : false,
-            'debug_file' => EASYWIDIR . '/third_party/hybridauth/log/hybridauth.log',
-            'providers' => array()
-        );
+        // TODO prepare to Hyprid_v3 oAuth
+        if(isset($rSA["developer"]) && $rSA["developer"] == "Y"){
+            $serviceProviderConfig = array(
+                'callback' => removeDoubleSlashes($pageUrl . '/login.php?endpoint=1'),
+                'debug_mode' => (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) ? true : false,
+                'debug_file' => EASYWIDIR . '/third_party/hybridauth/log/hybridauth.log',
+                'providers' => array()
+            );
+        }else{
+            $serviceProviderConfig = array(
+                'base_url' => removeDoubleSlashes($pageUrl . '/login.php?endpoint=1'),
+                'debug_mode' => (isset($dbConnect['debug']) and $dbConnect['debug'] == 1) ? true : false,
+                'debug_file' => EASYWIDIR . '/third_party/hybridauth/log/hybridauth.log',
+                'providers' => array()
+            );
+        }
+
 
         $query = $sql->prepare("SELECT `serviceProviderID`,`filename`,`identifier`,`token` FROM `userdata_social_providers` WHERE `resellerID`=0 AND `active`='Y'");
         $query->execute();
