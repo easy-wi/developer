@@ -158,7 +158,7 @@
                      <?php if(($pa['ftpaccess'] or $pa['miniroot']) and $table_row['ftpAllowed']) { ?>
                      <li class="list-group-item"><b><?php echo $sprache->ftp_link;?>:</b>
                      <a href="<?php echo $table_row['ftpdata'];?>">
-                     <?php echo $table_row['ftpdata'];?>
+                     <?php echo str_replace($table_row['cftppass'], str_repeat("*", strlen($table_row['cftppass'])), $table_row['ftpdata']);?>
                      </a>
                      </li>
                      <?php } ?>
@@ -169,7 +169,8 @@
                      <?php echo $table_row['cname'];?>
                      </li>
                      <li class="list-group-item"><b><?php echo $sprache->ftp_password;?>:</b>
-                     <?php echo $table_row['cftppass'];?>
+                     <div id="cftppass-<?php echo $gsa; ?>" style="display:none"><?php echo $table_row['cftppass'];?></div>
+                     <button title="" class="btn btn-outline-warning inline" type="button" onclick="if(document.getElementById('cftppass-<?php echo $gsa; ?>') .style.display=='none') {document.getElementById('cftppass-<?php echo $gsa; ?>') .style.display='inline'}else{document.getElementById('cftppass-<?php echo $gsa; ?>') .style.display='none'}"><i class="fa fa-eye"></i></button>
                      </li>
                      <li class="list-group-item"></li>
                      </ul>
