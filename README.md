@@ -31,7 +31,7 @@ What drives the development is the goal to automate all processes. Listing all a
 - The same applies to TS3 voiceserver.
 - In addition to a TS3 server you can manage TSDNS either as standalone, or together with the TS3 master. 
 - Game- as well as voiceserver can be monitored. Server offline? To many slots? Password is missing at a private server? Branding removed from the server`s name? Easy-WI will correct that for you.
-- Already existing game- and voiceservers can be imported and assigned to an user.
+- Already existing game- and voice servers can be imported across platforms into an existing server in Easy-Wi.
 - Reseller Accounts can be setup.
 - All modules can be used with a REST API as well. That way you can include Easy-WI in already existing processes given with a shop like WHMCS or Magento.
 
