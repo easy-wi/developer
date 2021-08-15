@@ -15,11 +15,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->appRoot;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameMasterActive'].'/'.$statsArray['gameMasterInstalled']; echo" $gsprache->active";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameMasterActive'].'/'.$statsArray['gameMasterInstalled']; echo" $gsprache->active";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-server fa-4x text-gray-400"></i>
+                      <i class="fa fa-server fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -34,11 +34,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->appRoot;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameMasterCrashed'].'/'.$statsArray['gameMasterActive']; echo" $sprache_bad->crashed";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameMasterCrashed'].'/'.$statsArray['gameMasterActive']; echo" $sprache_bad->crashed";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-heartbeat fa-4x text-gray-400"></i>
+                      <i class="fa fa-heartbeat fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -53,11 +53,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->appRoot;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverInstalled'].'/'.$statsArray['gameMasterServerAvailable']; echo" $sprache_bad->master_installed_server";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverInstalled'].'/'.$statsArray['gameMasterServerAvailable']; echo" $sprache_bad->master_installed_server";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -72,11 +72,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->appRoot;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverSlotsInstalled'].'/'.$statsArray['gameMasterSlotsAvailable'];echo" $sprache_bad->master_installed_slots";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverSlotsInstalled'].'/'.$statsArray['gameMasterSlotsAvailable'];echo" $sprache_bad->master_installed_slots";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -96,11 +96,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->gameserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverActive'].'/'.$statsArray['gameserverInstalled']; echo" $gsprache->active";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverActive'].'/'.$statsArray['gameserverInstalled']; echo" $gsprache->active";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-gamepad fa-4x text-gray-400"></i>
+                      <i class="fa fa-gamepad fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -115,11 +115,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->gameserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverNotRunning'].'/'.$statsArray['gameserverActive']; echo" $sprache_bad->crashed";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverNotRunning'].'/'.$statsArray['gameserverActive']; echo" $sprache_bad->crashed";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-heartbeat fa-4x text-gray-400"></i>
+                      <i class="fa fa-heartbeat fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -134,11 +134,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->gameserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive']; echo" $sprache_bad->rulebreak";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive']; echo" $sprache_bad->rulebreak";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-gavel fa-4x text-gray-400"></i>
+                      <i class="fa fa-gavel fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -153,11 +153,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->gameserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverSlotsUsed'].'/'.$statsArray['gameserverSlotsActive'];echo" $sprache_bad->usage_slots";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['gameserverSlotsUsed'].'/'.$statsArray['gameserverSlotsActive'];echo" $sprache_bad->usage_slots";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-plug fa-4x text-gray-400"></i>
+                      <i class="fa fa-plug fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -178,11 +178,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceMasterActive'].'/'.$statsArray['voiceMasterInstalled']; echo" $gsprache->active";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceMasterActive'].'/'.$statsArray['voiceMasterInstalled']; echo" $gsprache->active";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-server fa-4x text-gray-400"></i>
+                      <i class="fa fa-server fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -197,11 +197,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceMasterCrashed'].'/'.$statsArray['voiceMasterActive']; echo" $sprache_bad->crashed";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceMasterCrashed'].'/'.$statsArray['voiceMasterActive']; echo" $sprache_bad->crashed";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-heartbeat fa-4x text-gray-400"></i>
+                      <i class="fa fa-heartbeat fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -216,11 +216,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverInstalled'].'/'.$statsArray['voiceMasterServerAvailable']; echo" $sprache_bad->master_installed_server";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverInstalled'].'/'.$statsArray['voiceMasterServerAvailable']; echo" $sprache_bad->master_installed_server";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -235,11 +235,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverSlotsInstalled'].'/'.$statsArray['voiceMasterSlotsAvailable'];echo" $sprache_bad->master_installed_slots";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverSlotsInstalled'].'/'.$statsArray['voiceMasterSlotsAvailable'];echo" $sprache_bad->master_installed_slots";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -259,11 +259,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverActive'].'/'.$statsArray['voiceserverInstalled']; echo" $gsprache->active";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverActive'].'/'.$statsArray['voiceserverInstalled']; echo" $gsprache->active";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-microphone fa-4x text-gray-400"></i>
+                      <i class="fa fa-microphone fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -278,11 +278,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverCrashed'].'/'.$statsArray['voiceserverActive']; echo" $sprache_bad->crashed";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverCrashed'].'/'.$statsArray['voiceserverActive']; echo" $sprache_bad->crashed";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-heartbeat fa-4x text-gray-400"></i>
+                      <i class="fa fa-heartbeat fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -297,11 +297,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverTrafficUsed'].'/'.$statsArray['voiceserverTrafficAllowed']; echo" $sprache_bad->traffic";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverTrafficUsed'].'/'.$statsArray['voiceserverTrafficAllowed']; echo" $sprache_bad->traffic";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -316,11 +316,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->voiceserver;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverSlotsUsed'].'/'.$statsArray['voiceserverSlotsActive'];echo" $sprache_bad->usage_slots";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['voiceserverSlotsUsed'].'/'.$statsArray['voiceserverSlotsActive'];echo" $sprache_bad->usage_slots";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-plug fa-4x text-gray-400"></i>
+                      <i class="fa fa-plug fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -339,11 +339,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->webspace.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webMasterActive'].'/'.$statsArray['webMasterInstalled']; echo" $gsprache->active";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webMasterActive'].'/'.$statsArray['webMasterInstalled']; echo" $gsprache->active";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-server fa-4x text-gray-400"></i>
+                      <i class="fa fa-server fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -358,11 +358,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->webspace.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webMasterCrashed'].'/'.$statsArray['webMasterActive']; echo" $sprache_bad->crashed";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webMasterCrashed'].'/'.$statsArray['webMasterActive']; echo" $sprache_bad->crashed";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-heartbeat fa-4x text-gray-400"></i>
+                      <i class="fa fa-heartbeat fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -377,11 +377,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->webspace.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webspaceInstalled'].'/'.$statsArray['webMasterVhostAvailable']; echo" $sprache_bad->master_installed_vhosts";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webspaceInstalled'].'/'.$statsArray['webMasterVhostAvailable']; echo" $sprache_bad->master_installed_vhosts";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -396,11 +396,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo $gsprache->webspace.' '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webspaceSpaceGiven'].'/'.$statsArray['webMasterSpaceAvailable'];echo" $sprache_bad->master_installed_space";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['webspaceSpaceGiven'].'/'.$statsArray['webMasterSpaceAvailable'];echo" $sprache_bad->master_installed_space";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -420,11 +420,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo 'MySQL '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlMasterActive'].'/'.$statsArray['mysqlMasterInstalled']; echo" $gsprache->active";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlMasterActive'].'/'.$statsArray['mysqlMasterInstalled']; echo" $gsprache->active";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-server fa-4x text-gray-400"></i>
+                      <i class="fa fa-server fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -439,11 +439,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo 'MySQL '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlMasterCrashed'].'/'.$statsArray['mysqlMasterActive']; echo" $sprache_bad->crashed";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlMasterCrashed'].'/'.$statsArray['mysqlMasterActive']; echo" $sprache_bad->crashed";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-heartbeat fa-4x text-gray-400"></i>
+                      <i class="fa fa-heartbeat fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -458,11 +458,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo 'MySQL '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlDBInstalled'].'/'.$statsArray['mysqlMasterDBAvailable']; echo" $sprache_bad->master_installed_db";?> 
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlDBInstalled'].'/'.$statsArray['mysqlMasterDBAvailable']; echo" $sprache_bad->master_installed_db";?> 
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
@@ -477,11 +477,11 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                     <div class="text-sm font-weight-bold text-primary text-uppercase mb-2"> <?php echo 'MySQL '.$gsprache->master;?></div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlDBSpaceUsed'];echo" MB";?>  
+                        <div class="h6 mb-0 font-weight-bold text-gray-800"><?php echo $statsArray['mysqlDBSpaceUsed'];echo" MB";?>  
                         </div>
                     </div>
                     <div class="col-auto">
-                      <i class="fa fa-signal fa-4x text-gray-400"></i>
+                      <i class="fa fa-signal fa-3x text-gray-400"></i>
                     </div>
                     </div>
                     <div class="progress">
