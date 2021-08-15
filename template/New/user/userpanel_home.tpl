@@ -24,11 +24,13 @@
                     <div class="progress" style="height: 2px;">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $statsArray['gameserverCrashedPercent'];?>%"> aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
+
+
 <div class="row">
-    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-heartbeat fa-7x"></i></div>
+    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-heartbeat fa-5x"></i></div>
     <div class="col-lg-10 mb-10">
                     <div class="card-body">
-                    <h4><?php echo $gsprache->gameserver;?> - Heartbeat</h4>
+                    <h5><?php echo $gsprache->gameserver;?> - Heartbeat</h5>
                       <div class="text-white-50 small"><?php echo $statsArray['gameserverNotRunning'].'/'.$statsArray['gameserverActive'];?></div>
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo $statsArray['gameserverCrashedPercent'];?>%"></div>
@@ -45,11 +47,13 @@
                     <div class="progress" style="height: 2px;">
   <div class="progress-bar" role="progressbar" style="width: <?php echo $statsArray['gameserverRuleBreakPercent'];?>%"> aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
+
+
 <div class="row">
-    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-gavel fa-7x"></i></div>
+    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-gavel fa-5x"></i></div>
     <div class="col-lg-10 mb-10">
                     <div class="card-body">
-                    <h4><?php echo $gsprache->gameserver;?> - Config violation</h4>
+                    <h5><?php echo $gsprache->gameserver;?> - Config violation</h5>
                       <div class="text-white-50 small"><?php echo ($statsArray['gameserverNoTag'] + $statsArray['gameserverNoPassword']).'/'.$statsArray['gameserverActive'];?></div>
                       <div class="progress">
                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo $statsArray['gameserverRuleBreakPercent'];?>%"></div>
@@ -67,10 +71,10 @@
   <div class="progress-bar" role="progressbar" style="width: <?php echo $statsArray['gameserverSlotsUsedPercent'];?>%"> aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 <div class="row">
-    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-plug fa-7x"></i></div>
+    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-plug fa-5x"></i></div>
     <div class="col-lg-10 mb-10">
                     <div class="card-body">
-                    <h4><?php echo $gsprache->gameserver;?> - Used Slots</h4>
+                    <h5><?php echo $gsprache->gameserver;?> - Used Slots</h5>
                       <div class="text-white-50 small"><?php echo $statsArray['gameserverSlotsUsed'].'/'.$statsArray['gameserverSlotsActive'];?></div>
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo $statsArray['gameserverSlotsUsedPercent'];?>%"></div>
@@ -91,10 +95,10 @@
   <div class="progress-bar" role="progressbar" style="width: <?php echo $statsArray['voiceserverCrashedPercent'];?>%"> aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 <div class="row">
-    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-heartbeat fa-7x"></i></div>
+    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-heartbeat fa-5x"></i></div>
     <div class="col-lg-10 mb-10">
                     <div class="card-body">
-                    <h4><?php echo $gsprache->voiceserver;?> - Heartbeat</h4>
+                    <h5><?php echo $gsprache->voiceserver;?> - Heartbeat</h5>
                       <div class="text-white-50 small"><?php echo $statsArray['voiceserverCrashed'].'/'.$statsArray['voiceserverActive'];?></div>
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo $statsArray['voiceserverCrashedPercent'];?>%"></div>
@@ -115,7 +119,7 @@
     <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-signal fa-6x"></i></div>
     <div class="col-lg-10 mb-10">
                     <div class="card-body">
-                    <h4><?php echo $gsprache->voiceserver;?> - Traffic</h4>
+                    <h5><?php echo $gsprache->voiceserver;?> - Traffic</h5>
                       <div class="text-white-50 small"><?php echo $statsArray['voiceserverTrafficUsed'].'/'.$statsArray['voiceserverTrafficAllowed'];?></div>
                       <div class="progress">
                          <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo $statsArray['voiceserverTrafficPercent'];?>%"></div>
@@ -133,10 +137,10 @@
   <div class="progress-bar" role="progressbar" style="width: <?php echo $statsArray['voiceserverSlotsUsedPercent'];?>%"> aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
 </div>
 <div class="row">
-    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-plug fa-7x"></i></div>
+    <div class="col-lg-2 mb-2"><i style="padding-top: 10px;padding-left: 5px;" class="fa fa-plug fa-5x"></i></div>
     <div class="col-lg-10 mb-10">
                     <div class="card-body">
-                    <h4><?php echo $gsprache->voiceserver;?> - Used Slots</h4>
+                    <h5><?php echo $gsprache->voiceserver;?> - Used Slots</h5>
                       <div class="text-white-50 small"><?php echo $statsArray['voiceserverSlotsUsed'].'/'.$statsArray['voiceserverSlotsActive'];?></div>
                       <div class="progress">
                         <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: <?php echo $statsArray['voiceserverSlotsUsedPercent'];?>%"></div>
@@ -167,7 +171,7 @@
 
                 <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h4 class="m-0 font-weight-bold text-primary"><?php echo $feed['title'];?></h4>
+                  <h5 class="m-0 font-weight-bold text-primary"><?php echo $feed['title'];?></h5>
                   <div class="dropdown-menu-right" >
                   <?php if($lastdate!=$feed['date']){ ?>
                 <span><i class="far fa-calendar-alt"></i> <?php echo $feed['date'];?></span>
