@@ -38,7 +38,7 @@
     <heading_add>Add user</heading_add>
     <heading_detail>User details</heading_detail>
     <heading_list>User overview</heading_list>
-    <help_substitutes_list></help_substitutes_list>
+    <help_substitutes_list>Additional users can be added here who should also have access to individual services.</help_substitutes_list>
     <hnum>House Number</hnum>
     <inst>Installed server</inst>
     <ips>IPv4 addresses:</ips>
