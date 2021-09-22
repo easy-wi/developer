@@ -700,7 +700,7 @@ $gameImages = array(
         ':slots' => 12,
         ':map' => 'de_dust2',
         ':cmd' => './%binary% -game csgo -console -usercon +ip %ip% +hostport %port% +tv_port %tvport% +clientport %port3% -maxplayers_override %slots% -tickrate %tickrate% +mapgroup %mapgroup% +map %map% -nobreakpad',
-        ':modcmds' => "[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1",
+        ':modcmds' => "[Classic Casual = default]\r\n+game_type 0 +game_mode 0\r\n\r\n[Classic Competitive]\r\n+game_type 0 +game_mode 1\r\n\r\n[Arms Race]\r\n+game_type 1 +game_mode 0\r\n\r\n[Demolition]\r\n+game_type 1 +game_mode 1\r\n\r\n[Deathmatch]\r\n+game_type 1 +game_mode 2",
         ':tic' => 66,
         ':gameq' => 'csgo',
         ':gamemod' => 'N',
