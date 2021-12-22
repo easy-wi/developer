@@ -409,23 +409,21 @@ class masterServer {
                 //Steam updater
                 if ($row['steamgame'] == 'S') {
 
-                    $this->shellScript .= 'cd /home/' . $this->sshuser . '/masterserver/steamCMD/'. "\n";
-
-                    $this->shellScript .= 'taskset -c 0 ${IONICE}nice -n +19 ./steamcmd.sh +login ';
-
+                   $this->shellScript .= 'cd /home/' . $this->sshuser . '/masterserver/steamCMD/'. "\n";
+ 
+                    $this->shellScript .= 'taskset -c 0 ${IONICE}nice -n +19 ./steamcmd.sh +force_install_dir ' . $absoluteGamePath . ' +login ';
+ 
                     if (strlen($this->steamAccount) > 0) {
                         $this->shellScript .= $this->steamAccount . ' ' . $this->steamPassword;
                     } else if (strlen($row['steamAcc']) > 0) {
                         $this->shellScript .= $row['steamAcc'] . ' ' . $row['steamPwd'];
                     } else {
-                        $this->shellScript .= 'anonymous';
+                        $this->shellScript .= 'anonymous ';
                     }
-
-                    $this->shellScript .= ' +force_install_dir ' . $absoluteGamePath . ' ';
-
+ 
                     $fixedId = workAroundForValveChaos($row['appID'], $row['shorten'], false);
-
-                    $this->shellScript .= ($fixedId == 90) ?  '+app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : '+app_update ' . $fixedId;
+ 
+                    $this->shellScript .= ($fixedId == 90) ?  ' +app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : '+app_update ' . $fixedId;
                     $this->shellScript .= ' validate  +quit > ' . $updateLog . "\n";
 
                 } else if ($row['steamgame'] == 'N' and ($row['shorten'] == 'mc')) {
