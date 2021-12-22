@@ -38,64 +38,79 @@
  * Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.
  */
 
-if (isset($include) and $include == true) {
+if (isset($include) and $include == true and isset($devVersion)) {
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('6.2.1','<div align=\"right\">22.12.2021</div>
+('6.2.0.1','<div align=\"right\">02.08.2020</div>
 <b>&Auml;nderungen:</b><br/>
 <ul>
 <li>General
 <ul>
-<li>Konfigurationsvariable $coloreddashboard Hinzugefügt</li>
-<li>Konfigurationsvariable $easywitweets Hinzugefügt</li>
-<li>Konfigurationsvariable $examplemodule . Hinzugefügt</li>
-<li>Aktualisierte Social-Media-Links in allen Vorlagen</li>
-<li>Dediziertes Servermodul aus dem neuen Design entfernt</li>
-<li>Unterstützung für Fontawesome 5 hinzugefügt</li>
-<li>Der Twitter Headline-Button kann jetzt auch deaktiviert werden</li>
+<li>Config Variable <b>\$coloreddashboard</b> Hinzugefügt</li>
+<li>Config Variable <b>\$easywitweets</b> Hinzugefügt</li>
+<li>Config Variable <b>\$examplemodule</b> Hinzugefügt</li>
+<li>Updated Socialmedia links in allen Templates</li>
+<li>Entfernung des Dedicated Server module vom <b>New</b> Theme</li>
+<li>Fontaweasome 5 Support/li>
+<li>Twitter Header button kann nun entfernt werden</li>
 </ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
-<li>Fix of Fix für Diskspace View auf Masterserver</li>
-<li>Fix für Gametemplate Left4Dead und Modfolder</li>
-<li>Fix für Discord-Symbole</li>
-<li>Behebung des Problems beim Senden von E-Mails</li>
-<li>Abmeldeschleife Fix für neues Theme</li>
-<li>Socialmedia-Auth-Fix für neues Thema</li>
-<li>Mobile Navigation Workaround für neues Design</li>
-<li>Steam-CMD Probleme behoben</li>
+<li>Speichernutzung auf dem Masterserver Workaround Fix</li>
+<li>Spieletemplate: Left4Dead und Modfolder Fix</li>
+<li>Discord Icons Fix</li>
+<li>E-Mail Sende Bug Fix</li>
+<li>Logout im <b>New</b> Theme Fix</li>
+<li>Socialmedia Login Fix fürs <b>New</b> Theme</li>
+<li>Mobile Navigation Workaround für <b>New</b> Theme</li>
+<li>Steam CMD issues Fixed</li>
 </ul>
-<b>Zukunft:</b>
-<li>Vorbereitung um auf eine Neuere PHP Version zu updaten</li>
-</ul>','<div align=\"right\">22.12.2021</div>
+</ul>','<div align=\"right\">02.08.2020</div>
 <b>Changes:</b><br/>
 <ul>
 <li>General
 <ul>
-<li>Add Config Variable $coloreddashboard</li>
-<li>Add Config Variable $easywitweets</li>
-<li>Add Config Variable $examplemodule</li>
+<li>Add Config Variable <b>\$coloreddashboard</b></li>
+<li>Add Config Variable <b>\$easywitweets</b></li>
+<li>Add Config Variable <b>\$examplemodule</b></li>
 <li>Updated Socialmedia links in all Templates</li>
-<li>Removed Dedicated Server module from New Theme</li>
+<li>Removed Dedicated Server module from <b>New</b> Theme</li>
 <li>Added Fontaweasome 5 Support</li>
 <li>Twitter Headline button can be disabled aswell now</li>
 </ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
-<li>Fix of Fix for Diskspace View on Masterserver</li>
-<li>Fix for Gametemplate Left4Dead and Modfolder</li>
+<li>Fix of Fix for Diskspace View on Masterserver/li>
+<li>Gametemplate: Fix for Left4Dead and Modfolder</li>
 <li>Fix for Discord Icons</li>
 <li>Fix for Email send Issue</li>
-<li>Log-out loop Fix for New Theme</li>
-<li>Socialmedia Auth Fix for New Theme</li>
-<li>Mobile Navigation Workaround for New Theme</li>
-<li>Fixed Issues with steam CMD</li>
+<li>Log-out loop Fix for <b>New</b> Theme</li>
+<li>Socialmedia Auth Fix for <b>New</b> Theme/li>
+<li>Mobile Navigation Workaround for <b>New</b> Theme</li>
+<li>Steam CMD issues Fixed</li>
 </ul>
-<b>Future:</b>
-<li>preparation to update PHP</li>
 </ul>')");
     $query->execute();
     $response->add('Action: insert_easywi_version done: ');
+
+    require_once(EASYWIDIR . '/stuff/config.php');
+
+    @copy(EASYWIDIR . '/stuff/config.php',EASYWIDIR . '/tmp/config.php.bak');
+    $configFp = @fopen(EASYWIDIR . '/stuff/config.php', "a");
+    if ($configFp) {
+        $configdata = "";
+        if(!isset($coloreddashboard)){
+            $configdata .= "" . '$coloreddashboard' . " = false;" . PHP_EOL;
+        }
+        if(!isset($easywitweets)){
+            $configdata .= "" . '$easywitweets' . " = true;" . PHP_EOL;
+        }
+        if(!isset($examplemodule)){
+            $configdata .= "" . '$examplemodule' . " = false;" . PHP_EOL;
+        }
+        @fwrite($configFp, $configdata);
+        fclose($configFp);
+    }
 
 } else {
     echo "Error: this file needs to be included by the updater!<br />";
