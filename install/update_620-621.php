@@ -41,7 +41,7 @@
 if (isset($include) and $include == true and isset($devVersion)) {
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('6.2.0.1','<div align=\"right\">02.08.2020</div>
+('6.2.1','<div align=\"right\">22.12.2021</div>
 <b>&Auml;nderungen:</b><br/>
 <ul>
 <li>General
@@ -65,7 +65,7 @@ if (isset($include) and $include == true and isset($devVersion)) {
 <li>Mobile Navigation Workaround für <b>New</b> Theme</li>
 <li>Steam CMD issues Fixed</li>
 </ul>
-</ul>','<div align=\"right\">02.08.2020</div>
+</ul>','<div align=\"right\">22.12.2021</div>
 <b>Changes:</b><br/>
 <ul>
 <li>General
