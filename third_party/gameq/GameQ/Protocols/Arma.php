@@ -19,24 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Aoc
+ * Class Arma
  *
  * @package GameQ\Protocols
- * @author Austin Bischoff <austin@codebeard.com>
+ *
+ * @author  Wilson Jesus <>
  */
-class Aoc extends Source
+class Arma extends Gamespy2
 {
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'aoc';
+    protected $name = 'arma';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Age of Chivalry";
+    protected $name_long = "ArmA Armed Assault";
 }

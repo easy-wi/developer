@@ -19,24 +19,32 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Fof
+ * Class Brink
  *
  * @package GameQ\Protocols
- * @author Austin Bischoff <austin@codebeard.com>
+ *
+ * @author Wilson Jesus <>
  */
-class Fof extends Source
+class Brink extends Source
 {
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'fof';
+    protected $name = 'brink';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Fistful of Frags";
+    protected $name_long = "Brink";
+
+    /**
+     * query_port = client_port + 1
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
 }

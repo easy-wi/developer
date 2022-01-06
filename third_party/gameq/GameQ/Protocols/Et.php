@@ -19,25 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Jc2
+ * Wolfenstein Enemy Territory Protocol Class
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ *
+ * @author  Wilson Jesus <>
  */
-class Jc2 extends Source
+class Et extends Quake3
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'jc2';
+    protected $name = 'et';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Just Cause 2 Multiplayer";
+    protected $name_long = "Wolfenstein Enemy Territory";
 }

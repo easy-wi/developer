@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of GameQ.
  *
@@ -20,26 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayzmod
+ * Class Crysis
  *
  * @package GameQ\Protocols
- * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
- * @author  Austin Bischoff <austin@codebeard.com>
+ *
+ * @author  Wilson Jesus <>
  */
-class Arma3 extends Armedassault2oa
+class Crysis extends Gamespy3
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'arma3';
+    protected $name = 'crysis';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Arma3";
+    protected $name_long = "Crysis";
 }

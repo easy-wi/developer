@@ -19,24 +19,23 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Alienswarm
+ * Class Valheim
  *
  * @package GameQ\Protocols
- * @author Austin Bischoff <austin@codebeard.com>
+ * 
  */
-class Alienswarm extends Source
+class Valheim extends Source
 {
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'alienswarm';
-
+    protected $name = 'valheim';
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Alien Swarm";
+    protected $name_long = "Valheim";
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of GameQ.
  *
@@ -20,13 +19,12 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayzmod
+ * Class MORDHAU
  *
  * @package GameQ\Protocols
- * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Wilson Jesus <>
  */
-class Arma3 extends Armedassault2oa
+class Mordhau extends Source
 {
 
     /**
@@ -34,12 +32,22 @@ class Arma3 extends Armedassault2oa
      *
      * @type string
      */
-    protected $name = 'arma3';
+    protected $name = 'mordhau';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Arma3";
+    protected $name_long = "MORDHAU";
+
+    #protected $port = 7777;
+
+    /**
+     * query_port = client_port + 19238
+     * 27015 = 7777 + 19238
+     *
+     * @type int
+     */
+    #protected $port_diff = 19238;
 }

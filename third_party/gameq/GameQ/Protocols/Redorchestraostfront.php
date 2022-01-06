@@ -19,25 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Nmrih
+ * Red Orchestra: Ostfront 41-45 Class
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author naXe <naxeify@gmail.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Nmrih extends Source
+class Redorchestraostfront extends Source
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'nmrih';
+    protected $name = 'redorchestraostfront';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "No More Room in Hell";
+    protected $name_long = "Red Orchestra: Ostfront 41-45";
 }

@@ -19,25 +19,31 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Tfc
+ * Insurgency Sandstorm Class
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author Austin Bischoff <austin@codebeard.com>
  */
-class Tfc extends Source
+class Insurgencysand extends Source
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'tfc';
+    protected $name = 'insurgencysand';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Team Fortress Classic";
+    protected $name_long = "Insurgency: Sandstorm";
+
+    /**
+     * query_port = client_port + 29
+     *
+     * @type int
+     */
+    protected $port_diff = 29;
 }

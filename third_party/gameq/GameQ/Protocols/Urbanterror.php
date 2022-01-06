@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of GameQ.
  *
@@ -20,26 +19,31 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayzmod
+ * Urban Terror Class
  *
  * @package GameQ\Protocols
- * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Arma3 extends Armedassault2oa
+class Urbanterror extends Quake3
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'arma3';
+    protected $name = 'urbanterror';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Arma3";
+    protected $name_long = "Urban Terror";
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "urt://%s:%d/";
 }

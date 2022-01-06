@@ -19,35 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Aa3
+ * Call of Duty United Offensive Class
  *
  * @package GameQ\Protocols
- * @author  Austin Bischoff <austin@codebeard.com>
+ *
+ * @author  Wilson Jesus <>
  */
-class Aa3 extends Source
+class Coduo extends Quake3
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'aa3';
+    protected $name = 'coduo';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "America's Army 3";
-
-    /**
-     * Query port = client_port + 18243
-     *
-     * client_port default 8777
-     * query_port default 27020
-     *
-     * @type int
-     */
-    protected $port_diff = 18243;
+    protected $name_long = "Call of Duty: United Offensive";
 }

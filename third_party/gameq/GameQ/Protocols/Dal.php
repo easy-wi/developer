@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of GameQ.
  *
@@ -20,13 +19,12 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayzmod
+ * Class Dark and Light
  *
  * @package GameQ\Protocols
- * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Arma3 extends Armedassault2oa
+class Dal extends Arkse
 {
 
     /**
@@ -34,12 +32,12 @@ class Arma3 extends Armedassault2oa
      *
      * @type string
      */
-    protected $name = 'arma3';
+    protected $name = 'dal';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Arma3";
+    protected $name_long = "Dark and Light";
 }

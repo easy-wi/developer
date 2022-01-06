@@ -35,7 +35,7 @@ class Killingfloor extends Unreal2
      *
      * @type string
      */
-    protected $name = 'killing floor';
+    protected $name = 'killingfloor';
 
     /**
      * Longer string name of this protocol class

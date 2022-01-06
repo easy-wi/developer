@@ -19,24 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Aapg
+ * Class PixARK
  *
  * @package GameQ\Protocols
- * @author Austin Bischoff <austin@codebeard.com>
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Aapg extends Aa3
+class Pixark extends Arkse
 {
+
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'aapg';
+    protected $name = 'pixark';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "America's Army: Proving Grounds";
+    protected $name_long = "PixARK";
 }

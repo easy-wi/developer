@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of GameQ.
  *
@@ -20,26 +19,32 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayzmod
+ * Class Swat4
  *
  * @package GameQ\Protocols
- * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
- * @author  Austin Bischoff <austin@codebeard.com>
+ *
+ * @author  Wilson Jesus <>
  */
-class Arma3 extends Armedassault2oa
+class Swat4 extends Gamespy2
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'arma3';
+    protected $name = 'swat4';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Arma3";
+    protected $name_long = "SWAT 4";
+
+    /**
+     * query_port = client_port + 1
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
 }

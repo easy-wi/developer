@@ -19,24 +19,25 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Zps
+ * Call of Duty Protocol Class
  *
  * @package GameQ\Protocols
- * @author Austin Bischoff <austin@codebeard.com>
+ *
+ * @author  Wilson Jesus <>
  */
-class Zps extends Source
+class Cod extends Quake3
 {
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'zps';
+    protected $name = 'cod';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Zombie Panic Source";
+    protected $name_long = "Call of Duty";
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of GameQ.
  *
@@ -20,13 +19,12 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Dayzmod
+ * Class Atlas
  *
  * @package GameQ\Protocols
- * @author  Marcel Bößendörfer <m.boessendoerfer@marbis.net>
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author  Wilson Jesus <>
  */
-class Arma3 extends Armedassault2oa
+class Atlas extends Source
 {
 
     /**
@@ -34,12 +32,24 @@ class Arma3 extends Armedassault2oa
      *
      * @type string
      */
-    protected $name = 'arma3';
+    protected $name = 'atlas';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Arma3";
+    protected $name_long = "Atlas";
+
+    /**
+     * query_port = client_port + 51800
+     * 57561 = 5761 + 51800
+     *
+     * this is the default value for the stock game server, both ports
+     * can be independently changed from the stock ones,
+     * making the port_diff logic useless.
+     *
+     * @type int
+     */
+    protected $port_diff = 51800;
 }

@@ -19,25 +19,24 @@
 namespace GameQ\Protocols;
 
 /**
- * Class Projectcars
+ * Class Contagion
  *
  * @package GameQ\Protocols
+ * @author  Nikolay Ipanyuk <rostov114@gmail.com>
  * @author  Austin Bischoff <austin@codebeard.com>
  */
-class Projectcars extends Source
+class Contagion extends Source
 {
-
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'projectcars';
-
+    protected $name = 'contagion';
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Project Cars";
+    protected $name_long = "Contagion";
 }

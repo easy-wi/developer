@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of GameQ.
  *
@@ -122,7 +123,8 @@ class Teamspeak3 extends Protocol
     {
 
         // Check to make sure we have a query_port because it is required
-        if (!isset($this->options[Server::SERVER_OPTIONS_QUERY_PORT])
+        if (
+            !isset($this->options[Server::SERVER_OPTIONS_QUERY_PORT])
             || empty($this->options[Server::SERVER_OPTIONS_QUERY_PORT])
         ) {
             throw new Exception(__METHOD__ . " Missing required setting '" . Server::SERVER_OPTIONS_QUERY_PORT . "'.");

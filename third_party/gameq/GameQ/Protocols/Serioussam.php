@@ -19,27 +19,33 @@
 namespace GameQ\Protocols;
 
 /**
- * Medal of honor: Allied Assault Protocol Class
+ * Serious Sam Protocol Class
  *
- * @package GameQ\Protocols
- * @author  Bram <https://github.com/Stormyy>
- * @author  Austin Bischoff <austin@codebeard.com>
+ * @author ZCaliptium <zcaliptium@gmail.com>
  */
-class Mohaa extends Gamespy
+class Serioussam extends Gamespy
 {
+
     /**
      * String name of this protocol class
      *
      * @type string
      */
-    protected $name = 'mohaa';
+    protected $name = 'serioussam';
 
     /**
      * Longer string name of this protocol class
      *
      * @type string
      */
-    protected $name_long = "Medal of honor: Allied Assault";
+    protected $name_long = "Serious Sam";
+
+    /**
+     * query_port = client_port + 1
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
 
     /**
      * Normalize settings for this protocol
@@ -47,6 +53,7 @@ class Mohaa extends Gamespy
      * @type array
      */
     protected $normalize = [
+        // General
         'general' => [
             // target       => source
             'dedicated'  => 'dedicated',
@@ -54,26 +61,15 @@ class Mohaa extends Gamespy
             'hostname'   => 'hostname',
             'mapname'    => 'mapname',
             'maxplayers' => 'maxplayers',
+            'mod'        => 'activemod',
             'numplayers' => 'numplayers',
             'password'   => 'password',
         ],
         // Individual
         'player'  => [
             'name'  => 'player',
-            'score' => 'frags',
             'ping'  => 'ping',
+            'score' => 'frags',
         ],
     ];
-
-    /**
-     * Query port is always the client port + 97 in MOHAA
-     *
-     * @param int $clientPort
-     *
-     * @return int
-     */
-    public function findQueryPort($clientPort)
-    {
-        return $clientPort + 97;
-    }
 }
