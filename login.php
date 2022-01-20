@@ -719,9 +719,10 @@ if ($ui->st('w', 'get') == 'lo') {
 
                 $query = $sql->prepare("UPDATE `settings` SET `paneldomain`=? WHERE `resellerid`=0 LIMIT 1");
                 $query->execute(array($webhostdomain));
-
+                
+/* PHP 8 Workaround
                 $params = @json_decode(licenceRequest(true));
-
+*/
                 if (isanyadmin($admin_id) or rsellerpermisions($admin_id)) {
                     redirect('admin.php');
                 } else {
