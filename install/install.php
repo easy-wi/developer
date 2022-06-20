@@ -174,13 +174,13 @@ if ($currentStep == 0) {
             if ($handle) {
                 fclose($handle);
                 unlink(EASYWIDIR . "/${folder}test.txt");
-                $systemCheckOk['folders'][] = "Folder exists and can write to: ${folder}";
+                $systemCheckOk['folders'][] = "{$languageObject->system_check_ok_folder_1} ${folder} {$languageObject->system_check_ok_folder_2}";
 
             } else {
-                $systemCheckError['folders'][] = "Folder exists but cannot edit files: ${folder}";
+                $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_writable_1} ${folder} {$languageObject->system_check_error_folder_not_writable_2}";
             }
         } else {
-            $systemCheckError['folders'][] = "Folder does not exist or cannot access: ${folder}";
+            $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_exist_1} ${folder} {$languageObject->system_check_error_folder_not_exist_2}";
         }
     }
 

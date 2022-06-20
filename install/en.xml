@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
 	<aeskey2>The AES key is needed to crypt sensible data like FTP Passwords. Make sure it is a very secure string.</aeskey2>
-	<aeskey3>Safe this key. If you loose it all crypted data will be lost.</aeskey3>
+	<aeskey3>Safe this key. If this is lost, all encrypted data cannot be recovered.</aeskey3>
 	<aeskey>AES Key</aeskey>
 	<brandname>Servertag</brandname>
     <brandname2>Voice- and gameserver names can be searched for this servertag</brandname2>
     <captcha>Captcha</captcha>
 	<captcha_2>Use a Captcha at the login</captcha_2>
-	<confirm_change>Save modifications?</confirm_change>
+	<confirm_change>Apply modifications?</confirm_change>
     <continue>Continue</continue>
     <cron_external>External cronjobs</cron_external>
     <cron_external_text>In case you cannot make use of internal cronjobs, the same files can be called with an external cronjob. If you want to make use of this you need to whitelist the calling IP(s) at the Easy-Wi settings:</cron_external_text>
@@ -77,6 +77,12 @@
 	<prefix1>Define usernames</prefix1>
 	<prefix2>If you define a username the users unique ids will be appended to the defined name. Only small letters and numbers are allowed. Example: customer will be customer2 and counting</prefix2>
 	<prefix3>Default username</prefix3>
+    <system_check_ok_folder_1>Folder<system_check_ok_folder_1>
+    <system_check_ok_folder_2>exists and can write to<system_check_ok_folder_2>
+    <system_check_error_folder_not_exist_1>Folder</system_check_error_folder_not_exist_1>
+    <system_check_error_folder_not_exist_2>does not exist or cannot be accessed</system_check_error_folder_not_exist_2>
+    <system_check_error_folder_not_writable_1>Folder</system_check_error_folder_not_writable_1>
+    <system_check_error_folder_not_writable_2>exists, but nothing can be changed</system_check_error_folder_not_writable_2>
     <system_ok_curl>curl extension is installed.</system_ok_curl>
     <system_ok_fopen>fopen function can be used.</system_ok_fopen>
     <system_ok_ftp>ftp extension is installed.</system_ok_ftp>
@@ -86,7 +92,7 @@
     <system_ok_openssl>openssl extension is installed.</system_ok_openssl>
     <system_ok_PDO>PDO extension is installed.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql extension is installed.</system_ok_pdo_mysql>
-    <system_ok_php_version>At least PHP 5.4 is required. Your PHP version is ok: </system_ok_php_version>
+    <system_ok_php_version>At least PHP 5.4 is required. Your PHP version is current enough: </system_ok_php_version>
     <system_ok_SimpleXML>Extension SimpleXML is installed.</system_ok_SimpleXML>
     <system_ok_zip>zip Extension is installed.</system_ok_zip>
     <timezone>Timezone</timezone>

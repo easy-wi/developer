@@ -1,55 +1,55 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<aeskey2>Der AES Schlüssel wird benötigt, um sensible Daten, wie FTP Passwörter zu verschlüsseln. Bitte stellen Sie sicher, dass es ein sehr sicherer String benutzt wird.</aeskey2>
-	<aeskey3>Sichern Sie diesen Schlüssel. Geht er verloren, gibt es keine Möglichkeit an die veschlüsselten Daten zu kommen.</aeskey3>
+	<aeskey2>Der AES Schlüssel wird benötigt, um sensible Daten, wie FTP Passwörter zu verschlüsseln. Bitte sicherstellen, dass es ein sehr sicherer String benutzt wird.</aeskey2>
+	<aeskey3>Diesen Schlüssel sichern. Geht dieser verloren, können alle verschlüsselten Daten nicht wiederhergestellt werden</aeskey3>
 	<aeskey>AES Schlüssel</aeskey>
 	<brandname>Servertag</brandname>
     <brandname2>Bei Game- und Voiceservern kann das Vorhandensein überprüft werden.</brandname2>
     <captcha>Captcha</captcha>
-	<captcha_2>Captcha beim Login benutzen</captcha_2>
-	<confirm_change>Änderungen speichern?</confirm_change>
+	<captcha_2>Captcha beim Login verwenden</captcha_2>
+	<confirm_change>Änderungen übernehmen?</confirm_change>
     <continue>Weiter</continue>
     <cron_external>Externe Cronjobs</cron_external>
     <cron_external_text>Falls keine Internen Cronjobs möglich sind, können die Dateien auch von extern aufgerufen werden. In diesem Fall muss man die aufrufende IP noch in den Einstellungen erlauben:</cron_external_text>
     <cron_internal>Interne Cronjobs</cron_internal>
     <cron_internal_text>Die empfohlende Methode sind interne Cronjobs. Diese wären z.B. so einzutragen:</cron_internal_text>
-	<data>Bitte füllen Sie alle Formularfelder aus</data>
+	<data>Bitte alle Formularfelder ausfüllen</data>
 	<db>Datenbankname</db>
 	<domain>Webadresse</domain>
-	<email2>Diese Email wird als Absender angegeben, wenn Emails vom Webinterface verschickt werden.</email2>
-	<email>Email</email>
-    <error_cname>Fehler: Kein Username angegeben!</error_cname>
-    <error_config_php_data>Fehler: Datei stuff/config.php existiert aber enthält nicht alle erforderlichen Variablen!</error_config_php_data>
+	<email2>Diese E-Mail wird als Absender angegeben, wenn E-Mails vom Webinterface verschickt werden.</email2>
+	<email>E-Mail</email>
+    <error_cname>Fehler: Kein Benutzername angegeben!</error_cname>
+    <error_config_php_data>Fehler: Datei stuff/config.php existiert, enthält jedoch nicht alle erforderlichen Variablen!</error_config_php_data>
     <error_config_keyphrase_php_missing>Fehler: Datei stuff/config.php und oder stuff/keyphrasefile.php existieren nicht!</error_config_keyphrase_php_missing>
     <error_database>Fehler: Konnte keine Verbindung zur Datenbank aufbauen!</error_database>
     <error_email>Fehler: Es wurde keine E-Mail eingegeben!</error_email>
     <error_game_insert>Fehler: Spiel konnte nicht hinzugefügt werden: </error_game_insert>
     <error_keyphrase_php_create>Fehler: Datei stuff/config.php und oder stuff/keyphrasefile.php konnten nicht angelegt werden!</error_keyphrase_php_create>
     <error_password>Fehler: Die Passwörter stimmen nicht überein!</error_password>
-    <error_system_curl>curl Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_curl>
-    <error_system_ftp>ftp Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_ftp>
+    <error_system_curl>curl Extension ist nicht installiert. Bitte zuerst installieren..</error_system_curl>
+    <error_system_ftp>ftp Extension ist nicht installiert. Bitte zuerst installieren..</error_system_ftp>
     <error_system_fopen>fopen Funktion kann nicht verwendet werden.</error_system_fopen>
-    <error_system_gd>gd Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_gd>
-    <error_system_hash>hash Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_hash>
+    <error_system_gd>gd Extension ist nicht installiert. Bitte zuerst installieren..</error_system_gd>
+    <error_system_hash>hash Extension ist nicht installiert. Bitte zuerst installieren..</error_system_hash>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
-    <error_system_json>json Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_json>
-    <error_system_openssl>openssl Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_openssl>
-    <error_system_PDO>PDO Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_PDO>
-    <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_pdo_mysql>
+    <error_system_json>json Extension ist nicht installiert. Bitte zuerst installieren..</error_system_json>
+    <error_system_openssl>openssl Extension ist nicht installiert. Bitte zuerst installieren..</error_system_openssl>
+    <error_system_PDO>PDO Extension ist nicht installiert. Bitte zuerst installieren..</error_system_PDO>
+    <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte zuerst installieren..</error_system_pdo_mysql>
     <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
-    <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_SimpleXML>
-    <error_system_zip>zip Extension ist nicht installiert. Bitte installiere sie zuerst..</error_system_zip>
+    <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte zuerst installieren..</error_system_SimpleXML>
+    <error_system_zip>zip Extension ist nicht installiert. Bitte zuerst installieren..</error_system_zip>
     <faillogins>Fehlerhafte Logins</faillogins>
 	<faillogins2>Anzahl von erlaubten fehlerhaften Logins am Stück</faillogins2>
-	<finished>Die Installation ist abgeschlossen, bitte entfernen Sie den "install" Ordner.</finished>
+	<finished>Die Installation ist abgeschlossen, bitte den "install" Ordner entfernen.</finished>
     <games_insert>Im nächsten Schritt werden Gameserver Templates und Addons hinzugefügt.</games_insert>
 	<header>Einstellungen</header>
 	<host>Datenbankhost</host>
 	<image_server2>Bei der Masterinstallation werden die Daten zuerst von diesem Server heruntergeladen.</image_server2>
-	<image_server3>Imageserver benutzen</image_server3>
+	<image_server3>Imageserver verwenden</image_server3>
 	<image_server>Imageserver</image_server>
 	<install_done>Die Installation ist nun abgeschlossen. Bitte denke daran die Cronjobs zu installieren:</install_done>
-    <install_done_folder>Bitte entferne nun den Ordner "install/".</install_done_folder>
+    <install_done_folder>Bitte nun den Ordner "install/" entfernen.</install_done_folder>
     <installUrl>URL</installUrl>
 	<ip>Webserver IP</ip>
 	<language>Standardsprache</language>
@@ -77,6 +77,12 @@
 	<prefix1>Benutzername vorgeben</prefix1>
 	<prefix2>Wird der Benutzername vorgegeben, wird beim Anlegen neuer Benutzer an den vorgegebenen Namen nur noch eine fortzählende Nummer angehängt.Es dürfen nur kleine Buchstaben und Zahlen benutzt werden.</prefix2>
 	<prefix3>Benutzername</prefix3>
+    <system_check_ok_folder_1>Verzeichnis</system_check_ok_folder_1>
+    <system_check_ok_folder_2>existiert und kann beschrieben werden</system_check_ok_folder_2>
+    <system_check_error_folder_not_exist_1>Verzeichnis</system_check_error_folder_not_exist_1>
+    <system_check_error_folder_not_exist_2>existiert nicht oder es kann nicht darauf zugegriffen werden</system_check_error_folder_not_exist_2>
+    <system_check_error_folder_not_writable_1>Verzeichnis</system_check_error_folder_not_writable_1>
+    <system_check_error_folder_not_writable_2>existiert, doch es kann nichts geändert werden</system_check_error_folder_not_writable_2>
     <system_ok_curl>curl Extension ist installiert.</system_ok_curl>
     <system_ok_fopen>fopen Funktion kann verwendet werden.</system_ok_fopen>
     <system_ok_ftp>ftp Extension ist installiert.</system_ok_ftp>
@@ -86,13 +92,13 @@
     <system_ok_openssl>openssl Extension ist installiert.</system_ok_openssl>
     <system_ok_PDO>PDO Extension ist installiert.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql Extension ist installiert.</system_ok_pdo_mysql>
-    <system_ok_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version neu genug: </system_ok_php_version>
+    <system_ok_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version aktuell genug: </system_ok_php_version>
     <system_ok_SimpleXML>SimpleXML Extension ist installiert.</system_ok_SimpleXML>
     <system_ok_zip>zip Extension ist installiert.</system_ok_zip>
     <timezone>Zeitzone</timezone>
 	<title>Homepage Titel</title>
-	<user>Databankuser</user>
-	<user2>Admin Username</user2>
+	<user>Databankbenutzer</user>
+	<user2>Admin Benutzername</user2>
     <welcome_header>Willkommen beim Installer für Easy-WI!</welcome_header>
     <welcome_old_version>Achtung Sie sind dabei eine veraltete Version von Easy-WI zu installieren. Die aktuelle ist: </welcome_old_version>
     <welcome_text>Im ersten Schritt wird getestet, ob der Webspace die benötigten Funktionen bereit stellt. Im Anschluss werden Tabellen angelegt und initiale Daten konfiguriert.</welcome_text>
