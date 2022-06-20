@@ -63,10 +63,10 @@ $developer = (isset($_GET['developer']) and $_GET['developer'] == 'Y') ? 'Y' : '
 $developerGetParameter = '&amp;developer=' . $developer;
 $progressPercent = (100 / 9) * $currentStep ;
 $acceptLanguage = strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0 , 2));
-$fallbackLanguage = (file_exists(EASYWIDIR . '/install/' . $acceptLanguage . '.xml')) ? $acceptLanguage : 'en';
-$menuLanguage = (isset($_GET['language']) and strlen($_GET['language']) == 2 and file_exists(EASYWIDIR . '/install/' . $_GET['language'] . '.xml')) ? $_GET['language'] : $fallbackLanguage;
+$fallbackLanguage = (file_exists(EASYWIDIR . '/install/languages/' . $acceptLanguage . '.xml')) ? $acceptLanguage : 'en';
+$menuLanguage = (isset($_GET['language']) and strlen($_GET['language']) == 2 and file_exists(EASYWIDIR . '/install/languages/' . $_GET['language'] . '.xml')) ? $_GET['language'] : $fallbackLanguage;
 $languageGetParameter = '&amp;language=' . $menuLanguage;
-$languageObject = simplexml_load_file(EASYWIDIR . '/install/' . $menuLanguage . '.xml');
+$languageObject = simplexml_load_file(EASYWIDIR . '/install/languages/' . $menuLanguage . '.xml');
 
 $displayToUser = '';
 $systemCheckOk = array();
