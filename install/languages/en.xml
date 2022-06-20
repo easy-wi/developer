@@ -74,6 +74,7 @@
     <ok_gameserver_data>The gameserver data has been added.</ok_gameserver_data>
 	<passw_1>Password</passw_1>
 	<passw_2>Repeat new password</passw_2>
+	<passwords_not_meet_req>Password does not meet the requirements</passwords_not_meet_req>
 	<prefix1>Define usernames</prefix1>
 	<prefix2>If you define a username the users unique ids will be appended to the defined name. Only small letters and numbers are allowed. Example: customer will be customer2 and counting</prefix2>
 	<prefix3>Default username</prefix3>
