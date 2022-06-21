@@ -63,10 +63,10 @@ $developer = (isset($_GET['developer']) and $_GET['developer'] == 'Y') ? 'Y' : '
 $developerGetParameter = '&amp;developer=' . $developer;
 $progressPercent = (100 / 9) * $currentStep ;
 $acceptLanguage = strtolower(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0 , 2));
-$fallbackLanguage = (file_exists(EASYWIDIR . '/install/' . $acceptLanguage . '.xml')) ? $acceptLanguage : 'en';
-$menuLanguage = (isset($_GET['language']) and strlen($_GET['language']) == 2 and file_exists(EASYWIDIR . '/install/' . $_GET['language'] . '.xml')) ? $_GET['language'] : $fallbackLanguage;
+$fallbackLanguage = (file_exists(EASYWIDIR . '/install/languages/' . $acceptLanguage . '.xml')) ? $acceptLanguage : 'en';
+$menuLanguage = (isset($_GET['language']) and strlen($_GET['language']) == 2 and file_exists(EASYWIDIR . '/install/languages/' . $_GET['language'] . '.xml')) ? $_GET['language'] : $fallbackLanguage;
 $languageGetParameter = '&amp;language=' . $menuLanguage;
-$languageObject = simplexml_load_file(EASYWIDIR . '/install/' . $menuLanguage . '.xml');
+$languageObject = simplexml_load_file(EASYWIDIR . '/install/languages/' . $menuLanguage . '.xml');
 
 $displayToUser = '';
 $systemCheckOk = array();
@@ -174,13 +174,13 @@ if ($currentStep == 0) {
             if ($handle) {
                 fclose($handle);
                 unlink(EASYWIDIR . "/${folder}test.txt");
-                $systemCheckOk['folders'][] = "Folder exists and can write to: ${folder}";
+                $systemCheckOk['folders'][] = "{$languageObject->system_check_ok_folder_1} ${folder} {$languageObject->system_check_ok_folder_2}";
 
             } else {
-                $systemCheckError['folders'][] = "Folder exists but cannot edit files: ${folder}";
+                $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_writable_1} ${folder} {$languageObject->system_check_error_folder_not_writable_2}";
             }
         } else {
-            $systemCheckError['folders'][] = "Folder does not exist or cannot access: ${folder}";
+            $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_exist_1} ${folder} {$languageObject->system_check_error_folder_not_exist_2}";
         }
     }
 
@@ -474,8 +474,12 @@ if ($currentStep == 6 and count($systemCheckError) == 0) {
 
     if (isset($_POST['passw1'])) {
 
-        if ($_POST['passw1'] != $_POST['passw2'] or !preg_match('/^[\w\S]{6,120}$/', $_POST['passw1'])) {
+        if ($_POST['passw1'] != $_POST['passw2']) {
             $displayToUser .= "<div class='alert alert-danger'>{$languageObject->error_password}</div>";
+        }
+
+        if (!preg_match('/^[\w\S]{6,120}$/', $_POST['passw1'])) {
+            $displayToUser .= "<div class='alert alert-danger'>{$languageObject->passwords_not_meet_req}</div>";
         }
 
         if (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
