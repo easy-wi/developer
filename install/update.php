@@ -220,7 +220,7 @@ try {
 
     if ($query->fetchColumn() == 'Y') {
 
-        $devVersion = '6.2.0.1';
+        $devVersion = '6.2.2';
 
         /*
         if (versioncheck($version, $devVersion, 'update_developer.php', $response, true)) {
