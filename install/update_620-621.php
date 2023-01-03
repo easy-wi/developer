@@ -41,7 +41,7 @@
 if (isset($include) and $include == true) {
 
     $query = $sql->prepare("INSERT INTO `easywi_version` (`version`,`de`,`en`) VALUES
-('6.2.0.1','<div align=\"right\">02.08.2020</div>
+('6.2.1','<div align=\"right\">02.08.2020</div>
 <b>&Auml;nderungen:</b><br/>
 <ul>
 <li>General
