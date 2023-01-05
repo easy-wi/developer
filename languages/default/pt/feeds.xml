@@ -6,16 +6,16 @@
     <maxChars>Máximo de Caracteres</maxChars>
     <maxKeep>Máximo de feeds de notícias armazenadas</maxKeep>
     <merge>Combinar feeds</merge>
-    <newsAmount>Quantidade de feeds mostrada</newsAmount>
+    <newsAmount>Quantidade de feeds a visualizar</newsAmount>
     <pubDate>Data da publicação</pubDate>
     <orderBy>Ordenar por</orderBy>
-    <status>Status</status>
-    <title>Titulo</title>
+    <status>Estado</status>
+    <title>Título</title>
     <updateMinutes>Verifique cada X minutos para novos feeds</updateMinutes>
     <useLocal>Mostrar notícias locais</useLocal>
     <oauth_access_token>Token de acesso Oauth</oauth_access_token>
-    <oauth_access_token_secret>Segredo token de acesso Oauth</oauth_access_token_secret>
-    <consumer_key>Chave do Usuário</consumer_key>
-    <consumer_secret>Usuário Secreto</consumer_secret>
+    <oauth_access_token_secret>Token secreta de acesso Oauth</oauth_access_token_secret>
+    <consumer_key>Chave do Utilizador</consumer_key>
+    <consumer_secret>Utilizador Secreto</consumer_secret>
     <twittersettings>Configurações do Twitter</twittersettings>
 </sprache>
