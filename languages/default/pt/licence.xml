@@ -1,16 +1,16 @@
 
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-    <contract>Contract type</contract>
-    <contractTime>Contract lifetime until</contractTime>
-    <B>Buy</B>
-    <g>Commercial</g>
-    <installed>Installed</installed>
+    <contract>Tipo de contrato</contract>
+    <contractTime>Contrato até</contractTime>
+    <B>Comprar</B>
+    <g>Comercial</g>
+    <installed>Instalado</installed>
     <l>Light</l>
-    <licenceAmount>Licence usage</licenceAmount>
-    <R>Rent</R>
-    <p>Private</p>
-    <type>Licence type</type>
-    <unlimited>Unlimited</unlimited>
-    <updates>Updates until</updates>
+    <licenceAmount>Uso de licença</licenceAmount>
+    <R>Alugar</R>
+    <p>Privado</p>
+    <type>Tipo de licença</type>
+    <unlimited>Elimitada</unlimited>
+    <updates>Updates até</updates>
 </sprache>
