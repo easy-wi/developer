@@ -4,12 +4,12 @@
     <active>Ativo</active>
     <activeExternal>Ativar Autenticação Externa</activeExternal>
     <all>Todos</all>
-    <chunkSiz>Tamanho usuário </chunkSize>
+    <chunkSiz>Tamanho utilizador </chunkSize>
     <date>Data</date>
     <domain>Dominio</domain>
-    <fetchUpdates>Busca de atualizações</fetchUpdates>
+    <fetchUpdates>Procura de atualizações</fetchUpdates>
     <file>Arquivo</file>
-    <groupID>Grupo do Usuário</groupID>
+    <groupID>Grupo do Utilizador</groupID>
     <ipAdd>Adicionar IP</ipAdd>
     <ips>IPs permitidos</ips>
     <lastCheck>Última verificação</lastCheck>
@@ -17,7 +17,7 @@
     <name>Nome</name>
     <pwd>Senha</pwd>
     <ssl>SSL</ssl>
-    <status>Status</status>
+    <status>Estado</status>
     <type>Tipo</type>
-    <user>Usuário</user>
+    <user>Utilizador</user>
 </sprache>
