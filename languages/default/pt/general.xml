@@ -11,7 +11,7 @@
     <appMaster>Servidores</appMaster>
     <appRoot>Servidores</appRoot>
 	<backup>Backup</backup>
-	<change>Mudar</change>
+	<change>Alterar</change>
     <chosenNoResult>Nenhum resultado encontrado para</chosenNoResult>
     <chosenSelect>Faça uma seleção</chosenSelect>
     <columns>Colunas personalizadas</columns>
@@ -19,27 +19,27 @@
     <connect_ip_only>IP primário / domínio apenas para administração (DMZ), adicional para conexões externas</connect_ip_only>
 	<databases>Banco de Dados</databases>
     <dataTablesFirst>Primeiro</dataTablesFirst>
-    <dataTablesEmpty>Não há entradas para mostrar</dataTablesEmpty>
+    <dataTablesEmpty>Sem entradas a exibir</dataTablesEmpty>
     <dataTablesEmptyTable>Sem dados disponíveis na tabela</dataTablesEmptyTable>
     <dataTablesFiltered> (filtrado de _MAX_ total entradas)</dataTablesFiltered>
-    <dataTablesInfo>Showing _START_ to _END_ of _TOTAL_ entradas</dataTablesInfo>
+    <dataTablesInfo>Visualizando _START_ to _END_ of _TOTAL_ entradas</dataTablesInfo>
     <dataTablesLast>Último</dataTablesLast>
     <dataTablesMenu>_MENU_ registros por página</dataTablesMenu>
     <dataTablesNext>Próximo</dataTablesNext>
-    <dataTablesNoRecords>Não há registros a serem exibidos</dataTablesNoRecords>
+    <dataTablesNoRecords>Sem registos a exibir</dataTablesNoRecords>
     <dataTablesPrevious>Anterior</dataTablesPrevious>
-    <dataTablesSearch>Buscar: </dataTablesSearch>
+    <dataTablesSearch>Procurar: </dataTablesSearch>
 	<datetime>Data/Tempo</datetime>
     <dedicated>Dedicado</dedicated>
-	<del>Deletar</del>
-    <delSafe>Deletar (Remover tudo)</delSafe>
+	<del>Excluir</del>
+    <delSafe>Excluir (Remover tudo)</delSafe>
     <delAny>Excluir em qualquer caso</delAny>
     <delDB>Remover do Banco de Dados</delDB>
     <description>Descrição</description>
     <domains>Dominios</domains>
     <downloads>Downloads</downloads>
     <edit>Editar</edit>
-    <error_connect>Erro ao conectar-se ao servidor</error_connect>
+    <error_connect>Erro a conectar-se ao servidor</error_connect>
     <errors>Erro(s)</errors>
     <exec>Executar</exec>
     <export>Exportar</export>
@@ -50,17 +50,17 @@
     <file>Arquivo</file>
     <free>Livre</free>
     <game>Jogo</game>
-    <gameserver>Servidores de Jogos</gameserver>
-    <gameroot>Servidor raiz do jogo</gameroot>
+    <gameserver>Servidores de Jogo</gameserver>
+    <gameroot>Servidor de jogo raiz</gameroot>
     <generalsettings>Configurações Gerais</generalsettings>
     <greating_home>Bem vindo à %name% web interface!</greating_home>
     <groups>Grupos</groups>
     <help_home>
     <![CDATA[
-	No seu <em>Painel Inicial</em> você pode encontrar a visão geral do status do seu jogo e servidores de voz. Além disso, você pode ver as últimas notícias para os jogos Valve (Counter-Strike, Team Fortress, ...). Observe que as informações de status listadas são atualizadas a cada %n% minutos. Por esse motivo, um servidor de jogos recém-reiniciado pode ser exibido como desconectado por algum tempo, mesmo que já esteja online.
+	No seu <em>Painel Inicial</em> poderá encontrar a visão geral do estado dos seus servidores. Além disso, pode visualizar as últimas notícias relativas aos jogos Valve (Counter-Strike, Team Fortress, etc). Observe que as informações de estado listadas são atualizadas a cada %n% minutos. Por esse motivo, um servidor de jogo reiniciado rcentemente pode ser exibido como desconectado por algum tempo, mesmo que já se encontre online.
 	]]>
     </help_home>
-    <help_sidebar>As informações de status são reunidas a cada %n% Minutos.</help_sidebar>
+    <help_sidebar>As informações de estado são reunidas a cada %n% minutos.</help_sidebar>
 	<hostsystem>Hostsystem</hostsystem>
 	<hotline>Hotline</hotline>
     <inactive>Inativo</inactive>
@@ -68,10 +68,10 @@
 	<imprint>Vencimentos</imprint>
     <jobs>Tarefas</jobs>
     <jobPending>Tarefa Pendente</jobPending>
-	<last>Seu último login foi: </last>
+	<last>Último login: </last>
 	<lendserver>Teste/Servidor Temporário</lendserver>
 	<licence>Máximo de licença alcançado.</licence>
-    <licence_version>Você não tem permissão para executar esta versão!</licence_version>
+    <licence_version>Não possui permissão para executar esta versão!</licence_version>
 	<logs>Logs</logs>
 	<master>Servidores</master>
     <master_apps>Jogos/Apps</master_apps>
@@ -86,55 +86,55 @@
 	<page>Página</page>
 	<pages>Páginas</pages>
 	<password>Senha</password>
-    <registration>Cadastro</registration>
+    <registration>Registo</registration>
     <reinstall>Reinstalar</reinstall>
     <repair>Reparar</repair>
 	<reseller>Revendedor</reseller>
 	<root>Servidor Raiz</root>
 	<save>Salvar</save>
-    <search>Buscar</search>
+    <search>Procurar</search>
     <server>Servidor</server>
 	<settings>Configurações</settings>
 	<shown>Resultados por página</shown>
     <start>Iniciar</start>
 	<stats>Estatísticas</stats>
-    <status>Status</status>
+    <status>Estado</status>
     <status_crashed>Interrompido</status_crashed>
     <status_inactive>Ativo</status_inactive>
-    <status_ok>OK</status_ok>
+    <status_ok>Ok</status_ok>
     <status_password>Senha</status_password>
-    <status_server_tag>Marca</status_server_tag>
+    <status_server_tag>Tag</status_server_tag>
     <status_stop>Parado</status_stop>
     <stop>Parar</stop>
     <status_space>Armazenamento</status_space>
     <status_space_mount>Montado: </status_space_mount>
     <status_space_size>Tamanho: </status_space_size>
-    <status_space_used>Usava: </status_space_used>
+    <status_space_used>Em uso: </status_space_used>
     <status_space_free>Livre: </status_space_free>
-    <subnets>Subnações</subnets>
+    <subnets>Subnets</subnets>
     <substitutes>SubUsuários</substitutes>
 	<support2>Novo ticket de suporte</support2>
 	<support>Suporte</support>
-	<sure>Você tem certeza?</sure>
-    <sure_delete>Você tem certeza? Todos os dados no servidor alvo serão excluídos!</sure_delete>
-    <system_check>Atualização de Status</system_check>
+	<sure>Tem a certeza?</sure>
+    <sure_delete>Você tem a certeza? Todos os dados no servidor serão excluídos!</sure_delete>
+    <system_check>Atualização de Estado</system_check>
 	<template>Modelo</template>
 	<templates>Imagems/Modelos</templates>
 	<traffic>Tráfego</traffic>
-	<update>Update</update>
-    <update_easy>Easy-Wi Update</update_easy>
-    <upload>Enviar</upload>
+	<update>Atualizar</update>
+    <update_easy>Atualizar Easy-Wi</update_easy>
+    <upload>Upload</upload>
     <use>Usar</use>
     <used>Usado</used>
-	<user>Usuário</user>
-    <userImport>Importar Usuário</userImport>
+	<user>Utilizador</user>
+    <userImport>Importar Utilizador</userImport>
 	<virtual>Servidor virtual</virtual>
-	<versioncheck>Verificar verção</versioncheck>
+	<versioncheck>Verificar versão</versioncheck>
 	<voiceserver>Servidores de voz</voiceserver>
-	<vor>Para Frente</vor>
+	<vor>Seguinte</vor>
     <webspace>Servidor Web</webspace>
-	<welcome>Bem vindo: </welcome>
+	<welcome>Bem-vindo: </welcome>
 	<yes>Sim</yes>
-	<zurueck>Para trás</zurueck>
-    <example>Exemples Module</example>
+	<zurueck>Voltar</zurueck>
+    <example>Exemplos de Modulo</example>
 </sprache>
