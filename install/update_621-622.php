@@ -50,7 +50,14 @@ if (isset($include) and $include == true) {
 </ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
-<li>Updater Fixed</li>
+<li>Portuguese (PT) language fixed (thanks to naoestu)</li>
+<li>Translation system extended and translation strings updated/revised</li>
+<li>Moved Translation files in a seperat directory for the overview</li>
+<li>PHP 8 Workaround</li>
+<li>DB issues Fixed</li>
+<li>GameQ Fix & Update</li>
+<li>Error messages split for better explanation</li>
+<li>Fix for Updater</li>
 </ul>
 <b>Zukunft:</b>
 <li>Vorbereitung um die V-Server / Netzwerkmodule zu entfernen</li>
@@ -62,7 +69,14 @@ if (isset($include) and $include == true) {
 </ul></li></ul>
 <b>Bugfixes:</b>
 <ul>
-<li>Updater Fixed</li>
+<li>Portuguese (PT) language fixed (thanks to naoestu)</li>
+<li>Translation system extended and translation strings updated/revised</li>
+<li>Moved Translation files in a seperat directory for the overview</li>
+<li>PHP 8 Workaround</li>
+<li>DB issues Fixed</li>
+<li>GameQ Fix & Update</li>
+<li>Error messages split for better explanation</li>
+<li>Fix for Updater</li>
 </ul>
 <b>Future:</b>
 <li>preparation to remove V-Server / Network modules</li>
