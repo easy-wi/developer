@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sprache>
-	<chfdluser>Alterar o acesso FTP?</chfdluser>
-	<example>Examplo: ftp://SERVERUSER:SERVERUSER@HOST/path</example>
-	<fdlfailed>A correspondência Fastdownload falhou</fdlfailed>
-	<fdlstarted>Fastdownload correspondência iniciada</fdlstarted>
-	<haupt>Servidor de carga rápida padrão</haupt>
-	<haupt2>Usar o servidor de transferência rápida padrão?</haupt2>
+	<chfdluser>Alterar acesso FTP?</chfdluser>
+	<example>Exemplo: ftp://SERVERUSER:SERVERUSER@HOST/path</example>
+	<fdlfailed>Correspondência Fastdownload falhou</fdlfailed>
+	<fdlstarted>Correspondência Fastdownload iniciada</fdlstarted>
+	<haupt>Servidor Fastdownload padrão</haupt>
+	<haupt2>Usar o servidor Fastdownload padrão?</haupt2>
     <help_fdl>
     <![CDATA[
-	O Fastdownload permite que os jogadores baixem dados do servidor, como sons e mapas, muito mais rápidos.<br />
-	<br />
-	Either you define a <strong>default</strong> <em>Fastdownload server</em> which will be used for all game servers or you configure an <strong>individual</strong> <em>Fastdownload server</em> for each game server.<br />
+	O Fastdownload permite que os jogadores baixem dados do servidor, como sons e mapas, muito mais rápido.<br/>
+	<br/>
+	Either you define a <strong>default</strong> <em>Fastdownload server</em> which will be used for all game servers or you configure an <strong>individual</strong> <em>Fastdownload server</em> for each game server.<br/>
 	<br />
 	Clicking the <em>Start matching</em> button will initiate our web interface to automatically upload all required files to the Fastdownload server. Furthermore, you need to add the according HTTP URL in the server's server.cfg or dedicated.cfg file to activate Fastdownload.
     ]]>
@@ -18,7 +18,7 @@
 	<neben>Dados de FTP usados para o serviço Fastdownload</neben>
 	<noset>Nenhum dado de FTP disponível</noset>
 	<own>Usar FTP principal</own>
-	<own2>Servidor próprio de download rápido</own2>
+	<own2>Servidor próprio de Fastdownload</own2>
 	<server>Servidor único</server>
 	<startfdl>Iniciar FastDownload</startfdl>
 	<udsuc>Alterou os dados de FTP com sucesso</udsuc>

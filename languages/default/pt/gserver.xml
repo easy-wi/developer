@@ -3,56 +3,56 @@
 	<abkuerz>Encurtar</abkuerz>
     <action>Ação</action>
 	<active>Ativar</active>
-	<all>Selecionar todos Jogos</all>
+	<all>Selecionar todos os jogos</all>
     <anticheat>Anti-cheat</anticheat>
-    <authkey_info><![CDATA[Sua chave pessoal de autorização da API na web, necessária para fazer o download de mapas do Steam. Informações adicionais podem ser encontradas <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">Aqui</a>.]]></authkey_info>
+    <authkey_info><![CDATA[Sua chave pessoal de autorização da API na web, necessária para fazer o download de mapas da steam. Informações adicionais podem ser encontradas <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators#Getting_your_web_api_authorization_key" target="_blank">Aqui</a>.]]></authkey_info>
     <backup_create>O backup será criado.</backup_create>
-    <backup_recover>Backup will be recovered.</backup_recover>
+    <backup_recover>O backup será recuperado.</backup_recover>
     <belegt2>Pastas Existentes</belegt2>
 	<belegt>Portas Usadas</belegt>
-	<beschr>Description</beschr>
-	<bin>Binary</bin>
-    <bin_folder>Binary folder (e.g. orangebox)</bin_folder>
+	<beschr>Descrição</beschr>
+	<bin>Binário</bin>
+    <bin_folder>Pasta do binário (e.g. orangebox)</bin_folder>
     <brandname>Server tag</brandname>
-    <cant_install>Could not start installation on the server</cant_install>
+    <cant_install>Impossivel iniciar instalação no servidor</cant_install>
     <collection_info><![CDATA[Workshop collection ID used for downloading maps. Additional information can be found <a href="https://developer.valvesoftware.com/wiki/CSGO_Workshop_For_Server_Operators" target="_blank">here</a>.]]></collection_info>
 	<config>Configurações</config>
-	<confirm_change>Salvar as alterações?</confirm_change>
+	<confirm_change>Salvar alterações?</confirm_change>
 	<confirm_delete>Excluir servidor?</confirm_delete>
-	<confirm_restart>(Re)iniciar server?</confirm_restart>
-	<confirm_stop>Parar server?</confirm_stop>
+	<confirm_restart>(Re)iniciar servidor?</confirm_restart>
+	<confirm_stop>Parar servidor?</confirm_stop>
     <coreBind>CPU cores</coreBind>
 	<create>Criar</create>
     <delete_server>Os seguintes servidores serão excluídos</delete_server>
-    <details>Opções de servidor estendidas</details>
+    <details>Opções de servidor detalhadas</details>
 	<easy>Easy</easy>
-    <error_folder>Erro: o usuário já possui esse tipo de servidor na porta especificada.</error_folder>
+    <error_folder>Erro: o utilizador já possui esse tipo de servidor na porta especificada.</error_folder>
     <error_id>Erro: Nenhum servidor pode ser encontrado.</error_id>
-    <error_md>Erro: o servidor não pôde ser alterado.</error_md>
-    <error_notinstalled>Erro: você precisa instalar um servidor mestre para este jogo no servidor onde está o servidor do jogo.</error_notinstalled>
+    <error_md>Erro: o servidor não pode ser alterado.</error_md>
+    <error_notinstalled>Erro: necessita de instalar um servidor master para este jogo.</error_notinstalled>
     <error_port>Erro: Não foi possível iniciar a instalação no servidor.</error_port>
     <error_server_install>Erro: Não foi possível iniciar a instalação no servidor.</error_server_install>
-    <error_user>Erro: Não foi possível adicionar o usuário.</error_user>
-    <failed>Erro: Não foi possível estabelecer uma conexão com o servidor.</failed>
+    <error_user>Erro: Não foi possível adicionar utilizador.</error_user>
+    <failed>Erro: Não foi possível estabelecer conexão com o servidor.</failed>
     <folder>Pasta do servidor</folder>
 	<fps>Server FPS</fps>
 	<friday>Sexta-feira</friday>
-    <ftp_adresse>Endereço de FTP</ftp_adresse>
+    <ftp_adresse>Endereço FTP</ftp_adresse>
     <ftp_link>Link FTP</ftp_link>
     <ftp_password>Senha FTP</ftp_password>
     <ftp_path>Caminho FTP</ftp_path>
     <ftp_port>Porta FTP</ftp_port>
-    <ftp_user>Usuário FTP</ftp_user>
+    <ftp_user>Utilizador FTP</ftp_user>
 	<full>Editar</full>
 	<game>Jogo</game>
 	<games>Jogos</games>
     <gameswitch>Escolha o tipo de jogo</gameswitch>
     <gs_add2>Adicionar servidor etapa 2: detalhes do servidor</gs_add2>
-    <gs_add>Adicionar servidor etapa 1: Usuário, Servidor, Jogos</gs_add>
+    <gs_add>Adicionar servidor etapa 1: Utilizador, Servidor, Jogos</gs_add>
     <hdd>Espaço em disco (MB)</hdd>
-    <hddinstalled>Disco (s) atribuído (s)</hddinstalled>
-    <heading_delete>Eliminar servidor de jogos</heading_delete>
-    <heading_template>Visão geral do servidor de jogos</heading_template>
+    <hddinstalled>Disco(s) atribuído(s)</hddinstalled>
+    <heading_delete>Eliminar servidor de jogo</heading_delete>
+    <heading_template>Visão geral do servidor de jogo</heading_template>
     <help_calendar>
     <![CDATA[
 	You can define game server restarts at the top of every hour with our restart planner.<br />
@@ -91,8 +91,8 @@
     <import_corrected>O caminho encontrado é correto?</import_corrected>
     <import_destination>Servidor de destino, jogo e modelo de importação</import_destination>
     <import_source>Origem dos dados a importar</import_source>
-    <import_start>O serviço de migração começou. Este processo levará algum tempo!</import_start>
-    <installAll>Todos Jogos</installAll>
+    <import_start>O serviço de migração iniciado. Este processo levará algum tempo!</import_start>
+    <installAll>Todos os jogos</installAll>
     <installGames>Preinstalar jogos</installGames>
     <ip>Endereço IP do servidor de jogo</ip>
     <lendserver>Servidor prorrogável</lendserver>
@@ -102,10 +102,10 @@
     <monday>Segunda-feira</monday>
     <nameremoved>Etiqueta de servidor removida</nameremoved>
     <never>Nunca</never>
-    <no_game>Nenhum jogo foi selecionado.</no_game>
-    <no_server_left>Não há servidores para este usuário. Excluindo usuários do servidor raiz.</no_server_left>
+    <no_game>Nenhum jogo selecionado.</no_game>
+    <no_server_left>Não há servidores associados a este utilizador. Excluindo utilizadores do servidor raiz.</no_server_left>
     <off2>Off</off2>
-    <off>O Servidor está offline</off>
+    <off>O Servidor encontra-se offline</off>
     <on>On</on>
     <password>Senha</password>
     <player>Jogador</player>
@@ -122,43 +122,43 @@
     <restart_all>Reiniciar todos os servidores</restart_all>
     <restarts>(Re)Iniciar</restarts>
     <restarttime>Tarefas</restarttime>
-    <resync>Resicronizar</resync>
+    <resync>Ressicronizar</resync>
     <root>Server Raiz</root>
     <saturday>Sábado</saturday>
     <server>Endereço do servidor</server>
     <serverinstalled>Servidores instalados</serverinstalled>
     <servername>Nome do servidor</servername>
-    <serverrestart>(Re)Iniciando Servidor, Aguarde...</serverrestart>
-    <serverstop>Parando Servidor, Aguarde...</serverstop>
+    <serverrestart>(Re)Iniciando Servidor, aguarde...</serverrestart>
+    <serverstop>Parando Servidor, aguarde...</serverstop>
     <servertype>Tipo de servidor</servertype>
     <server_details>Detalhes para</server_details>
-    <server_installed>Começou com êxito a resincronização/reinstalação no servidor.</server_installed>
+    <server_installed>A ressincronização/reinstalação do servidor iniciou com sucesso.</server_installed>
     <server_ud>Dados atualizados do servidor</server_ud>
     <since>Desde</since>
     <slots>Player slots</slots>
     <slotsinstalled>Slots instalados</slotsinstalled>
-    <slotsused>Slots Usados</slotsused>
+    <slotsused>Slots em uso</slotsused>
     <start>Comando de início</start>
     <startmap>Mapa inicial</startmap>
     <startmapgroup>Grupo de mapa inicial</startmapgroup>
-    <start_own>Comando de começo próprio</start_own>
+    <start_own>Comando de começo personalizado</start_own>
     <stop>Parar</stop>
     <sunday>Domingo</sunday>
-    <switch>Mudar para o usuário</switch>
+    <switch>Mudar para o utilizador</switch>
     <thursday>Quinta-feira</thursday>
     <tick>Tickrate</tick>
     <tuesday>Terça-feira</tuesday>
     <tv>TV permitido</tv>
-    <tvport>SourceTV porta</tvport>
-    <tvuploadstart>O upload do SourceTV foi iniciado</tvuploadstart>
+    <tvport>Porta SourceTV</tvport>
+    <tvuploadstart>O upload da SourceTV foi iniciado</tvuploadstart>
     <type>Tipo de instalação</type>
-    <updated>A configuração foi editada com Sucesso.</updated>
-    <updatetime>Status</updatetime>
+    <updated>A configuração foi editada com sucesso.</updated>
+    <updatetime>Estado</updatetime>
     <usage>Alocação de servidor</usage>
-    <usedports>portas usadas</usedports>
-    <user>Usuário</user>
-    <useredit>editável pelo usuário</useredit>
-    <user_add>Usuário Acrecentado com sucesso no Sistema.</user_add>
+    <usedports>Portas em uso</usedports>
+    <user>Utilizador</user>
+    <useredit>Editável pelo utilizador</useredit>
+    <user_add>Utilizador Acrecentado com sucesso no Sistema.</user_add>
     <war>Server privado</war>
     <webFtp>Web FTP</webFtp>
     <wednesday>Quarta-feira</wednesday>
