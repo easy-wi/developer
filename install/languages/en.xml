@@ -78,8 +78,8 @@
 	<prefix1>Define usernames</prefix1>
 	<prefix2>If you define a username the users unique ids will be appended to the defined name. Only small letters and numbers are allowed. Example: customer will be customer2 and counting</prefix2>
 	<prefix3>Default username</prefix3>
-    <system_check_ok_folder_1>Folder<system_check_ok_folder_1>
-    <system_check_ok_folder_2>exists and can write to<system_check_ok_folder_2>
+    <system_check_ok_folder_1>Folder</system_check_ok_folder_1>
+    <system_check_ok_folder_2>exists and can write to</system_check_ok_folder_2>
     <system_check_error_folder_not_exist_1>Folder</system_check_error_folder_not_exist_1>
     <system_check_error_folder_not_exist_2>does not exist or cannot be accessed</system_check_error_folder_not_exist_2>
     <system_check_error_folder_not_writable_1>Folder</system_check_error_folder_not_writable_1>
