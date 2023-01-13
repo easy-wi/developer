@@ -21,7 +21,7 @@
     <error_cname>Error: No username entered!</error_cname>
     <error_config_php_data>Error: File stuff/config.php exists but does not contain all variables!</error_config_php_data>
     <error_config_keyphrase_php_missing>Error: File stuff/config.php and or stuff/keyphrasefile.php does not exist!</error_config_keyphrase_php_missing>
-	<error_database>Error: Can not estblish a connection to the database</error_database>
+	<error_database>Error: Can not establish a connection to the database</error_database>
     <error_email>Error: No email entered!</error_email>
     <error_game_insert>Error: Game could not be added: </error_game_insert>
     <error_keyphrase_php_create>Error: File stuff/config.php and or stuff/keyphrasefile.php cannot be created!</error_keyphrase_php_create>
@@ -36,7 +36,7 @@
     <error_system_openssl>openssl extension is not installed, please install it.</error_system_openssl>
     <error_system_PDO>PDO extension is not installed, please install it.</error_system_PDO>
     <error_system_pdo_mysql>pdo_mysql extension is not installed, please install it.</error_system_pdo_mysql>
-    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_php_version>At least PHP 5.4 is required. Your PHP version is to old: </error_system_php_version>
     <error_system_SimpleXML>SimpleXML extension is not installed, please install it.</error_system_SimpleXML>
     <error_system_zip>zip extension is not installed, please install it.</error_system_zip>
     <faillogins>Failed logins</faillogins>
