@@ -7,7 +7,7 @@
 </section>
 
 <section class="content">
- <div class="row">
+ <div >
     <?php if($easywiModules['gs'] and $pa['roots'] and $statsArray['gameMasterInstalled']>0) { ?>
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
@@ -413,7 +413,7 @@
     <?php }?>
 
     <?php if($easywiModules['my'] and ($pa['mysql'] or $pa['mysql_settings']) and $statsArray['mysqlMasterInstalled']>0) { ?>
-                     <div class="row">
+        <div class="row">
         <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
             <div class="card-body">
@@ -495,18 +495,18 @@
 	
 	
 	<?php if(isset($easywitweets) && $easywitweets) { ?>
-	<div class="row">
-        <div class="col-md-8">
+
+        <div class="col-md-4">
            <ul class="timeline">
                 <div class="card shadow mb-4">
                 <div class="card-header py-3">
 					<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-				 <a style="width:100%" class="twitter-timeline" href="https://twitter.com/easy_wi?ref_src=twsrc^tfw">Tweets by easy_wi</a>
+				 <a class="twitter-timeline" href="https://twitter.com/easy_wi?ref_src=twsrc^tfw">Tweets by easy_wi</a>
                 </div>            
               	</div>
             </ul>
         </div>
-    </div>
+
     <?php } ?>
      <?php if(count($feedArray)>0) { ?>
     <hr>

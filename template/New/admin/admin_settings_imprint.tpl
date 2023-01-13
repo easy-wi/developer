@@ -4,6 +4,15 @@
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
         <li class="active"><i class="fa fa-legal"></i> <?php echo $gsprache->imprint.' '.$gsprache->settings;?></li>
+        <div class="col-sm">
+        </div>
+        <div class="col-sm">
+        </div>
+        <div class="col-sm">
+                <div class="box box-primary">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+                </div>
+        </div>
     </ol>
 </section>
 
@@ -33,10 +42,6 @@
                             <textarea class="form-control" id="inputLangs-<?php echo $array['lang'];?>" name="description[<?php echo $array['lang'];?>]" rows="8"><?php echo $array['imprint'];?></textarea>
                         </div>
                         <?php } ?>
-                    </div>
-
-                    <div class="box-footer">
-                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
                     </div>
                 </form>
             </div>

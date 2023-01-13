@@ -31,12 +31,12 @@
     <error_system_fopen>fopen Funktion kann nicht verwendet werden.</error_system_fopen>
     <error_system_gd>gd Extension ist nicht installiert. Bitte zuerst installieren..</error_system_gd>
     <error_system_hash>hash Extension ist nicht installiert. Bitte zuerst installieren..</error_system_hash>
-    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_php_version>Es wird mindestens PHP 7.4 (veraltet) benötigt. Ihre PHP-Version ist zu alt und wird nicht mehr unterstützt:</error_system_php_version>
     <error_system_json>json Extension ist nicht installiert. Bitte zuerst installieren..</error_system_json>
     <error_system_openssl>openssl Extension ist nicht installiert. Bitte zuerst installieren..</error_system_openssl>
     <error_system_PDO>PDO Extension ist nicht installiert. Bitte zuerst installieren..</error_system_PDO>
     <error_system_pdo_mysql>pdo_mysql Extension ist nicht installiert. Bitte zuerst installieren..</error_system_pdo_mysql>
-    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_php_version>Es wird mindestens PHP 7.4 (veraltet) benötigt. Ihre PHP-Version ist zu alt und wird nicht mehr unterstützt:</error_system_php_version>
     <error_system_SimpleXML>SimpleXML Extension ist nicht installiert. Bitte zuerst installieren..</error_system_SimpleXML>
     <error_system_zip>zip Extension ist nicht installiert. Bitte zuerst installieren..</error_system_zip>
     <faillogins>Fehlerhafte Logins</faillogins>
@@ -93,7 +93,7 @@
     <system_ok_openssl>openssl Extension ist installiert.</system_ok_openssl>
     <system_ok_PDO>PDO Extension ist installiert.</system_ok_PDO>
     <system_ok_pdo_mysql>pdo_mysql Extension ist installiert.</system_ok_pdo_mysql>
-    <system_ok_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version aktuell genug: </system_ok_php_version>
+    <system_ok_php_version>Es wird mindestens PHP 7.4 (veraltet) benötigt. PHP Version aktuell genug: </system_ok_php_version>
     <system_ok_SimpleXML>SimpleXML Extension ist installiert.</system_ok_SimpleXML>
     <system_ok_zip>zip Extension ist installiert.</system_ok_zip>
     <timezone>Zeitzone</timezone>

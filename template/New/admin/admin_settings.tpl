@@ -3,11 +3,25 @@
     <ol class="breadcrumb">
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
         <li class="active"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></li>
+        <div class="col-sm">
+    </div>
+    <div class="col-sm">
+     </div>
+    <div class="col-sm">
+
+      <div class="box box-primary">
+       <div class="box-footer">
+        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
+       </div>
+      </div>
+
+    </div>
     </ol>
 </section>
 <form role="form" action="admin.php?w=se&amp;r=se" onsubmit="return confirm('<?php echo $gsprache->sure;?>');" method="post">
 <input type="hidden" name="token" value="<?php echo token();?>">
 <input type="hidden" name="action" value="md">
+
 <section class="content">
     <div class="row">
         <div class="col-md-6">
@@ -358,14 +372,6 @@
             </div>
         </div>
     </div>
-    <div class="row">
-     <div class="col-md-12">
-      <div class="box box-primary">
-       <div class="box-footer">
-        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-       </div>
-      </div>
-     </div>
-    </div>
+    
 </section>
 </form>

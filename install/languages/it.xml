@@ -31,12 +31,12 @@
     <error_system_fopen>L'estensione fopen non è abilitata, si é pregati di abilitarla.</error_system_fopen>
     <error_system_gd>L'estensione gd non è installata, si é pregati di installarla.</error_system_gd>
     <error_system_hash>L'estensione hash non è installata, si é pregati di installarla.</error_system_hash>
-    <error_system_php_version>é richiesta la versione PHP 5.4 . La tua versione PHP é troppo vecchia: </error_system_php_version>
+    <error_system_php_version>é richiesta la versione PHP 7.4 (outdated) . La tua versione PHP é troppo vecchia: </error_system_php_version>
     <error_system_json>L'estensione json non è installata, si é pregati di installarla.</error_system_json>
     <error_system_openssl>L'estensione openssl non è installata, si é pregati di installarla.</error_system_openssl>
     <error_system_PDO>L'estensione PDO non è installata, si é pregati di installarla.</error_system_PDO>
     <error_system_pdo_mysql>L'estensione pdo_mysql non è installata, si é pregati di installarla.</error_system_pdo_mysql>
-    <error_system_php_version>Es wird mindestens PHP 5.4 benötigt. PHP Version zu alt: </error_system_php_version>
+    <error_system_php_version>Es wird mindestens PHP 7.4 (outdated) benötigt. PHP Version zu alt: </error_system_php_version>
     <error_system_SimpleXML>L'estensione SimpleXML non è installata, si é pregati di installarla.</error_system_SimpleXML>
     <error_system_zip>L'estensione zip non è installata, si é pregati di installarla.</error_system_zip>
     <faillogins>Login falliti</faillogins>
@@ -86,7 +86,7 @@
     <system_ok_openssl>L'estensione openssl é installata.</system_ok_openssl>
     <system_ok_PDO>L'estensione PDO é installata.</system_ok_PDO>
     <system_ok_pdo_mysql>L'estensione pdo_mysql é installata.</system_ok_pdo_mysql>
-    <system_ok_php_version>é richiesta almeno la versione di PHP 5.4. La tua versione é OK: </system_ok_php_version>
+    <system_ok_php_version>é richiesta almeno la versione di PHP 7.4 (outdated). La tua versione é OK: </system_ok_php_version>
     <system_ok_SimpleXML>L'estensione SimpleXML é installata.</system_ok_SimpleXML>
     <system_ok_zip>L'estensione zip é installata.</system_ok_zip>
     <timezone>Zona oraria</timezone>
