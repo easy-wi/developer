@@ -15,7 +15,7 @@ First of all Easy-Wi is a Web-interface that allows you to manage server daemons
 The development goal is always to automate as far as possible. The daily work which requires an administrator should be reduced to a minimum.
 
 # Requirements
-- Web installation requires PHP 5.4 or later where the extensions openssl, json, hash, ftp, SimpleXML, curl, gd, PDO, pdo_mysql and fopen are installed
+- Web installation requires PHP 7.4 or later where the extensions openssl, json, hash, ftp, SimpleXML, curl, gd, PDO, pdo_mysql and fopen are installed
 - The gameserver module requires sudo, cron, proftpd and the bash shell at the game root
 - The Voicemodule works best with a linux based TS3 server
 
