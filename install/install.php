@@ -153,6 +153,9 @@ if ($currentStep == 0) {
         'languages/default/de/',
         'languages/default/dk/',
         'languages/default/uk',
+        'languages/default/it',
+        'languages/default/pt',
+        'languages/default/ru',
         'stuff/',
         'stuff/admin/',
         'stuff/api/',
@@ -1108,6 +1111,8 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
             <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=de"><img src="../images/flags/de.png"></a></li>
             <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=en"><img src="../images/flags/uk.png"></a></li>
             <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=dk"><img src="../images/flags/dk.png"></a></li>
+            <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=pt"><img src="../images/flags/pt.png"></a></li>
+            <li><a href="?step=<?php echo $currentStep . $developerGetParameter;?>&amp;language=it"><img src="../images/flags/it.png"></a></li>
         </ul>
         <h3 class="text-muted">Easy-WI.com Installer <?php echo $easyWiVersion;?></h3>
     </div>
