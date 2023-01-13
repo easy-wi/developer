@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<sprache>
+	<aeskey2>A chave AES é necessária para criptografar dados sensiveis, como por exemplo senhas de FTP. Certifique-se de que é uma string muito segura.</aeskey2>
+	<aeskey3>Guarde esta chave. Se a perder, todos os dados criptografados não poderão ser recuperados.</aeskey3>
+	<aeskey>Chave AES</aeskey>
+	<brandname>Servertag</brandname>
+    <brandname2>Nomes de servidores de voz e jogos podem ser pesquisados ​​com este servertag</brandname2>
+    <captcha>Captcha</captcha>
+	<captcha_2>Usar Captcha no login</captcha_2>
+	<confirm_change>Aplicar modificações?</confirm_change>
+    <continue>Continuar</continue>
+    <cron_external>Cronjobs externos</cron_external>
+    <cron_external_text>Caso não consiga usar cronjobs internos, os mesmos arquivos podem ser chamados com um cronjob externo. Se quiser fazer uso disso, será preciso colocar na lista de permissões os IPs de chamada das configurações do Easy-Wi:</cron_external_text>
+    <cron_internal>Cronjobs internos</cron_internal>
+    <cron_internal_text>O método recomendado é usar cronjobs internos. Podem ser instalados como:</cron_internal_text>
+    <data>Por favor, preencha os seguintes campos de dados. Todos são obrigatórios</data>
+	<db>Nome de banco de dados</db>
+	<domain>Domínio atual</domain>
+	<email2>Este e-mail será utilizado para envio de dados aos utilizadores.</email2>
+	<email>Email</email>
+    <error_cname>Erro: Nenhum nome de utilizador digitado!</error_cname>
+    <error_config_php_data>Erro: O arquivo stuff/config.php existe, mas não contém todas as variáveis!</error_config_php_data>
+    <error_config_keyphrase_php_missing>Erro: O arquivo stuff/config.php e/ou stuff/keyphrasefile.php não existe!</error_config_keyphrase_php_missing>
+	<error_database>Erro: Não é possível estabelecer uma conexão com o banco de dados.</error_database>
+    <error_email>Erro: Nenhum email digitado!</error_email>
+    <error_game_insert>Erro: Jogo não pode ser adicionado: </error_game_insert>
+    <error_keyphrase_php_create>Erro: Os arquivos stuff/config.php e/ou stuff/keyphrasefile.php não podem ser criados!</error_keyphrase_php_create>
+    <error_password>Erro: As passwords não coincidem!</error_password>
+    <error_system_curl>A extensão curl não se encontra instalada, por favor instale-a.</error_system_curl>
+    <error_system_ftp>A extensão ftp não se encontra instalada, por favor instale-a.</error_system_ftp>
+    <error_system_fopen>A função fopen não pode ser usada. Por favor habilite-a.</error_system_fopen>
+    <error_system_gd>A extensão gd não se encontra instalada, por favor instale-a.</error_system_gd>
+    <error_system_hash>A extensão hash não se encontra instalada, por favor instale-a.</error_system_hash>
+    <error_system_php_version>No minimo é necessário PHP 5.4. A versão do PHP instalada é bastante antiga: </error_system_php_version>
+    <error_system_json>A extensão json não se encontra instalada, por favor instale-a.</error_system_json>
+    <error_system_openssl>A extensão openssl não se encontra instalada, por favor instale-a.</error_system_openssl>
+    <error_system_PDO>A extensão pdo não se encontra instalada, por favor instale-a.</error_system_PDO>
+    <error_system_pdo_mysql>A extensão pdo_mysql não se encontra instalada, por favor instale-a.</error_system_pdo_mysql>
+    <error_system_php_version>No minimo é necessário PHP 5.4. A versão do PHP instalada é bastante antiga: </error_system_php_version>
+    <error_system_SimpleXML>A extensão SimpleXML não se encontra instalada, por favor instale-a.</error_system_SimpleXML>
+    <error_system_zip>A extensão zip não se encontra instalada, por favor instale-a.</error_system_zip>
+    <faillogins>Logins falhados</faillogins>
+	<faillogins2>Possíveis logins falhados</faillogins2>
+	<finished>A instalação foi concluída. Por favor, remova a pasta "install".</finished>
+    <games_insert>A próxima etapa adicionará modelos e complementos do gameserver.</games_insert>
+	<header>Defenições</header>
+	<host>Host de banco de dados</host>
+	<image_server2>Se uma instalação master não for configurada, os dados serão adequiridos deste servidor.</image_server2>
+	<image_server3>Usar uma imagem de servidor</image_server3>
+	<image_server>Imagem de Servidor</image_server>
+    <install_done>A instalação está concluída. Lembre-se de configurar os cronjobs.</install_done>
+    <install_done_folder>Por favor, remova a pasta "install".</install_done_folder>
+    <installUrl>URL</installUrl>
+	<ip>Webserver IP</ip>
+	<language>Lingua principal</language>
+    <menu_welcome>Bem-vindo</menu_welcome>
+    <menu_system>Verificar sistema</menu_system>
+    <menu_db_access>Acesso ao banco de dados</menu_db_access>
+    <menu_db_access_check>Verificar acesso ao banco de dados</menu_db_access_check>
+    <menu_db_add>Criar Tabelas</menu_db_add>
+    <menu_db_check>Verificar Tabelas</menu_db_check>
+    <menu_admin_add>Conta Admin</menu_admin_add>
+    <menu_page_data>Dados de Website</menu_page_data>
+    <menu_gamedata_add>Inserir Dados do jogo</menu_gamedata_add>
+    <menu_finish>Terminar</menu_finish>
+	<no>Não</no>
+    <ok_admin_user>A conta de administrador foi criada com sucesso.</ok_admin_user>
+    <ok_configuration>A configuração foi aplicada.</ok_configuration>
+    <ok_db_connect>Conexão com banco de dados não pode ser estabelecida.</ok_db_connect>
+    <ok_db_tables_check>Tabelas do banco de dados verificadas com sucesso.</ok_db_tables_check>
+    <ok_db_tables_check_repair>Tabelas do banco de dados corrigidas com sucesso..</ok_db_tables_check_repair>
+    <ok_db_tables_create>Tabelas do banco de dados criadas com sucesso.</ok_db_tables_create>
+    <ok_files_created>Arquivos stuff/keyphrase file.php e config.php podem ser criados.</ok_files_created>
+    <ok_gameserver_data>Os dados do servidor de jogo foram adicionados.</ok_gameserver_data>
+	<passw_1>Password</passw_1>
+	<passw_2>Repetir nova password</passw_2>
+	<passwords_not_meet_req>Password não atende aos requisitos</passwords_not_meet_req>
+	<prefix1>Defenir utilizadores</prefix1>
+	<prefix2>Se definir um nome de utilizador, os IDs exclusivos dos usuários serão anexados ao nome definido. Apenas letras minúsculas e números são permitidos. Exemplo: cliente será cliente2 e por aí em diante.</prefix2>
+	<prefix3>Utilizador por defeito</prefix3>
+    <system_check_ok_folder_1>Pasta</system_check_ok_folder_1>
+    <system_check_ok_folder_2>existe e pode ser aplicado</system_check_ok_folder_2>
+    <system_check_error_folder_not_exist_1>Pasta</system_check_error_folder_not_exist_1>
+    <system_check_error_folder_not_exist_2>não existe ou não pode ser acessado</system_check_error_folder_not_exist_2>
+    <system_check_error_folder_not_writable_1>Pasta</system_check_error_folder_not_writable_1>
+    <system_check_error_folder_not_writable_2>existe, mas nada pode ser alterado</system_check_error_folder_not_writable_2>
+    <system_ok_curl>A extensão curl encontra-se instalada.</system_ok_curl>
+    <system_ok_fopen>Função fopen pode ser utilizada.</system_ok_fopen>
+    <system_ok_ftp>A extensão ftp encontra-se instalada.</system_ok_ftp>
+    <system_ok_gd>A extensão gd encontra-se instalada.</system_ok_gd>
+    <system_ok_hash>A extensão hash encontra-se instalada.</system_ok_hash>
+    <system_ok_json>A extensão json encontra-se instalada.</system_ok_json>
+    <system_ok_openssl>A extensão openssl encontra-se instalada.</system_ok_openssl>
+    <system_ok_PDO>A extensão pdo encontra-se instalada.</system_ok_PDO>
+    <system_ok_pdo_mysql>A extensão pdo_mysql encontra-se instalada.</system_ok_pdo_mysql>
+    <system_ok_php_version>No minimo é necessário PHP 5.4. A sua versão PHP é atual o suficiente: </system_ok_php_version>
+    <system_ok_SimpleXML>A extensão SimpleXML encontra-se instalada.</system_ok_SimpleXML>
+    <system_ok_zip>A extensão zip encontra-se instalada.</system_ok_zip>
+    <timezone>Timezone</timezone>
+	<title>Título da Homepage</title>
+	<user>Utilizador do banco de dados</user>
+	<user2>Utilizador Admin</user2>
+    <welcome_header>Bem-vindo ao instalador do Easy-WI!</welcome_header>
+    <welcome_old_version>Aviso: Está a tentar instalar uma versão desatualizada. A versão atual é: </welcome_old_version>
+    <welcome_text>Inicialmente, executaremos uma verificação do sistema que garantirá que o espaço na web ofereça a funcionalidade necessária. Posteriormente serão criadas tabelas de banco de dados e os dados iniciais inseridos e configurados.</welcome_text>
+    <yes>Sim</yes>
+</sprache>
