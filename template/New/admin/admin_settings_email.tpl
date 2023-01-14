@@ -4,16 +4,6 @@
         <li><a href="admin.php"><i class="fa fa-home"></i> Home</a></li>
         <li><a href="admin.php?w=se"><i class="fa fa-wrench"></i> <?php echo $gsprache->settings;?></a></li>
         <li class="active"><i class="fa fa-envelope"></i> E-Mail <?php echo $gsprache->settings;?></li>
-        <div class="col-sm">
-        </div>
-        <div class="col-sm">
-        </div>
-        <div class="col-sm">
-                <div class="box box-primary">
-                    <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
-                </div>
-        </div>
-                 
     </ol>
 </section>
 
@@ -93,6 +83,9 @@
                             <div class="pull-right" style="margin-left:5px;"><a class="btn btn-success" id="submitTest"><i class="fa fa-retweet"></i> Testing</a></div>
                             <div class="pull-right" id="smtptestresult"></div>
                         </div>
+                    </div>
+                    <div class="box-footer">
+                        <button class="btn btn-primary" id="inputEdit" type="submit"><i class="fa fa-save">&nbsp;<?php echo $gsprache->save;?></i></button>
                     </div>
                 </div>
             </div>
