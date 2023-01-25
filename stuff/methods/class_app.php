@@ -1694,24 +1694,29 @@ class AppServer {
 
         $script .= '${IONICE}find -L ' . $serverDir . ' -type l -delete' . "\n";
 
+        $dirChmod = 700
+        $fileChmod = 600;
+	    
         if ($this->appServerDetails['protectionModeStarted'] == 'Y') {
-
-            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod 750' . "\n";
+	
+	    $dirChmod = 750;
+	    $fileChmod = 640;
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
 
             if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
-                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod 750' . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $dirChmod . "\n";
             } else {
-                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 640' . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
             }
 
         } else {
 
-            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod 700' . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
 
             if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
-                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod 700' . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $dirChmod . "\n";
             } else {
-                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod 600' . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
             }
 
             // Remove files where they do not belong
