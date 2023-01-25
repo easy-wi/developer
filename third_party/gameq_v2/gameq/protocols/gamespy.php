@@ -3,214 +3,179 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+use \GameQ\Exception\Protocol as Exception;
+
 /**
- * GameSpy Protocol Class
- *
- * This class is used as the basis for all game servers
- * that use the GameSpy protocol for querying
- * server status.
+ * GameSpy Protocol class
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Gamespy extends GameQ_Protocols
+class Gamespy extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * Note: We only send the status packet since that has all the information we ever need.
-	 * The other packets are left for reference purposes
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_STATUS => "\x5C\x73\x74\x61\x74\x75\x73\x5C",
-		//self::PACKET_PLAYERS => "\x5C\x70\x6C\x61\x79\x65\x72\x73\x5C",
-		//self::PACKET_DETAILS => "\x5C\x69\x6E\x66\x6F\x5C",
-		//self::PACKET_BASIC => "\x5C\x62\x61\x73\x69\x63\x5C",
-		//self::PACKET_RULES => "\x5C\x72\x75\x6C\x65\x73\x5C",
-	);
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_status",
-	);
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_STATUS => "\x5C\x73\x74\x61\x74\x75\x73\x5C",
+    ];
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 1; // Default port, used if not set when instanced
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'gamespy';
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'gamespy';
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'gamespy';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'gamespy';
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "GameSpy Server";
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Gamespy";
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
+
+    /**
+     * Process the response for this protocol
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function processResponse()
+    {
+        // Holds the processed packets so we can sort them in case they come in an unordered
+        $processed = [];
+
+        // Iterate over the packets
+        foreach ($this->packets_response as $response) {
+            // Check to see if we had a preg_match error
+            if (($match = preg_match("#^(.*)\\\\queryid\\\\([^\\\\]+)(\\\\|$)#", $response, $matches)) === false
+                || $match != 1
+            ) {
+                throw new Exception(__METHOD__ . " An error occurred while parsing the packets for 'queryid'");
+            }
+
+            // Multiply so we move the decimal point out of the way, if there is one
+            $key = (int)(floatval($matches[2]) * 1000);
+
+            // Add this packet to the processed
+            $processed[$key] = $matches[1];
+        }
+
+        // Sort the new array to make sure the keys (query ids) are in the proper order
+        ksort($processed, SORT_NUMERIC);
+
+        // Create buffer and offload processing
+        return $this->processStatus(new Buffer(implode('', $processed)));
+    }
 
     /*
      * Internal methods
      */
 
-    protected function preProcess($packets)
+    /**
+     * Handle processing the status buffer
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processStatus(Buffer $buffer)
     {
-    	// Only one packet so its in order
-    	if (count($packets) == 1)
-    	{
-    		return $packets[0];
-    	}
+        // Set the result to a new result instance
+        $result = new Result();
 
-        // Holds the new list of packets, which will be stripped of queryid and ordered properly.
-        $packets_ordered = array();
+        // By default dedicted
+        $result->add('dedicated', 1);
 
-        // Loop thru the packets
-        foreach ($packets as $packet)
-        {
-        	// Check to see if we had a preg_match error
-        	if(preg_match("#^(.*)\\\\queryid\\\\([^\\\\]+)(\\\\|$)#", $packet, $matches) === FALSE)
-        	{
-        		throw new GameQ_ProtocolsException('An error occured while parsing the status packets');
-        		return $packets_ordered;
-        	}
-
-        	// Lets make the key proper incase of decimal points
-        	if(strstr($matches[2], '.'))
-        	{
-        		list($req_id, $req_num) = explode('.', $matches[2]);
-
-        		// Now lets put back the number but make sure we pad the req_num so it is correct
-        		// Should make sure the length is always 4 digits past the decimal point
-        		// For some reason the req_num is 1->12.. instead of 01->12 ... so it doesnt ksort properly
-        		$key = $req_id . sprintf(".%04s", $req_num);
-        	}
-        	else
-        	{
-        		$key = $matches[2];
-        	}
-
-        	// Add this stripped queryid to the new array with the id as the key
-        	$packets_ordered[$key] = $matches[1];
+        // Lets peek and see if the data starts with a \
+        if ($buffer->lookAhead(1) == '\\') {
+            // Burn the first one
+            $buffer->skip(1);
         }
 
-        // Sort the new array to make sure the keys (query ids) are in the proper order
-        ksort($packets_ordered, SORT_NUMERIC);
+        // Explode the data
+        $data = explode('\\', $buffer->getBuffer());
 
-        // Implode and return only the values as we dont care about the keys anymore
-        return implode('', array_values($packets_ordered));
-    }
+        // No longer needed
+        unset($buffer);
 
-    /**
-     * Process the server status
-     *
-     * @throws GameQ_ProtocolsException
-     */
-	protected function process_status()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_STATUS))
-		{
-			return array();
-		}
+        // Init some vars
+        $numPlayers = 0;
+        $numTeams = 0;
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+        $itemCount = count($data);
 
-    	// Lets pre process and make sure these things are in the proper order by id
-    	$data = $this->preProcess($this->packets_response[self::PACKET_STATUS]);
+        // Check to make sure we have more than 1 item in the array before trying to loop
+        if (count($data) > 1) {
+            // Now lets loop the array since we have items
+            for ($x = 0; $x < $itemCount; $x += 2) {
+                // Set some local vars
+                $key = $data[$x];
+                $val = $data[$x + 1];
 
-    	// Create a new buffer
-    	$buf = new GameQ_Buffer($data);
-
-    	// Lets peek and see if the data starts with a \
-    	if($buf->lookAhead(1) == '\\')
-    	{
-			// Burn the first one
-			$buf->skip(1);
-    	}
-
-    	// Explode the data
-    	$data = explode('\\', $buf->getBuffer());
-
-    	// Remove the last 2 "items" as it should be final\
-    	array_pop($data);
-    	array_pop($data);
-
-    	// Init some vars
-    	$num_players = 0;
-    	$num_teams = 0;
-
-    	// Now lets loop the array
-    	for($x=0;$x<count($data);$x+=2)
-    	{
-    		// Set some local vars
-    		$key = $data[$x];
-    		$val = $data[$x+1];
-
-    		// Check for <variable>_<count> variable (i.e players)
-            if(($suffix = strrpos($key, '_')) !== FALSE && is_numeric(substr($key, $suffix+1)))
-            {
-            	// See if this is a team designation
-            	if(substr($key, 0, $suffix) == 'teamname')
-            	{
-            		$result->addTeam('teamname', $val);
-            		$num_teams++;
-            	}
-            	else // Its a player
-            	{
-            		if(substr($key, 0, $suffix) == 'playername')
-            		{
-            			$num_players++;
-            		}
-
-            		$result->addPlayer(substr($key, 0, $suffix), $val);
-
-            	}
+                // Check for <variable>_<count> variable (i.e players)
+                if (($suffix = strrpos($key, '_')) !== false && is_numeric(substr($key, $suffix + 1))) {
+                    // See if this is a team designation
+                    if (substr($key, 0, $suffix) == 'teamname') {
+                        $result->addTeam('teamname', $val);
+                        $numTeams++;
+                    } else {
+                        // Its a player
+                        if (substr($key, 0, $suffix) == 'playername') {
+                            $numPlayers++;
+                        }
+                        $result->addPlayer(substr($key, 0, $suffix), utf8_encode($val));
+                    }
+                } else {
+                    // Regular variable so just add the value.
+                    $result->add($key, $val);
+                }
             }
-            else // Regular variable so just add the value.
-            {
-            	$result->add($key, $val);
-            }
-    	}
+        }
 
-    	// Add the player and team count
-    	$result->add('num_players', $num_players);
-    	$result->add('num_teams', $num_teams);
+        // Add the player and team count
+        $result->add('num_players', $numPlayers);
+        $result->add('num_teams', $numTeams);
 
-    	unset($buf, $data, $key, $val, $suffix, $x);
+        // Unset some stuff to free up memory
+        unset($data, $key, $val, $suffix, $x, $itemCount);
 
+        // Return the result
         return $result->fetch();
-	}
+    }
 }

@@ -3,31 +3,30 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Armed Assault 2 Protocol Class
- *
- * Special thanks to firefly2442 for linking working python script that
- * supported both GSv2&3
- *
- * @author Austin Bischoff <austin@codebeard.com>
- */
-class GameQ_Protocols_Armedassault3 extends GameQ_Protocols_Source
-{
-	protected $name = "armedassault3";
-	protected $name_long = "Armed Assault 3";
+namespace GameQ\Protocols;
 
-	protected $port = 2302;
+/**
+ * Armed assault 3 dummy Protocol Class
+ *
+ * Added for backward compatibility, please update to class arma3
+ *
+ * @deprecated v3.0.10
+ * @package    GameQ\Protocols
+ * @author     Austin Bischoff <austin@codebeard.com>
+ */
+class Armedassault3 extends Arma3
+{
 }

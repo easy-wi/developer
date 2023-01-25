@@ -284,8 +284,10 @@ if (!function_exists('eacchange')) {
             // Figure out the class name
             $class_name = 'GameQ_Protocols_' . ucfirst(pathinfo($entry, PATHINFO_FILENAME));
 
+
             // Lets get some info on the class
-            $reflection = new ReflectionClass($class_name);
+            if (method_exists($class_name, "get_site_editor_type")) {
+            $reflection = new \ReflectionClass( $class_name );
 
             // Check to make sure we can actually load the class
             try {
@@ -307,7 +309,10 @@ if (!function_exists('eacchange')) {
 
             } catch (ReflectionException $e) {
                 $errors['reflection'] = $e->getMessage();
-            }
+
+
+            }    
+        }
         }
 
         // Close the directory

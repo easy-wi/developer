@@ -3,18 +3,22 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+namespace GameQ\Protocols;
+
+use GameQ\Exception\Protocol as Exception;
+use GameQ\Result;
 
 /**
  * Tshock Protocol Class
@@ -29,26 +33,16 @@
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-abstract class GameQ_Protocols_Tshock extends GameQ_Protocols_Http
+class Tshock extends Http
 {
     /**
-     * Array of packets we want to look up.
-     * Each key should correspond to a defined method in this or a parent class
+     * Packets to send
      *
      * @var array
      */
-    protected $packets = array(
-            self::PACKET_STATUS => "GET /status HTTP/1.0\r\nAccept: */*\r\n\r\n",
-    );
-
-    /**
-     * Methods to be run when processing the response(s)
-     *
-     * @var array
-     */
-    protected $process_methods = array(
-            "process_status",
-    );
+    protected $packets = [
+        self::PACKET_STATUS => "GET /v2/server/status?players=true&rules=true HTTP/1.0\r\nAccept: */*\r\n\r\n",
+    ];
 
     /**
      * The protocol being used
@@ -71,60 +65,92 @@ abstract class GameQ_Protocols_Tshock extends GameQ_Protocols_Http
      */
     protected $name_long = "Tshock";
 
-    /*
-     * Internal methods
+    /**
+     * Normalize some items
+     *
+     * @var array
      */
-    protected function preProcess_status($packets=array())
-    {
-        // Implode and rip out the JSON
-        preg_match('/\{(.*)\}/ms', implode('', $packets), $m);
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'dedicated',
+            'hostname'   => 'hostname',
+            'mapname'    => 'world',
+            'maxplayers' => 'maxplayers',
+            'numplayers' => 'numplayers',
+            'password'   => 'password',
+        ],
+        // Individual
+        'player'  => [
+            'name' => 'nickname',
+            'team' => 'team',
+        ],
+    ];
 
-        return $m[0];
-    }
-
-    protected function process_status()
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function processResponse()
     {
-        // Make sure we have a valid response
-        if(!$this->hasValidResponse(self::PACKET_STATUS))
-        {
-            return array();
+        if (empty($this->packets_response)) {
+            return [];
         }
+        
+        // Implode and rip out the JSON
+        preg_match('/\{(.*)\}/ms', implode('', $this->packets_response), $matches);
 
         // Return should be JSON, let's validate
-        if(($json = json_decode($this->preProcess_status($this->packets_response[self::PACKET_STATUS]))) === NULL)
-        {
-            throw new GameQ_ProtocolsException("JSON response from Tshock protocol is invalid.");
+        if (!isset($matches[0]) || ($json = json_decode($matches[0])) === null) {
+            throw new Exception("JSON response from Tshock protocol is invalid.");
         }
 
         // Check the status response
-        if($json->status != 200)
-        {
-            throw new GameQ_ProtocolsException("JSON status from Tshock protocol response was '{$json->status}', expected '200'.");
+        if ($json->status != 200) {
+            throw new Exception("JSON status from Tshock protocol response was '{$json->status}', expected '200'.");
         }
 
-        // Set the result to a new result instance
-        $result = new GameQ_Result();
+        $result = new Result();
 
         // Server is always dedicated
-        $result->add('dedicated', TRUE);
+        $result->add('dedicated', 1);
 
-        // No mods, as of yet
-        $result->add('mod', FALSE);
-
-        // These are the same no matter what mode the server is in
+        // Add server items
         $result->add('hostname', $json->name);
         $result->add('game_port', $json->port);
+        $result->add('serverversion', $json->serverversion);
+        $result->add('world', $json->world);
+        $result->add('uptime', $json->uptime);
+        $result->add('password', (int)$json->serverpassword);
         $result->add('numplayers', $json->playercount);
-        $result->add('maxplayers', 0);
+        $result->add('maxplayers', $json->maxplayers);
 
-        // Players are a comma(space) seperated list
-        $players = explode(', ', $json->players);
-
-        // Do the players
-        foreach($players AS $player)
-        {
-            $result->addPlayer('name', $player);
+        // Parse players
+        foreach ($json->players as $player) {
+            $result->addPlayer('nickname', $player->nickname);
+            $result->addPlayer('username', $player->username);
+            $result->addPlayer('group', $player->group);
+            $result->addPlayer('active', (int)$player->active);
+            $result->addPlayer('state', $player->state);
+            $result->addPlayer('team', $player->team);
         }
+
+        // Make rules into simple array
+        $rules = [];
+
+        // Parse rules
+        foreach ($json->rules as $rule => $value) {
+            // Add rule but convert boolean into int (0|1)
+            $rules[$rule] = (is_bool($value)) ? (int)$value : $value;
+        }
+
+        // Add rules
+        $result->add('rules', $rules);
+
+        unset($rules, $rule, $player, $value);
 
         return $result->fetch();
     }

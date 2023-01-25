@@ -3,18 +3,25 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+use GameQ\Exception\Protocol as Exception;
 
 /**
  * Mafia 2 Multiplayer Protocol Class
@@ -23,132 +30,190 @@
  *
  * Query port = server port + 1
  *
- * Thanks to rststeam for example protocol information
+ * Handles processing Mafia 2 Multiplayer servers
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author Wilson Jesus <>
  */
-class GameQ_Protocols_M2mp extends GameQ_Protocols
+class M2mp extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_ALL => "M2MP",
-	);
-
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_all",
-	);
-
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 27016; // Default port, used if not set when instanced
-
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'm2mp';
-
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'm2mp';
-
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Mafia 2 Multiplayer";
-
-    /*
-     * Internal methods
-     */
-
-	/**
-     * Pre-process the server details data that was returned.
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
      *
-     * @param array $packets
+     * @type array
      */
-    protected function preProcess($packets)
+    protected $packets = [
+        self::PACKET_ALL => "M2MP",
+    ];
+
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        "M2MP" => 'processStatus',
+    ];
+
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'm2mp';
+
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'm2mp';
+
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Mafia 2 Multiplayer";
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
+
+    /**
+     * The difference between the client port and query port
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
+
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'hostname'   => 'servername',
+            'gametype'   => 'gamemode',
+            'maxplayers' => 'max_players',
+            'numplayers' => 'num_players',
+            'password'   => 'password',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+        ],
+    ];
+
+    /**
+     * Handle response from the server
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function processResponse()
     {
-    	// Make buffer so we can check this out
-    	$buf = new GameQ_Buffer(implode('', $packets));
+        // Make a buffer
+        $buffer = new Buffer(implode('', $this->packets_response));
 
-    	// Grab the header
-    	$header = $buf->read(4);
+        // Grab the header
+        $header = $buffer->read(4);
 
-    	// Now lets verify the header
-    	if($header != "M2MP")
-    	{
-    		throw new GameQ_ProtocolsException('Unable to match M2MP response header. Header: '. $header);
-    		return FALSE;
-    	}
+        // Header
+        // Figure out which packet response this is
+        if ($header != "M2MP") {
+            throw new Exception(__METHOD__ . " response type '" . bin2hex($header) . "' is not valid");
+        }
 
-    	// Return the data with the header stripped, ready to go.
-    	return $buf->getBuffer();
+        return call_user_func_array([$this, $this->responses[$header]], [$buffer]);
     }
 
     /**
-     * Process the server details
+     * Process the status response
      *
-     * @throws GameQ_ProtocolsException
+     * @param Buffer $buffer
+     *
+     * @return array
      */
-	protected function process_all()
-	{
-	    // Make sure we have a valid response
-	    if(!$this->hasValidResponse(self::PACKET_ALL))
-	    {
-	        return array();
-	    }
+    protected function processStatus(Buffer $buffer)
+    {
+        // We need to split the data and offload
+        $results = $this->processServerInfo($buffer);
 
-	    // Set the result to a new result instance
-	    $result = new GameQ_Result();
+        $results = array_merge_recursive(
+            $results,
+            $this->processPlayers($buffer)
+        );
 
-	    // Always dedicated
-	    $result->add('dedicated', TRUE);
+        unset($buffer);
 
-	    // Preprocess and make buffer
-	    $buf = new GameQ_Buffer($this->preProcess($this->packets_response[self::PACKET_ALL]));
+        // Return results
+        return $results;
+    }
 
-	    // Pull out the server information
-	    // Note the length information is incorrect, we correct using offset options in pascal method
-	    $result->add('servername', $buf->readPascalString(1, TRUE));
-	    $result->add('num_players', $buf->readPascalString(1, TRUE));
-	    $result->add('max_players', $buf->readPascalString(1, TRUE));
-	    $result->add('gamemode', $buf->readPascalString(1, TRUE));
-	    $result->add('password', (bool) $buf->readInt8());
+    /**
+     * Handle processing the server information
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processServerInfo(Buffer $buffer)
+    {
+        // Set the result to a new result instance
+        $result = new Result();
 
-	    // Read the player info, it's in the same query response for some odd reason.
-	    while($buf->getLength())
-	    {
-	        // Check to see if we ran out of info
-	        if($buf->getLength() <= 1)
-	        {
-	            break;
-	        }
+        // Always dedicated
+        $result->add('dedicated', 1);
 
-	        // Only player information is available
-	        $result->addPlayer('name', $buf->readPascalString(1, TRUE));
-	    }
+        // Pull out the server information
+        // Note the length information is incorrect, we correct using offset options in pascal method
+        $result->add('servername', $buffer->readPascalString(1, true));
+        $result->add('num_players', $buffer->readPascalString(1, true));
+        $result->add('max_players', $buffer->readPascalString(1, true));
+        $result->add('gamemode', $buffer->readPascalString(1, true));
+        $result->add('password', (bool) $buffer->readInt8());
 
-    	unset($buf);
+        unset($buffer);
 
         return $result->fetch();
-	}
+    }
+
+    /**
+     * Handle processing of player data
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processPlayers(Buffer $buffer)
+    {
+        // Set the result to a new result instance
+        $result = new Result();
+
+        // Parse players
+        // Read the player info, it's in the same query response for some odd reason.
+        while ($buffer->getLength()) {
+            // Check to see if we ran out of info, length bug from response
+            if ($buffer->getLength() <= 1) {
+                break;
+            }
+
+            // Only player name information is available
+            // Add player name, encoded
+            $result->addPlayer('name', utf8_encode(trim($buffer->readPascalString(1, true))));
+        }
+
+        // Clear
+        unset($buffer);
+
+        return $result->fetch();
+    }
 }

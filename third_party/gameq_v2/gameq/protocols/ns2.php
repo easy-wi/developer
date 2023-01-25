@@ -3,35 +3,47 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
 /**
- * Natural Selection 2 Protocol Class
+ * Class Ns2
  *
- * Note that the query port is the server connect port + 1
- *
+ * @package GameQ\Protocols
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Ns2 extends GameQ_Protocols_Source
+class Ns2 extends Source
 {
-	protected $name = "ns2";
-	protected $name_long = "Natural Selection 2";
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'ns2';
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 27016;
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Natural Selection 2";
+
+    /**
+     * query_port = client_port + 1
+     *
+     * @type int
+     */
+    protected $port_diff = 1;
 }

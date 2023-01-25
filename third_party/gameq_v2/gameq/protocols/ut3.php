@@ -3,75 +3,131 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+namespace GameQ\Protocols;
 
 /**
  * Unreal Tournament 3 Protocol Class
  *
- * NOTE:  The return from UT3 via the GameSpy 3 protocol is anything but consistent.  You may
- * notice different results even on the same server queried at different times.  No real way to fix
- * this problem currently.
+ * Note: The response from UT3 appears to not be consistent.  Many times packets are incomplete or there are extra
+ * "echoes" in the responses.  This may cause issues like odd characters showing up in the keys for the player and team
+ * array responses. Not sure much can be done about it.
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Ut3 extends GameQ_Protocols_Gamespy3
+class Ut3 extends Gamespy3
 {
-	protected $name = "ut3";
-	protected $name_long = "Unreal Tournament 3";
 
-	protected $port = 6500;
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'ut3';
 
-	/**
-	 * Process all the data at once
-	 * @see GameQ_Protocols_Gamespy3::process_all()
-	 */
-	protected function process_all()
-	{
-		// Run the parent but we need to change some data
-		$result = parent::process_all();
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Unreal Tournament 3";
 
-		// Move some stuff around
-        $this->move_result($result, 'hostname', 'OwningPlayerName');
-        $this->move_result($result, 'p1073741825', 'mapname');
-        $this->move_result($result, 'p1073741826', 'gametype');
-        $this->move_result($result, 'p1073741827', 'servername');
-        $this->move_result($result, 'p1073741828', 'custom_mutators');
-        $this->move_result($result, 'gamemode',    'open');
-        $this->move_result($result, 's32779',      'gamemode');
-        $this->move_result($result, 's0',          'bot_skill');
-        $this->move_result($result, 's6',          'pure_server');
-        $this->move_result($result, 's7',          'password');
-        $this->move_result($result, 's8',          'vs_bots');
-        $this->move_result($result, 's10',         'force_respawn');
-        $this->move_result($result, 'p268435704',  'frag_limit');
-        $this->move_result($result, 'p268435705',  'time_limit');
-        $this->move_result($result, 'p268435703',  'numbots');
-        $this->move_result($result, 'p268435717',  'stock_mutators');
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            'dedicated'  => 'bIsDedicated',
+            'hostname'   => 'hostname',
+            'numplayers' => 'numplayers',
+        ],
+    ];
+
+    /**
+     * Overload the response process so we can make some changes
+     *
+     * @return array
+     */
+    public function processResponse()
+    {
+
+        // Grab the result from the parent
+        /** @type array $result */
+        $result = parent::processResponse();
+
+        // Move some stuff around
+        $this->renameResult($result, 'OwningPlayerName', 'hostname');
+        $this->renameResult($result, 'p1073741825', 'mapname');
+        $this->renameResult($result, 'p1073741826', 'gametype');
+        $this->renameResult($result, 'p1073741827', 'servername');
+        $this->renameResult($result, 'p1073741828', 'custom_mutators');
+        $this->renameResult($result, 'gamemode', 'open');
+        $this->renameResult($result, 's32779', 'gamemode');
+        $this->renameResult($result, 's0', 'bot_skill');
+        $this->renameResult($result, 's6', 'pure_server');
+        $this->renameResult($result, 's7', 'password');
+        $this->renameResult($result, 's8', 'vs_bots');
+        $this->renameResult($result, 's10', 'force_respawn');
+        $this->renameResult($result, 'p268435704', 'frag_limit');
+        $this->renameResult($result, 'p268435705', 'time_limit');
+        $this->renameResult($result, 'p268435703', 'numbots');
+        $this->renameResult($result, 'p268435717', 'stock_mutators');
 
         // Put custom mutators into an array
-        if(isset($result['custom_mutators']))
-        {
+        if (isset($result['custom_mutators'])) {
             $result['custom_mutators'] = explode("\x1c", $result['custom_mutators']);
         }
 
         // Delete some unknown stuff
-        $this->delete_result($result, array('s1','s9','s11','s12','s13','s14'));
+        $this->deleteResult($result, ['s1', 's9', 's11', 's12', 's13', 's14']);
 
-    	// Return the result
-		return $result;
-	}
+        // Return the result
+        return $result;
+    }
 
-	// UT3 Hack, yea I know it doesnt belong here. UT3 is such a mess it needs its own version of GSv3
-    //$data = str_replace(array("\x00p1073741829\x00", "p1073741829\x00", "p268435968\x00"), '', $data);
+    /**
+     * Dirty hack to rename result entries into something more useful
+     *
+     * @param array  $result
+     * @param string $old
+     * @param string $new
+     */
+    protected function renameResult(array &$result, $old, $new)
+    {
+
+        // Check to see if the old item is there
+        if (isset($result[$old])) {
+            $result[$new] = $result[$old];
+            unset($result[$old]);
+        }
+    }
+
+    /**
+     * Dirty hack to delete result items
+     *
+     * @param array $result
+     * @param array $array
+     */
+    protected function deleteResult(array &$result, array $array)
+    {
+
+        foreach ($array as $key) {
+            unset($result[$key]);
+        }
+    }
 }

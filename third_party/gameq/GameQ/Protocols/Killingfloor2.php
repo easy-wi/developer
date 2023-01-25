@@ -32,7 +32,7 @@ class Killingfloor2 extends Source
      *
      * @type string
      */
-    protected $name = 'killingfloor2';
+    protected $name = 'killing floor 2';
 
     /**
      * Longer string name of this protocol class

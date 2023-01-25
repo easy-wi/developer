@@ -3,161 +3,219 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+use GameQ\Exception\Protocol as Exception;
 
 /**
  * Doom3 Protocol Class
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * Handles processing DOOM 3 servers
+ *
+ * @package GameQ\Protocols
+ * @author Wilson Jesus <>
  */
-class GameQ_Protocols_Doom3 extends GameQ_Protocols
+class Doom3 extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_ALL => "\xFF\xFFgetInfo\x00PiNGPoNG\x00",
-	);
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_ALL => "\xFF\xFFgetInfo\x00PiNGPoNG\x00",
+    ];
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_all",
-	);
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        "\xFF\xFFinfoResponse" => 'processStatus',
+    ];
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 27666; // Default port, used if not set when instanced
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'doom3';
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'doom3';
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'doom3';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'doom3';
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Doom 3";
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Doom 3";
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
 
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'hostname'   => 'si_name',
+            'gametype'   => 'gamename',
+            'mapname'    => 'si_map',
+            'maxplayers' => 'si_maxPlayers',
+            'numplayers' => 'clients',
+            'password'   => 'si_usepass',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+            'ping'  => 'ping',
+        ],
+    ];
 
-	/*
-	* Internal methods
-	*/
+    /**
+     * Handle response from the server
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function processResponse()
+    {
+        // Make a buffer
+        $buffer = new Buffer(implode('', $this->packets_response));
 
-	protected function preProcess_all($packets=array())
-	{
-		// Implode and return
-		return implode('', $packets);
-	}
+        // Grab the header
+        $header = $buffer->readString();
 
-	protected function process_all()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_ALL))
-		{
-			return array();
-		}
-
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
-
-		// Parse the response
-		$data = $this->preProcess_all($this->packets_response[self::PACKET_ALL]);
-
-		// Create a new buffer
-		$buf = new GameQ_Buffer($data);
-
-		// Header
-        if ($buf->readInt16() !== 65535 or $buf->readString() !== 'infoResponse')
-        {
-            throw new GameQ_ProtocolsException('Header for response does not match. Buffer:'.$this->packets_response[self::PACKET_ALL]);
-            return array();
+        // Header
+        // Figure out which packet response this is
+        if (empty($header) || !array_key_exists($header, $this->responses)) {
+            throw new Exception(__METHOD__ . " response type '" . bin2hex($header) . "' is not valid");
         }
 
-        $result->add('version', $buf->readInt8() . '.' . $buf->readInt8());
+        return call_user_func_array([$this, $this->responses[$header]], [$buffer]);
+    }
 
-        // Var / value pairs, delimited by an empty pair
-        while ($buf->getLength())
-        {
-            $var = $buf->readString();
-            $val = $buf->readString();
+    /**
+     * Process the status response
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processStatus(Buffer $buffer)
+    {
+        // We need to split the data and offload
+        $results = $this->processServerInfo($buffer);
+
+        $results = array_merge_recursive(
+            $results,
+            $this->processPlayers($buffer)
+        );
+
+        unset($buffer);
+
+        // Return results
+        return $results;
+    }
+
+    /**
+     * Handle processing the server information
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processServerInfo(Buffer $buffer)
+    {
+        // Set the result to a new result instance
+        $result = new Result();
+
+        $result->add('version', $buffer->readInt8() . '.' . $buffer->readInt8());
+
+        // Key / value pairs, delimited by an empty pair
+        while ($buffer->getLength()) {
+            $key = trim($buffer->readString());
+            $val = utf8_encode(trim($buffer->readString()));
 
             // Something is empty so we are done
-            if (empty($var) && empty($val))
-            {
-            	break;
+            if (empty($key) && empty($val)) {
+                break;
             }
 
-            $result->add($var, $val);
+            $result->add($key, $val);
         }
 
-        // Now lets parse the players
-		$this->parsePlayers($buf, $result);
+        unset($buffer);
 
-		unset($buf, $data);
+        return $result->fetch();
+    }
 
-		// Return the result
-		return $result->fetch();
-	}
+    /**
+     * Handle processing of player data
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processPlayers(Buffer $buffer)
+    {
+        // Some games do not have a number of current players
+        $playerCount = 0;
 
-	/**
-	 * Parse the players.  Set as its own method so it can be overloaded.
-	 *
-	 * @param GameQ_Buffer $buf
-	 * @param GameQ_Result $result
-	 */
-	protected function parsePlayers(GameQ_Buffer &$buf, GameQ_Result &$result)
-	{
-		// There is no way to see the number of players so we have to increment
-		// a variable and do it that way.
-		$players = 0;
-		
-		
-		// Loop thru the buffer until we run out of data
-		while (($id = $buf->readInt8()) != 32)
-		{
-			$result->addPlayer('id',   $id);
-			$result->addPlayer('ping', $buf->readInt16());
-			$result->addPlayer('rate', $buf->readInt32());
-			$result->addPlayer('name', $buf->readString());
-			
-			$players++;
-		}
-		
-		// Add the number of players to the result
-		$result->add('numplayers', $players);
-		
-		return TRUE;
-	}
+        // Set the result to a new result instance
+        $result = new Result();
+
+        // Parse players
+        // Loop thru the buffer until we run out of data
+        while (($id = $buffer->readInt8()) != 32) {
+            // Add player info results
+            $result->addPlayer('id', $id);
+            $result->addPlayer('ping', $buffer->readInt16());
+            $result->addPlayer('rate', $buffer->readInt32());
+            // Add player name, encoded
+            $result->addPlayer('name', utf8_encode(trim($buffer->readString())));
+
+            // Increment
+            $playerCount++;
+        }
+
+        // Add the number of players to the result
+        $result->add('clients', $playerCount);
+
+        // Clear
+        unset($buffer, $playerCount);
+
+        return $result->fetch();
+    }
 }

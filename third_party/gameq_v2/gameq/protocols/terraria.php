@@ -3,46 +3,57 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
 /**
- * Terraria Protocol Class
+ * Class Terraria
  *
- * This class utilizes the Tshock protocol
+ * @package GameQ\Protocols
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Terraria extends GameQ_Protocols_Tshock
+class Terraria extends Tshock
 {
+
     /**
-     * Default port for this server type
+     * String name of this protocol class
      *
-     * @var int
+     * @type string
      */
-    protected $port = 7878; // Default port, used if not set when instanced
+    protected $name = 'terraria';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'terraria';
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Terraria";
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Terraria";
+    /**
+     * query_port = client_port + 101
+     * 7878 = 7777 + 101
+     *
+     * @type int
+     */
+    protected $port_diff = 101;
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "steam://connect/%s:%d/";
 }

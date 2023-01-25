@@ -3,259 +3,267 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Exception\Protocol as Exception;
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+
 /**
- * GameSpy2 Protocol Class
+ * GameSpy2 Protocol class
  *
- * This class is used as the basis for all game servers
- * that use the GameSpy2 protocol for querying
- * server status.
+ * Given the ability for non utf-8 characters to be used as hostnames, player names, etc... this
+ * version returns all strings utf-8 encoded (utf8_encode).  To access the proper version of a
+ * string response you must use utf8_decode() on the specific response.
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Gamespy2 extends GameQ_Protocols
+class Gamespy2 extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_DETAILS => "\xFE\xFD\x00\x43\x4F\x52\x59\xFF\x00\x00",
-		self::PACKET_PLAYERS => "\xFE\xFD\x00\x43\x4F\x52\x59\x00\xFF\xFF",
-	);
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_details",
-		"process_players",
-	);
+    /**
+     * Define the state of this class
+     *
+     * @type int
+     */
+    protected $state = self::STATE_BETA;
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 1; // Default port, used if not set when instanced
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_DETAILS => "\xFE\xFD\x00\x43\x4F\x52\x59\xFF\x00\x00",
+        self::PACKET_PLAYERS => "\xFE\xFD\x00\x43\x4F\x52\x58\x00\xFF\xFF",
+    ];
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'gamespy2';
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        "\x00\x43\x4F\x52\x59" => "processDetails",
+        "\x00\x43\x4F\x52\x58" => "processPlayers",
+    ];
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'gamespy2';
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'gamespy2';
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Gamespy2";
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'gamespy2';
+
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "GameSpy2 Server";
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = null;
+
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'dedicated',
+            'gametype'   => 'gametype',
+            'hostname'   => 'hostname',
+            'mapname'    => 'mapname',
+            'maxplayers' => 'maxplayers',
+            'mod'        => 'mod',
+            'numplayers' => 'numplayers',
+            'password'   => 'password',
+        ],
+    ];
+
+
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function processResponse()
+    {
+
+        // Will hold the packets after sorting
+        $packets = [];
+
+        // We need to pre-sort these for split packets so we can do extra work where needed
+        foreach ($this->packets_response as $response) {
+            $buffer = new Buffer($response);
+
+            // Pull out the header
+            $header = $buffer->read(5);
+
+            // Add the packet to the proper section, we will combine later
+            $packets[$header][] = $buffer->getBuffer();
+        }
+
+        unset($buffer);
+
+        $results = [];
+
+        // Now let's iterate and process
+        foreach ($packets as $header => $packetGroup) {
+            // Figure out which packet response this is
+            if (!array_key_exists($header, $this->responses)) {
+                throw new Exception(__METHOD__ . " response type '" . bin2hex($header) . "' is not valid");
+            }
+
+            // Now we need to call the proper method
+            $results = array_merge(
+                $results,
+                call_user_func_array([$this, $this->responses[$header]], [new Buffer(implode($packetGroup))])
+            );
+        }
+
+        unset($packets);
+
+        return $results;
+    }
 
     /*
      * Internal methods
      */
 
-	/**
-     * Pre-process the server details data that was returned.
-     *
-     * @param array $packets
-     */
-    protected function preProcess_details($packets)
-    {
-    	return $packets[0];
-    }
-
     /**
-     * Process the server details
+     * Handles processing the details data into a usable format
      *
-     * @throws GameQ_ProtocolsException
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     * @throws Exception
      */
-	protected function process_details()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_DETAILS))
-		{
-			return array();
-		}
+    protected function processDetails(Buffer $buffer)
+    {
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+        // Set the result to a new result instance
+        $result = new Result();
 
-    	// Let's preprocess the rules
-    	$data = $this->preProcess_details($this->packets_response[self::PACKET_DETAILS]);
-
-    	// Create a new buffer
-    	$buf = new GameQ_Buffer($data);
-
-		// Make sure the data is formatted properly
-    	if($buf->lookAhead(5) != "\x00\x43\x4F\x52\x59")
-    	{
-    		throw new GameQ_ProtocolsException("Data for ".__METHOD__." does not have the proper header. Header: ".$buf->lookAhead(5));
-    		return false;
-    	}
-
-		// Now verify the end of the data is correct
-    	if($buf->readLast() !== "\x00")
-    	{
-    		throw new GameQ_ProtocolsException("Data for ".__METHOD__." does not have the proper ending. Ending: ".$buf->readLast());
-    		return false;
-    	}
-
-    	// Skip the header
-    	$buf->skip(5);
-
-    	// Loop thru all of the settings and add them
-		while ($buf->getLength())
-		{
-			// Temp vars
-			$key = $buf->readString();
-			$val = $buf->readString();
-
-			// Check to make sure there is a valid pair
-			if(!empty($key))
-			{
-            	$result->add($key, $val);
-			}
+        // We go until we hit an empty key
+        while ($buffer->getLength()) {
+            $key = $buffer->readString();
+            if (strlen($key) == 0) {
+                break;
+            }
+            $result->add($key, utf8_encode($buffer->readString()));
         }
 
-    	unset($buf, $data, $key, $var);
+        unset($buffer);
 
         return $result->fetch();
-	}
-
-	/**
-     * Pre-process the player data that was returned.
-     *
-     * @param array $packets
-     */
-    protected function preProcess_players($packets)
-    {
-    	return $packets[0];
     }
 
     /**
-     * Process the player data
+     * Handles processing the players data into a usable format
      *
-     * @throws GameQ_ProtocolsException
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     * @throws Exception
      */
-	protected function process_players()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_PLAYERS))
-		{
-			return array();
-		}
+    protected function processPlayers(Buffer $buffer)
+    {
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+        // Set the result to a new result instance
+        $result = new Result();
 
-    	// Let's preprocess the rules
-    	$data = $this->preProcess_players($this->packets_response[self::PACKET_PLAYERS]);
+        // Skip the header
+        $buffer->skip(1);
 
-		// Create a new buffer
-    	$buf = new GameQ_Buffer($data);
+        // Players are first
+        $this->parsePlayerTeam('players', $buffer, $result);
 
-		// Make sure the data is formatted properly
-    	if($buf->lookAhead(6) != "\x00\x43\x4F\x52\x59\x00")
-    	{
-    		throw new GameQ_ProtocolsException("Data for ".__METHOD__." does not have the proper header. Header: ".$buf->lookAhead(6));
-    		return false;
-    	}
+        // Teams are next
+        $this->parsePlayerTeam('teams', $buffer, $result);
 
-		// Now verify the end of the data is correct
-    	if($buf->readLast() !== "\x00")
-    	{
-    		throw new GameQ_ProtocolsException("Data for ".__METHOD__." does not have the proper ending. Ending: ".$buf->readLast());
-    		return false;
-    	}
-
-    	// Skip the header
-    	$buf->skip(6);
-
-    	// Players are first
-    	$this->parse_playerteam('players', $buf, $result);
-
-    	// Teams are next
-    	$this->parse_playerteam('teams', $buf, $result);
-
-		unset($buf, $data);
+        unset($buffer);
 
         return $result->fetch();
-	}
+    }
 
-	/**
-	 * Parse the player/team info returned from the player call
-	 *
-	 * @param string $type
-	 * @param GameQ_Buffer $buf
-	 * @param GameQ_Result $result
-	 */
-	protected function parse_playerteam($type, &$buf, &$result)
-	{
-		// Do count
-		$result->add('num_'.$type, $buf->readInt8());
+    /**
+     * Parse the player/team info returned from the player call
+     *
+     * @param string        $dataType
+     * @param \GameQ\Buffer $buffer
+     * @param \GameQ\Result $result
+     *
+     * @throws Exception
+     */
+    protected function parsePlayerTeam($dataType, Buffer &$buffer, Result &$result)
+    {
 
-		// Variable names
-        $varnames = array();
+        // Do count
+        $result->add('num_' . $dataType, $buffer->readInt8());
+
+        // Variable names
+        $varNames = [];
 
         // Loop until we run out of length
-        while ($buf->getLength())
-        {
-            $varnames[] = str_replace('_', '', $buf->readString());
+        while ($buffer->getLength()) {
+            $varNames[] = str_replace('_', '', $buffer->readString());
 
-            if ($buf->lookAhead() === "\x00")
-            {
-                $buf->skip();
+            if ($buffer->lookAhead() === "\x00") {
+                $buffer->skip();
                 break;
             }
         }
 
         // Check if there are any value entries
-        if ($buf->lookAhead() == "\x00")
-        {
-            $buf->skip();
+        if ($buffer->lookAhead() == "\x00") {
+            $buffer->skip();
+
             return;
         }
 
         // Get the values
-        while ($buf->getLength() > 4)
-        {
-            foreach ($varnames as $varname)
-            {
-                $result->addSub($type, $varname, $buf->readString());
+        while ($buffer->getLength() > 4) {
+            foreach ($varNames as $varName) {
+                $result->addSub($dataType, utf8_encode($varName), utf8_encode($buffer->readString()));
             }
-            if ($buf->lookAhead() === "\x00")
-            {
-                $buf->skip();
+            if ($buffer->lookAhead() === "\x00") {
+                $buffer->skip();
                 break;
             }
         }
 
-		return;
-	}
+        return;
+    }
 }

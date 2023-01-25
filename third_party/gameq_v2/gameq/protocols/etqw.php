@@ -3,223 +3,232 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Buffer;
+use GameQ\Exception\Protocol as Exception;
+use GameQ\Protocol;
+use GameQ\Result;
+
 /**
- * Enemy Territory: Quake Wars Protocol Class
+ * Enemy Territory Quake Wars Protocol Class
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Etqw extends GameQ_Protocols
+class Etqw extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-	self::PACKET_STATUS => "\xFF\xFFgetInfoEx\x00\x00\x00\x00",
-	//self::PACKET_STATUS => "\xFF\xFFgetInfo\x00\x00\x00\x00\x00",
-	);
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_status",
-	);
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_STATUS => "\xFF\xFFgetInfoEx\x00\x00\x00\x00",
+        //self::PACKET_STATUS => "\xFF\xFFgetInfo\x00\x00\x00\x00\x00",
+    ];
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 27733; // Default port, used if not set when instanced
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        "\xFF\xFFinfoExResponse" => "processStatus",
+    ];
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'etqw';
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'etqw';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'etqw';
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'etqw';
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "Enemy Territory: Quake Wars";
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Enemy Territory Quake Wars";
 
-	/*
-	 * Internal methods
-	*/
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'gametype'   => 'campaign',
+            'hostname'   => 'name',
+            'mapname'    => 'map',
+            'maxplayers' => 'maxPlayers',
+            'mod'        => 'gamename',
+            'numplayers' => 'numplayers',
+            'password'   => 'privateClients',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+            'score' => 'score',
+            'time'  => 'time',
+        ],
+    ];
 
-	protected function preProcess_status($packets)
-	{
-		// Should only be one packet
-		if (count($packets) > 1)
-		{
-			throw new GameQ_ProtocolsException('Enemy Territor: Quake Wars status has more than 1 packet');
-		}
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function processResponse()
+    {
+        // In case it comes back as multiple packets (it shouldn't)
+        $buffer = new Buffer(implode('', $this->packets_response));
 
-		// Make buffer so we can check this out
-		$buf = new GameQ_Buffer($packets[0]);
+        // Figure out what packet response this is for
+        $response_type = $buffer->readString();
 
-		// Grab the header
-		$header = $buf->readString();
+        // Figure out which packet response this is
+        if (!array_key_exists($response_type, $this->responses)) {
+            throw new Exception(__METHOD__ . " response type '{$response_type}' is not valid");
+        }
 
-		// Now lets verify the header
-		if(!strstr($header, 'infoExResponse'))
-		{
-			throw new GameQ_ProtocolsException('Unable to match Enemy Territor: Quake Wars response header. Header: '. $header);
-			return FALSE;
-		}
+        // Offload the call
+        $results = call_user_func_array([$this, $this->responses[$response_type]], [$buffer]);
 
-		// Return the data with the header stripped, ready to go.
-		return $buf->getBuffer();
-	}
+        return $results;
+    }
 
-	/**
-	 * Process the server status
-	 *
-	 * @throws GameQ_ProtocolsException
-	 */
-	protected function process_status()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_STATUS))
-		{
-			return array();
-		}
+    /*
+     * Internal methods
+     */
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+    /**
+     * Handle processing the status response
+     *
+     * @param Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processStatus(Buffer $buffer)
+    {
+        // Set the result to a new result instance
+        $result = new Result();
 
-		// Lets pre process and make sure these things are in the proper order by id
-		$data = $this->preProcess_status($this->packets_response[self::PACKET_STATUS]);
+        // Defaults
+        $result->add('dedicated', 1);
 
-		// Make buffer
-		$buf = new GameQ_Buffer($data);
+        // Now burn the challenge, version and size
+        $buffer->skip(16);
 
-		// Now burn the challenge, version and size
-		$buf->skip(16);
+        // Key / value pairs
+        while ($buffer->getLength()) {
+            $var = str_replace('si_', '', $buffer->readString());
+            $val = $buffer->readString();
+            if (empty($var) && empty($val)) {
+                break;
+            }
+            // Add the server prop
+            $result->add($var, $val);
+        }
+        // Now let's do the basic player info
+        $this->parsePlayers($buffer, $result);
 
-		// Key / value pairs
-		while ($buf->getLength())
-		{
-			$var = str_replace('si_', '', $buf->readString());
-			$val = $buf->readString();
+        // Now grab the rest of the server info
+        $result->add('osmask', $buffer->readInt32());
+        $result->add('ranked', $buffer->readInt8());
+        $result->add('timeleft', $buffer->readInt32());
+        $result->add('gamestate', $buffer->readInt8());
+        $result->add('servertype', $buffer->readInt8());
 
-			if (empty($var) && empty($val))
-			{
-				break;
-			}
+        // 0: regular server
+        if ($result->get('servertype') == 0) {
+            $result->add('interested_clients', $buffer->readInt8());
+        } else {
+            // 1: tv server
+            $result->add('connected_clients', $buffer->readInt32());
+            $result->add('max_clients', $buffer->readInt32());
+        }
 
-			// Add the server prop
-			$result->add($var, $val);
-		}
+        // Now let's parse the extended player info
+        $this->parsePlayersExtra($buffer, $result);
 
-		// Now let's do the basic player info
-		$this->parsePlayers($buf, $result);
+        unset($buffer);
 
-		// Now grab the rest of the server info
-		$result->add('osmask',     $buf->readInt32());
-		$result->add('ranked',     $buf->readInt8());
-		$result->add('timeleft',   $buf->readInt32());
-		$result->add('gamestate',  $buf->readInt8());
-		$result->add('servertype', $buf->readInt8());
+        return $result->fetch();
+    }
 
-		// 0: regular server
-		if ($result->get('servertype') == 0)
-		{
-			$result->add('interested_clients', $buf->readInt8());
-		}
-		// 1: tv server
-		else
-		{
-			$result->add('connected_clients', $buf->readInt32());
-			$result->add('max_clients',       $buf->readInt32());
-		}
+    /**
+     * Parse players out of the status ex response
+     *
+     * @param Buffer $buffer
+     * @param Result $result
+     */
+    protected function parsePlayers(Buffer &$buffer, Result &$result)
+    {
+        // By default there are 0 players
+        $players = 0;
 
-		// Now let's parse the extended player info
-		$this->parsePlayersExtra($buf, $result);
+        // Iterate over the players until we run out
+        while (($id = $buffer->readInt8()) != 32) {
+            $result->addPlayer('id', $id);
+            $result->addPlayer('ping', $buffer->readInt16());
+            $result->addPlayer('name', $buffer->readString());
+            $result->addPlayer('clantag_pos', $buffer->readInt8());
+            $result->addPlayer('clantag', $buffer->readString());
+            $result->addPlayer('bot', $buffer->readInt8());
+            $players++;
+        }
 
-		// Free some memory
-		unset($sections, $buf, $data);
+        // Let's add in the current players as a result
+        $result->add('numplayers', $players);
 
-		// Return the result
-		return $result->fetch();
-	}
+        // Free some memory
+        unset($id);
+    }
 
-	/**
-	 * Parse the players and add them to the return.
-	 *
-	 * @param GameQ_Buffer $buf
-	 * @param GameQ_Result $result
-	 */
-	protected function parsePlayers(GameQ_Buffer &$buf, GameQ_Result &$result)
-	{
-		$players = 0;
+    /**
+     * Handle parsing extra player data
+     *
+     * @param Buffer $buffer
+     * @param Result $result
+     */
+    protected function parsePlayersExtra(Buffer &$buffer, Result &$result)
+    {
+        // Iterate over the extra player info
+        while (($id = $buffer->readInt8()) != 32) {
+            $result->addPlayer('total_xp', $buffer->readFloat32());
+            $result->addPlayer('teamname', $buffer->readString());
+            $result->addPlayer('total_kills', $buffer->readInt32());
+            $result->addPlayer('total_deaths', $buffer->readInt32());
+        }
 
-		while (($id = $buf->readInt8()) != 32)
-		{
-			$result->addPlayer('id',           $id);
-			$result->addPlayer('ping',         $buf->readInt16());
-			$result->addPlayer('name',         $buf->readString());
-			$result->addPlayer('clantag_pos',  $buf->readInt8());
-			$result->addPlayer('clantag',      $buf->readString());
-			$result->addPlayer('bot',          $buf->readInt8());
+        // @todo: Add team stuff
 
-			$players++;
-		}
-
-		// Let's add in the current players as a result
-		$result->add('numplayers', $players);
-
-		// Free some memory
-		unset($id);
-	}
-
-	/**
-	 * Parse the players extra info and add them to the return.
-	 *
-	 * @param GameQ_Buffer $buf
-	 * @param GameQ_Result $result
-	 */
-	protected function parsePlayersExtra(GameQ_Buffer &$buf, GameQ_Result &$result)
-	{
-		while (($id = $buf->readInt8()) != 32)
-		{
-			$result->addPlayer('total_xp',     $buf->readFloat32());
-			$result->addPlayer('teamname',     $buf->readString());
-			$result->addPlayer('total_kills',  $buf->readInt32());
-			$result->addPlayer('total_deaths', $buf->readInt32());
-		}
-
-		// @todo: Add team stuff
-
-		// Free some memory
-		unset($id);
-	}
+        // Free some memory
+        unset($id);
+    }
 }

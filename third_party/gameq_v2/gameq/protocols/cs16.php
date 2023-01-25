@@ -16,34 +16,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
 /**
- * Counter-Strike 1.6 Protocol Class
+ * Class Cs16
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Cs16 extends GameQ_Protocols_Source
+class Cs16 extends Source
 {
-	protected $name = "cs16";
-	protected $name_long = "Counter-Strike 1.6";
 
-	/**
-	 * We have to overload this function to cheat the rules processing because of some wierdness, old ass game!
-	 *
-	 * @see GameQ_Protocols_Source::preProcess_rules()
-	 */
-	protected function preProcess_rules($packets)
-	{
-		$engine_orig = $this->source_engine;
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'cs16';
 
-		// Override the engine type for rules, not sure why its like that
-		$this->source_engine = self::GOLDSOURCE_ENGINE;
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Counter-Strike 1.6";
 
-		// Now process the rules
-		$ret = parent::preProcess_rules($packets);
+    /**
+     * In the case of cs 1.6 we offload split packets here because the split packet response for rules is in
+     * the old gold source format
+     *
+     * @param       $packet_id
+     * @param array $packets
+     *
+     * @return string
+     * @throws \GameQ\Exception\Protocol
+     */
+    protected function processPackets($packet_id, array $packets = [])
+    {
 
-		// Reset the engine type
-		$this->source_engine = $engine_orig;
+        // The response is gold source if the packets are split
+        $this->source_engine = self::GOLDSOURCE_ENGINE;
 
-		return $ret;
-	}
+        // Offload to the parent
+        $packs = parent::processPackets($packet_id, $packets);
+
+        // Reset the engine
+        $this->source_engine = self::SOURCE_ENGINE;
+
+        // Return the result
+        return $packs;
+    }
 }

@@ -3,40 +3,65 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+
 /**
- * Http Protocol Class
+ * Class Http
  *
- * Used for making actual http requests to servers for information
+ * Generic HTTP protocol class.  Useful for making http based requests
  *
- * @author Austin Bischoff <austin@codebeard.com>
+ * @package GameQ\Protocols
+ * @author  Austin Bischoff <austin@codebeard.com>
  */
-abstract class GameQ_Protocols_Http extends GameQ_Protocols
+abstract class Http extends Protocol
 {
     /**
-     * Set the transport to use TCP
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'http';
+
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'http';
+
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "Generic HTTP protocol";
+
+    /**
+     * Http protocol is TCP
      *
      * @var string
      */
     protected $transport = self::TRANSPORT_TCP;
 
     /**
-     * Default port for this server type
+     * The client join link
      *
-     * @var int
+     * @type string
      */
-    protected $port = 80; // Default port, used if not set when instanced
-
+    protected $join_link = null;
 }

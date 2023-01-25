@@ -3,237 +3,277 @@
  * This file is part of GameQ.
  *
  * GameQ is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
  *
  * GameQ is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+namespace GameQ\Protocols;
+
+use GameQ\Protocol;
+use GameQ\Buffer;
+use GameQ\Result;
+use GameQ\Server;
+use GameQ\Exception\Protocol as Exception;
+
 /**
- * San Andreas Multiplayer Protocol Class
+ * San Andreas Multiplayer Protocol Class (samp)
  *
- * This class holds the query info and processing for SAMP
+ * Note:
+ * Player information will not be returned if player count is over 256
  *
  * @author Austin Bischoff <austin@codebeard.com>
  */
-class GameQ_Protocols_Samp extends GameQ_Protocols
+class Samp extends Protocol
 {
-	/**
-	 * Array of packets we want to look up.
-	 * Each key should correspond to a defined method in this or a parent class
-	 *
-	 * @var array
-	 */
-	protected $packets = array(
-		self::PACKET_STATUS => "SAMP%s%si",
-		self::PACKET_PLAYERS => "SAMP%s%sd",
-		self::PACKET_RULES => "SAMP%s%sr",
-	);
 
-	/**
-	 * Methods to be run when processing the response(s)
-	 *
-	 * @var array
-	 */
-	protected $process_methods = array(
-		"process_status",
-		"process_players",
-		"process_rules",
-	);
+    /**
+     * Array of packets we want to look up.
+     * Each key should correspond to a defined method in this or a parent class
+     *
+     * @type array
+     */
+    protected $packets = [
+        self::PACKET_STATUS  => "SAMP%si",
+        self::PACKET_PLAYERS => "SAMP%sd",
+        self::PACKET_RULES   => "SAMP%sr",
+    ];
 
-	/**
-	 * Default port for this server type
-	 *
-	 * @var int
-	 */
-	protected $port = 7777; // Default port, used if not set when instanced
+    /**
+     * Use the response flag to figure out what method to run
+     *
+     * @type array
+     */
+    protected $responses = [
+        "\x69" => "processStatus", // i
+        "\x64" => "processPlayers", // d
+        "\x72" => "processRules", // r
+    ];
 
-	/**
-	 * The protocol being used
-	 *
-	 * @var string
-	 */
-	protected $protocol = 'samp';
+    /**
+     * The query protocol used to make the call
+     *
+     * @type string
+     */
+    protected $protocol = 'samp';
 
-	/**
-	 * String name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name = 'samp';
+    /**
+     * String name of this protocol class
+     *
+     * @type string
+     */
+    protected $name = 'samp';
 
-	/**
-	 * Longer string name of this protocol class
-	 *
-	 * @var string
-	 */
-	protected $name_long = "San Andreas Multiplayer";
+    /**
+     * Longer string name of this protocol class
+     *
+     * @type string
+     */
+    protected $name_long = "San Andreas Multiplayer";
+
+    /**
+     * Holds the calculated server code that is passed when querying for information
+     *
+     * @type string
+     */
+    protected $server_code = null;
+
+    /**
+     * The client join link
+     *
+     * @type string
+     */
+    protected $join_link = "samp://%s:%d/";
+
+    /**
+     * Normalize settings for this protocol
+     *
+     * @type array
+     */
+    protected $normalize = [
+        // General
+        'general' => [
+            // target       => source
+            'dedicated'  => 'dedicated',
+            'hostname'   => ['hostname', 'servername'],
+            'mapname'    => 'mapname',
+            'maxplayers' => 'max_players',
+            'numplayers' => 'num_players',
+            'password'   => 'password',
+        ],
+        // Individual
+        'player'  => [
+            'name'  => 'name',
+            'score' => 'score',
+            'ping'  => 'ping',
+        ],
+    ];
+
+    /**
+     * Handle some work before sending the packets out to the server
+     *
+     * @param \GameQ\Server $server
+     */
+    public function beforeSend(Server $server)
+    {
+
+        // Build the server code
+        $this->server_code = implode('', array_map('chr', explode('.', $server->ip()))) .
+            pack("S", $server->portClient());
+
+        // Loop over the packets and update them
+        foreach ($this->packets as $packetType => $packet) {
+            // Fill out the packet with the server info
+            $this->packets[$packetType] = sprintf($packet, $this->server_code);
+        }
+    }
+
+    /**
+     * Process the response
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    public function processResponse()
+    {
+
+        // Results that will be returned
+        $results = [];
+
+        // Get the length of the server code so we can figure out how much to read later
+        $serverCodeLength = strlen($this->server_code);
+
+        // We need to pre-sort these for split packets so we can do extra work where needed
+        foreach ($this->packets_response as $response) {
+            // Make new buffer
+            $buffer = new Buffer($response);
+
+            // Check the header, should be SAMP
+            if (($header = $buffer->read(4)) !== 'SAMP') {
+                throw new Exception(__METHOD__ . " header response '{$header}' is not valid");
+            }
+
+            // Check to make sure the server response code matches what we sent
+            if ($buffer->read($serverCodeLength) !== $this->server_code) {
+                throw new Exception(__METHOD__ . " code check failed.");
+            }
+
+            // Figure out what packet response this is for
+            $response_type = $buffer->read(1);
+
+            // Figure out which packet response this is
+            if (!array_key_exists($response_type, $this->responses)) {
+                throw new Exception(__METHOD__ . " response type '{$response_type}' is not valid");
+            }
+
+            // Now we need to call the proper method
+            $results = array_merge(
+                $results,
+                call_user_func_array([$this, $this->responses[$response_type]], [$buffer])
+            );
+
+            unset($buffer);
+        }
+
+        return $results;
+    }
 
     /*
      * Internal methods
      */
 
-	/**
-	 * We need to modify the packets before they are sent for this protocol
-	 *
-	 * @see GameQ_Protocols_Core::beforeSend()
-	 */
-	public function beforeSend()
-	{
-		// We need to repack the IP address of the server
-		$address = implode('', array_map('chr', explode('.', $this->ip)));
-
-		// Repack the server port
-		$port = pack ("S", $this->port);
-
-		// Let's loop the packets and set the proper pieces
-		foreach($this->packets AS $packet_type => $packet)
-		{
-			// Fill out the packet with the server info
-			$this->packets[$packet_type] = sprintf($packet, $address, $port);
-		}
-
-		// Free up some memory
-		unset($address, $port);
-
-		return TRUE;
-	}
-
-    protected function preProcess($packets)
+    /**
+     * Handles processing the server status data
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     * @throws \GameQ\Exception\Protocol
+     */
+    protected function processStatus(Buffer $buffer)
     {
-    	// Make buffer so we can check this out
-    	$buf = new GameQ_Buffer(implode('', $packets));
 
-    	// Grab the header
-    	$header = $buf->read(11);
+        // Set the result to a new result instance
+        $result = new Result();
 
-    	// Now lets verify the header
-    	if(substr($header, 0, 4) != "SAMP")
-    	{
-    		throw new GameQ_ProtocolsException('Unable to match SAMP response header. Header: '. $header);
-    		return FALSE;
-    	}
+        // Always dedicated
+        $result->add('dedicated', 1);
 
-    	// Return the data with the header stripped, ready to go.
-    	return $buf->getBuffer();
+        // Pull out the server information
+        $result->add('password', $buffer->readInt8());
+        $result->add('num_players', $buffer->readInt16());
+        $result->add('max_players', $buffer->readInt16());
+
+        // These are read differently for these last 3
+        $result->add('servername', utf8_encode($buffer->read($buffer->readInt32())));
+        $result->add('gametype', $buffer->read($buffer->readInt32()));
+        $result->add('language', $buffer->read($buffer->readInt32()));
+
+        unset($buffer);
+
+        return $result->fetch();
     }
 
     /**
-     * Process the server status
+     * Handles processing the player data into a usable format
      *
-     * @throws GameQ_ProtocolsException
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
      */
-	protected function process_status()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_STATUS))
-		{
-			return array();
-		}
+    protected function processPlayers(Buffer $buffer)
+    {
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+        // Set the result to a new result instance
+        $result = new Result();
 
-		// Always dedicated
-		$result->add('dedicated', TRUE);
+        // Number of players
+        $result->add('num_players', $buffer->readInt16());
 
-    	// Preprocess and make buffer
-    	$buf = new GameQ_Buffer($this->preProcess($this->packets_response[self::PACKET_STATUS]));
+        // Run until we run out of buffer
+        while ($buffer->getLength()) {
+            $result->addPlayer('id', $buffer->readInt8());
+            $result->addPlayer('name', utf8_encode($buffer->readPascalString()));
+            $result->addPlayer('score', $buffer->readInt32());
+            $result->addPlayer('ping', $buffer->readInt32());
+        }
 
-    	// Pull out the server information
-    	$result->add('password', (bool) $buf->readInt8());
-    	$result->add('num_players', $buf->readInt16());
-    	$result->add('max_players', $buf->readInt16());
+        unset($buffer);
 
-    	// These are read differently for these last 3
-    	$result->add('servername', $buf->read($buf->readInt32()));
-    	$result->add('gametype', $buf->read($buf->readInt32()));
-    	$result->add('map', $buf->read($buf->readInt32()));
-
-		// Free some memory
-    	unset($buf);
-
-    	// Return the result
         return $result->fetch();
-	}
+    }
 
-	/**
-	 * Process server rules
-	 */
-	protected function process_rules()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_RULES))
-		{
-			return array();
-		}
+    /**
+     * Handles processing the rules data into a usable format
+     *
+     * @param \GameQ\Buffer $buffer
+     *
+     * @return array
+     */
+    protected function processRules(Buffer $buffer)
+    {
 
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
+        // Set the result to a new result instance
+        $result = new Result();
 
-		// Preprocess and make buffer
-		$buf = new GameQ_Buffer($this->preProcess($this->packets_response[self::PACKET_RULES]));
+        // Number of rules
+        $result->add('num_rules', $buffer->readInt16());
 
-		// Number of rules
-		$result->add('num_rules', $buf->readInt16());
+        // Run until we run out of buffer
+        while ($buffer->getLength()) {
+            $result->add($buffer->readPascalString(), $buffer->readPascalString());
+        }
 
-		// Run until we run out of buffer
-		while ($buf->getLength())
-		{
-			$result->add($buf->readPascalString(), $buf->readPascalString());
-		}
+        unset($buffer);
 
-		// Free some memory
-		unset($buf);
-
-		// Return the result
-		return $result->fetch();
-	}
-
-	/**
-	 * Process the players
-	 *
-	 * NOTE: There is a restriction on the SAMP server side that if there are too many players
-	 * the player return will be empty.  Nothing can really be done about this unless you bug
-	 * the game developers to fix it.
-	 */
-	protected function process_players()
-	{
-		// Make sure we have a valid response
-		if(!$this->hasValidResponse(self::PACKET_PLAYERS))
-		{
-			return array();
-		}
-
-		// Set the result to a new result instance
-		$result = new GameQ_Result();
-
-		// Preprocess and make buffer
-		$buf = new GameQ_Buffer($this->preProcess($this->packets_response[self::PACKET_PLAYERS]));
-
-		// Number of players
-		$result->add('num_players', $buf->readInt16());
-
-		// Run until we run out of buffer
-		while ($buf->getLength())
-		{
-			$result->addPlayer('id', $buf->readInt8());
-            $result->addPlayer('name', $buf->readPascalString());
-            $result->addPlayer('score', $buf->readInt32());
-			$result->addPlayer('ping', $buf->readInt32());
-		}
-
-		// Free some memory
-		unset($buf);
-
-		// Return the result
-		return $result->fetch();
-	}
+        return $result->fetch();
+    }
 }
