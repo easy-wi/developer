@@ -423,7 +423,7 @@ class masterServer {
  
                     $fixedId = workAroundForValveChaos($row['appID'], $row['shorten'], false);
  
-                    $this->shellScript .= ($fixedId == 90) ?  ' +app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : '+app_update ' . $fixedId;
+                    $this->shellScript .= ($fixedId == 90) ?  ' +app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : ' +app_update ' . $fixedId;
                     $this->shellScript .= ' validate  +quit > ' . $updateLog . "\n";
 
                 } else if ($row['steamgame'] == 'N' and ($row['shorten'] == 'mc')) {
