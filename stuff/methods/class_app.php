@@ -1694,7 +1694,7 @@ class AppServer {
 
         $script .= '${IONICE}find -L ' . $serverDir . ' -type l -delete' . "\n";
 
-        $dirChmod = 700
+        $dirChmod = 700;
         $fileChmod = 600;
 	    
         if ($this->appServerDetails['protectionModeStarted'] == 'Y') {
