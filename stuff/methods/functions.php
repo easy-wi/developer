@@ -1024,7 +1024,7 @@ if (!function_exists('passwordgenerate')) {
 
         global $sql;
 
-        $typeQuery = ($type != null) ? " AND `type`='${type}'" : '';
+        $typeQuery = ($type != null) ? " AND `type`='{$type}'" : '';
 
         $query = $sql->prepare("SELECT `type`,`affectedID` FROM `jobs` WHERE (`status` IS NULL OR `status`=1) AND `action`=? $typeQuery GROUP BY `type`,`affectedID`");
         $query->execute(array($action));
@@ -1108,18 +1108,18 @@ if (!function_exists('passwordgenerate')) {
                     $i++;
                 }
 
-                $send = "POST /${file} HTTP/1.1\r\n";
+                $send = "POST /{$file} HTTP/1.1\r\n";
 
             } else {
 
                 if (strlen($file) == 0) {
                     $file = '/';
                 }
-                $send = "GET ${file} HTTP/1.1\r\n";
+                $send = "GET {$file} HTTP/1.1\r\n";
             }
 
-            $send .= "Host: ${domain}\r\n";
-            $send .= "User-Agent: ${useragent}\r\n";
+            $send .= "Host: {$domain}\r\n";
+            $send .= "User-Agent: {$useragent}\r\n";
             $send .= "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n";
 
             if (isset($postData) and is_array($postParams) and count($postParams) > 0) {
@@ -1427,7 +1427,7 @@ if (!function_exists('passwordgenerate')) {
                     $query3->execute(array($row['customID'], $id));
                     $value = ($id == 0) ? '' : $query3->fetchColumn();
 
-                   $return[] = array('customID' => $row['customID'], 'menu' => $text, 'name' => $row['name'], 'length' => $row['length'], 'type' => $row['type'], 'input' => "<input id='inputCustom-${row['customID']}' type='${type}' name='${row['name']}' maxlength='${row['length']}' value='${value}' >", 'value' => $value);
+                   $return[] = array('customID' => $row['customID'], 'menu' => $text, 'name' => $row['name'], 'length' => $row['length'], 'type' => $row['type'], 'input' => "<input id='inputCustom-{$row['customID']}' type='{$type}' name='{$row['name']}' maxlength='{$row['length']}' value='{$value}' >", 'value' => $value);
                 }
 
             } else if ($action == 'save') {
