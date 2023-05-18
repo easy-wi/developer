@@ -76,7 +76,7 @@ if (isset($debug) and $debug == 1) {
     $dbConnect['debug'] = 0;
 }
 try {
-    $dbConnect['connect']="${dbConnect['type']}:host=${dbConnect['host']};dbname=${dbConnect['db']};charset=${dbConnect['charset']}";
+    $dbConnect['connect']="{$dbConnect['type']}:host={$dbConnect['host']};dbname={$dbConnect['db']};charset={$dbConnect['charset']}";
     $sql = new \PDO($dbConnect['connect'], $dbConnect['user'], $dbConnect['pwd']);
 
     if ($dbConnect['debug'] == 1) {
