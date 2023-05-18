@@ -85,7 +85,7 @@ class TS3 {
                 $metaData = stream_get_meta_data($this->socket);
             }
             if ($this->debug == true) {
-                print "Raw query return: {$response}\r\n";
+                print "Raw query return: ${response}\r\n";
             }
 
             @list($databody, $errorcode) = explode('error id=', str_replace(array("\r", "\n"), '', $response));

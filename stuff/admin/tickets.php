@@ -520,8 +520,8 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
     $temp=' AND (';
     $i = 0;
     foreach ($selected as $get) {
-        if ($i==0) $temp.="`state`='{$get}'";
-        else $temp.=" OR `state`='{$get}'";
+        if ($i==0) $temp.="`state`='${get}'";
+        else $temp.=" OR `state`='${get}'";
         if (!in_array($get,$selected)) $selected[] = $get;
         $i++;
     }

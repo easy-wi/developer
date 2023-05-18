@@ -95,14 +95,14 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
                 $query->execute(array($ui->active('active', 'post'), $ui->w('item',1, 'post'), $ui->w('type',1, 'post'), $ui->id('length',10, 'post'), $name));
 
                 $id = $sql->lastInsertId();
-                $loguseraction = "%add% Custom Column {$name}";
+                $loguseraction = "%add% Custom Column ${name}";
 
             } else if ($ui->id('id', 10, 'get') and $ui->st('d', 'get') == 'md') {
 
                 $query = $sql->prepare("UPDATE `custom_columns_settings` SET `active`=?,`item`=?,`type`=?,`length`=?,`name`=? WHERE `customID`=? LIMIT 1");
                 $query->execute(array($ui->active('active', 'post'), $ui->w('item',1, 'post'), $ui->w('type',1, 'post'), $ui->id('length',10, 'post'), $name, $id));
 
-                $loguseraction = "%mod% Custom Column {$name}";
+                $loguseraction = "%mod% Custom Column ${name}";
 
             } else {
                 $template_file = 'admin_404.tpl';
@@ -228,7 +228,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='cc' AND `transID`=?");
             $query->execute(array($id));
 
-            $loguseraction = "%del% Custom Column {$name}";
+            $loguseraction = "%del% Custom Column ${name}";
             $insertlog->execute();
 
             $template_file = $spracheResponse->table_del;

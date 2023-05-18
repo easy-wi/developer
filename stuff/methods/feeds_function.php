@@ -85,7 +85,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                         $theCount = 0;
 
                         if (isset($printToConsole)) {
-                            print "Getting Feed Updates for Steamgame with AppID {$lookUpAppID}\r\n";
+                            print "Getting Feed Updates for Steamgame with AppID ${lookUpAppID}\r\n";
                         }
 
                         foreach ($json->appnews->newsitems as $item) {
@@ -108,7 +108,7 @@ if (isset($newsInclude) and $newsInclude == true) {
 
                     } else {
                         if (isset($printToConsole)) {
-                            print "Failed getting Feed Updates for Steamgame with AppID {$lookUpAppID}\r\n";
+                            print "Failed getting Feed Updates for Steamgame with AppID ${lookUpAppID}\r\n";
                         }
                     }
                 }
@@ -203,7 +203,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                 if ($twitter == 'Y') {
 
                     if (isset($printToConsole)) {
-                        print "Getting Updates for Twitter Feed {$row2['loginName']}\r\n";
+                        print "Getting Updates for Twitter Feed ${row2['loginName']}\r\n";
                     }
                     /**
                      * Twitter API 1.1
@@ -248,7 +248,7 @@ if (isset($newsInclude) and $newsInclude == true) {
                 } else {
 
                     if (isset($printToConsole)) {
-                        print "Getting Feed Updates for Feed {$row2['feedUrl']}\r\n";
+                        print "Getting Feed Updates for Feed ${row2['feedUrl']}\r\n";
                     }
 
                     $port = 80;

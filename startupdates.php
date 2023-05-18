@@ -80,7 +80,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
     $currentHour = date('G');
     $currentMinute = (int) date('i');
 
-    echo "Start Syncs and Updates. Hour is {$currentHour} and minute is {$currentMinute}\r\n";
+    echo "Start Syncs and Updates. Hour is ${currentHour} and minute is ${currentMinute}\r\n";
 
     if ($allRoots) {
 
@@ -98,13 +98,13 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
         $query = $sql->prepare("UPDATE `settings` SET `lastUpdateRun`=? WHERE `resellerid`=0 LIMIT 1");
         $query->execute(array($currentMinute));
 
-        echo "Checking for servers to be updated and or synced at hour {$currentHour} and between minutes {$lastUpdateRun} and {$currentMinute}\r\n";
+        echo "Checking for servers to be updated and or synced at hour ${currentHour} and between minutes ${lastUpdateRun} and ${currentMinute}\r\n";
 
         // avoid less/more OR equal in SQL. We want only less/more to eliminate the OR comparison
         $currentMinute++;
         $lastUpdateRun--;
 
-        echo "Altered minutes for running a more efficient query will be  updateMinute > {$lastUpdateRun} AND updateMinute < {$currentMinute}\r\n";
+        echo "Altered minutes for running a more efficient query will be  updateMinute > ${lastUpdateRun} AND updateMinute < ${currentMinute}\r\n";
 
         $query = $sql->prepare("SELECT `id`,`updates` FROM `rserverdata` WHERE (`alreadyStartedAt` IS NULL OR `alreadyStartedAt`!=?) AND `updateMinute`>? AND `updateMinute`<? AND  `active`!='N'");
         $query->execute(array($currentHour, $lastUpdateRun, $currentMinute));

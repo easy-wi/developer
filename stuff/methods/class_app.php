@@ -438,7 +438,7 @@ class AppServer {
         $this->shellScripts['user'] .=  'CONFIGUSERID=' . $this->appMasterServerDetails['configUserID'] . "\n";
         $this->shellScripts['user'] .=  'USER=`ls -la /var/run/screen | grep S-' . $userName . ' | head -n 1 | awk \'{print $3}\'`' . "\n";
         $this->shellScripts['user'] .=  'if [ "$USER" != "" -a $USER -eq $USER 2> /dev/null ]; then CONFIGUSERID=$USER; fi' . "\n";
-        $this->shellScripts['user'] .=  'USERID=`getent passwd | cut -f3 -d: | sort -un | awk \'BEGIN { id=\'{$CONFIGUSERID}\' } $1 == id { id++ } $1 > id { print id; exit }\'`' . "\n";
+        $this->shellScripts['user'] .=  'USERID=`getent passwd | cut -f3 -d: | sort -un | awk \'BEGIN { id=\'${CONFIGUSERID}\' } $1 == id { id++ } $1 > id { print id; exit }\'`' . "\n";
         $this->shellScripts['user'] .=  'if [ "`ls -la /var/run/screen | awk \'{print $3}\' | grep $USERID`" == "" -a "`grep \"x:$USERID:\" /etc/passwd`" == "" ]; then' . "\n";
         $this->shellScripts['user'] .=  'if [ "`lsb_release -i 2> /dev/null | grep \'Distributor\' | awk \'{print tolower($3)}\'`" == "centos" ] || [ "`grep \'\bNAME=\b\' /etc/os-release | sed -n \'s/^.*NAME=//p\' | sed -e \'s/\(.*\)/\L\1/\'`" == "slackware" ]; then' . "\n";
         $this->shellScripts['user'] .=  'sudo /usr/sbin/useradd -m -p `perl -e \'print crypt("\'' . $password . '\'","Sa")\'` -d ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $userNameHome) . ' -g ' . $this->appMasterServerDetails['ssh2User'] . ' -s /bin/false $USERID ' . $userName . ' 2>/dev/null' . "\n";
@@ -481,7 +481,7 @@ class AppServer {
     private function linuxDeleteUserGenerate ($userName) {
 	$this->shellScripts['user'] .= 'sudo pkill -u ' . $userName . "\n";
         $this->shellScripts['user'] .=  'if [ "`id ' . $userName . ' 2>/dev/null`" != "" ]; then' . "\n";
-        $this->shellScripts['user'] .=  '{$IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ' . $userName . ' > /dev/null 2>&1 ' . "\n";
+        $this->shellScripts['user'] .=  '${IONICE}nice -n +19 sudo /usr/sbin/userdel -fr ' . $userName . ' > /dev/null 2>&1 ' . "\n";
         $this->addLogline('user.log', 'User ' . $userName . ' deleted');
         $this->shellScripts['user'] .=  'fi' . "\n";
 
@@ -605,7 +605,7 @@ class AppServer {
         // Migrate old folder structure with ip_port as sub folder to structure without
         $script .= 'if [ -d ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . ' ]; then' . "\n";
         $script .= 'mv ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '/* ' . $absolutePath . "\n";
-        $script .= '{$IONICE}nice -n +19 rm -rf ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
+        $script .= '${IONICE}nice -n +19 rm -rf ' . $absolutePath . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . "\n";
         $script .= 'fi' . "\n";
 
         foreach ($templates as $template) {
@@ -622,11 +622,11 @@ class AppServer {
             }
 
             $script .= 'FILEFOUND=(`find -mindepth 1 -type f \( -iname "*.' . implode('" -or -iname "*.', $copyFileExtensions) . '" \) | grep -v -E "$PATTERN"`)' . "\n";
-            $script .= 'for FILTEREDFILES in {$FILEFOUND[@]}; do' . "\n";
+            $script .= 'for FILTEREDFILES in ${FILEFOUND[@]}; do' . "\n";
             $script .= 'FOLDERNAME=`dirname "$FILTEREDFILES"`' . "\n";
             $script .= 'if ([[ `find "$FOLDERNAME" -maxdepth 0 -type d` ]] && [[ ! -d "' . $absoluteTargetTemplatePath . '$FOLDERNAME" ]]); then mkdir -p "' . $absoluteTargetTemplatePath . '$FOLDERNAME"; fi' . "\n";
             $script .= 'if [ -f "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" ]; then find "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" -maxdepth 1 -type l -delete; fi' . "\n";
-            $script .= 'if [ ! -f "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" ]; then {$IONICE}cp "' . $absoluteSourceTemplatePath . '$FILTEREDFILES" "' . $absoluteTargetTemplatePath . '$FILTEREDFILES"; fi' . "\n";
+            $script .= 'if [ ! -f "' . $absoluteTargetTemplatePath . '$FILTEREDFILES" ]; then ${IONICE}cp "' . $absoluteSourceTemplatePath . '$FILTEREDFILES" "' . $absoluteTargetTemplatePath . '$FILTEREDFILES"; fi' . "\n";
             $script .= 'done' . "\n";
             $script .= 'cp -sr ' . $absoluteSourceTemplatePath . '* ' . $absoluteTargetTemplatePath . ' > /dev/null 2>&1' . "\n";
 
@@ -640,15 +640,15 @@ class AppServer {
             $dirChmod = 750;
             $fileChmod = 640;
         }
-        $script .= '{$IONICE}nice -n +19 find ' . $absolutePath . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+        $script .= '${IONICE}nice -n +19 find ' . $absolutePath . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
 
         if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
-            $script .= '{$IONICE}nice -n +19 find ' . $absolutePath . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         } else {
-            $script .= '{$IONICE}nice -n +19 find ' . $absolutePath . ' -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $absolutePath . ' -type f -print0 | xargs -0 chmod ' . $fileChmod . "\n";
         }
 
-        $script .= '{$IONICE}nice -n +19 find -L ' . $absolutePath . ' -type l -delete' . "\n";
+        $script .= '${IONICE}nice -n +19 find -L ' . $absolutePath . ' -type l -delete' . "\n";
 
         if ($standalone and isset($scriptName)) {
             $this->addLinuxScript($scriptName, $script);
@@ -722,7 +722,7 @@ class AppServer {
 
             $script .= 'TARGET_FOLDER="`dirname ' . $spareFile . '`"' . "\n";
 
-            $script .= 'if [ ! -d "../sparefiles/{$TARGET_FOLDER}" ]; then mkdir -p "../sparefiles/{$TARGET_FOLDER}"' . "\n";
+            $script .= 'if [ ! -d "../sparefiles/${TARGET_FOLDER}" ]; then mkdir -p "../sparefiles/${TARGET_FOLDER}"' . "\n";
 
             $script .= 'cp "' . $spareFile . '" "../sparefiles/' . $spareFile . '"' . "\n";
         }
@@ -756,7 +756,7 @@ class AppServer {
 
             $script .= $this->backUpSpareFiles($template, $spareFiles);
 
-            $script .= 'if [ -d "' . $template . '" ]; then {$IONICE}rm -rf "' . $template . '"; fi' . "\n";
+            $script .= 'if [ -d "' . $template . '" ]; then ${IONICE}rm -rf "' . $template . '"; fi' . "\n";
             $this->addLogline('app_server.log', 'Server template ' . $serverDir . $template . ' owned by user ' . $this->appServerDetails['userNameExecute'] . ' deleted');
 
             $script .= $this->restoreSpareFiles($template);
@@ -1628,7 +1628,7 @@ class AppServer {
         $startCommand = str_replace($replaceSettings['placeholder'], $replaceSettings['replacePlaceholderWith'], $startCommand);
 
         foreach (customColumns('G', $this->appServerDetails['id']) as $customColumn) {
-            $startCommand = str_replace("%{$customColumn['name']}%", $customColumn['value'], $startCommand);
+            $startCommand = str_replace("%${customColumn['name']}%", $customColumn['value'], $startCommand);
         }
 
         //If a template is set up for both OS, we might need to alter the start of the command
@@ -1692,7 +1692,7 @@ class AppServer {
 
         $script .= $this->linuxStopApp(false, $scriptName);
 
-        $script .= '{$IONICE}find -L ' . $serverDir . ' -type l -delete' . "\n";
+        $script .= '${IONICE}find -L ' . $serverDir . ' -type l -delete' . "\n";
 
         $dirChmod = 700;
         $fileChmod = 600;
@@ -1701,34 +1701,34 @@ class AppServer {
 	
 	    $dirChmod = 750;
 	    $fileChmod = 640;
-            $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
 
             if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
-                $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $dirChmod . "\n";
             } else {
-                $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
             }
 
         } else {
 
-            $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type d -print0 | xargs -0 chmod ' . $dirChmod . "\n";
 
             if ($this->appServerDetails['template']['copyStartBinary'] == 'Y' and strlen($this->appServerDetails['template']['gameBinary']) > 0) {
-                $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $dirChmod . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "' . $this->appServerDetails['template']['gameBinary'] . '" -print0 | xargs -0 chmod ' . $dirChmod . "\n";
             } else {
-                $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
+                $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -type f ! -name "ShooterGameServer" -print0 | xargs -0 chmod ' . $fileChmod . "\n";
             }
 
             // Remove files where they do not belong
-            $script .= '{$IONICE}nice -n +19 find ' . $serverDir . ' -mindepth 1 -maxdepth 1 \( -type f -or -type l \) -delete' . "\n";
-            $script .= '{$IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 \( -type f -or -type l \)';
+            $script .= '${IONICE}nice -n +19 find ' . $serverDir . ' -mindepth 1 -maxdepth 1 \( -type f -or -type l \) -delete' . "\n";
+            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 \( -type f -or -type l \)';
             $script .= ' ! -name ".profile" ! -name ".bashrc" ! -name ".bash_logout" -delete' . "\n";
 
             // Remove folders where they do not belong
-            $script .= '{$IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 -type d';
+            $script .= '${IONICE}nice -n +19 find ' . $this->removeSlashes($this->appServerDetails['homeDir'] . '/' . $this->appServerDetails['userName']) . ' -mindepth 1 -maxdepth 1 -type d';
             $script .= ' ! -name ".steam" ! -name "pserver" ! -name "backup" ! -name "fdl_data" ! -name "server" -print0 | xargs -0 rm -rf' . "\n";
 
-            $script .= '{$IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name "*.bz2" -delete' . "\n";
+            $script .= '${IONICE}nice -n +19 find /home/' . $this->appMasterServerDetails['ssh2User'] . '/fdl_data -type f -user `whoami` ! -name "*.bz2" -delete' . "\n";
         }
 
         if ($this->appServerDetails['template']['steamgame'] == 'S') {
@@ -1753,7 +1753,7 @@ class AppServer {
 
             $script .= '`)' . "\n";
 
-            $script .= 'for BADFILE in {$FILESFOUND[@]}; do' . "\n";
+            $script .= 'for BADFILE in ${FILESFOUND[@]}; do' . "\n";
             $script .= 'chmod 666 $BADFILE > /dev/null 2>&1' . "\n";
             $script .= 'rm -f $BADFILE > /dev/null 2>&1' . "\n";
             $script .= 'if [ -f $BADFILE ]; then exit 0; fi' . "\n";
@@ -1761,19 +1761,19 @@ class AppServer {
         }
 
         if ($this->appMasterServerDetails['configBadTime'] > 0 and count($this->appMasterServerDetails['configBadFiles']) > 0) {
-            $script .= '{$IONICE}find ' . $serverDir . ' -type f \( -iname "*.' . implode('" -or -iname "*.', $this->appMasterServerDetails['configBadFiles']) . '" \) -mtime +' . $this->appMasterServerDetails['configBadTime'] . ' -delete' . "\n";
+            $script .= '${IONICE}find ' . $serverDir . ' -type f \( -iname "*.' . implode('" -or -iname "*.', $this->appMasterServerDetails['configBadFiles']) . '" \) -mtime +' . $this->appMasterServerDetails['configBadTime'] . ' -delete' . "\n";
         }
 
         if ($this->appMasterServerDetails['configDemoTime'] > 0) {
-            $script .= '{$IONICE}find ' . $serverTemplateDir . ' -type f -name "*.dem"  -mtime +' . $this->appMasterServerDetails['configDemoTime'] . ' -delete' . "\n";
+            $script .= '${IONICE}find ' . $serverTemplateDir . ' -type f -name "*.dem"  -mtime +' . $this->appMasterServerDetails['configDemoTime'] . ' -delete' . "\n";
         }
 
         if ($this->appMasterServerDetails['configLogTime'] > 0) {
-            $script .= '{$IONICE}find ' . $serverTemplateDir . ' -type f -name "*.log"  -mtime +' . $this->appMasterServerDetails['configLogTime'] . ' -delete' . "\n";
+            $script .= '${IONICE}find ' . $serverTemplateDir . ' -type f -name "*.log"  -mtime +' . $this->appMasterServerDetails['configLogTime'] . ' -delete' . "\n";
         }
 
         if ($this->appMasterServerDetails['configZtmpTime'] > 0) {
-            $script .= '{$IONICE}find ' . $serverTemplateDir . ' -type f -name "*.ztmp"  -mtime +' . $this->appMasterServerDetails['configZtmpTime'] . ' -delete' . "\n";
+            $script .= '${IONICE}find ' . $serverTemplateDir . ' -type f -name "*.ztmp"  -mtime +' . $this->appMasterServerDetails['configZtmpTime'] . ' -delete' . "\n";
         }
 
         $script .= 'cd ' . $this->appServerDetails['absolutePath'] . "\n";
@@ -1868,14 +1868,14 @@ class AppServer {
 
         $uploadScript = 'if [[ `which zip` ]]; then' . "\n";
         $uploadScript .= 'if [ "$KEEP" == "" ]; then KEEP="-m"; fi' . "\n";
-        $uploadScript .= '{$IONICE}nice -n +19 zip -q $KEEP $DEMOPATH/$DEMO.zip $DEMOPATH/$DEMO' . "\n";
+        $uploadScript .= '${IONICE}nice -n +19 zip -q $KEEP $DEMOPATH/$DEMO.zip $DEMOPATH/$DEMO' . "\n";
         $uploadScript .= 'ZIP="zip"' . "\n";
         $uploadScript .= 'elif [[ `which bzip2` ]]; then' . "\n";
-        $uploadScript .= '{$IONICE}nice -n +19 bzip2 -s -q -9 $KEEP $DEMOPATH/$DEMO' . "\n";
+        $uploadScript .= '${IONICE}nice -n +19 bzip2 -s -q -9 $KEEP $DEMOPATH/$DEMO' . "\n";
         $uploadScript .= 'ZIP="bz2"' . "\n";
         $uploadScript .= 'fi' . "\n";
         $uploadScript .= 'DEMOANDPATH="$DEMOPATH/$DEMO.$ZIP"' . "\n";
-        $uploadScript .= 'wput -q --limit-rate=1024K --remove-source-files --tries 3 --basename="{$DEMOPATH/\/\///}" "{$DEMOANDPATH/\/\///}" "' . $this->appServerDetails['app']['uploadDir'] . '"' . "\n";
+        $uploadScript .= 'wput -q --limit-rate=1024K --remove-source-files --tries 3 --basename="${DEMOPATH/\/\///}" "${DEMOANDPATH/\/\///}" "' . $this->appServerDetails['app']['uploadDir'] . '"' . "\n";
 
         // 2 and 3 are one time run (manuel mode)
         if (in_array($this->appServerDetails['app']['upload'], array(2, 3))) {
@@ -2213,7 +2213,7 @@ class AppServer {
 
         $script = $this->shellScriptHeader;
         $script .= 'rm -f ' . $scriptName . "\n";
-        $script .= 'if [ -d "' . $serverDir . '" ]; then {$IONICE}rm -rf "' . $serverDir . '"; fi' . "\n";
+        $script .= 'if [ -d "' . $serverDir . '" ]; then ${IONICE}rm -rf "' . $serverDir . '"; fi' . "\n";
 
         $script .= $this->linuxAddApp(array($targetTemplate), false);
 
@@ -2304,7 +2304,7 @@ class AppServer {
                 $script .= 'find usermaps/ mods/ -type l -or -type f \( -iname "*.ff" -or -iname "*.iwd" \) 2> /dev/null | grep -v "' . $excludePattern . '" | while read FOUNDFILE; do' . "\n";
             }
 
-            $script .= 'FILTEREDFILE={$FOUNDFILE//\.\//}' . "\n";
+            $script .= 'FILTEREDFILE=${FOUNDFILE//\.\//}' . "\n";
             $script .= 'if [[ ! `grep "$FILTEREDFILE" "' . $fdlFileList . '"` ]]; then' . "\n";
             $script .= 'FILENAME=`basename $FILTEREDFILE`' . "\n";
 
@@ -2315,14 +2315,14 @@ class AppServer {
                 $script .= 'FDLDATADIR=' . $fdlMasterFolder . '`dirname "$FILTEREDFILE"`' . "\n";
                 $script .= 'if [ ! -d $FDLDATADIR ]; then mkdir -p $FDLDATADIR; chmod 770 $FDLDATADIR; fi' . "\n";
                 $script .= 'FDLDATAFILENAME="$FDLDATADIR/$FILENAME"' . "\n";
-                $script .= 'CHECKSUMNEW=`{$IONICE}nice -n +19 md5sum "$ABSOLUTEFILTEREDFILE" | awk \'{print $1}\'`' . "\n";
+                $script .= 'CHECKSUMNEW=`${IONICE}nice -n +19 md5sum "$ABSOLUTEFILTEREDFILE" | awk \'{print $1}\'`' . "\n";
                 $script .= 'if [ -f "$FDLDATAFILENAME.stat" -a -f "$FDLDATAFILENAME.bz2" ]; then' . "\n";
                 $script .= 'CHECKSUMOLD=`head -n 1 "$FDLDATAFILENAME.stat" 2> /dev/null`' . "\n";
                 $script .= 'else' . "\n";
                 $script .= 'CHECKSUMOLD=""' . "\n";
                 $script .= 'fi' . "\n";
                 $script .= 'if [ "$CHECKSUMOLD" != "$CHECKSUMNEW" ]; then' . "\n";
-                $script .= '{$IONICE}nice -n +19 bzip2 -k -s -q -9 -f -c "$ABSOLUTEFILTEREDFILE" > "$FDLDATAFILENAME.bz2"' . "\n";
+                $script .= '${IONICE}nice -n +19 bzip2 -k -s -q -9 -f -c "$ABSOLUTEFILTEREDFILE" > "$FDLDATAFILENAME.bz2"' . "\n";
                 $script .= 'echo $CHECKSUMNEW > "$FDLDATAFILENAME.stat"' . "\n";
                 $script .= 'chmod 660 "$FDLDATAFILENAME.stat" "$FDLDATAFILENAME.bz2"' . "\n";
                 $script .= 'fi' . "\n";
@@ -2394,7 +2394,7 @@ class AppServer {
         $script .= 'if [[ `lsof -f -- "' . $backUpFile . '" 2>/dev/null` ]]; then continue; fi' . "\n";
         $script .= 'if [ -f "' . $backUpFile . '" ]; then rm -f "' . $backUpFile . '"; fi' . "\n";
         $script .= 'cd "' . $serverDir . '/$GAMETEMPLATE"' . "\n";
-        $script .= '{$IONICE}nice -n +19 tar cfj "' . $backUpFile . '" .' . "\n";
+        $script .= '${IONICE}nice -n +19 tar cfj "' . $backUpFile . '" .' . "\n";
 
         if (strlen($ftpUploadString) > 0) {
             $script .= 'wput -q --limit-rate=4098 --basename="' . $backupDir . '" "' . $backUpFile . '" "' . $ftpUploadString . '"' . "\n";
@@ -2445,7 +2445,7 @@ class AppServer {
 
         $script .= 'if [ ! -d "' . $this->removeSlashes($serverDir . '/' . $template) . '" ]; then mkdir -p "' . $this->removeSlashes($serverDir . '/' . $template) . '"; fi' . "\n";
 
-        $script .= '{$IONICE}nice -n +19 tar -C "' . $this->removeSlashes($serverDir . '/' . $template) . '" -xjf "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
+        $script .= '${IONICE}nice -n +19 tar -C "' . $this->removeSlashes($serverDir . '/' . $template) . '" -xjf "' . $this->removeSlashes($backupDir . '/' . $this->appServerDetails['serverIP'] . '_' . $this->appServerDetails['port'] . '-' . $template . '.tar.bz2"') . "\n";
         $script .= 'wget -q --no-check-certificate -O - ' . webhostdomain($resellerLockupID) . '/get_password.php?w=rb\\&shorten=`id -un`\\id=' . $this->appServerDetails['port'] . '\\&ip=' . $this->appServerDetails['serverIP'] . "\n";
 
         $this->addLinuxScript($scriptName, $script);
@@ -2515,7 +2515,7 @@ class AppServer {
 
         // While we keep on counting up, the mail is send only once to prevent spam
         if (($this->appMasterServerDetails['notified'] + 1) == $rSA['down_checks']) {
-            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`={$$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
+            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
             $query->execute();
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if ($row['mail_serverdown'] == 'Y') {

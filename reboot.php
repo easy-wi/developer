@@ -347,7 +347,7 @@ if (true or !isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_ar
                         }
 
                     } else if ($autorestart == 'Y') {
-                        print "<br><br>Do not restart TS3/TSDNS {$queryip} since failcount is only {$ts3masternotified} and {$down_checks} is required for restart \r\n";
+                        print "<br><br>Do not restart TS3/TSDNS ${queryip} since failcount is only ${ts3masternotified} and ${down_checks} is required for restart \r\n";
                     }
                 }
 

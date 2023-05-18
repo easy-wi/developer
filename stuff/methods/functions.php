@@ -1684,7 +1684,7 @@ $(function() {
      * @return string
      */
     function getLoginHeader($valueOfTitle){
-        return preg_replace('/(.+)[\s](.+)/i', '<b>{$1}</b> $2', $valueOfTitle, -1, $count);
+        return preg_replace('/(.+)[\s](.+)/i', '<b>${1}</b> $2', $valueOfTitle, -1, $count);
     }
 
     function parseHeaders($data)

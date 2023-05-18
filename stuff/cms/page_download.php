@@ -63,7 +63,7 @@ if (isset($downloadID)) {
 
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
 
-        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and ($row['external'] == 'Y' or ($row['external'] == 'N' and file_exists(EASYWIDIR . "/downloads/{$row['fileID']}.{$row['fileExtension']}")))) {
+        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and ($row['external'] == 'Y' or ($row['external'] == 'N' and file_exists(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}")))) {
 
             if (isset($startDownload)) {
 
@@ -74,26 +74,26 @@ if (isset($downloadID)) {
 
                 if ($row['external'] == 'N') {
 
-                    $fileWithPath = EASYWIDIR . "/downloads/{$row['fileID']}.{$row['fileExtension']}";
+                    $fileWithPath = EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}";
                     $finfo = finfo_open(FILEINFO_MIME_TYPE);
                     $contentType = finfo_file($finfo, $fileWithPath);
 
                     finfo_close($finfo);
-                    header("Content-Type: {$contentType}");
+                    header("Content-Type: ${contentType}");
 
                     if (strpos(strtolower($ui->server['SERVER_SOFTWARE']),'nginx') !== false) {
 
                         header('Content-Length: ' . (string) (filesize($fileWithPath)));
                         header('Cache-Control: public, must-revalidate');
                         header('Pragma: no-cache');
-                        header("Content-Disposition: attachment; filename=\"{$row['fileName']}.{$row['fileExtension']}\"");
+                        header("Content-Disposition: attachment; filename=\"${row['fileName']}.${row['fileExtension']}\"");
                         header('Content-Transfer-Encoding: binary');
-                        header("X-Accel-Redirect: /downloads/{$row['fileID']}.{$row['fileExtension']}");
+                        header("X-Accel-Redirect: /downloads/${row['fileID']}.${row['fileExtension']}");
 
                     } else {
-                        header("Content-Disposition: attachment; filename=\"{$row['fileName']}.{$row['fileExtension']}\"");
+                        header("Content-Disposition: attachment; filename=\"${row['fileName']}.${row['fileExtension']}\"");
                         set_time_limit(0);
-                        $fp = @fopen(EASYWIDIR . "/downloads/{$row['fileID']}.{$row['fileExtension']}","rb");
+                        $fp = @fopen(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}","rb");
                         while(!feof($fp)) {
                             print(@fread($fp, 1024));
                             ob_flush();
@@ -101,7 +101,7 @@ if (isset($downloadID)) {
                         }
                     }
                 } else {
-                    header("location: {$row['externalURL']}");
+                    header("location: ${row['externalURL']}");
                 }
 
                 die;
@@ -123,7 +123,7 @@ if (isset($downloadID)) {
     $query = $sql->prepare("SELECT d.*,t.`text` FROM `page_downloads` d LEFT JOIN `translations` t ON t.`type`='pd' AND t.`transID`=d.`fileID` AND t.`lang`=? ORDER BY d.`order`,d.`fileID`");
     $query->execute(array($user_language));
     while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and ($row['external'] == 'Y' or ($row['external'] == 'N' and file_exists(EASYWIDIR . "/downloads/{$row['fileID']}.{$row['fileExtension']}")))) {
+        if (($row['show'] == 'E' or ($row['show'] == 'A' and isset($admin_id)) or ($row['show'] == 'R' and (isset($user_id) or isset($admin_id)))) and ($row['external'] == 'Y' or ($row['external'] == 'N' and file_exists(EASYWIDIR . "/downloads/${row['fileID']}.${row['fileExtension']}")))) {
             $table[] = array('id' => $row['fileID'], 'description' => $row['description'], 'link' => (isset($seo) and $seo == 'Y') ? $page_data->pages['downloads']['link'].'get/'.$row['fileID'].'/' : $page_data->pages['downloads']['link'].'&amp;action=get&amp;id='.$row['fileID'], 'text' => $row['text']);
         }
     }
