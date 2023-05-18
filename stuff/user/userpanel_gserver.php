@@ -480,21 +480,21 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
             $oldServerTemplate = $row['servertemplate'];
 
-            $fps = ($row['userfps'] == 'Y' and $ui->id("fps_${switchID}", 4, 'post')) ? $ui->id("fps_${switchID}", 4, 'post') : $row['fps'];
-            $tic = ($row['usertick'] == 'Y' and $ui->id("tic_${switchID}", 4, 'post')) ? $ui->id("tic_${switchID}", 4, 'post') : $row['tic'];
-            $map = ($row['usermap'] == 'Y' and $ui->mapname("map_${switchID}", 'post')) ? $ui->mapname("map_${switchID}", 'post') : $row['map'];
-            $mapGroup = ($row['usermap'] == 'Y' and $ui->mapname("mapGroup_${switchID}", 'post')) ? $ui->mapname("mapGroup_${switchID}", 'post') : $row['mapGroup'];
-            $uploaddir = ($row['user_uploaddir'] == 'Y' and $row['upload'] > 1 and $row['upload'] < 4) ? $ui->url("uploaddir_${switchID}", 'post') : $row['decypteduploaddir'];
-            $serverTemplate = ($ui->id("servertemplate_${switchID}", 1, 'post')) ? $ui->id("servertemplate_${switchID}", 1, 'post') : 1;
-            $modcmd = $ui->escaped("mod_${switchID}", 'post');
-            $workShop = ($ui->active("workShop_${switchID}", 'post')) ? $ui->active("workShop_${switchID}", 'post') : 'Y';
-            $workshopCollection = $ui->id("workshopCollection_${switchID}", 10, 'post') ? $ui->id("workshopCollection_${switchID}", 10, 'post') : null;
-            $webapiAuthkey = $ui->w("webapiAuthkey_${switchID}", 32, 'post');
-            $steamServerToken = $ui->w("steamServerToken_${switchID}", 32, 'post');
+            $fps = ($row['userfps'] == 'Y' and $ui->id("fps_{$switchID}", 4, 'post')) ? $ui->id("fps_{$switchID}", 4, 'post') : $row['fps'];
+            $tic = ($row['usertick'] == 'Y' and $ui->id("tic_{$switchID}", 4, 'post')) ? $ui->id("tic_{$switchID}", 4, 'post') : $row['tic'];
+            $map = ($row['usermap'] == 'Y' and $ui->mapname("map_{$switchID}", 'post')) ? $ui->mapname("map_{$switchID}", 'post') : $row['map'];
+            $mapGroup = ($row['usermap'] == 'Y' and $ui->mapname("mapGroup_{$switchID}", 'post')) ? $ui->mapname("mapGroup_{$switchID}", 'post') : $row['mapGroup'];
+            $uploaddir = ($row['user_uploaddir'] == 'Y' and $row['upload'] > 1 and $row['upload'] < 4) ? $ui->url("uploaddir_{$switchID}", 'post') : $row['decypteduploaddir'];
+            $serverTemplate = ($ui->id("servertemplate_{$switchID}", 1, 'post')) ? $ui->id("servertemplate_{$switchID}", 1, 'post') : 1;
+            $modcmd = $ui->escaped("mod_{$switchID}", 'post');
+            $workShop = ($ui->active("workShop_{$switchID}", 'post')) ? $ui->active("workShop_{$switchID}", 'post') : 'Y';
+            $workshopCollection = $ui->id("workshopCollection_{$switchID}", 10, 'post') ? $ui->id("workshopCollection_{$switchID}", 10, 'post') : null;
+            $webapiAuthkey = $ui->w("webapiAuthkey_{$switchID}", 32, 'post');
+            $steamServerToken = $ui->w("steamServerToken_{$switchID}", 32, 'post');
 
-            if ($ui->id("anticheat_${switchID}", 1, 'post')) {
+            if ($ui->id("anticheat_{$switchID}", 1, 'post')) {
 
-                $anticheat=($ui->id("anticheat_${switchID}", 1, 'post')>0) ? $ui->id("anticheat_${switchID}", 1, 'post') : 1;
+                $anticheat=($ui->id("anticheat_{$switchID}", 1, 'post')>0) ? $ui->id("anticheat_{$switchID}", 1, 'post') : 1;
 
                 if ($row['shorten'] == 'cstrike' or $row['shorten'] == 'czero') {
 

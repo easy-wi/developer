@@ -735,7 +735,7 @@ class LightOpenID
                     $this->aliases[$alias] = 'http://axschema.org/' . $field;
                     if (empty($counts[$alias])) $counts[$alias] = 0;
                     $counts[$alias] += 1;
-                    ${$type}[] = $alias;
+                    {$$type}[] = $alias;
                 }
             }
             foreach ($this->aliases as $alias => $ns) {
