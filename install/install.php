@@ -85,13 +85,13 @@ if ($currentStep == 0) {
 <div class='col-md-9'>
 <form class='form-horizontal' role='form' action='install.php' method='get'>
   <input type='hidden' name='step' value='0' />
-  <input type='hidden' name='language' value='${menuLanguage}' />
+  <input type='hidden' name='language' value='{$menuLanguage}' />
   <div class='form-group'>
     <label for='inputVersion' class='col-sm-2 control-label'>Version</label>
     <div class='col-sm-10'>
       <select class='form-control' name='developer' onChange='this.form.submit()'>
         <option value='N'>Stable</option>
-        <option value='Y' ${selectedDeveloper}>Developer</option>
+        <option value='Y' {$selectedDeveloper}>Developer</option>
       </select>
     </div>
   </div>
@@ -100,10 +100,10 @@ if ($currentStep == 0) {
 ";
 
     if (!$json or ($developer == 'N' and !is_object($json)) or ($developer == 'Y' and !is_array($json)) or ($developer == 'N' and property_exists($json, 'tag_name') and $easyWiVersion == $json->tag_name) or ($developer == 'Y' and is_object($json[0]) and property_exists($json[0], 'name') and $easyWiVersion == $json[0]->name )) {
-        $displayToUser .= "<div class='col-md-12'><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div></div>";
+        $displayToUser .= "<div class='col-md-12'><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div></div>";
     } else {
         $apiVersion = ($developer == 'Y') ? $json[0]->name : $json->tag_name;
-        $displayToUser .= "<div class='col-md-12'><div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://github.com/easy-wi/developer/releases/tag/{$apiVersion}' target='_blank'>{$apiVersion}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div></div>";
+        $displayToUser .= "<div class='col-md-12'><div class='alert alert-warning'><i class='fa fa-exclamation-triangle'></i> {$languageObject->welcome_old_version}<a href='https://github.com/easy-wi/developer/releases/tag/{$apiVersion}' target='_blank'>{$apiVersion}</a></div><div class='jumbotron'><h2>{$languageObject->welcome_header}</h2><p>{$languageObject->welcome_text}</p><div class='pager'><a href='?step=1{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div></div></div>";
     }
 
 } else {
@@ -171,19 +171,19 @@ if ($currentStep == 0) {
     );
 
     foreach ($folderArray as $folder) {
-        if (is_dir(EASYWIDIR . "/${folder}")) {
-            $handle = @fopen(EASYWIDIR . "/${folder}test.txt", "w+");
+        if (is_dir(EASYWIDIR . "/{$folder}")) {
+            $handle = @fopen(EASYWIDIR . "/{$folder}test.txt", "w+");
 
             if ($handle) {
                 fclose($handle);
-                unlink(EASYWIDIR . "/${folder}test.txt");
-                $systemCheckOk['folders'][] = "{$languageObject->system_check_ok_folder_1} ${folder} {$languageObject->system_check_ok_folder_2}";
+                unlink(EASYWIDIR . "/{$folder}test.txt");
+                $systemCheckOk['folders'][] = "{$languageObject->system_check_ok_folder_1} {$folder} {$languageObject->system_check_ok_folder_2}";
 
             } else {
-                $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_writable_1} ${folder} {$languageObject->system_check_error_folder_not_writable_2}";
+                $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_writable_1} {$folder} {$languageObject->system_check_error_folder_not_writable_2}";
             }
         } else {
-            $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_exist_1} ${folder} {$languageObject->system_check_error_folder_not_exist_2}";
+            $systemCheckError['folders'][] = "{$languageObject->system_check_error_folder_not_exist_1} {$folder} {$languageObject->system_check_error_folder_not_exist_2}";
         }
     }
 
@@ -192,31 +192,31 @@ if ($currentStep == 0) {
 if ($currentStep == 1) {
 
     if (count($systemCheckError) == 0) {
-        $displayToUser .= "<div class='pager'><a href='?step=2${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+        $displayToUser .= "<div class='pager'><a href='?step=2{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
     }
 
     foreach ($systemCheckError as $v) {
         if (is_array($v)) {
             foreach ($v as $v2) {
-                $displayToUser .= "<div class='alert alert-danger'>${v2}</div>";
+                $displayToUser .= "<div class='alert alert-danger'>{$v2}</div>";
             }
         } else {
-            $displayToUser .= "<div class='alert alert-danger'>${v}</div>";
+            $displayToUser .= "<div class='alert alert-danger'>{$v}</div>";
         }
     }
 
     foreach ($systemCheckOk as $v) {
         if (is_array($v)) {
             foreach ($v as $v2) {
-                $displayToUser .= "<div class='alert alert-success'>${v2}</div>";
+                $displayToUser .= "<div class='alert alert-success'>{$v2}</div>";
             }
         } else {
-            $displayToUser .= "<div class='alert alert-success'>${v}</div>";
+            $displayToUser .= "<div class='alert alert-success'>{$v}</div>";
         }
     }
 
     if (count($systemCheckError) == 0) {
-        $displayToUser .= "<div class='pager'><a href='?step=2${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+        $displayToUser .= "<div class='pager'><a href='?step=2{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
     }
 
 }
@@ -237,35 +237,35 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
     }
 
     $displayToUser = "
-<form class='form-horizontal' role='form' action='install.php?step=3${languageGetParameter}' method='post'>
+<form class='form-horizontal' role='form' action='install.php?step=3{$languageGetParameter}' method='post'>
   <div class='form-group'>
     <label for='inputHost' class='col-sm-2 control-label'>{$languageObject->host}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputHost' name='host' value='${host}' required>
+      <input type='text' class='form-control' id='inputHost' name='host' value='{$host}' required>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputDB' class='col-sm-2 control-label'>{$languageObject->db}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputDB' name='db' value='${db}' required>
+      <input type='text' class='form-control' id='inputDB' name='db' value='{$db}' required>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputUser' class='col-sm-2 control-label'>{$languageObject->user}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputUser' name='user' value='${user}' required>
+      <input type='text' class='form-control' id='inputUser' name='user' value='{$user}' required>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputPassword' class='col-sm-2 control-label'>{$languageObject->passw_1}</label>
     <div class='col-sm-10'>
-      <input type='password' class='form-control' id='inputPassword' name='pwd' value='${pwd}' required>
+      <input type='password' class='form-control' id='inputPassword' name='pwd' value='{$pwd}' required>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputAESKey' class='col-sm-2 control-label'>{$languageObject->aeskey}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputAESKey' name='aeskey' value='${aeskey}' required>
+      <input type='text' class='form-control' id='inputAESKey' name='aeskey' value='{$aeskey}' required>
       <p class='help-block'>{$languageObject->aeskey2}</p>
       <p class='help-block'>{$languageObject->aeskey3}</p>
     </div>
@@ -284,7 +284,7 @@ if ($currentStep == 2 and count($systemCheckError) == 0) {
 
         try {
 
-            $sql = new PDO("mysql:host=${_POST['host']};dbname=${_POST['db']}", $_POST['user'], $_POST['pwd'], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+            $sql = new PDO("mysql:host={$_POST['host']};dbname={$_POST['db']}", $_POST['user'], $_POST['pwd'], array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
             $sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $configFp = @fopen(EASYWIDIR . '/stuff/config.php', "w+");
@@ -356,7 +356,7 @@ $aeskey = "' . addcslashes($_POST['aeskey'], "'") . '";
 
                 try {
 
-                    $sql = new PDO("mysql:host=${host};dbname=${db}", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+                    $sql = new PDO("mysql:host={$host};dbname={$db}", $user, $pwd, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
                     $sql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
                 } catch(PDOException $error) {
@@ -383,7 +383,7 @@ $aeskey = "' . addcslashes($_POST['aeskey'], "'") . '";
 if ($currentStep == 3 and count($systemCheckError) == 0) {
     $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_files_created}</div>";
     $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_connect}</div>";
-    $displayToUser .= "<div class='pager'><a href='?step=4${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+    $displayToUser .= "<div class='pager'><a href='?step=4{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 }
 
 if ($currentStep == 4 and count($systemCheckError) == 0) {
@@ -412,7 +412,7 @@ if ($currentStep == 4 and count($systemCheckError) == 0) {
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_tables_create}</div>";
         }
 
-        $displayToUser .= "<div class='pager'><a href='?step=5${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+        $displayToUser .= "<div class='pager'><a href='?step=5{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
     } catch(PDOException $error) {
         $systemCheckError['tables_add.php'] = "<div class='alert alert-danger'>{$error->getMessage()}" . implode("\r\n", $tables->getExecutedSql()) . "</div>";
@@ -451,7 +451,7 @@ if ($currentStep == 5 and count($systemCheckError) == 0) {
                 $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_db_tables_check}</div>";
             }
 
-            $displayToUser .= "<div class='pager'><a href='?step=6${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+            $displayToUser .= "<div class='pager'><a href='?step=6{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
         }
 
@@ -501,17 +501,17 @@ if ($currentStep == 6 and count($systemCheckError) == 0) {
     if (!isset($_POST['passw1']) or strlen($displayToUser) > 0) {
 
         $displayToUser .= "
-<form class='form-horizontal' role='form' action='install.php?step=6${languageGetParameter}' method='post'>
+<form class='form-horizontal' role='form' action='install.php?step=6{$languageGetParameter}' method='post'>
   <div class='form-group'>
     <label for='inputUser' class='col-sm-2 control-label'>{$languageObject->user2}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputUser' name='cname' value='${cname}' required>
+      <input type='text' class='form-control' id='inputUser' name='cname' value='{$cname}' required>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputEmail' class='col-sm-2 control-label'>{$languageObject->email}</label>
     <div class='col-sm-10'>
-      <input type='email' class='form-control' id='inputEmail' name='email' value='${email}' required>
+      <input type='email' class='form-control' id='inputEmail' name='email' value='{$email}' required>
     </div>
   </div>
   <div class='form-group'>
@@ -552,7 +552,7 @@ if ($currentStep == 6 and count($systemCheckError) == 0) {
             $query->execute();
 
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_admin_user}</div>";
-            $displayToUser .= "<div class='pager'><a href='?step=7${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+            $displayToUser .= "<div class='pager'><a href='?step=7{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
         } catch(PDOException $error) {
 
@@ -634,7 +634,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
         $dirs = scandir(EASYWIDIR . "/languages/default/");
         foreach ($dirs as $row) {
             if (preg_match("/^[a-z]{2}+$/", $row)) {
-                $languages[] = ($row == $menuLanguage) ? "<option value='${row}' selected='selected'>$row</option>" : "<option value='${row}'>$row</option>";
+                $languages[] = ($row == $menuLanguage) ? "<option value='{$row}' selected='selected'>$row</option>" : "<option value='{$row}'>$row</option>";
              }
         }
     }
@@ -644,11 +644,11 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     if (!isset($_POST['email']) or strlen($displayToUser) > 0) {
 
         $displayToUser .= "
-<form class='form-horizontal' role='form' action='install.php?step=7${languageGetParameter}' method='post'>
+<form class='form-horizontal' role='form' action='install.php?step=7{$languageGetParameter}' method='post'>
   <div class='form-group'>
     <label for='inputInstallUrl' class='col-sm-2 control-label'>{$languageObject->installUrl}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputInstallUrl' name='installUrl' value='${installUrl}' required>
+      <input type='text' class='form-control' id='inputInstallUrl' name='installUrl' value='{$installUrl}' required>
     </div>
   </div>
   <div class='form-group'>
@@ -667,19 +667,19 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
   <div class='form-group'>
     <label for='inputTitle' class='col-sm-2 control-label'>{$languageObject->title}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputTitle' name='title' value='${title}' required>
+      <input type='text' class='form-control' id='inputTitle' name='title' value='{$title}' required>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputLanguage' class='col-sm-2 control-label'>{$languageObject->language}</label>
     <div class='col-sm-10'>
-      <select name='language' class='form-control' id='inputLanguage'>${languages}</select>
+      <select name='language' class='form-control' id='inputLanguage'>{$languages}</select>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputEmail' class='col-sm-2 control-label'>{$languageObject->email}</label>
     <div class='col-sm-10'>
-      <input type='email' class='form-control' id='inputEmail' name='email' value='${email}' required>
+      <input type='email' class='form-control' id='inputEmail' name='email' value='{$email}' required>
       <p class='help-block'>{$languageObject->email2}</p>
     </div>
   </div>
@@ -688,7 +688,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     <div class='col-sm-10'>
       <select name='captcha' class='form-control' id='inputCaptcha'>
       <option value='0'>{$languageObject->no}</option>
-      <option value='1' ${selectedCaptcha}>{$languageObject->yes}</option>
+      <option value='1' {$selectedCaptcha}>{$languageObject->yes}</option>
       </select>
       <p class='help-block'>{$languageObject->captcha_2}</p>
     </div>
@@ -696,14 +696,14 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
   <div class='form-group'>
     <label for='inputFaillogins' class='col-sm-2 control-label'>{$languageObject->faillogins}</label>
     <div class='col-sm-10'>
-      <input type='number' class='form-control' id='inputFaillogins' name='faillogins' value='${faillogins}' required>
+      <input type='number' class='form-control' id='inputFaillogins' name='faillogins' value='{$faillogins}' required>
       <p class='help-block'>{$languageObject->faillogins2}</p>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputBrandname' class='col-sm-2 control-label'>{$languageObject->brandname}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputBrandname' name='brandname' value='${brandname}' required>
+      <input type='text' class='form-control' id='inputBrandname' name='brandname' value='{$brandname}' required>
       <p class='help-block'>{$languageObject->brandname2}</p>
     </div>
   </div>
@@ -712,14 +712,14 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
     <div class='col-sm-10'>
       <select name='prefix1' class='form-control' id='inputPrefix1'>
       <option value='N'>{$languageObject->no}</option>
-      <option value='Y' ${selectedPrefix}>{$languageObject->yes}</option>
+      <option value='Y' {$selectedPrefix}>{$languageObject->yes}</option>
       </select>
     </div>
   </div>
   <div class='form-group'>
     <label for='inputPrefix' class='col-sm-2 control-label'>{$languageObject->prefix3}</label>
     <div class='col-sm-10'>
-      <input type='text' class='form-control' id='inputPrefix' name='prefix2' value='${prefix2}' required>
+      <input type='text' class='form-control' id='inputPrefix' name='prefix2' value='{$prefix2}' required>
       <p class='help-block'>{$languageObject->prefix2}</p>
     </div>
   </div>
@@ -756,7 +756,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             $query = $sql->prepare("INSERT INTO `traffic_settings` (`id`,`type`) VALUES (1,'mysql') ON DUPLICATE KEY UPDATE `type`=`type`");
             $query->execute();
 
-            $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'${easyWiVersion}','','') ON DUPLICATE KEY UPDATE `id`=`id`");
+            $query = $sql->prepare("INSERT INTO `easywi_version` (`id`,`version`,`de`,`en`) VALUES (1,'{$easyWiVersion}','','') ON DUPLICATE KEY UPDATE `id`=`id`");
             $query->execute();
 
             $query = $sql->prepare("INSERT INTO `page_pages` (`id`,`authorid`,`type`) VALUES (1,0,'about') ON DUPLICATE KEY UPDATE `id`=`id`");
@@ -809,7 +809,7 @@ if ($currentStep == 7 and count($systemCheckError) == 0) {
             }
 
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_configuration}</div>";
-            $displayToUser .= "<div class='pager'><a href='?step=8${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+            $displayToUser .= "<div class='pager'><a href='?step=8{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
         } catch(PDOException $error) {
 
@@ -825,7 +825,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
         $displayToUser .= "<div class='alert alert-success'>{$languageObject->games_insert}</div>";
         $displayToUser .= "
-<form class='form-horizontal' role='form' action='install.php?step=8${languageGetParameter}' method='post'>
+<form class='form-horizontal' role='form' action='install.php?step=8{$languageGetParameter}' method='post'>
   <div class='form-group'>
     <div class='col-sm-offset-2 col-sm-10'>
       <button type='submit' name='submit' class='btn btn-primary btn-lg pull-right'>{$languageObject->continue}</button>
@@ -840,7 +840,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
 
             include(EASYWIDIR . '/stuff/data/gameslist.php');
 
-            $displayToUser .= "<div class='pager'><a href='?step=9${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+            $displayToUser .= "<div class='pager'><a href='?step=9{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
             $displayToUser .= "<div class='alert alert-success'>{$languageObject->ok_gameserver_data}</div>";
 
             $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `servertypes` WHERE `shorten`=? AND `resellerid`=0 LIMIT 1");
@@ -866,7 +866,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
                     }
 
                 } else {
-                    $displayToUser .= "<div class='alert alert-danger'>{$languageObject->error_game_insert} " . count($image) . " ${image[':description']}</div>";
+                    $displayToUser .= "<div class='alert alert-danger'>{$languageObject->error_game_insert} " . count($image) . " {$image[':description']}</div>";
                 }
 
             }
@@ -915,7 +915,7 @@ if ($currentStep == 8 and count($systemCheckError) == 0) {
                 }
             }
 
-            $displayToUser .= "<div class='pager'><a href='?step=9${languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
+            $displayToUser .= "<div class='pager'><a href='?step=9{$languageGetParameter}' class='pull-right'><span class='btn btn-primary btn-lg'>{$languageObject->continue}</span></a></div>";
 
         } catch(PDOException $error) {
 
@@ -978,11 +978,11 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
 
     $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_internal} (/etc/crontab)</h4>
 <strong>{$languageObject->cron_internal_text}</strong><br>
-0 */1 * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 300 php ./reboot.php >/dev/null 2>&1<br>
-*/5 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./statuscheck.php >/dev/null 2>&1<br>
-*/1 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./startupdates.php >/dev/null 2>&1<br>
-*/5 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./jobs.php >/dev/null 2>&1<br>
-*/10 * * * * ${displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./cloud.php >/dev/null 2>&1</div>";
+0 */1 * * * {$displayPHPUser} cd " . EASYWIDIR . " && timeout 300 php ./reboot.php >/dev/null 2>&1<br>
+*/5 * * * * {$displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./statuscheck.php >/dev/null 2>&1<br>
+*/1 * * * * {$displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./startupdates.php >/dev/null 2>&1<br>
+*/5 * * * * {$displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./jobs.php >/dev/null 2>&1<br>
+*/10 * * * * {$displayPHPUser} cd " . EASYWIDIR . " && timeout 290 php ./cloud.php >/dev/null 2>&1</div>";
 
     $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_internal} (crontab -e)</h4>
 <strong>{$languageObject->cron_internal_text}</strong><br>
@@ -998,19 +998,19 @@ if ($currentStep == 9 and count($systemCheckError) == 0) {
 
     $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_external} (/etc/crontab)</h4>
 <strong>{$languageObject->cron_external_text}</strong><br>
-0 */1 * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}reboot.php >/dev/null 2>&1<br>
-*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}statuscheck.php >/dev/null 2>&1<br>
-*/1 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}startupdates.php >/dev/null 2>&1<br>
-*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}jobs.php >/dev/null 2>&1<br>
-*/10 * * * * ExternalSSH2User wget -q --no-check-certificate -O - ${pageUrl}cloud.php >/dev/null 2>&1</div>";
+0 */1 * * * ExternalSSH2User wget -q --no-check-certificate -O - {$pageUrl}reboot.php >/dev/null 2>&1<br>
+*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - {$pageUrl}statuscheck.php >/dev/null 2>&1<br>
+*/1 * * * * ExternalSSH2User wget -q --no-check-certificate -O - {$pageUrl}startupdates.php >/dev/null 2>&1<br>
+*/5 * * * * ExternalSSH2User wget -q --no-check-certificate -O - {$pageUrl}jobs.php >/dev/null 2>&1<br>
+*/10 * * * * ExternalSSH2User wget -q --no-check-certificate -O - {$pageUrl}cloud.php >/dev/null 2>&1</div>";
 
     $displayToUser .= "<div class='alert alert-success'><h4>{$languageObject->cron_external} (crontab -e)</h4>
 <strong>{$languageObject->cron_external_text}</strong><br>
-0 */1 * * * wget -q --no-check-certificate -O - ${pageUrl}reboot.php >/dev/null 2>&1<br>
-*/5 * * * * wget -q --no-check-certificate -O - ${pageUrl}statuscheck.php >/dev/null 2>&1<br>
-*/1 * * * * wget -q --no-check-certificate -O - ${pageUrl}startupdates.php >/dev/null 2>&1<br>
-*/5 * * * * wget -q --no-check-certificate -O - ${pageUrl}jobs.php >/dev/null 2>&1<br>
-*/10 * * * * wget -q --no-check-certificate -O - ${pageUrl}cloud.php >/dev/null 2>&1</div>";
+0 */1 * * * wget -q --no-check-certificate -O - {$pageUrl}reboot.php >/dev/null 2>&1<br>
+*/5 * * * * wget -q --no-check-certificate -O - {$pageUrl}statuscheck.php >/dev/null 2>&1<br>
+*/1 * * * * wget -q --no-check-certificate -O - {$pageUrl}startupdates.php >/dev/null 2>&1<br>
+*/5 * * * * wget -q --no-check-certificate -O - {$pageUrl}jobs.php >/dev/null 2>&1<br>
+*/10 * * * * wget -q --no-check-certificate -O - {$pageUrl}cloud.php >/dev/null 2>&1</div>";
 
 }
 
@@ -1018,10 +1018,10 @@ if (strlen($displayToUser) == 0 and count($systemCheckError) > 0) {
     foreach ($systemCheckError as $v) {
         if (is_array($v)) {
             foreach ($v as $v2) {
-                $displayToUser .= "<div class='alert alert-danger'>${v2}</div>";
+                $displayToUser .= "<div class='alert alert-danger'>{$v2}</div>";
             }
         } else {
-            $displayToUser .= "<div class='alert alert-danger'>${v}</div>";
+            $displayToUser .= "<div class='alert alert-danger'>{$v}</div>";
         }
     }
 }
