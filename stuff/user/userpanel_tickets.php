@@ -365,7 +365,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
     foreach ($selected as $get) {
 
-        $temp .= ($i == 0) ? "`state`='${get}'" : " OR `state`='${get}'";
+        $temp .= ($i == 0) ? "`state`='{$get}'" : " OR `state`='{$get}'";
 
         $selected[] = $get;
 

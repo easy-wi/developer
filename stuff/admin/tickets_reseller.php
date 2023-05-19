@@ -235,8 +235,8 @@ if ($ui->st('d', 'get') == 'ad') {
     $temp=' AND (';
     $i = 0;
     foreach ($selected as $get) {
-        if ($i==0) $temp.="`state`='${get}'";
-        else $temp.=" OR `state`='${get}'";
+        if ($i==0) $temp.="`state`='{$get}'";
+        else $temp.=" OR `state`='{$get}'";
         $selected[] = $get;
         $i++;
     }

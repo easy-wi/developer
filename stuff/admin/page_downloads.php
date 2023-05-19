@@ -253,7 +253,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
             $query = $sql->prepare("DELETE FROM `translations` WHERE `type`='pd' AND `transID`=? AND `resellerID`=?");
             $query->execute(array($id, $reseller_id));
 
-            @unlink(EASYWIDIR . "/downloads/${id}/${fileExtension}");
+            @unlink(EASYWIDIR . "/downloads/{$id}/{$fileExtension}");
 
             $template_file = $spracheResponse->table_del;
         } else {

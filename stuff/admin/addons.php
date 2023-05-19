@@ -90,7 +90,7 @@ if ($ui->w('action',4, 'post') and !token(true)) {
     if (isset($addon)) {
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
-        header("Content-Disposition: attachment; filename = ${addon}.xml");
+        header("Content-Disposition: attachment; filename = {$addon}.xml");
         header("Content-Type: text/xml; charset=UTF-8");
         header("Content-Transfer-Encoding: binary");
         $xml->formatOutput = true;
