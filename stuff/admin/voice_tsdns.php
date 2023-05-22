@@ -342,43 +342,43 @@ if ($ui->w('action',4, 'post') and !token(true)) {
         foreach ($dnsList as $dns) {
 
             $lookUp = str_replace('.', '_', $dns);
-            $ex = explode(':', $ui->ipport("${lookUp}-address", 'post'));
+            $ex = explode(':', $ui->ipport("{$lookUp}-address", 'post'));
 
-            if ($ui->active("${lookUp}-import", 'post') == 'Y'  and isset($ex[1]) and port($ex[1])) {
+            if ($ui->active("{$lookUp}-import", 'post') == 'Y'  and isset($ex[1]) and port($ex[1])) {
 
                 $ip = $ex[0];
                 $port = $ex[1];
-                $customer = $ui->id("${lookUp}-customer", 19, 'post');
+                $customer = $ui->id("{$lookUp}-customer", 19, 'post');
 
                 if ($customer == 0 or $customer == false or $customer == null) {
 
                     $usernew = true;
 
-                    if ($ui->username("${lookUp}-username",50, 'post') and $ui->ismail("${lookUp}-email", 'post')) {
+                    if ($ui->username("{$lookUp}-username",50, 'post') and $ui->ismail("{$lookUp}-email", 'post')) {
                         $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? LIMIT 1");
-                        $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
+                        $query->execute(array($ui->username("{$lookUp}-username",50, 'post'), $ui->ismail("{$lookUp}-email", 'post'), $reseller_id));
                         while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                             $usernew = false;
                             $customer = $row['id'];
-                            $cnamenew = $ui->username("${lookUp}-username",50, 'post');
+                            $cnamenew = $ui->username("{$lookUp}-username",50, 'post');
                         }
                         if ($usernew == true) {
 
-                            $newHash = passwordCreate($ui->username("${lookUp}-username",50, 'post'), passwordgenerate(10));
+                            $newHash = passwordCreate($ui->username("{$lookUp}-username",50, 'post'), passwordgenerate(10));
 
                             if (is_array($newHash)) {
                                 $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`salt`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,?,'u',?)");
-                                $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $newHash['hash'], $newHash['salt'], $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
+                                $query->execute(array($ui->username("{$lookUp}-username",50, 'post'), $newHash['hash'], $newHash['salt'], $ui->ismail("{$lookUp}-email", 'post'), $reseller_id));
                             } else {
                                 $query = $sql->prepare("INSERT INTO `userdata` (`cname`,`security`,`mail`,`accounttype`,`resellerid`) VALUES (?,?,?,'u',?)");
-                                $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $newHash, $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
+                                $query->execute(array($ui->username("{$lookUp}-username",50, 'post'), $newHash, $ui->ismail("{$lookUp}-email", 'post'), $reseller_id));
                             }
 
                             $query = $sql->prepare("SELECT `id` FROM `userdata` WHERE `cname`=? AND `mail`=? AND `resellerid`=? ORDER BY `id` DESC LIMIT 1");
-                            $query->execute(array($ui->username("${lookUp}-username",50, 'post'), $ui->ismail("${lookUp}-email", 'post'), $reseller_id));
+                            $query->execute(array($ui->username("{$lookUp}-username",50, 'post'), $ui->ismail("{$lookUp}-email", 'post'), $reseller_id));
                             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                                 $customer = $row['id'];
-                                $cnamenew = $ui->username("${lookUp}-username",50, 'post');
+                                $cnamenew = $ui->username("{$lookUp}-username",50, 'post');
                                 sendmail('emailuseradd', $customer, $cnamenew, $initialpassword);
                             }
                         }

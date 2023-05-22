@@ -110,7 +110,7 @@ if (!function_exists('eacchange')) {
 
                     $mysql_port = (port($mysql_port)) ? $mysql_port : 3306;
 
-                    $eacSql = new PDO("mysql:host=${mysql_server};dbname=${mysql_db};port=${mysql_port}", $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
+                    $eacSql = new PDO("mysql:host={$mysql_server};dbname={$mysql_db};port={$mysql_port}", $mysql_user, $mysql_password, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
 
                     if ($dbConnect['debug'] == 1) {
                         $eacSql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -269,7 +269,7 @@ if (!function_exists('eacchange')) {
         $protocols = array();
 
         // Protocol list code taken from https://github.com/Austinb/GameQ/blob/v2/examples/list.php
-        $protocols_path = GAMEQ_BASE . 'gameq/protocols/';
+        $protocols_path = 'third_party/gameq/GameQ/Protocols';
 
         // Grab the dir with all the classes available
         $dir = dir($protocols_path);

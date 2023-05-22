@@ -925,7 +925,7 @@ class LightOpenID
                         $counts[$alias] = 0;
                     }
                     $counts[$alias] += 1;
-                    ${$type}[] = $alias;
+                    {$$type}[] = $alias;
                 }
             }
             foreach ($this->aliases as $alias => $ns) {

@@ -721,7 +721,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
             } else {
 
-                print "TSDNS ${row['ssh2ip']} is up and running\r\n";
+                print "TSDNS {$row['ssh2ip']} is up and running\r\n";
 
                 $query3 = $sql->prepare("UPDATE `voice_tsdns` SET `notified`=0 WHERE `id`=? LIMIT 1");
                 $query3->execute(array($row['id']));
@@ -1117,7 +1117,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
                                 if (isset($ts3id, $lendserver) and (($lendserver == 'N' and $slots < $server['virtualserver_maxclients']) or ($lendserver == 'Y' and $lendslots < $server['virtualserver_maxclients']))) {
 
                                     $showSlots = ($lendserver == 'Y') ? $lendslots : $slots;
-                                    print $vrow['type'] . " server $address virtualserver_maxclients ${sd['virtualserver_maxclients']}!= " . $showSlots . ". The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+                                    print $vrow['type'] . " server $address virtualserver_maxclients {$sd['virtualserver_maxclients']}!= " . $showSlots . ". The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
 
                                     if (isset($rulebreak)) {
                                         $rulebreak .= '<br />virtualserver_maxclients ' . $vosprache->isnot . '  ' . $showSlots;
@@ -1140,7 +1140,7 @@ if (!isset($ip) or $ui->escaped('SERVER_ADDR', 'server') == $ip or in_array($ip,
 
                                     if (isset($changeSlots)) {
 
-                                        print $vrow['type'] . " server $address Changing Flex Slots to ${changeSlots}. The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
+                                        print $vrow['type'] . " server $address Changing Flex Slots to {$changeSlots}. The name converted to ISO-8859-1 is " . iconv('UTF-8','ISO-8859-1//TRANSLIT', $server['virtualserver_name']) . "\r\n";
 
                                         $connection->ImportModServer($virtualserver_id, $changeSlots, $vrow2['ip'], $vrow2['port'], array());
 

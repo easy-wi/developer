@@ -43,7 +43,6 @@ if ((!isset($admin_id) or $main != 1) or (isset($admin_id) and !$pa['gimages']))
 
 include(EASYWIDIR . '/stuff/keyphrasefile.php');
 include(EASYWIDIR . '/third_party/gameq/GameQ/Autoloader.php');
-include(EASYWIDIR . '/third_party/gameq_v2/GameQ.php');
 include(EASYWIDIR . '/stuff/methods/functions_gs.php');
 
 $sprache = getlanguagefile('images', $user_language, $resellerLockupID);
@@ -94,7 +93,7 @@ if ($ui->w('action', 4, 'post') and !token(true)) {
 
         header("Cache-Control: public");
         header("Content-Description: File Transfer");
-        header("Content-Disposition: attachment; filename = ${shorten}.xml");
+        header("Content-Disposition: attachment; filename = {$shorten}.xml");
         header("Content-Type: text/xml; charset=UTF-8");
         header("Content-Transfer-Encoding: binary");
 
