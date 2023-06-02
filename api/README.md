@@ -4,24 +4,24 @@
 
   ``API`` 
 
-   [ ] - user
-      [ ] - add
-      [ ] - remove
-      [ ] - update
+  - [ ]  user
+     - [ ] add
+     - [ ] remove
+     - [ ] update
 
-   [ ] - addons
-      [ ] - add
-      [ ] - remove
-      [ ] - update
+  - [ ] addons
+     - [ ] add
+     - [ ] remove
+     - [ ] update
 
-   [ ] - gameserver
-      [ ] - add
-      [ ] - remove
-      [ ] - update
-      [ ] - start/restart
-      [ ] - stop
+  - [ ] gameserver
+     - [ ] add
+     - [ ] remove
+     - [ ] update
+     - [ ] start/restart
+     - [ ] stop
 
   ``MISC`` 
 
-   [ ] - error handling
-   [ ] - DOC
+  - [ ] error handling
+  - [ ] DOC
