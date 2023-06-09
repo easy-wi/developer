@@ -1,4 +1,20 @@
 <?php
+
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
 // $query = $sql->prepare("SELECT COUNT(`id`) AS `amount` FROM `addons`");
 
 

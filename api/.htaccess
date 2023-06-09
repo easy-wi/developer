@@ -8,8 +8,8 @@ AddDefaultCharset UTF-8
     RewriteRule .* - [e=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 </IfModule>
 
-Header set Access-Control-Allow-Origin "*"
-Header set Content-Type "application/json; charset=UTF-8"
-Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
-Header set Access-Control-Max-Age "3600"
-Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
+# Header set Access-Control-Allow-Origin "*"
+# Header set Content-Type "application/json; charset=UTF-8"
+# Header set Access-Control-Allow-Methods "POST, GET, OPTIONS"
+# Header set Access-Control-Max-Age "3600"
+# Header set Access-Control-Allow-Headers "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With"
