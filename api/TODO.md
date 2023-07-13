@@ -1,8 +1,8 @@
 # Easy-WI-API
 
-<h1>TODO</h1>
+## TODO
 
-  ``API`` 
+### API
 
   - [ ]  user
      - [ ] list
@@ -16,10 +16,6 @@
      - [x] remove
      - [x] update
 
-  - [ ] Server addons
-     - [ ] add an addon to server with id
-     - [ ] remove addon
- 
   - [ ] gameserver
      - [ ] list
      - [ ] add
@@ -27,9 +23,10 @@
      - [ ] update details
      - [ ] start/restart
      - [ ] stop
+        - [ ] Server addons
+           - [ ] add an addon to server with id
+           - [ ] remove addon
 
-
-
-  ``MISC`` 
+### MISC
   - [ ] error handling
   - [ ] DOC
