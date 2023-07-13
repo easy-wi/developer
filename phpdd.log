@@ -1,0 +1,201 @@
+- PHP 5.3 (5) - your version is greater or equal
++------------------------------------------------------+---------+-------------------------------------------------+
+| File (Line:Column)                                   | Type    | Issue                                           |
++------------------------------------------------------+---------+-------------------------------------------------+
+| /stuff/settings.php (42:14)                          | removed | Ini register_globals is removed.                |
+| /third_party/phpmailer/class.phpmailer.php (2581:21) | removed | Function set_magic_quotes_runtime() is removed. |
+| /third_party/phpmailer/class.phpmailer.php (2593:21) | removed | Function set_magic_quotes_runtime() is removed. |
+| /third_party/phpmailer/class.phpmailer.php (2586:29) | removed | Ini magic_quotes_runtime is removed.            |
+| /third_party/phpmailer/class.phpmailer.php (2595:29) | removed | Ini magic_quotes_runtime is removed.            |
++------------------------------------------------------+---------+-------------------------------------------------+
+
+- PHP 7.1 (26) - your version is greater or equal
++------------------------------------------------------------+---------+-----------------------------------------------+
+| File (Line:Column)                                         | Type    | Issue                                         |
++------------------------------------------------------------+---------+-----------------------------------------------+
+| /third_party/password_compat/password.php (88:27)          | removed | Function mcrypt_create_iv() is removed.       |
+| /third_party/phpmailer/extras/ntlm_sasl_client.php (71:20) | removed | Function mcrypt_get_iv_size() is removed.     |
+| /third_party/phpmailer/extras/ntlm_sasl_client.php (72:15) | removed | Function mcrypt_create_iv() is removed.       |
+| /third_party/phpmailer/extras/ntlm_sasl_client.php (82:27) | removed | Function mcrypt_encrypt() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (792:18)             | removed | Function mcrypt_generic_init() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (825:30)             | removed | Function mcrypt_generic_init() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (828:40)             | removed | Function mcrypt_generic() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (833:36)             | removed | Function mcrypt_generic() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (842:28)             | removed | Function mcrypt_generic() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (852:28)             | removed | Function mcrypt_generic() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (855:18)             | removed | Function mcrypt_generic_init() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (1132:18)            | removed | Function mcrypt_generic_init() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (1160:35)            | removed | Function mcrypt_generic() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (1165:28)            | removed | Function mcrypt_generic() is removed.         |
+| /third_party/phpseclib/Crypt/Base.php (1174:27)            | removed | Function mdecrypt_generic() is removed.       |
+| /third_party/phpseclib/Crypt/Base.php (1177:18)            | removed | Function mcrypt_generic_init() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (1659:61)            | removed | Function mcrypt_list_algorithms() is removed. |
+| /third_party/phpseclib/Crypt/Base.php (1738:14)            | removed | Function mcrypt_module_close() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (1739:14)            | removed | Function mcrypt_module_close() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (1744:18)            | removed | Function mcrypt_module_close() is removed.    |
+| /third_party/phpseclib/Crypt/Base.php (1859:32)            | removed | Function mcrypt_module_open() is removed.     |
+| /third_party/phpseclib/Crypt/Base.php (1860:32)            | removed | Function mcrypt_module_open() is removed.     |
+| /third_party/phpseclib/Crypt/Base.php (1866:31)            | removed | Function mcrypt_module_open() is removed.     |
+| /third_party/phpseclib/Crypt/Base.php (1871:14)            | removed | Function mcrypt_generic_init() is removed.    |
+| /third_party/phpseclib/Crypt/Random.php (69:25)            | removed | Function mcrypt_create_iv() is removed.       |
+| /third_party/phpseclib/Crypt/Random.php (108:25)           | removed | Function mcrypt_create_iv() is removed.       |
++------------------------------------------------------------+---------+-----------------------------------------------+
+
+- PHP 8.0 (15) - your version is greater or equal
++-------------------------------------------------------------------------------+---------+--------------------------------------------------------------------------+
+| File (Line:Column)                                                            | Type    | Issue                                                                    |
++-------------------------------------------------------------------------------+---------+--------------------------------------------------------------------------+
+| /stuff/admin/versioncheck.php (136:24)                                        | removed | Function zip_open() is removed.                                          |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (142:34)                                        | removed | Function zip_read() is removed.                                          |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (144:97)                                        | removed | Function zip_entry_name() is removed.                                    |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (145:32)                                        | removed | Function zip_entry_open() is removed.                                    |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (194:39)                                        | removed | Function zip_entry_filesize() is removed.                                |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (197:54)                                        | removed | Function zip_entry_read() is removed.                                    |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (206:33)                                        | removed | Function zip_entry_close() is removed.                                   |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/admin/versioncheck.php (220:21)                                        | removed | Function zip_close() is removed.                                         |
+|                                                                               |         | Consider replace with ZipArchive()                                       |
+| /stuff/methods/class_validator.php (44:57)                                    | removed | Function get_magic_quotes_gpc() is removed.                              |
+|                                                                               |         | Consider replace with They always return FALSE. ()                       |
+| /third_party/hybridauth/Hybrid/thirdparty/OpenID/LightOpenID.php (896:85)     | removed | Function get_magic_quotes_gpc() is removed.                              |
+|                                                                               |         | Consider replace with They always return FALSE. ()                       |
+| /third_party/hybridauth/Hybrid_v3/Thirdparty/OpenID/LightOpenID.php (1100:85) | removed | Function get_magic_quotes_gpc() is removed.                              |
+|                                                                               |         | Consider replace with They always return FALSE. ()                       |
+| /third_party/phpmailer/class.phpmailer.php (2578:29)                          | removed | Function get_magic_quotes_runtime() is removed.                          |
+|                                                                               |         | Consider replace with They always return FALSE. ()                       |
+| /third_party/phpmailer/extras/htmlfilter.php (49:48)                          | removed | Function each() is removed.                                              |
+|                                                                               |         | Consider replace with foreach or ArrayIterator should be used instead.() |
+| /third_party/phpmailer/extras/htmlfilter.php (525:40)                         | removed | Function each() is removed.                                              |
+|                                                                               |         | Consider replace with foreach or ArrayIterator should be used instead.() |
+| /third_party/phpseclib/Crypt/Base.php (2610:16)                               | removed | Function create_function() is removed.                                   |
+|                                                                               |         | Consider replace with Anonymous functions may be used instead.()         |
++-------------------------------------------------------------------------------+---------+--------------------------------------------------------------------------+
+
+- PHP 8.1 (57) - your version is greater or equal
++-------------------------------------------------------------------------------+---------+--------------------------------------------------------+
+| File (Line:Column)                                                            | Type    | Issue                                                  |
++-------------------------------------------------------------------------------+---------+--------------------------------------------------------+
+| /lend.php (871:38)                                                            | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /lend.php (1149:23)                                                           | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /login.php (424:43)                                                           | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /login.php (441:43)                                                           | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/gameserver.php (411:21)                                          | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/gameserver.php (412:99)                                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (176:31)                                 | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (224:31)                                 | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (309:36)                                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (318:32)                                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (415:26)                                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (416:25)                                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/root_virtual_server.php (419:25)                                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/voice.php (286:21)                                               | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/voice.php (287:53)                                               | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/web_vhost.php (250:21)                                           | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/admin/web_vhost.php (251:53)                                           | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/api/api_voice.php (179:25)                                             | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/api/api_voice.php (180:57)                                             | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/api/api_web.php (153:21)                                               | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/api/api_web.php (154:53)                                               | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/cms/page_register.php (167:20)                                         | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/methods/functions.php (1217:19)                                        | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/methods/mysql_backup_class.php (52:34)                                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/methods/mysql_backup_class.php (85:34)                                 | removed | Function next() is removed.                            |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/user/userpanel_voice.php (708:25)                                      | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/user/userpanel_voice.php (709:57)                                      | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/user/userpanel_web_vhost.php (271:21)                                  | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /stuff/user/userpanel_web_vhost.php (272:53)                                  | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/Decoda/Decoda/Decoda.php (228:46)                                | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/Decoda/Decoda/Decoda.php (257:44)                                | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/Decoda/Decoda/Decoda.php (1319:33)                               | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/Decoda/Decoda/Decoda.php (1341:37)                               | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/Symfony/Component/Yaml/Parser.php (125:43)                       | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/gameq/GameQ/Buffer.php (524:27)                                  | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid/Providers/Facebook.php (263:54)                | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid/thirdparty/OpenID/LightOpenID.php (935:50)     | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid_v3/Provider/Facebook.php (273:17)              | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid_v3/Provider/LinkedIn.php (107:24)              | removed | Function end() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid_v3/Provider/LinkedIn.php (109:24)              | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid_v3/Provider/QQ.php (86:17)                     | removed | Function key() is removed.                             |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/hybridauth/Hybrid_v3/Thirdparty/OpenID/LightOpenID.php (1141:50) | removed | Function reset() is removed.                           |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpmailer/extras/ntlm_sasl_client.php (69:16)                    | removed | Function mhash() is removed.                           |
+|                                                                               |         | Consider replace with Use the hash_*() APIs instead()  |
+| /third_party/phpseclib/Crypt/Hash.php (216:38)                                | removed | Function mhash() is removed.                           |
+|                                                                               |         | Consider replace with Use the hash_*() APIs instead()  |
+| /third_party/phpseclib/Crypt/Hash.php (376:31)                                | removed | Function mhash() is removed.                           |
+|                                                                               |         | Consider replace with Use the hash_*() APIs instead()  |
+| /third_party/phpseclib/Crypt/Hash.php (393:31)                                | removed | Function mhash() is removed.                           |
+|                                                                               |         | Consider replace with Use the hash_*() APIs instead()  |
+| /third_party/phpseclib/System/SSH/Agent/Identity.php (193:19)                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent/Identity.php (200:19)                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent/Identity.php (204:19)                 | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (163:19)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (171:21)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (173:23)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (176:23)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (180:23)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (289:33)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (305:30)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
+| /third_party/phpseclib/System/SSH/Agent.php (308:29)                          | removed | Function current() is removed.                         |
+|                                                                               |         | Consider replace with use with objects is deprecated() |
++-------------------------------------------------------------------------------+---------+--------------------------------------------------------+
+
+Total issues: 103
+Peak memory usage: 12.129 MB

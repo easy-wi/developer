@@ -38,12 +38,13 @@
 
 // We cannot wait until it is removed from PHP and need to protect admins from themselves
 
+
 if (ini_get('register_globals') == 'on') {
-    @ini_set('register_globals', 'off');
+    ini_set('register_globals', 'off');
 
     // check if we could turn it off. If not shut down.
     if (ini_get('register_globals') == 'on') {
-        die('register_globals ist set to <b>on</b>. This setting is very dangerous. Easy-WI refuses to work in such an insecure inviroment');
+        die('register_globals is set to <b>on</b>. This setting is very dangerous. Easy-WI refuses to work in such an insecure environment');
     }
 }
 
