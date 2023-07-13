@@ -8,14 +8,13 @@ require __DIR__ . '/../vendor/autoload.php';
 
 // Instantiate app
 $app = AppFactory::create();
+// Add Error Handling Middleware
 $app->addErrorMiddleware(false, false, false);
 
 
 // $app->add(new Tuupola\Middleware\JwtAuthentication([
 // 	"secret" => ""
 // ]));
-
-// Add Error Handling Middleware
 
 
 require_once '../inc/Class.WiApi.php';
