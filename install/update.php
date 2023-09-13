@@ -233,7 +233,7 @@ try {
             $version = $devVersion;
         }*/
 
-        if (versioncheck($version, $devVersion, 'update_dev_620-6201.php', $response, true)) {
+        if (versioncheck($version, $devVersion, 'update_dev_623-624.php', $response, true)) {
             $version = $devVersion;
         }
     }
