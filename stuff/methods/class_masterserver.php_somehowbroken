@@ -48,7 +48,7 @@ class masterServer {
     private $updateIDs = array();
     private $removeLogs = array();
     private $winCmds = array();
-    private $imageserver, $resellerID, $webhost, $rootOK, $rootID, $rootNotifiedCount, $steamAccount, $steamPassword , $updates, $os, $aeskey, $shellScript, $uniqueHex, $masterserverDir;
+    private $imageserver, $resellerID, $webhost, $rootOK, $rootID, $rootNotifiedCount, $steamAccount, $steamPassword, $updates, $os, $aeskey, $shellScript, $uniqueHex, $masterserverDir;
     public $sship, $sshport, $sshuser, $sshpass, $publickey, $keyname;
     public $updateAmount = 0;
 
@@ -277,7 +277,7 @@ class masterServer {
             $this->shellScript .= '$SYNCCMD/masterserver/' . $shorten . ' ' . $this->masterserverDir . ' > ' . $updateLog . "\n";
             $this->shellScript .= 'elif [ "$SYNCTOOL" == "wget" ]; then' . "\n";
             $this->shellScript .= '$SYNCCMD/masterserver/' . $shorten . ' > ' . $updateLog . "\n";
-            $this->shellScript .= '${IONICE}nice -n +19 find ' . $this->masterserverDir . $shorten . '/ -type f -name "*.listing" -delete' . "\n";
+            $this->shellScript .= '{$IONICE}nice -n +19 find ' . $this->masterserverDir . $shorten . '/ -type f -name "*.listing" -delete' . "\n";
             $this->shellScript .= 'fi' . "\n";
         } else {
 
@@ -292,21 +292,21 @@ class masterServer {
     private function houseKeeping ($absoluteGamePath) {
 
         // Workaround for another valve chaos. If the files exist, mapgroups will not work properly
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -maxdepth 2 -type f -name "subscribed_file_ids.txt" -o -name "subscribed_collection_ids.txt" -delete' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -maxdepth 2 -type f -name "subscribed_file_ids.txt" -o -name "subscribed_collection_ids.txt" -delete' . "\n";
 
         // Chmods should be aligned or else the server install for customer will not work
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.0" -or -iname "*.1" -or -iname "*.2" -or -iname "*.3" -or -iname "*.3ds" -or -iname "*.4" -or -iname "*.5" -or -iname "*.6" -or -iname "*.7" -or -iname "*.8" -or -iname "*.9" -or -iname "*.amx" -or -iname "*.asi" -or -iname "*.asm" -or -iname "*.bin" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.bmp" -or -iname "*.BMP" -or -iname "*.bsp" -or -iname "*.bz2" -or -iname "*.c" -or -iname "*.cab" -or -iname "*.cache" -or -iname "*.cfg" -or -iname "*.cmake" -or -iname "*.col" -or -iname "*.conf" -or -iname "*.cpp" -or -iname "*.css" -or -iname "*.csv" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.cur" -or -iname "*.dat" -or -iname "*.db" -or -iname "*.dds" -or -iname "*.def" -or -iname "*.dff" -or -iname "*.dll" -or -iname "*.doc" -or -iname "*.dsp" -or -iname "*.dxf" -or -iname "*.dylib" -or -iname "*.edf" -or -iname "*.ekv" -or -iname "*.example" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.exe" -or -iname "*.exp" -or -iname "*.fgd" -or -iname "*.flt" -or -iname "*.fx" -or -iname "*.gam" -or -iname "*.Gbx" -or -iname "*.gif" -or -iname "*.h" -or -iname "*.hpp" -or -iname "*.htm" -or -iname "*.html" -or -iname "*.icns" -or -iname "*.ico" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.image" -or -iname "*.inc" -or -iname "*.inf" -or -iname "*.ini" -or -iname "*.installed" -or -iname "*.jpg" -or -iname "*.js" -or -iname "*.key" -or -iname "*.kv" -or -iname "*.lib" -or -iname "*.lmp" -or -iname "*.lst" -or -iname "*.lua" -or -iname "*.LUA" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.manifest" -or -iname "*.map" -or -iname "*.mapRACE" -or -iname "*.mdl" -or -iname "*.mix" -or -iname "*.mp3" -or -iname "*.nav" -or -iname "*.nod" -or -iname "*.nut" -or -iname "*.pak" -or -iname "*.pcx" -or -iname "*.pem" -or -iname "*.pl" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.png" -or -iname "*.properties" -or -iname "*.psd" -or -iname "*.pwn" -or -iname "*.rad" -or -iname "*.raw" -or -iname "*.rc" -or -iname "*.rec" -or -iname "*.res" -or -iname "*.rules" -or -iname "*.sc" -or -iname "*.scr" -or -iname "*.sfk" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.sln" -or -iname "*.so" -or -iname "*.spr" -or -iname "*.suo" -or -iname "*.swf" -or -iname "*.tar" -or -iname "*.tga" -or -iname "*.ttf" -or -iname "*.txd" -or -iname "*.txt" -or -iname "*.vbf" -or -iname "*.vcproj" -or -iname "*.vcs" -or -iname "*.vdf" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.vfe" -or -iname "*.vfont" -or -iname "*.vmf" -or -iname "*.vmt" -or -iname "*.vpk" -or -iname "*.vtf" -or -iname "*.wad" -or -iname "*.wav" -or -iname "*.wv" -or -iname "*.xml" -or -iname "*.xsc" -or -iname "*.yml" -or -iname "*.zip" \) -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f -name "srcds_*" -o -name "hlds_*" -o -name "*.run" -o -name "*.sh" -o -name "*.jar" -exec chmod 750 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f ! -perm -750 ! -perm -755 -exec chmod 640 {} \;' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type d -exec chmod 750 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.0" -or -iname "*.1" -or -iname "*.2" -or -iname "*.3" -or -iname "*.3ds" -or -iname "*.4" -or -iname "*.5" -or -iname "*.6" -or -iname "*.7" -or -iname "*.8" -or -iname "*.9" -or -iname "*.amx" -or -iname "*.asi" -or -iname "*.asm" -or -iname "*.bin" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.bmp" -or -iname "*.BMP" -or -iname "*.bsp" -or -iname "*.bz2" -or -iname "*.c" -or -iname "*.cab" -or -iname "*.cache" -or -iname "*.cfg" -or -iname "*.cmake" -or -iname "*.col" -or -iname "*.conf" -or -iname "*.cpp" -or -iname "*.css" -or -iname "*.csv" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.cur" -or -iname "*.dat" -or -iname "*.db" -or -iname "*.dds" -or -iname "*.def" -or -iname "*.dff" -or -iname "*.dll" -or -iname "*.doc" -or -iname "*.dsp" -or -iname "*.dxf" -or -iname "*.dylib" -or -iname "*.edf" -or -iname "*.ekv" -or -iname "*.example" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.exe" -or -iname "*.exp" -or -iname "*.fgd" -or -iname "*.flt" -or -iname "*.fx" -or -iname "*.gam" -or -iname "*.Gbx" -or -iname "*.gif" -or -iname "*.h" -or -iname "*.hpp" -or -iname "*.htm" -or -iname "*.html" -or -iname "*.icns" -or -iname "*.ico" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.image" -or -iname "*.inc" -or -iname "*.inf" -or -iname "*.ini" -or -iname "*.installed" -or -iname "*.jpg" -or -iname "*.js" -or -iname "*.key" -or -iname "*.kv" -or -iname "*.lib" -or -iname "*.lmp" -or -iname "*.lst" -or -iname "*.lua" -or -iname "*.LUA" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.manifest" -or -iname "*.map" -or -iname "*.mapRACE" -or -iname "*.mdl" -or -iname "*.mix" -or -iname "*.mp3" -or -iname "*.nav" -or -iname "*.nod" -or -iname "*.nut" -or -iname "*.pak" -or -iname "*.pcx" -or -iname "*.pem" -or -iname "*.pl" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.png" -or -iname "*.properties" -or -iname "*.psd" -or -iname "*.pwn" -or -iname "*.rad" -or -iname "*.raw" -or -iname "*.rc" -or -iname "*.rec" -or -iname "*.res" -or -iname "*.rules" -or -iname "*.sc" -or -iname "*.scr" -or -iname "*.sfk" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.sln" -or -iname "*.so" -or -iname "*.spr" -or -iname "*.suo" -or -iname "*.swf" -or -iname "*.tar" -or -iname "*.tga" -or -iname "*.ttf" -or -iname "*.txd" -or -iname "*.txt" -or -iname "*.vbf" -or -iname "*.vcproj" -or -iname "*.vcs" -or -iname "*.vdf" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f \( -iname "*.vfe" -or -iname "*.vfont" -or -iname "*.vmf" -or -iname "*.vmt" -or -iname "*.vpk" -or -iname "*.vtf" -or -iname "*.wad" -or -iname "*.wav" -or -iname "*.wv" -or -iname "*.xml" -or -iname "*.xsc" -or -iname "*.yml" -or -iname "*.zip" \) -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f -name "srcds_*" -o -name "hlds_*" -o -name "*.run" -o -name "*.sh" -o -name "*.jar" -exec chmod 750 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type f ! -perm -750 ! -perm -755 -exec chmod 640 {} \;' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find ' . $absoluteGamePath . ' -type d -exec chmod 750 {} \;' . "\n";
 
         // Check for temp files belonging to the steam updater
         $this->shellScript .= 'ls ' . $absoluteGamePath . ' | while read dir; do' . "\n";
@@ -338,7 +338,7 @@ class masterServer {
         $this->shellScript .= 'SEARCH=1' . "\n";
         $this->shellScript .= 'fi' . "\n";
         $this->shellScript .= 'if [ "$SEARCH" == "1" ]; then' . "\n";
-        $this->shellScript .= '${IONICE}nice -n +19 find $SEARCHFOLDERS -type f 2> /dev/null | grep -v "$PATTERN" | sed \'s/\.\///g\' | while read FILTEREDFILES; do' . "\n";
+        $this->shellScript .= '{$IONICE}nice -n +19 find $SEARCHFOLDERS -type f 2> /dev/null | grep -v "$PATTERN" | sed \'s/\.\///g\' | while read FILTEREDFILES; do' . "\n";
         $this->shellScript .= 'echo $FILTEREDFILES >> ' . $fastDownloadList . "\n";
         $this->shellScript .= 'done' . "\n";
         $this->shellScript .= 'if [ -f ' . $fastDownloadList . ' ]; then chmod 640 ' . $fastDownloadList . '; fi' . "\n";
@@ -411,19 +411,19 @@ class masterServer {
 
                    $this->shellScript .= 'cd /home/' . $this->sshuser . '/masterserver/steamCMD/'. "\n";
  
-                    $this->shellScript .= 'taskset -c 0 ${IONICE}nice -n +19 ./steamcmd.sh +force_install_dir ' . $absoluteGamePath . ' +login ';
+                    $this->shellScript .= 'taskset -c 0 {$IONICE}nice -n +19 ./steamcmd.sh +force_install_dir ' . $absoluteGamePath . ' +login ';
  
                     if (strlen($this->steamAccount) > 0) {
-                        $this->shellScript .= $this->steamAccount . ' ' . $this->steamPassword . ' ';
+                        $this->shellScript .= $this->steamAccount . ' ' . $this->steamPassword;
                     } else if (strlen($row['steamAcc']) > 0) {
-                        $this->shellScript .= $row['steamAcc'] . ' ' . $row['steamPwd'] . ' ';
+                        $this->shellScript .= $row['steamAcc'] . ' ' . $row['steamPwd'];
                     } else {
                         $this->shellScript .= 'anonymous ';
                     }
  
                     $fixedId = workAroundForValveChaos($row['appID'], $row['shorten'], false);
  
-                    $this->shellScript .= ($fixedId == 90) ?  ' +app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : '+app_update ' . $fixedId;
+                    $this->shellScript .= ($fixedId == 90) ?  ' +app_set_config 90 mod ' . $row['shorten'] . ' +app_update 90' : ' +app_update ' . $fixedId;
                     $this->shellScript .= ' validate  +quit > ' . $updateLog . "\n";
 
                 } else if ($row['steamgame'] == 'N' and ($row['shorten'] == 'mc')) {
@@ -642,7 +642,7 @@ class masterServer {
 
         // While we keep on counting up, the mail is send only once to prevent spam
         if (($this->rootNotifiedCount + 1) == $rSA['down_checks']) {
-            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`=${$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
+            $query = ($resellerLockupID == 0) ? $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE `resellerid`=0 AND `accounttype`='a'") : $sql->prepare("SELECT `id`,`mail_serverdown` FROM `userdata` WHERE (`id`={$$resellerLockupID} AND `id`=`resellerid`) OR `resellerid`=0 AND `accounttype`='a'");
             $query->execute();
             while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
                 if ($row['mail_serverdown'] == 'Y') {
@@ -771,14 +771,14 @@ class masterServer {
 
         // When the logfile is missing the update is still running
         $this->shellScript .= 'if [ ! -f ' . $updateLog . ' ]; then' . "\n";
-        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=1"' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="{$UPDATESTATUS};' . $shorten . '=1"' . "\n";
         $this->shellScript .= 'else' . "\n";
 
         // If it exists and the update is not running, the update is finished
         $this->shellScript .= 'if [ "`ps fx | grep \'masterserver/' . $shorten . '\' | grep -v grep | head -n 1`" ]; then' . "\n";
-        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=1"' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="{$UPDATESTATUS};' . $shorten . '=1"' . "\n";
         $this->shellScript .= 'else' . "\n";
-        $this->shellScript .= 'UPDATESTATUS="${UPDATESTATUS};' . $shorten . '=0"' . "\n";
+        $this->shellScript .= 'UPDATESTATUS="{$UPDATESTATUS};' . $shorten . '=0"' . "\n";
         $this->shellScript .= 'fi' . "\n";
 
         $this->shellScript .= 'fi' . "\n";
