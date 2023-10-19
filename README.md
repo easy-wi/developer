@@ -6,7 +6,7 @@
 - Issue Tracking at [GitHub](https://github.com/easy-wi/developer/issues)
 - [Installer](https://github.com/easy-wi/installer/)
 - [Optional Server Side Scripts](https://github.com/easy-wi/server/)
-- [External PHP Scripst](https://github.com/easy-wi/external/)
+- [External PHP Scripts](https://github.com/easy-wi/external/)
 - [Easy-Wi WHMCS Addon](https://github.com/easy-wi/whmcs)
 
 
