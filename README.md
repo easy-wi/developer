@@ -1,10 +1,10 @@
 # Easy-WI.com Links
-- The stable build at [GitHub](https://github.com/easy-wi/developer/releases/latest)
-- The developer builds at [Github](https://github.com/easy-wi/developer/tags)
+- The stable build on [GitHub](https://github.com/easy-wi/developer/releases/latest)
+- The developer builds on [Github](https://github.com/easy-wi/developer/tags)
 - Developers ChatRoom: [Discord](https://discord.gg/quJvvfF)
 - Twitter Account for News: [Easy_Wi](https://twitter.com/easy_wi)
 - Issue Tracking at [GitHub](https://github.com/easy-wi/developer/issues)
-- [Installer](https://github.com/easy-wi/installer/)
+- [Installation](https://github.com/easy-wi/installer/)
 - [Optional Server Side Scripts](https://github.com/easy-wi/server/)
 - [External PHP Scripts](https://github.com/easy-wi/external/)
 - [Easy-Wi WHMCS Addon](https://github.com/easy-wi/whmcs)
@@ -35,7 +35,7 @@ What drives the development is the goal to automate all processes. Listing all a
 - Reseller Accounts can be setup.
 - All modules can be used with a REST API as well. That way you can include Easy-WI in already existing processes given with a shop like WHMCS or Magento.
 
-## Programmer and Supporter wanted
+## Programmers and Supporters wanted
 We are looking for volunteer/free programmers who enjoy supporting us.
 
 What we offer:
