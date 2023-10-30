@@ -26,7 +26,7 @@ No matter if you are a commercial entity that is providing hosting solutions, ar
 What drives the development is the goal to automate all processes. Listing all available functions would result in an exploding thread. So here is the summary with the main features:
 - Mobile ready. The default template has been made with Twitter Bootstrap and is responsive. That way Easy-WI becomes a Web App which can be easily used with a mobile or tablet.
 - Multilingual. Currently supported are English, Danish, Italian and German. The text is maintained with XML files.
-- We have a strict separation between PHP modules and HTML views. In case a view is missing at your custom templates the default will be used as fall-back.
+- We have a strict separation between PHP modules and HTML views. In case a view is missing in your custom templates the default will be used as fall-back.
 - Gameserver management is nearly fully automated. All you need to do is updating add-ons at your central image server from time to time. After that the deployment to the individual servers is automated.
 - The same applies to TS3 voiceserver.
 - In addition to a TS3 server you can manage TSDNS either as standalone, or together with the TS3 master. 
