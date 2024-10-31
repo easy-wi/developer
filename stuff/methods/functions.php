@@ -1046,38 +1046,6 @@ if (!function_exists('passwordgenerate')) {
         }
     }
 
-    function CopyAdminTable ($tablename, $id, $reseller_id, $limit, $where='') {
-
-        global $sql;
-
-        $query = $sql->prepare("SELECT * FROM `$tablename` WHERE `resellerid`=? " . $where . " " .$limit);
-        $query->execute(array($reseller_id));
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-
-            $keys = array();
-            $questionmarks = array();
-            $intos = array();
-
-            foreach ($row as $key=>$value) {
-                if ($key != 'id' and $key != 'resellerid'){
-                    $keys[]="`".$key."`";
-                    $questionmarks[] = '?';
-                    $intos[] = $value;
-                }
-            }
-
-            $keys[] = "`resellerid`";
-            $intos[] = $id;
-            $questionmarks[] = '?';
-            $into = 'INSERT INTO `' . $tablename . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', $questionmarks) . ')';
-            $query2 = $sql->prepare("$into");
-            $query2->execute($intos);
-        }
-    }
-
-    function dataExist ($value, $array) {
-        return (isset($array[$value]) and isset($array[$array[$value]]) and !in_array($array[$array[$value]], array(false, null,''))) ? true : false;
-    }
 
     function webhostRequest ($domain, $useragent, $file, $postParams = '', $port = 80) {
 
@@ -1154,6 +1122,42 @@ if (!function_exists('passwordgenerate')) {
         }
         return 'Error: Could not connect to host ' . $domain . ' and port ' . $port . ' (' . $errstr . ')';
     }
+
+
+    function CopyAdminTable ($tablename, $id, $reseller_id, $limit, $where='') {
+
+        global $sql;
+
+        $query = $sql->prepare("SELECT * FROM `$tablename` WHERE `resellerid`=? " . $where . " " .$limit);
+        $query->execute(array($reseller_id));
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+
+            $keys = array();
+            $questionmarks = array();
+            $intos = array();
+
+            foreach ($row as $key=>$value) {
+                if ($key != 'id' and $key != 'resellerid'){
+                    $keys[]="`".$key."`";
+                    $questionmarks[] = '?';
+                    $intos[] = $value;
+                }
+            }
+
+            $keys[] = "`resellerid`";
+            $intos[] = $id;
+            $questionmarks[] = '?';
+            $into = 'INSERT INTO `' . $tablename . '` (' . implode(',', $keys) . ') VALUES (' . implode(',', $questionmarks) . ')';
+            $query2 = $sql->prepare("$into");
+            $query2->execute($intos);
+        }
+    }
+
+    function dataExist ($value, $array) {
+        return (isset($array[$value]) and isset($array[$array[$value]]) and !in_array($array[$array[$value]], array(false, null,''))) ? true : false;
+    }
+
+
 
     function checkPorts ($send, $used) {
 
@@ -1508,7 +1512,7 @@ if (!function_exists('passwordgenerate')) {
                 }
             } else {
 
-                $mapping = array(510 => 500, 4020 => 4000, 4940 => 4920, 17505 => 17500, 17510 => 17515, 17570 => 17575, 111710 => 17710, 215350 => 1250, 215360 => 1250, 222860 => 550, 229830 => 440, 232250 => 440, 232290 => 300, 232330 => 240, 232370 => 320, 258550 => 252490, 259080 => 261140, 295230 => 265630, 317670 => 224260, 332670 => 234630, 376030 => 346110);
+                $mapping = array(510 => 500, 740 => 730, 4020 => 4000, 4940 => 4920, 17505 => 17500, 17510 => 17515, 17570 => 17575, 111710 => 17710, 215350 => 1250, 215360 => 1250, 222860 => 550, 229830 => 440, 232250 => 440, 232290 => 300, 232330 => 240, 232370 => 320, 258550 => 252490, 259080 => 261140, 295230 => 265630, 317670 => 224260, 332670 => 234630, 376030 => 346110);
 
                 if (isset($mapping[$appID])) {
                     return $mapping[$appID];
@@ -1524,7 +1528,7 @@ if (!function_exists('passwordgenerate')) {
 
             } else {
 
-                $mapping = array(240 => 232330, 300 => 232290, 320 => 232370, 440 => 232250, 500 => 510, 550 => 222860, 1250 => 215360, 4000 => 4020, 4920 => 4940, 17500 => 17505, 17515 => 17510, 17575 => 17570, 17710 => 111710, 215350 => 215360, 224260 => 317670, 234630 => 332670, 252490 => 258550, 261140 => 259080, 265630 => 295230, 346110 => 376030);
+                $mapping = array(240 => 232330, 300 => 232290, 320 => 232370, 440 => 232250, 500 => 510, 730 => 740, 550 => 222860, 1250 => 215360, 4000 => 4020, 4920 => 4940, 17500 => 17505, 17515 => 17510, 17575 => 17570, 17710 => 111710, 215350 => 215360, 224260 => 317670, 234630 => 332670, 252490 => 258550, 261140 => 259080, 265630 => 295230, 346110 => 376030);
 
                 if (isset($mapping[$appID])) {
                     return $mapping[$appID];
@@ -1684,7 +1688,7 @@ $(function() {
      * @return string
      */
     function getLoginHeader($valueOfTitle){
-        return preg_replace('/(.+)[\s](.+)/i', '<b>{$1}</b> $2', $valueOfTitle, -1, $count);
+        return preg_replace('/(.+)[\s](.+)/i', '<b>${1}</b> $2', $valueOfTitle, -1, $count);
     }
 
     function parseHeaders($data)
