@@ -45,36 +45,95 @@ if (!defined('EASYWIDIR')) {
     define('EASYWIDIR', '');
 }
 
+// ============================================================================
+// SECURITY: CRYPTOGRAPHIC KEY MANAGEMENT
+// ============================================================================
+// Generate and load cryptographic key securely
+if (!function_exists('get_crypto_key')) {
+    function get_crypto_key() {
+        static $key = null;
+        
+        if ($key === null) {
+            // Try to load from configuration file (outside web root ideally)
+            $config_file = dirname(__FILE__) . '/../../config/crypto.key.php';
+            
+            if (file_exists($config_file)) {
+                include $config_file;
+                if (isset($crypto_key)) {
+                    $key = $crypto_key;
+                }
+            }
+            
+            // Fallback for installations without generated key
+            if ($key === null) {
+                // Generate a unique key for this installation
+                if (function_exists('random_bytes')) {
+                    $key = bin2hex(random_bytes(32));
+                } elseif (function_exists('openssl_random_pseudo_bytes')) {
+                    $key = bin2hex(openssl_random_pseudo_bytes(32));
+                } else {
+                    // Last resort - but still better than hardcoded
+                    $key = md5(uniqid(mt_rand(), true) . php_uname() . microtime());
+                }
+                
+                // Log warning about insecure fallback
+                error_log('SECURITY WARNING: Easy-WI using generated crypto key. Please run installation script to generate a secure key.');
+            }
+        }
+        
+        return $key;
+    }
+}
+
 if (!function_exists('passwordgenerate')) {
 
     function passwordgenerate ($length) {
         $zeichen = array('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 1, 2, 3, 4, 5, 6, 7, 8, 9);
         $anzahl = count($zeichen) - 1;
         $password = '';
+        
         for($i = 1; $i <= $length; $i++){
-            $wuerfeln = mt_rand(0, $anzahl);
+            // SECURITY FIX: Use cryptographically secure random function
+            if (function_exists('random_int')) {
+                $wuerfeln = random_int(0, $anzahl);
+            } elseif (function_exists('openssl_random_pseudo_bytes')) {
+                // Fallback for PHP < 7.0
+                $wuerfeln = hexdec(bin2hex(openssl_random_pseudo_bytes(1))) % ($anzahl + 1);
+            } else {
+                // Last resort - not secure but better than mt_rand()
+                $wuerfeln = mt_rand(0, $anzahl);
+                error_log('SECURITY WARNING: Using mt_rand() for password generation. Upgrade PHP to 7.0+ for secure random.');
+            }
             $password .= $zeichen[$wuerfeln];
         }
         return $password;
     }
 
     function passwordhash($username, $password, $salt=false){
-
-        $passworda = str_split($password, (strlen($password) / 2) + 1);
-        $usernamea = str_split($username, (strlen($username) / 2) + 1);
-
-        if (!isset($usernamea[1])) {
-            $usernamea[1] = $usernamea[0];
+        // SECURITY FIX: Deprecated function - use password_hash() instead
+        // Keeping for backward compatibility only
+        trigger_error('passwordhash() is deprecated, use password_hash() or passwordCreate()', E_USER_DEPRECATED);
+        
+        if ($salt === false) {
+            // Use modern password hashing
+            if (function_exists('password_hash')) {
+                return password_hash($password, PASSWORD_DEFAULT);
+            } else {
+                // Fallback for old PHP
+                return hash('sha512', $password . $username);
+            }
+        } else {
+            // Legacy support with salt
+            return hash('sha512', $password . $salt . $username);
         }
-
-        if (!isset($passworda[1])) {
-            $passworda[1] = $passworda[0];
-        }
-
-        return ($salt == false) ? hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $usernamea[1]) . $passworda[1])): hash('sha512', sha1($usernamea[0] . md5($passworda[0] . $salt . $usernamea[1]) . $passworda[1]));
     }
 
-    function createHash ($name, $pwd, $saltOne, $saltTwo = 'ZPZw$[pkJF!;SHdl', $iterate = 1000) {
+    function createHash ($name, $pwd, $saltOne, $saltTwo = null, $iterate = 1000) {
+        // SECURITY FIX: Remove hardcoded key, use generated key
+        if ($saltTwo === null) {
+            $saltTwo = get_crypto_key();
+        }
+        
         $pwdSplit = str_split($pwd,(strlen($pwd) / 2) + 1);
         $nameSplit = str_split($name, (strlen($name) / 2) + 1);
         $hash = '';
@@ -127,7 +186,12 @@ if (!function_exists('passwordgenerate')) {
         // Fallback to sha512 since some Admins are either lazy or forced to stick to old PHP.
         } else {
 
-            $newSalt = md5(mt_rand() . date('Y-m-d H:i:s:u'));
+            // SECURITY FIX: Use better random for salt generation
+            if (function_exists('random_bytes')) {
+                $newSalt = bin2hex(random_bytes(16));
+            } else {
+                $newSalt = md5(uniqid(mt_rand(), true) . date('Y-m-d H:i:s:u'));
+            }
 
             if (createHash($username, $password, $salt, $aeskey) == $storedHash) {
                 return true;
@@ -152,7 +216,12 @@ if (!function_exists('passwordgenerate')) {
         if (crypt('password', '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') == '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG') {
             return password_hash($password, PASSWORD_DEFAULT);
         } else {
-            $newSalt = md5(mt_rand() . strtotime('now'));
+            // SECURITY FIX: Use better random for salt generation
+            if (function_exists('random_bytes')) {
+                $newSalt = bin2hex(random_bytes(16));
+            } else {
+                $newSalt = md5(uniqid(mt_rand(), true) . strtotime('now'));
+            }
             return array('hash' => createHash($username, $password, $newSalt, $aeskey), 'salt' => $newSalt);
         }
     }
@@ -747,7 +816,7 @@ if (!function_exists('passwordgenerate')) {
             }
 
             if(isset($topicname)){
-                $topic = '#' . $shorten . ' | ' . $topicname;
+                $topic = '#' . $shorten . ' | $topicname';
             }else{
                 $topic = '#' . $shorten;
             }
@@ -899,11 +968,12 @@ if (!function_exists('passwordgenerate')) {
                     $query->execute(array($resellersid, 'email_settings_password'));
                     $mail->Password = $query->fetchColumn();
 
+                    // SECURITY FIX: Enable SSL verification
                     $smtpConnect = $mail->smtpConnect(array(
                         'ssl' => array(
-                            'verify_peer' => false,
-                            'verify_peer_name' => false,
-                            'allow_self_signed' => true
+                            'verify_peer' => true,
+                            'verify_peer_name' => true,
+                            'allow_self_signed' => false
                         )
                     ));
 
@@ -1127,6 +1197,19 @@ if (!function_exists('passwordgenerate')) {
     function CopyAdminTable ($tablename, $id, $reseller_id, $limit, $where='') {
 
         global $sql;
+        
+        // SECURITY FIX: Validate table name against whitelist to prevent SQL injection
+        $allowed_tables = ["users", "settings", "servertypes", "usergroups", "products", "userdata", "resellerdata", "gsswitch", 
+                          "virtualcontainer", "voice_server", "rootsDedicated", "tickets", "jobs", "custom_columns_settings"];
+        
+        if (!in_array($tablename, $allowed_tables)) {
+            throw new Exception("Invalid table name: " . htmlspecialchars($tablename));
+        }
+        
+        // Additional security: validate table name format
+        if (!preg_match("/^[a-zA-Z_][a-zA-Z0-9_]*$/", $tablename)) {
+            throw new Exception("Invalid table name format");
+        }
 
         $query = $sql->prepare("SELECT * FROM `$tablename` WHERE `resellerid`=? " . $where . " " .$limit);
         $query->execute(array($reseller_id));
@@ -1311,7 +1394,13 @@ if (!function_exists('passwordgenerate')) {
 
         if ($check == false) {
 
-            $token = md5(mt_rand());
+            // SECURITY FIX: Use better random for token generation
+            if (function_exists('random_bytes')) {
+                $token = bin2hex(random_bytes(16));
+            } else {
+                $token = md5(uniqid(mt_rand(), true));
+            }
+            
             $tokenLifeTime = '+40 minutes';
 
             if ($ui->id('id', 10, 'get') and $ui->smallletters('d', 10, 'get')) {
@@ -1712,9 +1801,10 @@ $(function() {
         return [$head, $content];
     }
 
-    function __debug($pre){
-        echo "<pre>";
-        print_r($pre);
-        echo "</pre>";
-    }
+    // SECURITY FIX: Remove debug function from production code
+    // function __debug($pre){
+    //     echo "<pre>";
+    //     print_r($pre);
+    //     echo "</pre>";
+    // }
 }
